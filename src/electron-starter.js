@@ -13,7 +13,12 @@ let mainWindow;
 
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ toolbar: false, width: 1000, height: 625 });
+  mainWindow = new BrowserWindow({
+    toolbar: false,
+    width: 1000,
+    height: 625,
+    resizable: false
+  });
 
   // メニューバーを非表示にする
   mainWindow.setMenuBarVisibility(false)
