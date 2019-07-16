@@ -1,0 +1,19 @@
+.btn-light {
+    color: #212529;
+    background-color: #eeeeee;
+    border-color: #d9dde0;
+}
+.btn-light:hover {
+    color: #212529;
+    background-color: #d9dde0;
+    border-color: #dae0e5;
+}
+.btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle {
+    background-color: #abaeb1;
+}
+.menu-button-group {
+  text-align: center;
+}
+.w-100 {
+  width: 100% !important;
+}

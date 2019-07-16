@@ -3,6 +3,8 @@ import { fetchEmployeeList } from '../actions';
 import 'react-tabulator/lib/styles.css';
 import { ReactTabulator } from 'react-tabulator'
 import 'react-tabulator/lib/css/tabulator.min.css';
+import Loading from './Loading'
+import './EmployeeList.css';
 
 class EmployeeList extends Component {
   constructor(props) {
@@ -33,13 +35,14 @@ class EmployeeList extends Component {
     const { employeeList, isFetching, isError } = this.props;
     return (
       <div className='employee-list'>
+        <Loading isFetching={isFetching} />
           <ReactTabulator
             data={employeeList}
             columns={columns}
             tooltips={true}
             layout={"fitData"}
             height="530px"
-          />
+        />
       </div>
     );
   }
