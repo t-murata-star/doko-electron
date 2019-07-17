@@ -14,7 +14,7 @@ function showExitDialog() {
     title: '行き先掲示板',
     message: '行き先掲示板を終了しますか？',
   };
-  index = electron.dialog.showMessageBox(mainWindow, options);
+  const index = electron.dialog.showMessageBox(mainWindow, options);
   return index;
 }
 
@@ -71,7 +71,7 @@ function createWindow() {
 // タスクトレイを作成
 function createTray() {
   // 通知領域に表示するアイコンを指定
-  tray = new electron.Tray('./public/favicon.ico');
+  const tray = new electron.Tray('./public/favicon.png');
   // 通知領域をクリックした際のメニュー
   const contextMenu = electron.Menu.buildFromTemplate([
     {
