@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { getEmployeeList } from '../actions';
+import './EmployeeList.css';
 import 'react-tabulator/lib/styles.css';
-import { ReactTabulator } from 'react-tabulator'
 import 'react-tabulator/lib/css/tabulator.min.css';
+import { getEmployeeList } from '../actions';
+import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import Loading from './Loading'
-
 
 class EmployeeList extends Component {
   constructor(props) {
