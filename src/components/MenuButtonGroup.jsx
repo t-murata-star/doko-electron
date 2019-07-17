@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import { getEmployeeList } from '../actions';
+import { getEmployeeList, updateEmployeeInfo } from '../actions';
+import store from '../store/configureStore';
+
 const { remote } = window.require('electron');
 
 class MenuButtonGroup extends Component {
@@ -16,12 +18,23 @@ class MenuButtonGroup extends Component {
   }
 
   edit_myself = () => {
-    alert('自分編集')
+    const { dispatch } = this.props;
+    let employeeInfo = this._getEmployeeInfo(1);
+    const id = 1;
+    dispatch(updateEmployeeInfo(employeeInfo, id));
   }
 
   minimize = () => {
     const window = remote.getCurrentWindow();
     window.minimize();
+  }
+
+  _getEmployeeInfo = (id) => {
+    const employeeInfo = store.getState().employeeList['employeeList']
+      .filter(function (employeeInfo) {
+        return employeeInfo['id'] === 1;
+      })[0];
+    return employeeInfo;
   }
 
   render() {
