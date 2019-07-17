@@ -20,7 +20,8 @@ class MenuButtonGroup extends Component {
   }
 
   minimize = () => {
-    alert('最小化')
+    const window = remote.getCurrentWindow();
+    window.minimize();
   }
 
   render() {
