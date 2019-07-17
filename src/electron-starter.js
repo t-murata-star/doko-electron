@@ -17,7 +17,10 @@ function createWindow() {
     toolbar: false,
     width: 1000,
     height: 625,
-    resizable: false
+    resizable: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   // メニューバーを非表示にする
