@@ -3,12 +3,20 @@ const electron = require('electron');
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
-const Tray = electron.Tray;
-const Menu = electron.Menu;
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+
+function showExitDialog() {
+  var options = {
+    type: 'info',
+    buttons: ['OK', 'Cancel'],
+    title: '行き先掲示板',
+    message: '行き先掲示板を終了しますか？',
+  };
+  index = electron.dialog.showMessageBox(mainWindow, options);
+  return index;
+}
 
 function createWindow() {
   // Create the browser window.
@@ -31,6 +39,19 @@ function createWindow() {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
+  mainWindow.on('close', function (event) {
+    switch (showExitDialog()) {
+      case 0:
+        break;
+
+      case 1:
+        event.preventDefault();
+
+      default:
+        break;
+    }
+  })
+
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -50,9 +71,9 @@ function createWindow() {
 // タスクトレイを作成
 function createTray() {
   // 通知領域に表示するアイコンを指定
-  tray = new Tray('./public/favicon.ico');
+  tray = new electron.Tray('./public/favicon.ico');
   // 通知領域をクリックした際のメニュー
-  const contextMenu = Menu.buildFromTemplate([
+  const contextMenu = electron.Menu.buildFromTemplate([
     {
       label: '終了',
       click(menuItem) {
