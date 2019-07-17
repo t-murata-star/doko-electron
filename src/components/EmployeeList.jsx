@@ -14,6 +14,14 @@ class EmployeeList extends Component {
     dispatch(fetchEmployeeList());
   }
 
+  componentDidUpdate(prevProps) {
+    const nextProps = this.props
+    // APIリクエストでエラーが発生した場合、メッセージを表示する
+    if (nextProps.isError.status === true) {
+      // TODO: 新規ウインドウでポップアップは出さず、インジケータで表示する。
+    }
+  }
+
   render() {
     const columns = [
       { title: "氏名", field: "name", width: 150, headerSort: false },
