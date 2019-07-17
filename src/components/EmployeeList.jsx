@@ -28,13 +28,14 @@ class EmployeeList extends Component {
     const { employeeList, isFetching, isError } = this.props;
     return (
       <div className='employee-list'>
-          <ReactTabulator
-            data={employeeList}
-            columns={TABLE_COLUMNS}
-            tooltips={true}
-            layout={"fitData"}
-            height="530px"
-          />
+        <ReactTabulator
+          data={employeeList}
+          columns={TABLE_COLUMNS}
+          tooltips={true}
+          layout={"fitData"}
+          height="530px"
+          initialSort={[{ column: "order", dir: "asc" }]}
+        />
       </div>
     );
   }
