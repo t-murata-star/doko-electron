@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import { fetchEmployeeList } from '../actions';
+import { getEmployeeList } from '../actions';
 const { remote } = window.require('electron');
 
 class MenuButtonGroup extends Component {
@@ -12,7 +12,7 @@ class MenuButtonGroup extends Component {
 
   reload = () => {
     const { dispatch } = this.props;
-    dispatch(fetchEmployeeList());
+    dispatch(getEmployeeList());
   }
 
   edit_myself = () => {

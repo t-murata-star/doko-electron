@@ -30,10 +30,11 @@ export const failRequestEmployeeList = (error) => ({
   }
 });
 
-export const fetchEmployeeList = () => {
+export const getEmployeeList = () => {
   return (dispatch) => {
     dispatch(requestEmployeeList());
-    return fetch(API_URL + 'employeeList')
+    const method = 'GET';
+    return fetch(API_URL + 'employeeList', {method})
       .then(res => {
         if (!res.ok) {
           return Promise.resolve(new Error(res.statusText));
@@ -58,7 +59,7 @@ const shouldFetchEmployeeList = (employeeList, state) => {
 export const fetchEmployeeListIfNeeded = (employeeList) => {
   return (dispatch, getState) => {
     if (shouldFetchEmployeeList(employeeList, getState())) {
-      return dispatch(fetchEmployeeList());
+      return dispatch(getEmployeeList());
     }
   }
 };
