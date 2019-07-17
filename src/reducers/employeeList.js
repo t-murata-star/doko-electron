@@ -2,7 +2,7 @@ import * as Actions from '../actions';
 
 function employeeListIsFetching(state = false, action) {
   switch (action.type) {
-    case Actions.REQUEST_EMPLOYEE_LIST:
+    case Actions.GET_EMPLOYEE_LIST:
       return true;
     default:
       return false;
@@ -41,7 +41,7 @@ export default function employeeList(state = {
   },
 }, action) {
   switch (action.type) {
-    case Actions.REQUEST_EMPLOYEE_LIST:
+    case Actions.GET_EMPLOYEE_LIST:
       return {
         ...state,
         isFetching: employeeListIsFetching(state.isFetching, action)

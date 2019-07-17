@@ -5,11 +5,8 @@ import { createLogger } from 'redux-logger';
 
 const logger = createLogger();
 const middlewares = [thunk, logger];
-
-export default function configureStore(pleloadState) {
-  return createStore(
-    rootReducer,
-    pleloadState,
-    applyMiddleware(...middlewares)
-  );
-};
+const store = createStore(
+  rootReducer,
+  applyMiddleware(...middlewares)
+);
+export default store;
