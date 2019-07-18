@@ -11,6 +11,7 @@
 .btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle {
     background-color: #abaeb1;
 }
-.w-100 {
-    width: 100% !important;
+.modal-button {
+    width: 10rem !important;
+    margin-left: 8px !important;
 }

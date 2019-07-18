@@ -60,7 +60,8 @@ function EmployeeInfoModal(props) {
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
+        <Button variant='light' className='modal-button' onClick={props.onHide}>更新</Button>
+        <Button variant='light' className='modal-button' onClick={props.onHide}>キャンセル</Button>
       </Modal.Footer>
     </Modal>
   );
