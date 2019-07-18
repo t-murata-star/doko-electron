@@ -3,6 +3,12 @@ import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
 import { getEmployeeList, updateEmployeeInfo } from '../actions';
 import store from '../store/configureStore';
 import './MenuButtonGroup.css';
+import EmployeeInfoButton from './EmployeeInfoButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faPowerOff, faSync, faWindowMinimize } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faPowerOff, faSync, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく
 
 const { remote } = window.require('electron');
 
@@ -43,10 +49,13 @@ class MenuButtonGroup extends Component {
       <Row>
         <Container>
           <ButtonToolbar className='menu-button-group'>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.close}>終了</Button></Col>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.reload}>再読込</Button></Col>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.edit_myself}>自分編集</Button></Col>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.minimize}>最小化</Button></Col>
+            <Col md={3}><Button variant='light' className='w-100' onClick={this.close}>
+              <FontAwesomeIcon icon='power-off' /> 終了</Button></Col>
+            <Col md={3}><Button variant='light' className='w-100' onClick={this.reload}>
+              <FontAwesomeIcon icon='sync' /> 再読込</Button></Col>
+            <Col md={3}><EmployeeInfoButton /></Col>
+            <Col md={3}><Button variant='light' className='w-100' onClick={this.minimize}>
+              <FontAwesomeIcon icon='window-minimize' /> 最小化</Button></Col>
           </ButtonToolbar>
         </Container>
       </Row>
