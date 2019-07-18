@@ -8,10 +8,6 @@ import { TABLE_COLUMNS } from '../define';
 import Loading from './Loading'
 
 class EmployeeList extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch(getEmployeeList());
