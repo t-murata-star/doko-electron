@@ -15,7 +15,7 @@ class Loading extends Component {
           <div className='background'>a</div>
           <table className='loading'>
             <tbody>
-              <tr><th>情報取得中 <FontAwesomeIcon icon='spinner' spin /></th></tr>
+              <tr><th>通信中 <FontAwesomeIcon icon='spinner' spin /></th></tr>
             </tbody>
           </table>
         </div>
