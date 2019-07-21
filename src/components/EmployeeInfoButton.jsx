@@ -1,6 +1,6 @@
 import './EmployeeInfoButton.css';
 import React, { Component } from 'react';
-import { Row, Container, Col, Modal, Button, ButtonToolbar } from 'react-bootstrap';
+import { Row, Container, Col, Form, Modal, Button, ButtonToolbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
@@ -37,26 +37,38 @@ function EmployeeInfoModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Container>
-          <Row className='show-grid'>
-            <Col xs={12} md={8}>
-              <code>.col-xs-12 .col-md-8</code>
-            </Col>
-            <Col xs={6} md={4}>
-              <code>.col-xs-6 .col-md-4</code>
-            </Col>
-          </Row>
 
-          <Row className='show-grid'>
-            <Col xs={6} md={4}>
-              <code>.col-xs-6 .col-md-4</code>
-            </Col>
-            <Col xs={6} md={4}>
-              <code>.col-xs-6 .col-md-4</code>
-            </Col>
-            <Col xs={6} md={4}>
-              <code>.col-xs-6 .col-md-4</code>
-            </Col>
-          </Row>
+          <Form>
+            <Form.Row>
+              <Form.Group as={Col} controlId="employeeName">
+                <Form.Label>氏名</Form.Label>
+                <Form.Control placeholder="" />
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="status">
+                <Form.Label>状態</Form.Label>
+                <Form.Control placeholder="" />
+              </Form.Group>
+            </Form.Row>
+
+            <Form.Row>
+              <Form.Group as={Col} controlId="destination">
+                <Form.Label>行き先</Form.Label>
+                <Form.Control placeholder="" />
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="return">
+                <Form.Label>戻り</Form.Label>
+                <Form.Control placeholder="" />
+              </Form.Group>
+            </Form.Row>
+
+            <Form.Group controlId="message">
+              <Form.Label>メッセージ</Form.Label>
+              <Form.Control placeholder="" />
+            </Form.Group>
+          </Form>
+
         </Container>
       </Modal.Body>
       <Modal.Footer>
