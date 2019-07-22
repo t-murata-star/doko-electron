@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
-import { getEmployeeList, updateEmployeeInfo } from '../actions';
+import { getEmployeeList, updateEmployeeInfo } from '../actions/employeeList';
 import store from '../store/configureStore';
 import './MenuButtonGroup.css';
 import EmployeeInfoButton from './EmployeeInfoButton';

@@ -4,7 +4,7 @@ import { API_URL } from '../define';
  * Action type
  */
 export const GET_EMPLOYEE_LIST = 'GET_EMPLOYEE_LIST';
-export const PUT_EMPLOYEE_LIST = 'GET_EMPLOYEE_LIST';
+export const PUT_EMPLOYEE_LIST = 'PUT_EMPLOYEE_LIST';
 export const RECEIVE_EMPLOYEE_LIST = 'RECEIVE_EMPLOYEE_LIST';
 export const FAIL_REQUEST_EMPLOYEE_LIST = 'FAIL_REQUEST_EMPLOYEE_LIST';
 

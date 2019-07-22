@@ -1,4 +1,4 @@
-import * as Actions from '../actions';
+import * as Actions from '../actions/employeeList';
 
 function employeeListIsFetching(state = false, action) {
   switch (action.type) {

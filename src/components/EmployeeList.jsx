@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './EmployeeList.css';
 import 'react-tabulator/lib/styles.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
-import { getEmployeeList } from '../actions';
+import { getEmployeeList } from '../actions/employeeList';
 import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import Loading from './Loading'
