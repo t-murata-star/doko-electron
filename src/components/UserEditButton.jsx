@@ -1,4 +1,4 @@
-import './EmployeeInfoButton.css';
+import './UserEditButton.css';
 import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button, ButtonToolbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

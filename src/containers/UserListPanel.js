@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import EmployeeList from '../components/EmployeeList';
+import EmployeeList from '../components/UserList';
 
 function mapStateToProps(state) {
   const { employeeList, isFetching, isError } = state.employeeList;

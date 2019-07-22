@@ -3,7 +3,7 @@ import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
 import { getEmployeeList, updateEmployeeInfo } from '../actions/employeeList';
 import store from '../store/configureStore';
 import './MenuButtonGroup.css';
-import EmployeeInfoButton from './EmployeeInfoButton';
+import EmployeeInfoButton from './UserEditButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPowerOff, faSync, faWindowMinimize } from '@fortawesome/free-solid-svg-icons'

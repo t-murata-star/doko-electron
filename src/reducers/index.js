@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import employeeList from './employeeList'
+import employeeList from './userList'
 import menuButtonGroup from './menuButtonGroup'
 
 const rootReducer = combineReducers({
