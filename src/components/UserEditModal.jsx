@@ -4,7 +4,7 @@
  * できるだけステートレスで作る。（可能な限りステートレス）
  */
 
-import './UserEdit.css';
+import './UserEditModal.css';
 import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core'
