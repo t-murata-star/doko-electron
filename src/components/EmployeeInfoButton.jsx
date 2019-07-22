@@ -1,6 +1,6 @@
 import './EmployeeInfoButton.css';
 import React, { Component } from 'react';
-import { Row, Container, Col, Form, Modal, Button, ButtonToolbar } from 'react-bootstrap';
+import { Container, Col, Form, Modal, Button, ButtonToolbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
@@ -72,7 +72,7 @@ function EmployeeInfoModal(props) {
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant='light' className='modal-button' onClick={props.onHide}>更新</Button>
+        <Button variant='primary' className='modal-button' onClick={props.onHide}>更新</Button>
         <Button variant='light' className='modal-button' onClick={props.onHide}>キャンセル</Button>
       </Modal.Footer>
     </Modal>

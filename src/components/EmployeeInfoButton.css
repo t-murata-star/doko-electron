@@ -15,3 +15,7 @@
     width: 10rem !important;
     margin-left: 8px !important;
 }
+.modal-content {
+    width: 80%;
+    margin-left: 10%;
+}
