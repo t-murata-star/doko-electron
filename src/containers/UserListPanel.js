@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
-import EmployeeList from '../components/UserList';
+import UserList from '../components/UserList';
 
 function mapStateToProps(state) {
-  const { employeeList, isFetching, isError } = state.employeeList;
+  const { userList, isFetching, isError } = state.userList;
   return {
-    employeeList,
+    userList,
     isFetching,
     isError
   };
 }
 
-export default connect(mapStateToProps)(EmployeeList);
+export default connect(mapStateToProps)(UserList);

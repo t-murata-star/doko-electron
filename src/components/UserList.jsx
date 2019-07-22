@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import './UserList.css';
 import 'react-tabulator/lib/styles.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
-import { getEmployeeList } from '../actions/employeeList';
+import { getUserList } from '../actions/userList';
 import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import Loading from './Loading'
 
-class EmployeeList extends Component {
+class UserList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch(getEmployeeList());
+    dispatch(getUserList());
   }
 
   componentDidUpdate(prevProps) {
@@ -22,12 +22,12 @@ class EmployeeList extends Component {
   }
 
   render() {
-    const { employeeList, isFetching, isError } = this.props;
+    const { userList, isFetching, isError } = this.props;
     return (
-      <div className='employee-list'>
+      <div className='user-list'>
         <Loading isFetching={isFetching} />
         <ReactTabulator
-          data={employeeList}
+          data={userList}
           columns={TABLE_COLUMNS}
           tooltips={true}
           layout={"fitData"}
@@ -39,4 +39,4 @@ class EmployeeList extends Component {
   }
 }
 
-export default EmployeeList;
+export default UserList;

@@ -4,7 +4,7 @@
  * できるだけステートレスで作る。（可能な限りステートレス）
  */
 
-import './UserEditButton.css';
+import './UserEdit.css';
 import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -34,7 +34,7 @@ class UserEditModal extends Component {
 
             <Form>
               <Form.Row>
-                <Form.Group as={Col} controlId="employeeName">
+                <Form.Group as={Col} controlId="userName">
                   <Form.Label>氏名</Form.Label>
                   <Form.Control placeholder="" />
                 </Form.Group>

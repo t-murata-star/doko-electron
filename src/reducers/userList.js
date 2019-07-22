@@ -1,20 +1,20 @@
-import * as Actions from '../actions/employeeList';
+import * as Actions from '../actions/userList';
 
-function employeeListIsFetching(state = false, action) {
+function userListIsFetching(state = false, action) {
   switch (action.type) {
-    case Actions.GET_EMPLOYEE_LIST:
+    case Actions.GET_USER_LIST:
       return true;
     default:
       return false;
   }
 }
 
-function employeeListIsError(state = {
+function userListIsError(state = {
   status: false,
   error: null
 }, action) {
   switch (action.type) {
-    case Actions.FAIL_REQUEST_EMPLOYEE_LIST:
+    case Actions.FAIL_REQUEST_USER_LIST:
       return {
         ...state,
         status: true,
@@ -32,8 +32,8 @@ function employeeListIsError(state = {
 /**
  * 登録者情報一覧のstateを管理するReducer
  */
-export default function employeeList(state = {
-  employeeList: [],
+export default function userList(state = {
+  userList: [],
   isFetching: false,
   isError: {
     status: false,
@@ -41,22 +41,22 @@ export default function employeeList(state = {
   },
 }, action) {
   switch (action.type) {
-    case Actions.GET_EMPLOYEE_LIST:
+    case Actions.GET_USER_LIST:
       return {
         ...state,
-        isFetching: employeeListIsFetching(state.isFetching, action)
+        isFetching: userListIsFetching(state.isFetching, action)
       };
-    case Actions.RECEIVE_EMPLOYEE_LIST:
+    case Actions.RECEIVE_USER_LIST:
       return {
         ...state,
-        employeeList: action.payload.response,
-        isFetching: employeeListIsFetching(state.isFetching, action)
+        userList: action.payload.response,
+        isFetching: userListIsFetching(state.isFetching, action)
       };
-    case Actions.FAIL_REQUEST_EMPLOYEE_LIST:
+    case Actions.FAIL_REQUEST_USER_LIST:
       return {
         ...state,
-        isError: employeeListIsError(state.isError, action),
-        isFetching: employeeListIsFetching(state.isFetching, action)
+        isError: userListIsError(state.isError, action),
+        isFetching: userListIsFetching(state.isFetching, action)
       };
     default:
       return state;

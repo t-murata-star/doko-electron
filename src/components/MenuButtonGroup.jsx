@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
-import { getEmployeeList, updateEmployeeInfo } from '../actions/employeeList';
+import { getUserList, updateUserInfo } from '../actions/userList';
 import store from '../store/configureStore';
 import './MenuButtonGroup.css';
 import UserEditButton from '../containers/UserEditButton'
@@ -20,14 +20,14 @@ class MenuButtonGroup extends Component {
 
   reload = () => {
     const { dispatch } = this.props;
-    dispatch(getEmployeeList());
+    dispatch(getUserList());
   }
 
   edit_myself = () => {
     const { dispatch } = this.props;
-    let employeeInfo = this._getEmployeeInfo(1);
+    let userInfo = this._getUserInfo(1);
     const id = 1;
-    dispatch(updateEmployeeInfo(employeeInfo, id));
+    dispatch(updateUserInfo(userInfo, id));
   }
 
   minimize = () => {
@@ -35,12 +35,12 @@ class MenuButtonGroup extends Component {
     window.minimize();
   }
 
-  _getEmployeeInfo = (id) => {
-    const employeeInfo = store.getState().employeeList['employeeList']
-      .filter(function (employeeInfo) {
-        return employeeInfo['id'] === 1;
+  _getUserInfo = (id) => {
+    const userInfo = store.getState().userList['userList']
+      .filter(function (userInfo) {
+        return userInfo['id'] === 1;
       })[0];
-    return employeeInfo;
+    return userInfo;
   }
 
   render() {
