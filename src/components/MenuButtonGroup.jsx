@@ -3,7 +3,7 @@ import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
 import { getUserList, updateUserInfo } from '../actions/userList';
 import store from '../store/configureStore';
 import './MenuButtonGroup.css';
-import UserEditButton from '../containers/UserEditButton'
+import UserEdit from '../containers/UserEdit'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPowerOff, faSync, faWindowMinimize } from '@fortawesome/free-solid-svg-icons'
@@ -53,7 +53,7 @@ class MenuButtonGroup extends Component {
               <FontAwesomeIcon icon='power-off' /> 終了</Button></Col>
             <Col md={3}><Button variant='light' className='w-100' onClick={this.reload}>
               <FontAwesomeIcon icon='sync' /> 再読込</Button></Col>
-            <Col md={3}><UserEditButton /></Col>
+            <Col md={3}><UserEdit /></Col>
             <Col md={3}><Button variant='light' className='w-100' onClick={this.minimize}>
               <FontAwesomeIcon icon='window-minimize' /> 最小化</Button></Col>
           </ButtonToolbar>

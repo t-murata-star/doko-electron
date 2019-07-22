@@ -9,7 +9,7 @@ import UserEditModal from '../containers/UserEditModal';
 
 library.add(faEdit) //あらかじめ使用するアイコンを追加しておく
 
-class UserEditButton extends Component {
+class UserEdit extends Component {
   showModal = () => {
     const { dispatch } = this.props;
     dispatch(showModalAction());
@@ -27,4 +27,4 @@ class UserEditButton extends Component {
   }
 }
 
-export default UserEditButton;
+export default UserEdit;
