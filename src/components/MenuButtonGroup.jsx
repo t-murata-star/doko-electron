@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
-import { getUserList, updateUserInfo } from '../actions/userList';
+import { getUserList } from '../actions/userList';
 import store from '../store/configureStore';
 import './MenuButtonGroup.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,13 +22,6 @@ class MenuButtonGroup extends Component {
   reload = () => {
     const { dispatch } = this.props;
     dispatch(getUserList());
-  }
-
-  edit_myself = () => {
-    const { dispatch } = this.props;
-    let userInfo = this._getUserInfo(1);
-    const id = 1;
-    dispatch(updateUserInfo(userInfo, id));
   }
 
   minimize = () => {
