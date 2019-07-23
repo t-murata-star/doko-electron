@@ -21,9 +21,11 @@ class UserEditModal extends Component {
   }
 
   render() {
-    const userEdit = store.getState().userEdit.onHide;
+    const onHide = store.getState().userEdit.onHide;
+    const userInfo = this.props.userInfo;
+
     return (
-      <Modal show={userEdit} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
+      <Modal show={onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
         <Modal.Header>
           <Modal.Title id='contained-modal-title-vcenter'>
             情報変更
@@ -31,38 +33,36 @@ class UserEditModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <Container>
-
             <Form>
               <Form.Row>
                 <Form.Group as={Col} controlId="userName">
                   <Form.Label>氏名</Form.Label>
-                  <Form.Control placeholder="" />
+                  <Form.Control placeholder="" defaultValue={userInfo.name} />
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="status">
                   <Form.Label>状態</Form.Label>
-                  <Form.Control placeholder="" />
+                  <Form.Control placeholder="" defaultValue={userInfo.status} />
                 </Form.Group>
               </Form.Row>
 
               <Form.Row>
                 <Form.Group as={Col} controlId="destination">
                   <Form.Label>行き先</Form.Label>
-                  <Form.Control placeholder="" />
+                  <Form.Control placeholder="" defaultValue={userInfo.destination} />
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="return">
                   <Form.Label>戻り</Form.Label>
-                  <Form.Control placeholder="" />
+                  <Form.Control placeholder="" defaultValue={userInfo.return} />
                 </Form.Group>
               </Form.Row>
 
               <Form.Group controlId="message">
                 <Form.Label>メッセージ</Form.Label>
-                <Form.Control placeholder="" />
+                <Form.Control placeholder="" defaultValue={userInfo.message} />
               </Form.Group>
             </Form>
-
           </Container>
         </Modal.Body>
         <Modal.Footer>
@@ -71,6 +71,15 @@ class UserEditModal extends Component {
         </Modal.Footer>
       </Modal>
     );
+  }
+}
+
+UserEditModal.defaultProps = {
+  userInfo: {
+    name: '',
+    status: '',
+    destination: '',
+    return: ''
   }
 }
 

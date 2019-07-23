@@ -65,7 +65,7 @@ class MenuButtonGroup extends Component {
               <FontAwesomeIcon icon='window-minimize' /> 最小化</Button></Col>
           </ButtonToolbar>
         </Container>
-        <UserEditModal />
+        <UserEditModal userInfo={this._getUserInfo()} />
       </Row>
     );
   }
