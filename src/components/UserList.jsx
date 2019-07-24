@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import './UserList.css';
 import 'react-tabulator/lib/styles.css';
+// import 'react-tabulator/lib/css/tabulator_modern.min.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
-import { getUserListAction } from '../actions/userList';
+
+import { getUserListAction, selectUserAction } from '../actions/userList';
 import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import Loading from './Loading'
+import { showModalActionCreator } from '../actions/userEdit';
 
 class UserList extends Component {
   componentDidMount() {
@@ -21,14 +24,23 @@ class UserList extends Component {
     }
   }
 
+  showModal = (e, cell) => {
+    const { dispatch } = this.props;
+    const selectedUserId = cell.getRow().getData()['id'];
+    dispatch(selectUserAction(selectedUserId));
+    dispatch(showModalActionCreator());
+  }
+
   render() {
     const { userList, isFetching, isError } = this.props;
+    let columns = Object.assign([], TABLE_COLUMNS);
+    columns[1]['cellDblClick'] = this.showModal;
     return (
       <div className='user-list'>
         <Loading isFetching={isFetching} />
         <ReactTabulator
           data={userList}
-          columns={TABLE_COLUMNS}
+          columns={columns}
           tooltips={true}
           layout={"fitData"}
           height="530px"

@@ -18,7 +18,7 @@ export const USER_INFO = {
   return: '',
   update_at: '',
   message: ''
-}
+};
 export const STATUS_LIST = [
   '在席',
   '退社',
@@ -33,4 +33,4 @@ export const STATUS_LIST = [
   '遅刻',
   '接客中',
   '離席中'
-]
+];

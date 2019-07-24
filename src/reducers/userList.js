@@ -41,6 +41,7 @@ export default function userList(state = {
     status: false,
     error: null
   },
+  selectedUserId: 1,
 }, action) {
   switch (action.type) {
     case Actions.GET_USER_LIST:
@@ -71,6 +72,11 @@ export default function userList(state = {
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action)
+      };
+    case Actions.SELECT_USER:
+      return {
+        ...state,
+        selectedUserId: action.selectedUserId
       };
     default:
       return state;

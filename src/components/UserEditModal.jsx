@@ -18,7 +18,19 @@ library.add(faEdit) //あらかじめ使用するアイコンを追加してお�
 
 class UserEditModal extends Component {
   componentDidUpdate() {
-    this.userInfo = Object.assign({}, this.props.userInfo);
+    const selectedUserId = store.getState().userList.selectedUserId;
+    this.userInfo = this._getUserInfo(selectedUserId);
+  }
+
+  _getUserInfo = (id) => {
+    if (this.props.userList['userList']) {
+      const userInfo = store.getState().userList
+        .filter(function (userInfo) {
+          return userInfo['id'] === id;
+        })[0];
+      return userInfo;
+    }
+    return {};
   }
 
   closeModal = () => {

@@ -29,14 +29,6 @@ class MenuButtonGroup extends Component {
     window.minimize();
   }
 
-  _getUserInfo = (id) => {
-    const userInfo = store.getState().userList['userList']
-      .filter(function (userInfo) {
-        return userInfo['id'] === id;
-      })[0];
-    return userInfo;
-  }
-
   showModal = () => {
     const { dispatch } = this.props;
     dispatch(showModalActionCreator());
@@ -58,7 +50,7 @@ class MenuButtonGroup extends Component {
               <FontAwesomeIcon icon='window-minimize' /> 最小化</Button></Col>
           </ButtonToolbar>
         </Container>
-        <UserEditModal userInfo={this._getUserInfo(1)} />
+        <UserEditModal/>
       </Row>
     );
   }

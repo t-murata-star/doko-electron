@@ -8,6 +8,7 @@ export const PUT_USER_LIST = 'PUT_USER_LIST';
 export const SUCCESS_PUT_USER_LIST = 'SUCCESS_PUT_USER_LIST';
 export const RECEIVE_USER_LIST = 'RECEIVE_USER_LIST';
 export const FAIL_REQUEST_USER_LIST = 'FAIL_REQUEST_USER_LIST';
+export const SELECT_USER = 'SELECT_USER';
 
 const HEADERS = {
   "Content-type": "application/json; charset=UTF-8"
@@ -37,6 +38,10 @@ export const failRequestUserListActionCreator = (error) => ({
   payload: {
     error
   }
+});
+export const selectUserActionCreator = (selectedUserId) => ({
+  type: SELECT_USER,
+  selectedUserId: selectedUserId
 });
 
 export const updateUserInfoAction = (userInfo, id) => {
@@ -75,5 +80,12 @@ export const getUserListAction = () => {
       })
       .then(json => dispatch(receiveUserListActionCreator(json)))
       .catch(error => dispatch(failRequestUserListActionCreator(error)));
+  }
+};
+
+export const selectUserAction = (selectedUserId) => {
+  return (dispatch) => {
+    dispatch(selectUserActionCreator(selectedUserId));
+    return selectedUserId;
   }
 };
