@@ -5,6 +5,7 @@ import { API_URL } from '../define';
  */
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const PUT_USER_LIST = 'PUT_USER_LIST';
+export const SUCCESS_PUT_USER_LIST = 'SUCCESS_PUT_USER_LIST';
 export const RECEIVE_USER_LIST = 'RECEIVE_USER_LIST';
 export const FAIL_REQUEST_USER_LIST = 'FAIL_REQUEST_USER_LIST';
 
@@ -15,19 +16,22 @@ const HEADERS = {
 /**
  * Action Creator
  */
-export const getUserListAction = () => ({
+export const getUserListActionCreator = () => ({
   type: GET_USER_LIST
 });
-export const updateUserInfoAction = () => ({
+export const updateUserInfoActionCreator = () => ({
   type: PUT_USER_LIST
 });
-export const receiveUserList = (json) => ({
+export const successUpdateUserInfoActionCreator = () => ({
+  type: SUCCESS_PUT_USER_LIST
+});
+export const receiveUserListActionCreator = (json) => ({
   type: RECEIVE_USER_LIST,
   payload: {
     response: json
   }
 });
-export const failRequestUserList = (error) => ({
+export const failRequestUserListActionCreator = (error) => ({
   type: FAIL_REQUEST_USER_LIST,
   error: true,
   payload: {
@@ -35,9 +39,9 @@ export const failRequestUserList = (error) => ({
   }
 });
 
-export const updateUserInfo = (userInfo, id) => {
+export const updateUserInfoAction = (userInfo, id) => {
   return (dispatch) => {
-    dispatch(updateUserInfoAction());
+    dispatch(updateUserInfoActionCreator());
     return fetch(API_URL + 'userList/' + id,
       {
         method: 'PUT',
@@ -50,14 +54,14 @@ export const updateUserInfo = (userInfo, id) => {
         }
         return res.json();
       })
-      .then()
-      .catch(error => dispatch(failRequestUserList(error)));
+      .then(json => dispatch(successUpdateUserInfoActionCreator()))
+      .catch(error => dispatch(failRequestUserListActionCreator(error)));
   }
 };
 
-export const getUserList = () => {
+export const getUserListAction = () => {
   return (dispatch) => {
-    dispatch(getUserListAction());
+    dispatch(getUserListActionCreator());
     return fetch(API_URL + 'userList',
       {
         method: 'GET',
@@ -69,25 +73,7 @@ export const getUserList = () => {
         }
         return res.json();
       })
-      .then(json => dispatch(receiveUserList(json)))
-      .catch(error => dispatch(failRequestUserList(error)));
-  }
-};
-
-const shouldFetchUserList = (userList, state) => {
-  if (state.userList === undefined) {
-    return true;
-  }
-  if (state.isFetching) {
-    return false;
-  }
-  return false;
-};
-
-export const fetchUserListIfNeeded = (userList) => {
-  return (dispatch, getState) => {
-    if (shouldFetchUserList(userList, getState())) {
-      return dispatch(getUserList());
-    }
+      .then(json => dispatch(receiveUserListActionCreator(json)))
+      .catch(error => dispatch(failRequestUserListActionCreator(error)));
   }
 };

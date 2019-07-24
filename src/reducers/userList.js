@@ -4,6 +4,8 @@ function userListIsFetching(state = false, action) {
   switch (action.type) {
     case Actions.GET_USER_LIST:
       return true;
+    case Actions.PUT_USER_LIST:
+      return true;
     default:
       return false;
   }
@@ -50,12 +52,24 @@ export default function userList(state = {
       return {
         ...state,
         userList: action.payload.response,
+        isError: userListIsError(state.isError, action),
         isFetching: userListIsFetching(state.isFetching, action)
       };
     case Actions.FAIL_REQUEST_USER_LIST:
       return {
         ...state,
         isError: userListIsError(state.isError, action),
+        isFetching: userListIsFetching(state.isFetching, action)
+      };
+    case Actions.PUT_USER_LIST:
+      return {
+        ...state,
+        isError: userListIsError(state.isError, action),
+        isFetching: userListIsFetching(state.isFetching, action)
+      };
+    case Actions.SUCCESS_PUT_USER_LIST:
+      return {
+        ...state,
         isFetching: userListIsFetching(state.isFetching, action)
       };
     default:

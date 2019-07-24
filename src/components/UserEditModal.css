@@ -19,3 +19,8 @@
     width: 80%;
     margin-left: 10%;
 }
+.error-message {
+    color: red;
+    font-size: 18px;
+    padding: 1rem;
+}

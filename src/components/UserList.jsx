@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './UserList.css';
 import 'react-tabulator/lib/styles.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
-import { getUserList } from '../actions/userList';
+import { getUserListAction } from '../actions/userList';
 import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import Loading from './Loading'
@@ -10,7 +10,7 @@ import Loading from './Loading'
 class UserList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch(getUserList());
+    dispatch(getUserListAction());
   }
 
   componentDidUpdate(prevProps) {

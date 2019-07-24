@@ -7,12 +7,12 @@ export const CLOSE_MODAL = 'CLOSE_MODAL';
 /**
  * Action Creator
  */
-export const showModalAction = (onHide) => ({
+export const showModalActionCreator = (onHide) => ({
   type: SHOW_MODAL,
   onHide,
 });
 
-export const closeModalAction = (onHide) => ({
+export const closeModalActionCreator = (onHide) => ({
   type: CLOSE_MODAL,
   onHide,
 });

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
-import { getUserList } from '../actions/userList';
+import { getUserListAction } from '../actions/userList';
 import store from '../store/configureStore';
 import './MenuButtonGroup.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPowerOff, faSync, faWindowMinimize } from '@fortawesome/free-solid-svg-icons'
-import { showModalAction } from '../actions/userEdit';
+import { showModalActionCreator } from '../actions/userEdit';
 import UserEditModal from '../containers/UserEditModal';
 
 library.add(faPowerOff, faSync, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく
@@ -21,7 +21,7 @@ class MenuButtonGroup extends Component {
 
   reload = () => {
     const { dispatch } = this.props;
-    dispatch(getUserList());
+    dispatch(getUserListAction());
   }
 
   minimize = () => {
@@ -32,14 +32,14 @@ class MenuButtonGroup extends Component {
   _getUserInfo = (id) => {
     const userInfo = store.getState().userList['userList']
       .filter(function (userInfo) {
-        return userInfo['id'] === 1;
+        return userInfo['id'] === id;
       })[0];
     return userInfo;
   }
 
   showModal = () => {
     const { dispatch } = this.props;
-    dispatch(showModalAction());
+    dispatch(showModalActionCreator());
   }
 
   render() {
@@ -58,7 +58,7 @@ class MenuButtonGroup extends Component {
               <FontAwesomeIcon icon='window-minimize' /> 最小化</Button></Col>
           </ButtonToolbar>
         </Container>
-        <UserEditModal userInfo={this._getUserInfo()} />
+        <UserEditModal userInfo={this._getUserInfo(1)} />
       </Row>
     );
   }

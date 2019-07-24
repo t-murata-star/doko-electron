@@ -9,3 +9,13 @@ export const TABLE_COLUMNS = [
   { title: "更新日時", field: "update_at", width: 100, headerSort: false },
   { title: "メッセージ", field: "message", headerSort: false }
 ];
+export const USER_INFO = {
+  id: '',
+  order: '',
+  name: '',
+  status: '',
+  destination: '',
+  return: '',
+  update_at: '',
+  message: ''
+}
