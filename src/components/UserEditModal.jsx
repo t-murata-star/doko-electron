@@ -12,7 +12,7 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { closeModalActionCreator } from '../actions/userEdit';
 import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction } from '../actions/userList';
-import { USER_INFO } from '../define';
+import { USER_INFO, STATUS_LIST } from '../define';
 
 library.add(faEdit) //あらかじめ使用するアイコンを追加しておく
 
@@ -76,7 +76,12 @@ class UserEditModal extends Component {
                 </Form.Group>
                 <Form.Group as={Col}>
                   <Form.Label>状態</Form.Label>
-                  <Form.Control name="status" placeholder="" defaultValue={userInfo.status} onChange={this.handleChange} />
+                  <Form.Control name="status" as='select' defaultValue={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.handleChange}>
+                    {STATUS_LIST.map((status) => (
+                      <option>{status}</option>
+                  ))}
+                      <option hidden>？？？</option>
+                  </Form.Control>
                 </Form.Group>
               </Form.Row>
               <Form.Row>

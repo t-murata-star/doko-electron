@@ -19,3 +19,18 @@ export const USER_INFO = {
   update_at: '',
   message: ''
 }
+export const STATUS_LIST = [
+  '在席',
+  '退社',
+  '年休',
+  'AM半休',
+  'PM半休',
+  'FLEX',
+  '出張',
+  '外出',
+  '本社外勤務',
+  '行方不明',
+  '遅刻',
+  '接客中',
+  '離席中'
+]
