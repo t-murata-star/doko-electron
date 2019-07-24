@@ -11,7 +11,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { closeModalActionCreator } from '../actions/userEdit';
 import store from '../store/configureStore';
-import { updateUserInfoAction } from '../actions/userList';
+import { updateUserInfoAction, getUserListAction } from '../actions/userList';
 import { USER_INFO } from '../define';
 
 library.add(faEdit) //あらかじめ使用するアイコンを追加しておく
@@ -37,6 +37,7 @@ class UserEditModal extends Component {
             return;
           }
           this.closeModal();
+          dispatch(getUserListAction())
         }
     );
   }
