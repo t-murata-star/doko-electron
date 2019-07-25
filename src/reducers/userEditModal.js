@@ -1,4 +1,4 @@
-import * as Actions from '../actions/userEdit';
+import * as Actions from '../actions/userEditModal';
 
 export default function userEditModal(state = {
   onHide: false

@@ -8,7 +8,7 @@ import { getUserListAction, selectUserAction } from '../actions/userList';
 import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import Loading from './Loading'
-import { showModalActionCreator } from '../actions/userEdit';
+import { showUserEditModalActionCreator } from '../actions/userEditModal';
 
 class UserList extends Component {
   componentDidMount() {
@@ -28,7 +28,7 @@ class UserList extends Component {
     const { dispatch } = this.props;
     const selectedUserId = row.getData()['id'];
     dispatch(selectUserAction(selectedUserId));
-    dispatch(showModalActionCreator());
+    dispatch(showUserEditModalActionCreator());
   }
 
   render() {

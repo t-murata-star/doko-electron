@@ -7,7 +7,7 @@
 import './UserEditModal.css';
 import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
-import { closeModalActionCreator } from '../actions/userEdit';
+import { closeUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction } from '../actions/userList';
 import { USER_INFO, STATUS_LIST } from '../define';
@@ -41,7 +41,7 @@ class UserEditModal extends Component {
 
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(closeModalActionCreator());
+    dispatch(closeUserEditModalActionCreator());
   }
 
   _updateUserInfo = (userInfo) => {

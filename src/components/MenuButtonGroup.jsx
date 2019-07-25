@@ -6,7 +6,7 @@ import './MenuButtonGroup.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPowerOff, faSync, faEdit, faWindowMinimize, } from '@fortawesome/free-solid-svg-icons'
-import { showModalActionCreator } from '../actions/userEdit';
+import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import UserEditModal from '../containers/UserEditModal';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく
@@ -31,7 +31,7 @@ class MenuButtonGroup extends Component {
 
   showModal = () => {
     const { dispatch } = this.props;
-    dispatch(showModalActionCreator());
+    dispatch(showUserEditModalActionCreator());
   }
 
   render() {
