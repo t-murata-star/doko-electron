@@ -11,6 +11,9 @@
 .btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle {
     background-color: #abaeb1;
 }
+.btn-light:disabled:hover {
+    background-color: #f8f9fa;
+}
 .menu-button-group {
   text-align: center;
 }
