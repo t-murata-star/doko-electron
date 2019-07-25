@@ -1,8 +1,8 @@
 .user-list {
   margin-bottom: 15px;
+  user-select: none /* 選択を禁止する */
 }
 .tabulator-row.tabulator-selectable:hover {
     background-color: #d0d0d0 !important;
     cursor: default !important;
-    user-select: none /* 選択を禁止する */
 }
