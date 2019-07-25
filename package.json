@@ -92,6 +92,7 @@
   },
   "devDependencies": {
     "electron": "^5.0.6",
+    "electron-store": "^4.0.0",
     "redux-devtools": "^3.5.0"
   },
   "jest": {
