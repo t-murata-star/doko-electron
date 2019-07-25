@@ -1,7 +1,7 @@
 
 export const API_URL = 'http://localhost:3001/';
 export const TABLE_COLUMNS = [
-  { title: "順序", field: "order", visible: false },
+  { title: "ユーザID", field: "id", visible: false },
   { title: "氏名", field: "name", width: 150, headerSort: false },
   { title: "状態", field: "status", width: 100, headerSort: false },
   { title: "行き先", field: "destination", width: 270, headerSort: false },
@@ -11,7 +11,6 @@ export const TABLE_COLUMNS = [
 ];
 export const USER_INFO = {
   id: '',
-  order: '',
   name: '',
   status: '',
   destination: '',

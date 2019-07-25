@@ -42,7 +42,7 @@ class UserList extends Component {
           tooltips={true}
           layout={"fitData"}
           height="530px"
-          initialSort={[{ column: "order", dir: "asc" }]}
+          initialSort={[{ column: "id", dir: "asc" }]}
           rowDblClick={this.showModal}
           resizableColumns={'header'}
         />
