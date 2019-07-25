@@ -1,6 +1,6 @@
 import * as Actions from '../actions/userEdit';
 
-export default function userEdit(state = {
+export default function userEditModal(state = {
   onHide: false
 }, action) {
   switch (action.type) {

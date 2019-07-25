@@ -5,11 +5,11 @@ import store from '../store/configureStore';
 import './MenuButtonGroup.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPowerOff, faSync, faWindowMinimize } from '@fortawesome/free-solid-svg-icons'
+import { faPowerOff, faSync, faEdit, faWindowMinimize, } from '@fortawesome/free-solid-svg-icons'
 import { showModalActionCreator } from '../actions/userEdit';
 import UserEditModal from '../containers/UserEditModal';
 
-library.add(faPowerOff, faSync, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく
+library.add(faPowerOff, faSync, faEdit, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく
 
 const { remote } = window.require('electron');
 

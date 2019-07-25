@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import userList from './userList'
 import menuButtonGroup from './menuButtonGroup'
-import userEdit from './userEdit'
+import userEditModal from './userEditModal'
 
 const rootReducer = combineReducers({
   userList,
   menuButtonGroup,
-  userEdit,
+  userEditModal,
 });
 
 export default rootReducer;

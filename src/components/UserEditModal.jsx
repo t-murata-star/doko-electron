@@ -7,14 +7,11 @@
 import './UserEditModal.css';
 import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { closeModalActionCreator } from '../actions/userEdit';
 import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction } from '../actions/userList';
 import { USER_INFO, STATUS_LIST } from '../define';
 
-library.add(faEdit) //あらかじめ使用するアイコンを追加しておく
 
 class UserEditModal extends Component {
   constructor(props) {
@@ -75,7 +72,7 @@ class UserEditModal extends Component {
 
   render() {
     const userInfo = this.userInfo;
-    const onHide = store.getState().userEdit.onHide;
+    const onHide = store.getState().userEditModal.onHide;
     const isError = store.getState().userList.isError.status;
 
     return (
