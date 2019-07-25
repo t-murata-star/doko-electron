@@ -24,27 +24,26 @@ class UserList extends Component {
     }
   }
 
-  showModal = (e, cell) => {
+  showModal = (e, row) => {
     const { dispatch } = this.props;
-    const selectedUserId = cell.getRow().getData()['id'];
+    const selectedUserId = row.getData()['id'];
     dispatch(selectUserAction(selectedUserId));
     dispatch(showModalActionCreator());
   }
 
   render() {
     const { userList, isFetching, isError } = this.props;
-    let columns = Object.assign([], TABLE_COLUMNS);
-    columns[1]['cellDblClick'] = this.showModal;
     return (
       <div className='user-list'>
         <Loading isFetching={isFetching} />
         <ReactTabulator
           data={userList}
-          columns={columns}
+          columns={TABLE_COLUMNS}
           tooltips={true}
           layout={"fitData"}
           height="530px"
           initialSort={[{ column: "order", dir: "asc" }]}
+          rowDblClick={this.showModal}
         />
       </div>
     );

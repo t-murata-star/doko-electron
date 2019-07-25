@@ -17,14 +17,23 @@ import { USER_INFO, STATUS_LIST } from '../define';
 library.add(faEdit) //あらかじめ使用するアイコンを追加しておく
 
 class UserEditModal extends Component {
+  constructor(props) {
+    super(props)
+    this.userInfo = USER_INFO;
+  }
+
   componentDidUpdate() {
     const selectedUserId = store.getState().userList.selectedUserId;
-    this.userInfo = this._getUserInfo(selectedUserId);
+    const userInfo = this._getUserInfo(selectedUserId)
+
+    this.userInfo = Object.assign({}, userInfo);
   }
 
   _getUserInfo = (id) => {
-    if (this.props.userList['userList']) {
-      const userInfo = store.getState().userList
+    const userList = store.getState().userList['userList'];
+
+    if (userList.length > 0) {
+      const userInfo = userList
         .filter(function (userInfo) {
           return userInfo['id'] === id;
         })[0];
@@ -51,7 +60,7 @@ class UserEditModal extends Component {
           this.closeModal();
           dispatch(getUserListAction())
         }
-    );
+      );
   }
 
   handleChange = (event) => {
@@ -64,19 +73,19 @@ class UserEditModal extends Component {
   }
 
   render() {
+    const userInfo = this.userInfo;
     const onHide = store.getState().userEdit.onHide;
-    const userInfo = this.props.userInfo;
-    const userList = store.getState().userList;
+    const isError = store.getState().userList.isError.status;
 
     return (
       <Modal show={onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
         <Modal.Header>
           <Modal.Title id='contained-modal-title-vcenter'>
             情報変更
-            {userList.isError.status &&
+            {isError &&
               <span className='error-message'>通信に失敗しました。</span>
             }
-        </Modal.Title>
+          </Modal.Title>
         </Modal.Header>
         <Form onSubmit={this.handleSubmit}>
           <Modal.Body>
@@ -91,8 +100,8 @@ class UserEditModal extends Component {
                   <Form.Control name="status" as='select' defaultValue={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.handleChange}>
                     {STATUS_LIST.map((status) => (
                       <option>{status}</option>
-                  ))}
-                      <option hidden>？？？</option>
+                    ))}
+                    <option hidden>？？？</option>
                   </Form.Control>
                 </Form.Group>
               </Form.Row>
@@ -120,10 +129,6 @@ class UserEditModal extends Component {
       </Modal>
     );
   }
-}
-
-UserEditModal.defaultProps = {
-  userInfo: USER_INFO
 }
 
 export default UserEditModal;
