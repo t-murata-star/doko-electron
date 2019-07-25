@@ -4,12 +4,12 @@ export default function userEdit(state = {
   onHide: false
 }, action) {
   switch (action.type) {
-    case Actions.SHOW_MODAL:
+    case Actions.SHOW_USER_EDIT_MODAL:
       return {
         ...state,
         onHide: true
       };
-    case Actions.CLOSE_MODAL:
+    case Actions.CLOSE_USER_EDIT_MODAL:
       return {
         ...state,
         onHide: false
