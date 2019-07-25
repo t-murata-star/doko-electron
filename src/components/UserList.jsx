@@ -44,6 +44,7 @@ class UserList extends Component {
           height="530px"
           initialSort={[{ column: "order", dir: "asc" }]}
           rowDblClick={this.showModal}
+          resizableColumns={'header'}
         />
       </div>
     );
