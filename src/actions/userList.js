@@ -6,6 +6,8 @@ import { API_URL } from '../define';
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const PUT_USER_LIST = 'PUT_USER_LIST';
 export const SUCCESS_PUT_USER_LIST = 'SUCCESS_PUT_USER_LIST';
+export const ADD_USER = 'ADD_USER';
+export const SUCCESS_ADD_USER = 'SUCCESS_ADD_USER';
 export const RECEIVE_USER_LIST = 'RECEIVE_USER_LIST';
 export const FAIL_REQUEST_USER_LIST = 'FAIL_REQUEST_USER_LIST';
 export const SELECT_USER = 'SELECT_USER';
@@ -26,6 +28,15 @@ export const updateUserInfoActionCreator = () => ({
 export const successUpdateUserInfoActionCreator = () => ({
   type: SUCCESS_PUT_USER_LIST
 });
+export const addUserActionCreator = () => ({
+  type: ADD_USER
+});
+export const successAddUserActionCreator = (userID) => ({
+  type: SUCCESS_ADD_USER,
+  payload: {
+    response: userID
+  }
+});
 export const receiveUserListActionCreator = (json) => ({
   type: RECEIVE_USER_LIST,
   payload: {
@@ -44,6 +55,26 @@ export const selectUserActionCreator = (selectedUserId) => ({
   selectedUserId: selectedUserId
 });
 
+export const addUserAction = (userInfo) => {
+  return (dispatch) => {
+    dispatch(addUserActionCreator());
+    return fetch(API_URL + 'userList',
+      {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify(userInfo),
+      })
+      .then(res => {
+        if (!res.ok) {
+          return Promise.resolve(new Error(res.statusText));
+        }
+        return res.json();
+      })
+      .then(userID => dispatch(successAddUserActionCreator(userID)))
+      .catch(error => dispatch(failRequestUserListActionCreator(error)));
+  }
+};
+
 export const updateUserInfoAction = (userInfo, id) => {
   return (dispatch) => {
     dispatch(updateUserInfoActionCreator());
@@ -57,9 +88,9 @@ export const updateUserInfoAction = (userInfo, id) => {
         if (!res.ok) {
           return Promise.resolve(new Error(res.statusText));
         }
-        return res.json();
+        return;
       })
-      .then(json => dispatch(successUpdateUserInfoActionCreator()))
+      .then(() => dispatch(successUpdateUserInfoActionCreator()))
       .catch(error => dispatch(failRequestUserListActionCreator(error)));
   }
 };

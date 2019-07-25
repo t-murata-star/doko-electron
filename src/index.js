@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.css';
-import App from './components/App';
+import AppPanel from './containers/AppPanel'
 import * as serviceWorker from './serviceWorker';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
@@ -8,7 +8,7 @@ import store from './store/configureStore';
 
 render(
   <Provider store={store}>
-    <App />
+    <AppPanel />
   </Provider>,
   document.getElementById('root')
 );

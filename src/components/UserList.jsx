@@ -7,7 +7,6 @@ import 'react-tabulator/lib/css/tabulator.min.css';
 import { getUserListAction, selectUserAction } from '../actions/userList';
 import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
-import Loading from './Loading'
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 
 class UserList extends Component {
@@ -32,10 +31,9 @@ class UserList extends Component {
   }
 
   render() {
-    const { userList, isFetching, isError } = this.props;
+    const { userList } = this.props;
     return (
       <div className='user-list'>
-        <Loading isFetching={isFetching} />
         <ReactTabulator
           data={userList}
           columns={TABLE_COLUMNS}

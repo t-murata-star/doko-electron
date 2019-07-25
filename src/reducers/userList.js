@@ -6,6 +6,8 @@ function userListIsFetching(state = false, action) {
       return true;
     case Actions.PUT_USER_LIST:
       return true;
+    case Actions.ADD_USER:
+      return true;
     default:
       return false;
   }
@@ -42,6 +44,7 @@ export default function userList(state = {
     error: null
   },
   selectedUserId: 1,
+  userID: null,
 }, action) {
   switch (action.type) {
     case Actions.GET_USER_LIST:
@@ -72,6 +75,18 @@ export default function userList(state = {
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action)
+      };
+    case Actions.ADD_USER:
+      return {
+        ...state,
+        isError: userListIsError(state.isError, action),
+        isFetching: userListIsFetching(state.isFetching, action)
+      };
+    case Actions.SUCCESS_ADD_USER:
+      return {
+        ...state,
+        isFetching: userListIsFetching(state.isFetching, action),
+        userID: action.payload.response['id']
       };
     case Actions.SELECT_USER:
       return {

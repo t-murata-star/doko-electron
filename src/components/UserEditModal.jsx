@@ -76,7 +76,7 @@ class UserEditModal extends Component {
     const isError = store.getState().userList.isError.status;
 
     return (
-      <Modal show={onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
+      <Modal dialogClassName='userEditModal' show={onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
         <Modal.Header>
           <Modal.Title id='contained-modal-title-vcenter'>
             情報変更

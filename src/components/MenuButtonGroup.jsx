@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
 import { getUserListAction } from '../actions/userList';
-import store from '../store/configureStore';
 import './MenuButtonGroup.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
