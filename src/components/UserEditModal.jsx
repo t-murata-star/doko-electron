@@ -48,15 +48,6 @@ class UserEditModal extends Component {
     const { dispatch } = this.props;
     const selectedUserId = store.getState().userList.selectedUserId;
 
-    const nowDate = new Date();
-    const formattedDate = `
-${nowDate.getFullYear()}/
-${(nowDate.getMonth() + 1).toString().padStart(2, '0')}/
-${nowDate.getDate().toString().padStart(2, '0')}
-`.replace(/\n|\r/g, '');
-
-    userInfo['update_at'] = formattedDate;
-
     dispatch(updateUserInfoAction(userInfo, selectedUserId))
       .then(
         () => {

@@ -31,16 +31,6 @@ class InitialStartupModal extends Component {
 
   _addUser = () => {
     const { dispatch } = this.props;
-
-    const nowDate = new Date();
-    const formattedDate = `
-${nowDate.getFullYear()}/
-${(nowDate.getMonth() + 1).toString().padStart(2, '0')}/
-${nowDate.getDate().toString().padStart(2, '0')}
-`.replace(/\n|\r/g, '');
-
-    this.userInfo['update_at'] = formattedDate;
-
     dispatch(addUserAction(this.userInfo))
       .then(
         () => {

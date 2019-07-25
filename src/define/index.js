@@ -6,7 +6,11 @@ export const TABLE_COLUMNS = [
   { title: "状態", field: "status", width: 100, headerSort: false },
   { title: "行き先", field: "destination", width: 270, headerSort: false },
   { title: "戻り", field: "return", width: 130, headerSort: false },
-  { title: "更新日時", field: "update_at", width: 100, headerSort: false },
+  {
+    title: "更新日時", field: "update_at", width: 100, headerSort: false, formatter: "datetime", formatterParams: {
+      outputFormat: "YYYY/MM/DD",
+      invalidPlaceholder: "(invalid date)",
+    } },
   { title: "メッセージ", field: "message", headerSort: false }
 ];
 export const USER_INFO = {
