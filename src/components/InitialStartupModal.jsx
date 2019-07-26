@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import store from '../store/configureStore';
-import { addUserAction } from '../actions/userList';
+import { addUserAction, getUserListAction } from '../actions/userList';
 import { USER_INFO } from '../define';
 
 const { remote } = window.require('electron');
@@ -38,7 +38,13 @@ class InitialStartupModal extends Component {
           if (userList.isError.status) {
             return;
           }
-          // idを設定ファイルに登録
+
+          // 設定ファイルに定義されているuserIDがサーバに存在しない場合、ユーザ一覧を再取得する
+          if (electronStore.get('userID')) {
+            dispatch(getUserListAction());
+          }
+
+          // userIDを設定ファイルに登録（既に存在する場合は上書き）
           electronStore.set('userID', userList.userID);
           this.closeModal();
         }

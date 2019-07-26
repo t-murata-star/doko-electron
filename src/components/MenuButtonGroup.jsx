@@ -41,14 +41,14 @@ class MenuButtonGroup extends Component {
   _getUserInfo = (id) => {
     const userList = store.getState().userList['userList'];
 
-    if (userList.length > 0) {
+    if (userList.length === 0) {
+      return {};
+    }
       const userInfo = userList
         .filter(function (userInfo) {
           return userInfo['id'] === id;
         })[0];
       return userInfo;
-    }
-    return {};
   }
 
   render() {

@@ -8,11 +8,27 @@ import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
+import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
+
+const Store = window.require('electron-store');
+const electronStore = new Store();
 
 class UserList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch(getUserListAction());
+    dispatch(getUserListAction())
+      .then(
+        () => {
+          const nextProps = this.props;
+          if (nextProps.isError.status === false) {
+            const userID = electronStore.get('userID');
+            if (this._existMyUserID(userID) === false) {
+              alert('ユーザ情報が存在しません。\n新規ユーザ登録を行います。');
+              dispatch(showInitialStartupModalActionCreator());
+            }
+          }
+        }
+      );
   }
 
   componentDidUpdate(prevProps) {
@@ -23,17 +39,26 @@ class UserList extends Component {
     }
   }
 
-  _getUserInfo = (id) => {
+  _getUserInfo = (userID) => {
     const userList = store.getState().userList['userList'];
 
-    if (userList.length > 0) {
-      const userInfo = userList
-        .filter(function (userInfo) {
-          return userInfo['id'] === id;
-        })[0];
-      return userInfo;
+    if (userList.length === 0) {
+      return {};
     }
-    return {};
+    const userInfo = userList
+      .filter(function (userInfo) {
+        return userInfo['id'] === userID;
+      })[0];
+    return userInfo;
+  }
+
+  _existMyUserID = (userID) => {
+    const userList = store.getState().userList['userList'];
+    const userInfo = userList
+      .filter(function (userInfo) {
+        return userInfo['id'] === userID;
+      })[0];
+    return userInfo !== void 0;
   }
 
   showModal = (e, row) => {
