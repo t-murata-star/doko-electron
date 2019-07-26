@@ -64,11 +64,12 @@ export const addUserAction = (userInfo) => {
         headers: HEADERS,
         body: JSON.stringify(userInfo),
       })
-      .then(res => {
+      .then(async res => {
         if (!res.ok) {
           return Promise.resolve(new Error(res.statusText));
         }
-        return res.json();
+        const json = await res.json();
+        return json;
       })
       .then(userID => dispatch(successAddUserActionCreator(userID)))
       .catch(error => dispatch(failRequestUserListActionCreator(error)));
@@ -103,11 +104,12 @@ export const getUserListAction = () => {
         method: 'GET',
         headers: HEADERS
       })
-      .then(res => {
+      .then( async res => {
         if (!res.ok) {
           return Promise.resolve(new Error(res.statusText));
         }
-        return res.json();
+        const json = await res.json();
+        return json;
       })
       .then(json => dispatch(receiveUserListActionCreator(json)))
       .catch(error => dispatch(failRequestUserListActionCreator(error)));
