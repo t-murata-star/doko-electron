@@ -1,5 +1,4 @@
 
-// export const API_URL = 'http://192.168.40.211:3001/';
 export const API_URL = 'http://localhost:3001/';
 export const TABLE_COLUMNS = [
   { title: "ユーザID", field: "id", visible: false, headerSort: false, sorter: 'number' },
