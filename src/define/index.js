@@ -7,7 +7,7 @@ export const TABLE_COLUMNS = [
   { title: "行き先", field: "destination", width: 270, headerSort: false },
   { title: "戻り", field: "return", width: 130, headerSort: false },
   {
-    title: "更新日時", field: "update_at", width: 100, headerSort: false, formatter: "datetime", formatterParams: {
+    title: "更新日時", field: "updated_at", width: 100, headerSort: false, formatter: "datetime", formatterParams: {
       outputFormat: "YYYY/MM/DD",
       invalidPlaceholder: "(invalid date)",
     } },
@@ -19,7 +19,7 @@ export const USER_INFO = {
   status: '',
   destination: '',
   return: '',
-  update_at: '',
+  updated_at: '',
   message: ''
 };
 export const STATUS_LIST = [
