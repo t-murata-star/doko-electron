@@ -81,8 +81,8 @@ class UserEditModal extends Component {
                 <Form.Group as={Col} controlId='status'>
                   <Form.Label>状態</Form.Label>
                   <Form.Control name="status" as='select' defaultValue={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.handleChange}>
-                    {STATUS_LIST.map((status) => (
-                      <option>{status}</option>
+                    {STATUS_LIST.map((status, index) => (
+                      <option key={index}>{status}</option>
                     ))}
                     <option hidden>？？？</option>
                   </Form.Control>
