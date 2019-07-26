@@ -54,7 +54,8 @@ class UserEditModal extends Component {
   }
 
   render() {
-    const userInfo = store.getState().userEditModal.userInfo;
+    let userInfo = store.getState().userEditModal.userInfo;
+    userInfo = userInfo ? userInfo : USER_INFO;
     const onHide = store.getState().userEditModal.onHide;
     const isError = store.getState().userList.isError.status;
 
