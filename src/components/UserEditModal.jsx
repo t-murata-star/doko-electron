@@ -20,23 +20,8 @@ class UserEditModal extends Component {
   }
 
   componentDidUpdate() {
-    const selectedUserId = store.getState().userList.selectedUserId;
-    const userInfo = this._getUserInfo(selectedUserId)
-
+    const userInfo = store.getState().userEditModal.userInfo;
     this.userInfo = Object.assign({}, userInfo);
-  }
-
-  _getUserInfo = (id) => {
-    const userList = store.getState().userList['userList'];
-
-    if (userList.length > 0) {
-      const userInfo = userList
-        .filter(function (userInfo) {
-          return userInfo['id'] === id;
-        })[0];
-      return userInfo;
-    }
-    return {};
   }
 
   closeModal = () => {
@@ -46,9 +31,7 @@ class UserEditModal extends Component {
 
   _updateUserInfo = (userInfo) => {
     const { dispatch } = this.props;
-    const selectedUserId = store.getState().userList.selectedUserId;
-
-    dispatch(updateUserInfoAction(userInfo, selectedUserId))
+    dispatch(updateUserInfoAction(userInfo, userInfo['id']))
       .then(
         () => {
           const userList = store.getState().userList;
@@ -71,7 +54,7 @@ class UserEditModal extends Component {
   }
 
   render() {
-    const userInfo = this.userInfo;
+    const userInfo = store.getState().userEditModal.userInfo;
     const onHide = store.getState().userEditModal.onHide;
     const isError = store.getState().userList.isError.status;
 

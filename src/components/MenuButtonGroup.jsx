@@ -12,6 +12,8 @@ import store from '../store/configureStore';
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく
 
 const { remote } = window.require('electron');
+const Store = window.require('electron-store');
+const electronStore = new Store();
 
 class MenuButtonGroup extends Component {
   close = () => {
@@ -31,7 +33,22 @@ class MenuButtonGroup extends Component {
 
   showModal = () => {
     const { dispatch } = this.props;
-    dispatch(showUserEditModalActionCreator());
+    const userID = electronStore.get('userID');
+    const userInfo = this._getUserInfo(userID);
+    dispatch(showUserEditModalActionCreator(userID, userInfo));
+  }
+
+  _getUserInfo = (id) => {
+    const userList = store.getState().userList['userList'];
+
+    if (userList.length > 0) {
+      const userInfo = userList
+        .filter(function (userInfo) {
+          return userInfo['id'] === id;
+        })[0];
+      return userInfo;
+    }
+    return {};
   }
 
   render() {

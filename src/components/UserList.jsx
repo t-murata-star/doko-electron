@@ -3,11 +3,11 @@ import './UserList.css';
 import 'react-tabulator/lib/styles.css';
 // import 'react-tabulator/lib/css/tabulator_modern.min.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
-
-import { getUserListAction, selectUserAction } from '../actions/userList';
+import { getUserListAction } from '../actions/userList';
 import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
+import store from '../store/configureStore';
 
 class UserList extends Component {
   componentDidMount() {
@@ -23,11 +23,24 @@ class UserList extends Component {
     }
   }
 
+  _getUserInfo = (id) => {
+    const userList = store.getState().userList['userList'];
+
+    if (userList.length > 0) {
+      const userInfo = userList
+        .filter(function (userInfo) {
+          return userInfo['id'] === id;
+        })[0];
+      return userInfo;
+    }
+    return {};
+  }
+
   showModal = (e, row) => {
     const { dispatch } = this.props;
     const selectedUserId = row.getData()['id'];
-    dispatch(selectUserAction(selectedUserId));
-    dispatch(showUserEditModalActionCreator());
+    const userInfo = this._getUserInfo(selectedUserId);
+    dispatch(showUserEditModalActionCreator(selectedUserId, userInfo));
   }
 
   render() {

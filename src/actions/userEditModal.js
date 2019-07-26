@@ -7,12 +7,12 @@ export const CLOSE_USER_EDIT_MODAL = 'CLOSE_USER_EDIT_MODAL';
 /**
  * Action Creator
  */
-export const showUserEditModalActionCreator = (onHide) => ({
+export const showUserEditModalActionCreator = (userID, userInfo) => ({
   type: SHOW_USER_EDIT_MODAL,
-  onHide,
+  userID,
+  userInfo,
 });
 
-export const closeUserEditModalActionCreator = (onHide) => ({
+export const closeUserEditModalActionCreator = () => ({
   type: CLOSE_USER_EDIT_MODAL,
-  onHide,
 });
