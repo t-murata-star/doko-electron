@@ -66,7 +66,7 @@ export const addUserAction = (userInfo) => {
       })
       .then(async res => {
         if (!res.ok) {
-          return Promise.resolve(new Error(res.statusText));
+          return Promise.reject(new Error(res.statusText));
         }
         const json = await res.json();
         return json;
@@ -86,8 +86,8 @@ export const updateUserInfoAction = (userInfo, id) => {
         body: JSON.stringify(userInfo),
       })
       .then(res => {
-        if (!res.ok) {
-          return Promise.resolve(new Error(res.statusText));
+        if (!res.ok || res.status === 404) {
+          return Promise.reject(new Error(res.statusText));
         }
         return;
       })
@@ -106,7 +106,7 @@ export const getUserListAction = () => {
       })
       .then( async res => {
         if (!res.ok) {
-          return Promise.resolve(new Error(res.statusText));
+          return Promise.reject(new Error(res.statusText));
         }
         const json = await res.json();
         return json;
