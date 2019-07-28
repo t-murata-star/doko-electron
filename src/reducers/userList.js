@@ -18,7 +18,7 @@ function userListIsError(state = {
   error: null
 }, action) {
   switch (action.type) {
-    case Actions.FAIL_REQUEST_USER_LIST:
+    case Actions.FAIL_REQUEST:
       return {
         ...state,
         status: true,
@@ -52,14 +52,14 @@ export default function userList(state = {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action)
       };
-    case Actions.RECEIVE_USER_LIST:
+    case Actions.GET_USER_LIST_SUCCESS:
       return {
         ...state,
         userList: action.payload.response,
         isError: userListIsError(state.isError, action),
         isFetching: userListIsFetching(state.isFetching, action)
       };
-    case Actions.FAIL_REQUEST_USER_LIST:
+    case Actions.FAIL_REQUEST:
       return {
         ...state,
         isError: userListIsError(state.isError, action),
@@ -71,7 +71,7 @@ export default function userList(state = {
         isError: userListIsError(state.isError, action),
         isFetching: userListIsFetching(state.isFetching, action)
       };
-    case Actions.SUCCESS_PUT_USER_LIST:
+    case Actions.PUT_USER_LIST_SUCCESS:
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action)
@@ -82,7 +82,7 @@ export default function userList(state = {
         isError: userListIsError(state.isError, action),
         isFetching: userListIsFetching(state.isFetching, action)
       };
-    case Actions.SUCCESS_ADD_USER:
+    case Actions.ADD_USER_SUCCESS:
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action),

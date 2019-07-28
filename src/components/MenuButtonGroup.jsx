@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPowerOff, faSync, faEdit, faWindowMinimize, } from '@fortawesome/free-solid-svg-icons'
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
-import UserEditModal from '../containers/UserEditModal';
+import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく

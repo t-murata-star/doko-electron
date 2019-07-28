@@ -3,7 +3,7 @@ import './App.css';
 import UserList from '../containers/UserListPanel'
 import MenuButtonGroup from '../containers/MenuButtonGroupPanel'
 import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
-import InitialStartupModal from '../containers/InitialStartupModal';
+import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import Loading from './Loading'
 import store from '../store/configureStore';
 
