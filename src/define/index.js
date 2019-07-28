@@ -1,5 +1,8 @@
 
 export const API_URL = 'http://localhost:3001/';
+export const REQUEST_HEADERS = {
+  "Content-type": "application/json; charset=UTF-8"
+};
 export const TABLE_COLUMNS = [
   { title: "ユーザID", field: "id", visible: false, headerSort: false, sorter: 'number' },
   { title: "氏名", field: "name", width: 150, headerSort: false },

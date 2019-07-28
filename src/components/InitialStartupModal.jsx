@@ -39,10 +39,7 @@ class InitialStartupModal extends Component {
             return;
           }
 
-          // 設定ファイルに定義されているuserIDがサーバに存在しない場合、ユーザ一覧を再取得する
-          if (electronStore.get('userID')) {
-            dispatch(getUserListAction());
-          }
+          dispatch(getUserListAction());
 
           // userIDを設定ファイルに登録（既に存在する場合は上書き）
           electronStore.set('userID', userList.userID);

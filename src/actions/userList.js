@@ -1,4 +1,4 @@
-import { API_URL } from '../define';
+import { API_URL, REQUEST_HEADERS } from '../define';
 
 /**
  * Action type
@@ -12,10 +12,6 @@ export const ADD_USER_SUCCESS = 'ADD_USER_SUCCESS';
 export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
-
-const HEADERS = {
-  "Content-type": "application/json; charset=UTF-8"
-};
 
 /**
  * Action Creator
@@ -66,7 +62,7 @@ export const addUserAction = (userInfo) => {
     return fetch(API_URL + 'userList',
       {
         method: 'POST',
-        headers: HEADERS,
+        headers: REQUEST_HEADERS,
         body: JSON.stringify(userInfo),
       })
       .then(async res => {
@@ -87,7 +83,7 @@ export const updateUserInfoAction = (userInfo, id) => {
     return fetch(API_URL + 'userList/' + id,
       {
         method: 'PUT',
-        headers: HEADERS,
+        headers: REQUEST_HEADERS,
         body: JSON.stringify(userInfo),
       })
       .then(res => {
@@ -107,7 +103,7 @@ export const getUserListAction = () => {
     return fetch(API_URL + 'userList',
       {
         method: 'GET',
-        headers: HEADERS
+        headers: REQUEST_HEADERS
       })
       .then( async res => {
         if (!res.ok) {

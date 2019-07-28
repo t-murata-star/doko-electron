@@ -33,22 +33,21 @@ class MenuButtonGroup extends Component {
 
   showModal = () => {
     const { dispatch } = this.props;
+    const userList = store.getState().userList['userList'];
     const userID = electronStore.get('userID');
-    const userInfo = this._getUserInfo(userID);
+    const userInfo = this._getUserInfo(userList, userID);
     dispatch(showUserEditModalActionCreator(userID, userInfo));
   }
 
-  _getUserInfo = (id) => {
-    const userList = store.getState().userList['userList'];
-
-    if (userList.length === 0) {
+  _getUserInfo = (userList, userID) => {
+    if (!userList) {
       return {};
     }
-      const userInfo = userList
-        .filter(function (userInfo) {
-          return userInfo['id'] === id;
-        })[0];
-      return userInfo;
+    const userInfo = userList
+      .filter(function (userInfo) {
+        return userInfo['id'] === userID;
+      })[0];
+    return userInfo || {};
   }
 
   render() {
