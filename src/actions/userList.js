@@ -11,6 +11,7 @@ export const SUCCESS_ADD_USER = 'SUCCESS_ADD_USER';
 export const RECEIVE_USER_LIST = 'RECEIVE_USER_LIST';
 export const FAIL_REQUEST_USER_LIST = 'FAIL_REQUEST_USER_LIST';
 export const SELECT_USER = 'SELECT_USER';
+export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
 
 const HEADERS = {
   "Content-type": "application/json; charset=UTF-8"
@@ -54,6 +55,10 @@ export const selectUserActionCreator = (selectedUserId) => ({
   type: SELECT_USER,
   selectedUserId: selectedUserId
 });
+export const returnEmptyUserListActionCreator = () => ({
+  type: RETURN_EMPTY_USER_LIST,
+  userList: []
+})
 
 export const addUserAction = (userInfo) => {
   return (dispatch) => {
@@ -112,7 +117,10 @@ export const getUserListAction = () => {
         return json;
       })
       .then(json => dispatch(receiveUserListActionCreator(json)))
-      .catch(error => dispatch(failRequestUserListActionCreator(error)));
+      .catch(error => {
+        dispatch(failRequestUserListActionCreator(error))
+        dispatch(returnEmptyUserListAction());
+      });
   }
 };
 
@@ -122,3 +130,9 @@ export const selectUserAction = (selectedUserId) => {
     return selectedUserId;
   }
 };
+
+export const returnEmptyUserListAction = () => {
+  return (dispatch) => {
+    dispatch(returnEmptyUserListActionCreator());
+  }
+}

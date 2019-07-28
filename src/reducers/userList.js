@@ -93,6 +93,11 @@ export default function userList(state = {
         ...state,
         selectedUserId: action.selectedUserId
       };
+    case Actions.RETURN_EMPTY_USER_LIST:
+      return {
+        ...state,
+        userList: action.userList
+      }
     default:
       return state;
   }
