@@ -28,6 +28,17 @@ class UserList extends Component {
     dispatch(showUserEditModalActionCreator(selectedUserId, userInfo));
   }
 
+  _rowFormatter = (row) => {
+    switch (row.getData().status) {
+      case '退社':
+        row.getElement().style.color = "#0000FF";
+        break;
+
+      default:
+        break;
+    }
+  }
+
   render() {
     const { userList } = this.props;
     return (
@@ -41,6 +52,7 @@ class UserList extends Component {
           initialSort={[{ column: "id", dir: "asc" }]}
           rowDblClick={this.showModal}
           resizableColumns={'header'}
+          rowFormatter={this._rowFormatter}
         />
       </div>
     );
