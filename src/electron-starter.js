@@ -27,7 +27,7 @@ function createWindow() {
   mainWindow.loadURL('http://localhost:3000');
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', (closeEvent) => {
     const index = electron.dialog.showMessageBox(null, {
