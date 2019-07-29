@@ -77,8 +77,7 @@
     "react:start": "node scripts/start.js",
     "react:build": "node scripts/build.js",
     "react:test": "node scripts/test.js",
-    "electron:start": "electron .",
-    "electron:build": "electron-packager . 行き先掲示板 --platform=darwin --arch=x64 --overwrite",
+    "electron:start": "LOAD_URL=http://localhost:3000 electron .",
     "electron:build:windows": "node build-windows.js",
     "electron:build:mac": "node build-macOS.js"
   },
@@ -100,7 +99,6 @@
   "devDependencies": {
     "electron": "^5.0.6",
     "electron-builder": "^21.1.5",
-    "electron-packager": "^14.0.3",
     "redux-devtools": "^3.5.0"
   },
   "jest": {
