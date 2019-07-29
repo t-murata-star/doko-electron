@@ -34,10 +34,10 @@ export const updateUserInfoSuccessActionCreator = () => ({
 export const addUserActionCreator = () => ({
   type: ADD_USER
 });
-export const AddUserSuccessActionCreator = (userID) => ({
+export const AddUserSuccessActionCreator = (userInfo) => ({
   type: ADD_USER_SUCCESS,
   payload: {
-    response: userID
+    response: userInfo
   }
 });
 export const failRequestActionCreator = (error) => ({
@@ -72,7 +72,7 @@ export const addUserAction = (userInfo) => {
         const json = await res.json();
         return json;
       })
-      .then(userID => dispatch(AddUserSuccessActionCreator(userID)))
+      .then(userInfo => dispatch(AddUserSuccessActionCreator(userInfo)))
       .catch(error => dispatch(failRequestActionCreator(error)));
   }
 };

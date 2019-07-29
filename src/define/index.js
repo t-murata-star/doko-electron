@@ -4,7 +4,7 @@ export const REQUEST_HEADERS = {
   "Content-type": "application/json; charset=UTF-8"
 };
 export const TABLE_COLUMNS = [
-  { title: "ユーザID", field: "id", visible: false, headerSort: false, sorter: 'number' },
+  { title: "順序", field: "order", visible: false, headerSort: false, sorter: 'number' },
   { title: "氏名", field: "name", width: 150, headerSort: false },
   { title: "状態", field: "status", width: 100, headerSort: false },
   { title: "行き先", field: "destination", width: 270, headerSort: false },
@@ -18,6 +18,7 @@ export const TABLE_COLUMNS = [
 ];
 export const USER_INFO = {
   id: null,
+  order: null,
   name: '',
   status: '',
   destination: '',
