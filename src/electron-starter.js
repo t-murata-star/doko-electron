@@ -72,21 +72,21 @@ function createWindow() {
     mainWindow.hide();
   });
 
-  // electron.powerMonitor.on('suspend', () => {
-  //   console.log('suspend') // スリープ時
-  // })
+  /**
+   * スクリーンロックのイベントキャッチ
+   * 状態を「離席中」に更新する
+   */
+  electron.powerMonitor.on('lock-screen', () => {
+    mainWindow.webContents.send('updateStatus', '離席中');
+  })
 
-  // electron.powerMonitor.on('resume', () => {
-  //   console.log('resume') // スリープからの復帰
-  // })
-
-  // mainWindow.on('hide', () => {
-  //   console.log('hide') // Lock時
-  // })
-
-  // mainWindow.on('show', () => {
-  //   console.log('show') // Lock解除時
-  // })
+/**
+ * スクリーンアンロックのイベントキャッチ
+ * 状態を「在席」に更新する
+ */
+  electron.powerMonitor.on('unlock-screen', () => {
+    mainWindow.webContents.send('updateStatus', '在席');
+  })
 
   createTray();
 }
