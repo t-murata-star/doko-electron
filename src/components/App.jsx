@@ -61,7 +61,7 @@ class App extends Component {
       return {};
     }
     const userInfo = userList
-      .filter(function (userInfo) {
+      .filter(userInfo => {
         return userInfo['id'] === userID;
       })[0];
     return userInfo || {};
