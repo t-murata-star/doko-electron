@@ -45,8 +45,11 @@ class App extends Component {
             return;
           }
 
-          // 登録済みユーザの場合、状態を「在席」に更新する
+          // 登録済みユーザの場合、情報を初期化
           userInfo['status'] = '在席';
+          userInfo['destination'] = '';
+          userInfo['return'] = '';
+          userInfo['isLeaving'] = false;
           dispatch(updateUserInfoAction(userInfo, userID))
         }
       );
@@ -75,7 +78,7 @@ class App extends Component {
     const userList = store.getState().userList['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
-    if (userInfoLength === 0) {
+    if (userInfoLength === 0 || userInfo['status'] !== '在席') {
       return;
     }
 
