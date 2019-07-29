@@ -97,7 +97,7 @@ class InitialStartupModal extends Component {
                 <Col md="8">
                   <Form.Group controlId='name'>
                     <Form.Label>氏名</Form.Label>
-                    <Form.Control name="name" placeholder="" onChange={this.handleChange} />
+                    <Form.Control name="name" placeholder="" onChange={this.handleChange} maxlength={100} />
                     <Form.Text>
                       氏名を入力してください。
                     </Form.Text>
