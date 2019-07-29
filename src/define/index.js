@@ -1,5 +1,5 @@
 
-export const API_URL = 'http://localhost:3001/';
+export const API_URL = process.env.REACT_APP_API_URL;
 export const REQUEST_HEADERS = {
   "Content-type": "application/json; charset=UTF-8"
 };

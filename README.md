@@ -1,5 +1,5 @@
 ## アプリケーション起動
-`$ npm run start-app`
+`$ npm run react:start`
 
 ## Electron起動
-`$ npm run start-electron`
+`$ npm run electron:start`

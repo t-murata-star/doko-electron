@@ -1,4 +1,7 @@
 const electron = require('electron');
+const path = require("path");
+const Store = require('electron-store');
+const electronStore = new Store();
 
 // Module to control application life.
 const app = electron.app;
@@ -25,7 +28,8 @@ function createWindow() {
   mainWindow.setMenuBarVisibility(false);
 
   // and load the index.html of the app.
-  mainWindow.loadURL('http://localhost:3000');
+  // mainWindow.loadURL('http://localhost:3000');
+  mainWindow.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
@@ -86,6 +90,10 @@ function createWindow() {
   });
 
   createTray();
+
+  // OSがwindowsの場合で、かつ設定ファイルが存在しない場合にスタートアップ登録のダイアログを表示する
+  // const userHome = process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"];
+  // const startupPath = path.join(userHome, 'AppData', 'Roaming', 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup');
 }
 
 // タスクトレイを作成
@@ -136,3 +144,8 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+app.setLoginItemSettings({
+  openAtLogin: true,
+  path: electron.app.getPath('exe'),
+})
