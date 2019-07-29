@@ -21,13 +21,13 @@ function createWindow() {
   });
 
   // メニューバーを非表示にする
-  mainWindow.setMenuBarVisibility(false)
+  mainWindow.setMenuBarVisibility(false);
 
   // and load the index.html of the app.
   mainWindow.loadURL('http://localhost:3000');
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', (closeEvent) => {
     const index = electron.dialog.showMessageBox(null, {
