@@ -36,6 +36,7 @@ class App extends Component {
 
           if (isError.status === false && userInfoLength === 0) {
             remote.dialog.showMessageBox(null, {
+              title: '行き先掲示板',
               type: 'info',
               buttons: ['OK'],
               message: 'ユーザ情報が存在しません。\n新規ユーザ登録を行います。',
@@ -82,7 +83,7 @@ class App extends Component {
 
     userInfo['status'] = status;
     dispatch(updateUserInfoAction(userInfo, userID))
-  })
+  });
 
   render() {
     const isFetching = store.getState().userList.isFetching
