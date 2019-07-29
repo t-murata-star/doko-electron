@@ -36,6 +36,7 @@ class InitialStartupModal extends Component {
         () => {
           const userList = store.getState().userList;
           if (userList.isError.status) {
+            this.setState({ submitButtonStatus: false });
             return;
           }
 
@@ -71,6 +72,7 @@ class InitialStartupModal extends Component {
   }
 
   handleSubmit = (event) => {
+    this.setState({ submitButtonStatus: true });
     event.preventDefault();
     this._addUser();
   }

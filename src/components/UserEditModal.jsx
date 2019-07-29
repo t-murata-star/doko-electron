@@ -16,6 +16,7 @@ import { USER_INFO, STATUS_LIST } from '../define';
 class UserEditModal extends Component {
   constructor(props) {
     super(props)
+    this.state = { submitButtonStatus: true }
     this.userInfo = USER_INFO;
   }
 
@@ -37,19 +38,22 @@ class UserEditModal extends Component {
         () => {
           const userList = store.getState().userList;
           if (userList.isError.status) {
+            this.setState({ submitButtonStatus: false });
             return;
           }
           this.closeModal();
-          dispatch(getUserListAction())
+          dispatch(getUserListAction());
         }
       );
   }
 
   handleChange = (event) => {
     this.userInfo[event.target.name] = event.target.value;
+    this.setState({ submitButtonStatus: false });
   }
 
   handleSubmit = (event) => {
+    this.setState({ submitButtonStatus: true });
     event.preventDefault();
     this._updateUserInfo(this.userInfo);
   }
@@ -105,7 +109,7 @@ class UserEditModal extends Component {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="submit" variant='primary' className='modal-button'>更新</Button>
+            <Button type="submit" variant='primary' className='modal-button' disabled={this.state.submitButtonStatus}>更新</Button>
             <Button variant='light' className='modal-button' onClick={this.closeModal}>キャンセル</Button>
           </Modal.Footer>
         </Form>
