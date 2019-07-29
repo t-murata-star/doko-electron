@@ -68,25 +68,23 @@ class App extends Component {
     return userInfo || {};
   }
 
-  updateStatus = ipcRenderer.on('updateStatus', (event, status) => {
-    // アプリ終了時に状態を「退社」に更新する
+  updateInfo = ipcRenderer.on('updateInfo', (event, key, value) => {
     const { dispatch } = this.props;
 
     const userID = electronStore.get('userID');
     const userList = store.getState().userList['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
-
     if (userInfoLength === 0) {
       return;
     }
 
-    userInfo['status'] = status;
+    userInfo[key] = value;
     dispatch(updateUserInfoAction(userInfo, userID))
   });
 
   render() {
-    const isFetching = store.getState().userList.isFetching
+    const isFetching = store.getState().userList.isFetching;
 
     return (
       <div>

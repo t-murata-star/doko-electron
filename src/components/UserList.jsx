@@ -29,7 +29,8 @@ class UserList extends Component {
   }
 
   _rowFormatter = (row) => {
-    switch (row.getData().status) {
+    const rowData = row.getData();
+    switch (rowData.status) {
       case '退社':
         row.getElement().style.color = "#0000FF";
         break;
@@ -65,6 +66,9 @@ class UserList extends Component {
         break;
       default:
         break;
+    }
+    if (rowData.status === '在席' && rowData.isLeaving === true) {
+      row.getElement().style.color = "#888";
     }
   }
 
