@@ -33,7 +33,36 @@ class UserList extends Component {
       case '退社':
         row.getElement().style.color = "#0000FF";
         break;
-
+      case '年休':
+        row.getElement().style.color = "#FF0000";
+        break;
+      case 'AM半休':
+        row.getElement().style.color = "#48BD48";
+        break;
+      case 'PM半休':
+        row.getElement().style.color = "#48BD48";
+        break;
+      case 'FLEX':
+        row.getElement().style.color = "#48BD48";
+        break;
+      case '出張':
+        row.getElement().style.color = "#0000FF";
+        break;
+      case '外出':
+        row.getElement().style.color = "#0000FF";
+        break;
+      case '本社外勤務':
+        row.getElement().style.color = "#0000FF";
+        break;
+      case '行方不明':
+        row.getElement().style.color = "#FF0000";
+        break;
+      case '遅刻':
+        row.getElement().style.color = "#48BD48";
+        break;
+      case '接客中':
+        row.getElement().style.color = "#48BD48";
+        break;
       default:
         break;
     }
