@@ -38,13 +38,13 @@ class UserList extends Component {
         row.getElement().style.color = "#FF0000";
         break;
       case 'AM半休':
-        row.getElement().style.color = "#48BD48";
+        row.getElement().style.color = "#00A900";
         break;
       case 'PM半休':
-        row.getElement().style.color = "#48BD48";
+        row.getElement().style.color = "#FF0000";
         break;
       case 'FLEX':
-        row.getElement().style.color = "#48BD48";
+        row.getElement().style.color = "#00A900";
         break;
       case '出張':
         row.getElement().style.color = "#0000FF";
@@ -59,10 +59,10 @@ class UserList extends Component {
         row.getElement().style.color = "#FF0000";
         break;
       case '遅刻':
-        row.getElement().style.color = "#48BD48";
+        row.getElement().style.color = "#00A900";
         break;
       case '接客中':
-        row.getElement().style.color = "#48BD48";
+        row.getElement().style.color = "#00A900";
         break;
       default:
         break;
