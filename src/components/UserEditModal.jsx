@@ -76,7 +76,7 @@ class UserEditModal extends Component {
               <Form.Row>
                 <Form.Group as={Col} controlId='name'>
                   <Form.Label>氏名</Form.Label>
-                  <Form.Control name="name" placeholder="" defaultValue={userInfo.name} onChange={this.handleChange} />
+                  <Form.Control name="name" placeholder="" defaultValue={userInfo.name} onChange={this.handleChange} maxlength={100} />
                 </Form.Group>
                 <Form.Group as={Col} controlId='status'>
                   <Form.Label>状態</Form.Label>
@@ -91,16 +91,16 @@ class UserEditModal extends Component {
               <Form.Row>
                 <Form.Group as={Col} controlId='destination'>
                   <Form.Label>行き先</Form.Label>
-                  <Form.Control name="destination" placeholder="" defaultValue={userInfo.destination} onChange={this.handleChange} />
+                  <Form.Control name="destination" placeholder="" defaultValue={userInfo.destination} onChange={this.handleChange} maxlength={100} />
                 </Form.Group>
                 <Form.Group as={Col} controlId='return'>
                   <Form.Label>戻り</Form.Label>
-                  <Form.Control name="return" placeholder="" defaultValue={userInfo.return} onChange={this.handleChange} />
+                  <Form.Control name="return" placeholder="" defaultValue={userInfo.return} onChange={this.handleChange} maxlength={100} />
                 </Form.Group>
               </Form.Row>
               <Form.Group controlId='message'>
                 <Form.Label>メッセージ</Form.Label>
-                <Form.Control name="message" placeholder="" defaultValue={userInfo.message} onChange={this.handleChange} />
+                <Form.Control name="message" placeholder="" defaultValue={userInfo.message} onChange={this.handleChange} maxlength={100} />
               </Form.Group>
             </Container>
           </Modal.Body>
