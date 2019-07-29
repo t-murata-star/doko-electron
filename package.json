@@ -77,9 +77,10 @@
     "react:start": "node scripts/start.js",
     "react:build": "node scripts/build.js",
     "react:test": "node scripts/test.js",
-    "electron:start": "LOAD_URL=http://localhost:3000 electron .",
-    "electron:build:windows": "node build-windows.js",
-    "electron:build:mac": "node build-macOS.js"
+    "electron:start:mac": "LOAD_URL=http://localhost:3000 electron .",
+    "electron:start:windows": "set LOAD_URL=http://localhost:3000 && electron .",
+    "electron:build:mac": "node build-macOS.js",
+    "electron:build:windows": "node build-windows.js"
   },
   "eslintConfig": {
     "extends": "react-app"
