@@ -91,7 +91,8 @@ class UserList extends Component {
           rowDblClick={this.showModal}
           resizableColumns={'header'}
           rowFormatter={this._rowFormatter}
-        />
+          placeholder={'通信に失敗しました。'}
+      />
       </div>
     );
   }
