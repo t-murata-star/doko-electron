@@ -14,8 +14,7 @@ export const TABLE_COLUMNS = [
       outputFormat: "YYYY/MM/DD",
       invalidPlaceholder: "(invalid date)",
     } },
-  { title: "メッセージ", field: "message", headerSort: false },
-  { title: "離席フラグ", field: "isLeaving", visible: false, headerSort: false },
+  { title: "メッセージ", field: "message", headerSort: false }
 ];
 export const USER_INFO = {
   id: null,
@@ -25,8 +24,7 @@ export const USER_INFO = {
   destination: '',
   return: '',
   updated_at: '',
-  message: '',
-  isLeaving: false
+  message: ''
 };
 export const STATUS_LIST = [
   '在席',
@@ -40,5 +38,6 @@ export const STATUS_LIST = [
   '本社外勤務',
   '行方不明',
   '遅刻',
-  '接客中'
+  '接客中',
+  '在席 (離席中)'
 ];

@@ -49,7 +49,6 @@ class App extends Component {
           userInfo['status'] = '在席';
           userInfo['destination'] = '';
           userInfo['return'] = '';
-          userInfo['isLeaving'] = false;
           dispatch(updateUserInfoAction(userInfo, userID))
         }
       );
@@ -78,7 +77,7 @@ class App extends Component {
     const userList = store.getState().userList['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
-    if (userInfoLength === 0 || userInfo['status'] !== '在席') {
+    if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       return;
     }
 

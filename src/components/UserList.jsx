@@ -71,10 +71,6 @@ class UserList extends Component {
       default:
         break;
     }
-    // 在席で、かつ離席中の場合、テキストの文字色を薄くする
-    if (rowData.status === '在席' && rowData.isLeaving === true) {
-      row.getElement().style.color = "#888";
-    }
     // 自分の名前を太字にする
     if (rowData.id === electronStore.get('userID')) {
       row.getCell('name').getElement().style.fontWeight = 'bold';

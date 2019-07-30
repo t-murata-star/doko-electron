@@ -125,15 +125,15 @@ class UserEditModal extends Component {
                 <div>
                   <Form.Row>
                     <Form.Group as={Col} controlId='name'>
-                    <Form.Label><span className='name'>氏名</span></Form.Label>
-                    {userInfo['id'] === electronStore.get('userID') &&
-                    <a href='/#' className='userChange' onClick={this.handleChangeUser}>ユーザ変更</a>
-                    }
-                    <Form.Control name="name" placeholder="" defaultValue={userInfo.name} onChange={this.onInfoChange} maxLength={100} />
+                      <Form.Label><span className='name'>氏名</span></Form.Label>
+                      {userInfo['id'] === electronStore.get('userID') &&
+                        <a href='/#' className='userChange' onClick={this.handleChangeUser}>ユーザ変更</a>
+                      }
+                      <Form.Control name="name" placeholder="" defaultValue={userInfo.name} onChange={this.onInfoChange} maxLength={100} />
                     </Form.Group>
                     <Form.Group as={Col} controlId='status'>
                       <Form.Label>状態</Form.Label>
-                    <Form.Control name="status" as='select' defaultValue={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.onInfoChange}>
+                      <Form.Control name="status" as='select' defaultValue={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.onInfoChange}>
                         {STATUS_LIST.map((status, index) => (
                           <option key={index}>{status}</option>
                         ))}
@@ -144,36 +144,36 @@ class UserEditModal extends Component {
                   <Form.Row>
                     <Form.Group as={Col} controlId='destination'>
                       <Form.Label>行き先</Form.Label>
-                    <Form.Control name="destination" placeholder="" defaultValue={userInfo.destination} onChange={this.onInfoChange} maxLength={100} />
+                      <Form.Control name="destination" placeholder="" defaultValue={userInfo.destination} onChange={this.onInfoChange} maxLength={100} />
                     </Form.Group>
                     <Form.Group as={Col} controlId='return'>
                       <Form.Label>戻り</Form.Label>
-                    <Form.Control name="return" placeholder="" defaultValue={userInfo.return} onChange={this.onInfoChange} maxLength={100} />
+                      <Form.Control name="return" placeholder="" defaultValue={userInfo.return} onChange={this.onInfoChange} maxLength={100} />
                     </Form.Group>
                   </Form.Row>
                   <Form.Group controlId='message'>
                     <Form.Label>メッセージ</Form.Label>
-                  <Form.Control name="message" placeholder="" defaultValue={userInfo.message} onChange={this.onInfoChange} maxLength={100} />
+                    <Form.Control name="message" placeholder="" defaultValue={userInfo.message} onChange={this.onInfoChange} maxLength={100} />
                   </Form.Group>
                 </div>
               }
 
               {userEditModal.isChangeUser &&
                 <div>
-              <Form.Row>
-                  <Col md="2" />
-                  <Col md="8">
-                    <Form.Group as={Col} controlId='name'>
-                      <Form.Label><span className='name'>氏名</span></Form.Label> <a href='/#' className='userChange' onClick={this.handleEditUser}>戻る</a>
-                      <Form.Control name="usesrID" as='select' onChange={this.onUserChange}>
-                        <option hidden>選択してください</option>
-                        {userList.userList.map((userInfo, index) => (
-                          <option key={index} value={userInfo['id']}>{userInfo['name']}</option>
-                        ))}
-                      </Form.Control>
-                    </Form.Group>
-                  </Col>
-                  <Col md="2" />
+                  <Form.Row>
+                    <Col md="2" />
+                    <Col md="8">
+                      <Form.Group as={Col} controlId='name'>
+                        <Form.Label><span className='name'>氏名</span></Form.Label> <a href='/#' className='userChange' onClick={this.handleEditUser}>戻る</a>
+                        <Form.Control name="usesrID" as='select' onChange={this.onUserChange}>
+                          <option hidden>選択してください</option>
+                          {userList.userList.map((userInfo, index) => (
+                            <option key={index} value={userInfo['id']}>{userInfo['name']}</option>
+                          ))}
+                        </Form.Control>
+                      </Form.Group>
+                    </Col>
+                    <Col md="2" />
                   </Form.Row>
                 </div>
               }
