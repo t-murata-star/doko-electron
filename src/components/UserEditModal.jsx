@@ -7,7 +7,11 @@
 import './UserEditModal.css';
 import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
-import { closeUserEditModalActionCreator } from '../actions/userEditModal';
+import {
+  closeUserEditModalActionCreator,
+  enableSubmitButtonActionCreator,
+  disableSubmitButtonActionCreator
+} from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction } from '../actions/userList';
 import { USER_INFO, STATUS_LIST } from '../define';
@@ -16,7 +20,6 @@ import { USER_INFO, STATUS_LIST } from '../define';
 class UserEditModal extends Component {
   constructor(props) {
     super(props)
-    this.state = { submitButtonStatus: true }
     this.userInfo = USER_INFO;
   }
 
@@ -38,7 +41,7 @@ class UserEditModal extends Component {
         () => {
           const userList = store.getState().userList;
           if (userList.isError.status) {
-            this.setState({ submitButtonStatus: false });
+            dispatch(enableSubmitButtonActionCreator(userInfo));
             return;
           }
           this.closeModal();
@@ -48,13 +51,15 @@ class UserEditModal extends Component {
   }
 
   handleChange = (event) => {
+    const { dispatch } = this.props;
     this.userInfo[event.target.name] = event.target.value;
-    this.setState({ submitButtonStatus: false });
+    dispatch(enableSubmitButtonActionCreator(this.userInfo));
   }
 
   handleSubmit = (event) => {
-    this.setState({ submitButtonStatus: true });
     event.preventDefault();
+    const { dispatch } = this.props;
+    dispatch(disableSubmitButtonActionCreator());
     this._updateUserInfo(this.userInfo);
   }
 
@@ -109,7 +114,7 @@ class UserEditModal extends Component {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="submit" variant='primary' className='modal-button' disabled={this.state.submitButtonStatus}>更新</Button>
+            <Button type="submit" variant='primary' className='modal-button' disabled={store.getState().userEditModal.submitButtonStatus}>更新</Button>
             <Button variant='light' className='modal-button' onClick={this.closeModal}>キャンセル</Button>
           </Modal.Footer>
         </Form>

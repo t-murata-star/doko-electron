@@ -2,6 +2,7 @@ import * as Actions from '../actions/userEditModal';
 
 export default function userEditModal(state = {
   onHide: false,
+  submitButtonStatus: true,
   userID: null,
   userInfo: {}
 }, action) {
@@ -17,6 +18,17 @@ export default function userEditModal(state = {
       return {
         ...state,
         onHide: false
+      };
+    case Actions.DISABLE_SUBMIT_BUTTON:
+      return {
+        ...state,
+        submitButtonStatus: true,
+      };
+    case Actions.ENABLE_SUBMIT_BUTTON:
+      return {
+        ...state,
+        userInfo: action.userInfo,
+        submitButtonStatus: false,
       };
     default:
       return state;
