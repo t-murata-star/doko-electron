@@ -13,7 +13,11 @@ const electronStore = new Store();
 class InitialStartupModal extends Component {
   constructor(props) {
     super(props)
-    this.state = { submitButtonStatus: true }
+    this.state = {
+      submitButtonStatus: true,
+      isChangeUser: false
+    }
+    this.userID = null;
     this.userInfo = USER_INFO;
     this.userInfo['status'] = '在席';
     delete this.userInfo['id'];
@@ -55,6 +59,13 @@ class InitialStartupModal extends Component {
       );
   }
 
+  _changeUser = () => {
+    const { dispatch } = this.props;
+    electronStore.set('userID', Number(this.userID));
+    this.closeModal();
+    dispatch(getUserListAction());
+  }
+
   _getUserInfo = (userList, userID) => {
     if (!userList) {
       return {};
@@ -66,20 +77,43 @@ class InitialStartupModal extends Component {
     return userInfo || {};
   }
 
-  handleChange = (event) => {
+  onNameChange = (event) => {
     this.userInfo[event.target.name] = event.target.value;
     this.setState({ submitButtonStatus: event.target.value.length === 0 ? true : false })
+  }
+
+  onUserChange = (event) => {
+    this.userID = event.target.value;
+    this.setState({ submitButtonStatus: false })
   }
 
   handleSubmit = (event) => {
     this.setState({ submitButtonStatus: true });
     event.preventDefault();
-    this._addUser();
+
+    if (this.state.isChangeUser) {
+      this._changeUser();
+    } else {
+      this._addUser();
+    }
+  }
+
+  changeUserInput = (event) => {
+    const { dispatch } = this.props;
+    this.setState({ submitButtonStatus: true });
+    this.setState({ isChangeUser: true });
+    dispatch(getUserListAction())
+  }
+
+  registUserInput = (event) => {
+    this.setState({ submitButtonStatus: true });
+    this.setState({ isChangeUser: false });
   }
 
   render() {
     const onHide = store.getState().initialStartupModal.onHide;
     const isError = store.getState().userList.isError.status;
+    const userList = store.getState().userList['userList'];
 
     return (
       <Modal dialogClassName='initialStartupModal' show={onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
@@ -99,10 +133,27 @@ class InitialStartupModal extends Component {
                 <Col md="8">
                   <Form.Group controlId='name'>
                     <Form.Label>氏名</Form.Label>
-                    <Form.Control name="name" placeholder="" onChange={this.handleChange} maxLength={100} />
-                    <Form.Text>
-                      氏名を入力してください。
-                    </Form.Text>
+                    {this.state.isChangeUser &&
+                      <div>
+                        <Form.Control name="usesrID" as='select' onChange={this.onUserChange}>
+                          <option hidden>選択してください</option>
+                          {userList.map((userInfo, index) => (
+                            <option key={index} value={userInfo['id']}>{userInfo['name']}</option>
+                          ))}
+                        </Form.Control>
+                        <Form.Text>
+                          <span>新規登録は<a href='/#' onClick={this.registUserInput}>こちら</a></span>
+                        </Form.Text>
+                      </div>
+                    }
+                    {!this.state.isChangeUser &&
+                      <div>
+                        <Form.Control name="name" placeholder="氏名を入力してください" onChange={this.onNameChange} maxLength={100} />
+                        <Form.Text>
+                          <span>登録済みの場合は<a href='/#' onClick={this.changeUserInput}>こちら</a></span>
+                        </Form.Text>
+                      </div>
+                    }
                   </Form.Group>
                 </Col>
                 <Col md="2" />

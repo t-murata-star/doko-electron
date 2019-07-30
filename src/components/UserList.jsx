@@ -8,6 +8,9 @@ import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
 
+const Store = window.require('electron-store');
+const electronStore = new Store();
+
 class UserList extends Component {
   _getUserInfo = (userList, userID) => {
     if (!userList) {
@@ -30,6 +33,7 @@ class UserList extends Component {
 
   _rowFormatter = (row) => {
     const rowData = row.getData();
+    // 状態によってテキストの色を変える
     switch (rowData.status) {
       case '退社':
         row.getElement().style.color = "#0000FF";
@@ -67,8 +71,13 @@ class UserList extends Component {
       default:
         break;
     }
+    // 在席で、かつ離席中の場合、テキストの文字色を薄くする
     if (rowData.status === '在席' && rowData.isLeaving === true) {
       row.getElement().style.color = "#888";
+    }
+    // 自分の名前を太字にする
+    if (rowData.id === electronStore.get('userID')) {
+      row.getCell('name').getElement().style.fontWeight = 'bold';
     }
   }
 

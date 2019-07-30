@@ -3,6 +3,7 @@ import * as Actions from '../actions/userEditModal';
 export default function userEditModal(state = {
   onHide: false,
   submitButtonStatus: true,
+  isChangeUser: false,
   userID: null,
   userInfo: {}
 }, action) {
@@ -11,6 +12,7 @@ export default function userEditModal(state = {
       return {
         ...state,
         onHide: true,
+        isChangeUser: false,
         userID: action.userID,
         userInfo: action.userInfo
       };
@@ -29,6 +31,18 @@ export default function userEditModal(state = {
         ...state,
         userInfo: action.userInfo,
         submitButtonStatus: false,
+      };
+    case Actions.HANDLE_CHANGE_USER:
+      return {
+        ...state,
+        submitButtonStatus: true,
+        isChangeUser: true,
+      };
+    case Actions.HANDLE_EDIT_USER:
+      return {
+        ...state,
+        submitButtonStatus: true,
+        isChangeUser: false,
       };
     default:
       return state;

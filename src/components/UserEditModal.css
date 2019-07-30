@@ -24,3 +24,9 @@
     font-size: 18px;
     padding: 1rem;
 }
+.name {
+    padding-right: 10px;
+}
+.userChange {
+    font-size: 13px;
+}
