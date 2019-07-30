@@ -92,7 +92,7 @@ function createWindow() {
   createTray();
 
   // 初回起動時、スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
-  if (!electronStore.get('is_notified_startup')) {
+  if (!electronStore.get('notified_startup')) {
     const index = electron.dialog.showMessageBox(null, {
       title: '行き先掲示板',
       type: 'info',
