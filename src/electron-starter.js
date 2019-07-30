@@ -91,7 +91,24 @@ function createWindow() {
 
   createTray();
 
-  // OSがwindowsの場合で、かつ設定ファイルが存在しない場合にスタートアップ登録のダイアログを表示する
+  // 初回起動時、スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
+  if (!electronStore.get('is_notified_startup')) {
+    const index = electron.dialog.showMessageBox(null, {
+      title: '行き先掲示板',
+      type: 'info',
+      buttons: ['YES', 'NO'],
+      message: 'スタートアップを有効にしますか？\n※PC起動時、自動的に行き先掲示板が起動します。',
+    });
+
+    if (index === 0) {
+      app.setLoginItemSettings({
+        openAtLogin: false,
+        path: electron.app.getPath('exe'),
+      });
+    }
+
+    electronStore.set('notified_startup', 1);
+  }
   // const userHome = process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"];
   // const startupPath = path.join(userHome, 'AppData', 'Roaming', 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup');
 }
@@ -144,8 +161,3 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-
-app.setLoginItemSettings({
-  openAtLogin: true,
-  path: electron.app.getPath('exe'),
-})
