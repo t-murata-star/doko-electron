@@ -33,3 +33,15 @@
 .modal-button-user-delete.btn.btn-outline-light {
     margin-right: 12rem !important;
 }
+.modal-button-user-delete.btn.btn-outline-light:hover {
+    background-color: #eff3f7;
+}
+.modal-button-user-delete.btn.btn-outline-light {
+    color: #a6adb5;
+    border-color: #d9dde0;
+}
+.btn-outline-light:not(:disabled):not(.disabled):active {
+    color: #adb5bd;
+    background-color: #e9ecef;
+    border-color: #d9dde0;
+}
