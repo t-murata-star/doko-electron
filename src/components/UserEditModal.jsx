@@ -15,9 +15,10 @@ import {
   handleEditUserActionCreator
 } from '../actions/userEditModal';
 import store from '../store/configureStore';
-import { updateUserInfoAction, getUserListAction } from '../actions/userList';
+import { updateUserInfoAction, getUserListAction, deleteUserAction } from '../actions/userList';
 import { USER_INFO, STATUS_LIST } from '../define';
 
+const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
@@ -101,6 +102,32 @@ class UserEditModal extends Component {
     dispatch(handleEditUserActionCreator());
   }
 
+  deleteUser = (event) => {
+    const { dispatch } = this.props;
+    let userInfo = store.getState().userEditModal.userInfo;
+    const index = remote.dialog.showMessageBox(null, {
+      title: '行き先掲示板',
+      type: 'info',
+      buttons: ['OK', 'Cancel'],
+      message: '以下のユーザを一覧から削除しますか？\n・' + userInfo['name'],
+    });
+
+    if (index !== 0) {
+      return;
+    }
+    dispatch(deleteUserAction(userInfo['id']))
+      .then(
+        () => {
+          const userList = store.getState().userList;
+          if (userList.isError.status) {
+            return;
+          }
+          this.closeModal();
+          dispatch(getUserListAction());
+        }
+      );
+  }
+
   render() {
     const userEditModal = store.getState().userEditModal;
     const userList = store.getState().userList;
@@ -181,7 +208,7 @@ class UserEditModal extends Component {
           </Modal.Body>
           <Modal.Footer>
             {!userEditModal.isChangeUser &&
-              <Button variant='outline-light' className='modal-button-user-delete'>削除</Button>
+              <Button variant='outline-light' className='modal-button-user-delete' onClick={this.deleteUser}>削除</Button>
             }
             <Button type="submit" variant='primary' className='modal-button' disabled={store.getState().userEditModal.submitButtonStatus}>更新</Button>
             <Button variant='light' className='modal-button' onClick={this.closeModal}>キャンセル</Button>

@@ -9,6 +9,8 @@ export const PUT_USER_LIST = 'PUT_USER_LIST';
 export const PUT_USER_LIST_SUCCESS = 'PUT_USER_LIST_SUCCESS';
 export const ADD_USER = 'ADD_USER';
 export const ADD_USER_SUCCESS = 'ADD_USER_SUCCESS';
+export const DELETE_USER = 'DELETE_USER';
+export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
 export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
@@ -34,11 +36,17 @@ export const updateUserInfoSuccessActionCreator = () => ({
 export const addUserActionCreator = () => ({
   type: ADD_USER
 });
-export const AddUserSuccessActionCreator = (userInfo) => ({
+export const addUserSuccessActionCreator = (userInfo) => ({
   type: ADD_USER_SUCCESS,
   payload: {
     response: userInfo
   }
+});
+export const deleteUserActionCreator = () => ({
+  type: DELETE_USER
+});
+export const deleteUserSuccessActionCreator = () => ({
+  type: DELETE_USER_SUCCESS,
 });
 export const failRequestActionCreator = (error) => ({
   type: FAIL_REQUEST,
@@ -56,6 +64,25 @@ export const returnEmptyUserListActionCreator = () => ({
   userList: []
 })
 
+export const deleteUserAction = (userID) => {
+  return (dispatch) => {
+    dispatch(deleteUserActionCreator());
+    return fetch(API_URL + 'userList/' + userID,
+      {
+        method: 'DELETE',
+        headers: REQUEST_HEADERS
+      })
+      .then(async res => {
+        if (!res.ok) {
+          return Promise.reject(new Error(res.statusText));
+        }
+        return;
+      })
+      .then(() => dispatch(deleteUserSuccessActionCreator()))
+      .catch(error => dispatch(failRequestActionCreator(error)));
+  }
+};
+
 export const addUserAction = (userInfo) => {
   return (dispatch) => {
     dispatch(addUserActionCreator());
@@ -72,15 +99,15 @@ export const addUserAction = (userInfo) => {
         const json = await res.json();
         return json;
       })
-      .then(userInfo => dispatch(AddUserSuccessActionCreator(userInfo)))
+      .then(userInfo => dispatch(addUserSuccessActionCreator(userInfo)))
       .catch(error => dispatch(failRequestActionCreator(error)));
   }
 };
 
-export const updateUserInfoAction = (userInfo, id) => {
+export const updateUserInfoAction = (userInfo, userID) => {
   return (dispatch) => {
     dispatch(updateUserInfoActionCreator());
-    return fetch(API_URL + 'userList/' + id,
+    return fetch(API_URL + 'userList/' + userID,
       {
         method: 'PUT',
         headers: REQUEST_HEADERS,
