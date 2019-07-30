@@ -180,6 +180,7 @@ class UserEditModal extends Component {
             </Container>
           </Modal.Body>
           <Modal.Footer>
+            <Button variant='outline-light' className='modal-button-user-delete'>削除</Button>
             <Button type="submit" variant='primary' className='modal-button' disabled={store.getState().userEditModal.submitButtonStatus}>更新</Button>
             <Button variant='light' className='modal-button' onClick={this.closeModal}>キャンセル</Button>
           </Modal.Footer>
