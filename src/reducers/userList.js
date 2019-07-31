@@ -103,7 +103,6 @@ export default function userList(state = {
     case Actions.PATCH_USER_INFO:
       return {
         ...state,
-        isError: userListIsError(state.isError, action),
       };
     case Actions.PATCH_USER_INFO_SUCCESS:
       return {

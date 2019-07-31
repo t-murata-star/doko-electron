@@ -7,7 +7,7 @@ import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
-import { getUserListAction, patchUserInfoAction } from '../actions/userList';
+import { patchUserInfoAction } from '../actions/userList';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
