@@ -4,13 +4,14 @@ export const REQUEST_HEADERS = {
   "Content-type": "application/json; charset=UTF-8"
 };
 export const TABLE_COLUMNS = [
+  { rowHandle: true, formatter: "handle", headerSort: false, frozen: true, width: 25, minWidth: 25, maxWidth: 25 },
   { title: "順序", field: "order", visible: false, headerSort: false, sorter: 'number' },
   { title: "氏名", field: "name", width: 150, headerSort: false },
   { title: "状態", field: "status", width: 100, headerSort: false },
   { title: "行き先", field: "destination", width: 270, headerSort: false },
   { title: "戻り", field: "return", width: 130, headerSort: false },
   {
-    title: "更新日時", field: "updated_at", width: 90, headerSort: false, formatter: "datetime", formatterParams: {
+    title: "更新日時", field: "updated_at", width: 90, headerSort: false, sorter: 'datetime', sorterParams: { format: "YYYY/MM/DD hhmmss" }, formatter: "datetime", formatterParams: {
       outputFormat: "YYYY/MM/DD",
       invalidPlaceholder: "(invalid date)",
     } },

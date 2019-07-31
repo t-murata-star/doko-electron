@@ -4,7 +4,7 @@ function userListIsFetching(state = false, action) {
   switch (action.type) {
     case Actions.GET_USER_LIST:
       return true;
-    case Actions.PUT_USER_LIST:
+    case Actions.PUT_USER_INFO:
       return true;
     case Actions.ADD_USER:
       return true;
@@ -66,13 +66,13 @@ export default function userList(state = {
         isError: userListIsError(state.isError, action),
         isFetching: userListIsFetching(state.isFetching, action)
       };
-    case Actions.PUT_USER_LIST:
+    case Actions.PUT_USER_INFO:
       return {
         ...state,
         isError: userListIsError(state.isError, action),
         isFetching: userListIsFetching(state.isFetching, action)
       };
-    case Actions.PUT_USER_LIST_SUCCESS:
+    case Actions.PUT_USER_INFO_SUCCESS:
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action)

@@ -7,6 +7,7 @@ import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
+import { getUserListAction, patchUserInfoAction } from '../actions/userList';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -77,6 +78,19 @@ class UserList extends Component {
     }
   }
 
+  _updateUserInfoOrder = (row) => {
+    const { dispatch } = this.props;
+    let userInfoOrder;
+    userInfoOrder = { 'order': row.getPosition(true)};
+    console.log(row.getData().name);
+    dispatch(patchUserInfoAction(userInfoOrder, row.getData().id))
+      .then(
+        () => {
+          dispatch(getUserListAction());
+        }
+      );
+  }
+
   render() {
     const { userList } = this.props;
     return (
@@ -87,11 +101,18 @@ class UserList extends Component {
           tooltips={true}
           layout={"fitData"}
           height="530px"
-          initialSort={[{ column: "order", dir: "asc" }]}
           rowDblClick={this.showModal}
           resizableColumns={'header'}
           rowFormatter={this._rowFormatter}
           placeholder={'通信に失敗しました。'}
+          options={{
+            movableRows: true,
+            initialSort: [
+              { column: "updated_at", dir: "asc" },
+              { column: "order", dir: "asc" },
+            ]
+          }}
+          rowMoved={this._updateUserInfoOrder}
       />
       </div>
     );

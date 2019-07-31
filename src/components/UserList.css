@@ -13,3 +13,6 @@
   border-right-width: 0px !important;
   border-left-width: 0px !important;
 }
+.tabulator-row-handle-bar {
+  background-color: #aaa !important;
+}

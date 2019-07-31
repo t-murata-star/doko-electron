@@ -5,12 +5,14 @@ import { API_URL, REQUEST_HEADERS } from '../define';
  */
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
-export const PUT_USER_LIST = 'PUT_USER_LIST';
-export const PUT_USER_LIST_SUCCESS = 'PUT_USER_LIST_SUCCESS';
+export const PUT_USER_INFO = 'PUT_USER_INFO';
+export const PUT_USER_INFO_SUCCESS = 'PUT_USER_INFO_SUCCESS';
 export const ADD_USER = 'ADD_USER';
 export const ADD_USER_SUCCESS = 'ADD_USER_SUCCESS';
 export const DELETE_USER = 'DELETE_USER';
 export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
+export const PATCH_USER_INFO = 'PATCH_USER_INFO';
+export const PATCH_USER_INFO_SUCCESS = 'PATCH_USER_INFO_SUCCESS';
 export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
@@ -28,10 +30,10 @@ export const getUserListSccessActionCreator = (json) => ({
   }
 });
 export const updateUserInfoActionCreator = () => ({
-  type: PUT_USER_LIST
+  type: PUT_USER_INFO
 });
 export const updateUserInfoSuccessActionCreator = () => ({
-  type: PUT_USER_LIST_SUCCESS
+  type: PUT_USER_INFO_SUCCESS
 });
 export const addUserActionCreator = () => ({
   type: ADD_USER
@@ -47,6 +49,12 @@ export const deleteUserActionCreator = () => ({
 });
 export const deleteUserSuccessActionCreator = () => ({
   type: DELETE_USER_SUCCESS,
+});
+export const patchUserInfoActionCreator = () => ({
+  type: PATCH_USER_INFO
+});
+export const patchUserInfoSuccessActionCreator = () => ({
+  type: PATCH_USER_INFO_SUCCESS
 });
 export const failRequestActionCreator = (error) => ({
   type: FAIL_REQUEST,
@@ -144,6 +152,26 @@ export const getUserListAction = () => {
         dispatch(failRequestActionCreator(error))
         dispatch(returnEmptyUserListAction());
       });
+  }
+};
+
+export const patchUserInfoAction = (userInfo, userID) => {
+  return (dispatch) => {
+    dispatch(patchUserInfoActionCreator());
+    return fetch(API_URL + 'userList/' + userID,
+      {
+        method: 'PATCH',
+        headers: REQUEST_HEADERS,
+        body: JSON.stringify(userInfo),
+      })
+      .then(res => {
+        if (!res.ok || res.status === 404) {
+          return Promise.reject(new Error(res.statusText));
+        }
+        return;
+      })
+      .then(() => dispatch(patchUserInfoSuccessActionCreator()))
+      .catch(error => dispatch(failRequestActionCreator(error)));
   }
 };
 
