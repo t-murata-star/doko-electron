@@ -171,7 +171,10 @@ export const patchUserInfoAction = (userInfo, userID) => {
         return;
       })
       .then(() => dispatch(patchUserInfoSuccessActionCreator()))
-      .catch(error => dispatch(failRequestActionCreator(error)));
+      .catch(error => {
+        dispatch(failRequestActionCreator(error))
+        dispatch(returnEmptyUserListAction());
+      });
   }
 };
 

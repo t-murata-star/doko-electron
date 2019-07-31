@@ -78,16 +78,13 @@ class UserList extends Component {
     }
   }
 
-  _updateUserInfoOrder = (row) => {
+  _updateUserInfoOrder = (rowComponent) => {
     const { dispatch } = this.props;
-    let userInfoOrder;
-    userInfoOrder = { 'order': row.getPosition(true) + 1};
-    dispatch(patchUserInfoAction(userInfoOrder, row.getData().id))
-      .then(
-        () => {
-          dispatch(getUserListAction());
-        }
-      );
+    const rows = rowComponent.getTable().getRows();
+    rows.forEach((row) => {
+      const patchInfoUser = { 'order': row.getPosition(true) + 1 };
+      dispatch(patchUserInfoAction(patchInfoUser, row.getData().id));
+    });
   }
 
   render() {
@@ -112,7 +109,7 @@ class UserList extends Component {
             ]
           }}
           rowMoved={this._updateUserInfoOrder}
-      />
+        />
       </div>
     );
   }

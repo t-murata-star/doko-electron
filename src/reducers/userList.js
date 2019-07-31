@@ -57,7 +57,6 @@ export default function userList(state = {
       return {
         ...state,
         userList: action.payload.response,
-        isError: userListIsError(state.isError, action),
         isFetching: userListIsFetching(state.isFetching, action)
       };
     case Actions.FAIL_REQUEST:
@@ -100,6 +99,15 @@ export default function userList(state = {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action),
         userInfo: action.payload.response
+      };
+    case Actions.PATCH_USER_INFO:
+      return {
+        ...state,
+        isError: userListIsError(state.isError, action),
+      };
+    case Actions.PATCH_USER_INFO_SUCCESS:
+      return {
+        ...state,
       };
     case Actions.SELECT_USER:
       return {
