@@ -8,6 +8,8 @@ function userListIsFetching(state = false, action) {
       return true;
     case Actions.ADD_USER:
       return true;
+    case Actions.DELETE_USER:
+      return true;
     default:
       return false;
   }
@@ -82,6 +84,18 @@ export default function userList(state = {
         isFetching: userListIsFetching(state.isFetching, action)
       };
     case Actions.ADD_USER_SUCCESS:
+      return {
+        ...state,
+        isFetching: userListIsFetching(state.isFetching, action),
+        userInfo: action.payload.response
+      };
+    case Actions.DELETE_USER:
+      return {
+        ...state,
+        isError: userListIsError(state.isError, action),
+        isFetching: userListIsFetching(state.isFetching, action)
+      };
+    case Actions.DELETE_USER_SUCCESS:
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action),
