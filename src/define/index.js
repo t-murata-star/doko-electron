@@ -11,7 +11,7 @@ export const TABLE_COLUMNS = [
   { title: "行き先", field: "destination", width: 270, headerSort: false },
   { title: "戻り", field: "return", width: 130, headerSort: false },
   {
-    title: "更新日時", field: "updated_at", width: 90, headerSort: false, sorter: 'datetime', sorterParams: { format: "YYYY/MM/DD hhmmss" }, formatter: "datetime", formatterParams: {
+    title: "更新日時", field: "updated_at", width: 90, headerSort: false, sorter: 'datetime', sorterParams: { format: "YYYY-MM-DDThh:mm:ss.SSSZ" }, formatter: "datetime", formatterParams: {
       outputFormat: "YYYY/MM/DD",
       invalidPlaceholder: "(invalid date)",
     } },

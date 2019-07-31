@@ -81,8 +81,7 @@ class UserList extends Component {
   _updateUserInfoOrder = (row) => {
     const { dispatch } = this.props;
     let userInfoOrder;
-    userInfoOrder = { 'order': row.getPosition(true)};
-    console.log(row.getData().name);
+    userInfoOrder = { 'order': row.getPosition(true) + 1};
     dispatch(patchUserInfoAction(userInfoOrder, row.getData().id))
       .then(
         () => {
