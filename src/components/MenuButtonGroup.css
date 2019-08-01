@@ -15,8 +15,6 @@
     background-color: #f8f9fa;
 }
 .menu-button-group {
-  text-align: center;
-}
-.container {
-    margin-right: 18px;
+    text-align: center;
+    margin-left: auto;
 }

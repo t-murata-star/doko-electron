@@ -31,7 +31,7 @@
     font-size: 13px;
 }
 .modal-button-user-delete.btn.btn-outline-light {
-    margin-right: 12rem !important;
+    margin-right: auto !important;
 }
 .modal-button-user-delete.btn.btn-outline-light:hover {
     background-color: #eff3f7;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Container, Col, Button, ButtonToolbar} from 'react-bootstrap';
+import { Row, Container, Col, Button, Form} from 'react-bootstrap';
 import { getUserListAction } from '../actions/userList';
 import './MenuButtonGroup.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -31,7 +31,7 @@ class MenuButtonGroup extends Component {
     window.minimize();
   }
 
-  showModal = () => {
+  showUserEditModal = () => {
     const { dispatch } = this.props;
     const userList = store.getState().userList['userList'];
     const userID = electronStore.get('userID');
@@ -58,18 +58,26 @@ class MenuButtonGroup extends Component {
     const isAuthenticated = store.getState().userList.isAuthenticated;
 
     return (
-      <Row>
+      <Row className='menu-button-group'>
         <Container>
-          <ButtonToolbar className='menu-button-group'>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.close}>
-              <FontAwesomeIcon icon='power-off' /> 終了</Button></Col>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.reload}>
-              <FontAwesomeIcon icon='sync' /> 再読込</Button></Col>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.showModal} disabled={userInfoLength === 0 || isAuthenticated === false}>
-              <FontAwesomeIcon icon='edit' /> 自分編集</Button></Col>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.minimize}>
-              <FontAwesomeIcon icon='window-minimize' /> 最小化</Button></Col>
-          </ButtonToolbar>
+            <Form.Row>
+              <Form.Group as={Col} controlId='close'>
+                <Button variant='light' className='w-100' onClick={this.close}>
+                  <FontAwesomeIcon icon='power-off' /> 終了</Button>
+              </Form.Group>
+              <Form.Group as={Col} controlId='reload'>
+                <Button variant='light' className='w-100' onClick={this.reload}>
+                  <FontAwesomeIcon icon='sync' /> 再読込</Button>
+              </Form.Group>
+              <Form.Group as={Col} controlId='showUserEditModal'>
+                <Button variant='light' className='w-100' onClick={this.showUserEditModal} disabled={userInfoLength === 0 || isAuthenticated === false}>
+                  <FontAwesomeIcon icon='edit' /> 自分編集</Button>
+              </Form.Group>
+              <Form.Group as={Col} controlId='minimize'>
+                <Button variant='light' className='w-100' onClick={this.minimize}>
+                  <FontAwesomeIcon icon='window-minimize' /> 最小化</Button>
+              </Form.Group>
+            </Form.Row>
         </Container>
         <UserEditModal/>
       </Row>
