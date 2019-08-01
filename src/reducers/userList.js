@@ -45,6 +45,7 @@ function userListIsError(state = {
  */
 export default function userList(state = {
   token: '',
+  isAuthenticated: false,
   userList: [],
   isFetching: false,
   isError: {
@@ -64,6 +65,7 @@ export default function userList(state = {
       return {
         ...state,
         token: action.payload.response.token,
+        isAuthenticated: true,
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action),
       };
@@ -136,6 +138,15 @@ export default function userList(state = {
       return {
         ...state,
         userList: action.userList
+      }
+    case Actions.UNAUTHORIZED:
+      /**
+       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
+       * 画面をリロードして認証トークンを再取得する
+       */
+      window.location.reload();
+      return {
+        ...state,
       }
     default:
       return state;

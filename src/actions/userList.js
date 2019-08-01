@@ -18,6 +18,7 @@ export const PATCH_USER_INFO_SUCCESS = 'PATCH_USER_INFO_SUCCESS';
 export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
+export const UNAUTHORIZED = 'UNAUTHORIZED';
 
 /**
  * Action Creator
@@ -83,6 +84,10 @@ export const returnEmptyUserListActionCreator = () => ({
   type: RETURN_EMPTY_USER_LIST,
   userList: []
 });
+export const unauthorizedActionCreator = () => ({
+  type: UNAUTHORIZED,
+  unauthorized: true
+});
 
 export const loginAction = () => {
   return (dispatch) => {
@@ -114,6 +119,9 @@ export const deleteUserAction = (userID) => {
         headers: AUTH_REQUEST_HEADERS
       })
       .then(async res => {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
         if (!res.ok) {
           return Promise.reject(res);
         }
@@ -134,6 +142,9 @@ export const addUserAction = (userInfo) => {
         body: JSON.stringify(userInfo),
       })
       .then(async res => {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
         if (!res.ok) {
           return Promise.reject(res);
         }
@@ -155,7 +166,10 @@ export const updateUserInfoAction = (userInfo, userID) => {
         body: JSON.stringify(userInfo),
       })
       .then(res => {
-        if (!res.ok || res.status === 404) {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
+        if (!res.ok) {
           return Promise.reject(res);
         }
         return;
@@ -173,7 +187,10 @@ export const getUserListAction = () => {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
       })
-      .then( async res => {
+      .then(async res => {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
         if (!res.ok) {
           return Promise.reject(res);
         }
@@ -198,7 +215,10 @@ export const patchUserInfoAction = (userInfo, userID) => {
         body: JSON.stringify(userInfo),
       })
       .then(res => {
-        if (!res.ok || res.status === 404) {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
+        if (!res.ok) {
           return Promise.reject(res);
         }
         return;
