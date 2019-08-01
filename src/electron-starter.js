@@ -116,7 +116,8 @@ function createWindow() {
 // タスクトレイを作成
 function createTray() {
   // 通知領域に表示するアイコンを指定
-  const tray = new electron.Tray('./public/favicon.png');
+  var iconPath = path.join(__dirname, '../public/favicon.png');
+  const tray = new electron.Tray(iconPath);
   // 通知領域をクリックした際のメニュー
   const contextMenu = electron.Menu.buildFromTemplate([
     {
