@@ -109,7 +109,7 @@ class UserEditModal extends Component {
       title: '行き先掲示板',
       type: 'info',
       buttons: ['OK', 'Cancel'],
-      message: '以下のユーザを一覧から削除しますか？\n\n' + userInfo['name'],
+      message: '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo['name'],
     });
 
     if (index !== 0) {
