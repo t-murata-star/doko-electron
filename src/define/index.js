@@ -1,7 +1,13 @@
-
 export const API_URL = process.env.REACT_APP_API_URL;
-export const REQUEST_HEADERS = {
+export const LOGIN_USER = {
+  username: '********',
+  password: '********'
+}
+export const LOGIN_REQUEST_HEADERS = {
   "Content-type": "application/json; charset=UTF-8"
+};
+export const AUTH_REQUEST_HEADERS = {
+  "Content-type": "application/json; charset=UTF-8",
 };
 export const TABLE_COLUMNS = [
   { rowHandle: true, formatter: "handle", headerSort: false, frozen: true, width: 25, minWidth: 25, maxWidth: 25 },
@@ -11,9 +17,9 @@ export const TABLE_COLUMNS = [
   { title: "行き先", field: "destination", width: 270, headerSort: false },
   { title: "戻り", field: "return", width: 130, headerSort: false },
   {
-    title: "更新日時", field: "updated_at", width: 90, headerSort: false, sorter: 'datetime', sorterParams: { format: "YYYY-MM-DDThh:mm:ss.SSSZ" }, formatter: "datetime", formatterParams: {
+    title: "更新日時", field: "updated_at", width: 90, headerSort: false, sorter: 'datetime', sorterParams: { format: "YYYY-MM-DD hh:mm:ss.SSS" }, formatter: "datetime", formatterParams: {
       outputFormat: "YYYY/MM/DD",
-      invalidPlaceholder: "(invalid date)",
+      invalidPlaceholder: "",
     } },
   { title: "メッセージ", field: "message", headerSort: false }
 ];

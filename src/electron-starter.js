@@ -35,7 +35,7 @@ function createWindow() {
   // mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', (closeEvent) => {
-    const index = electron.dialog.showMessageBox(null, {
+    const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
       type: 'info',
       buttons: ['OK', 'Cancel'],
@@ -93,7 +93,7 @@ function createWindow() {
 
   // 初回起動時、スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
   if (!electronStore.get('notified_startup')) {
-    const index = electron.dialog.showMessageBox(null, {
+    const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
       type: 'info',
       buttons: ['YES', 'NO'],

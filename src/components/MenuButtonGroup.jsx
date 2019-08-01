@@ -55,6 +55,7 @@ class MenuButtonGroup extends Component {
     const userID = electronStore.get('userID');
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
+    const statusCode = store.getState().userList.isError.code;
 
     return (
       <Row>
@@ -62,7 +63,7 @@ class MenuButtonGroup extends Component {
           <ButtonToolbar className='menu-button-group'>
             <Col md={3}><Button variant='light' className='w-100' onClick={this.close}>
               <FontAwesomeIcon icon='power-off' /> 終了</Button></Col>
-            <Col md={3}><Button variant='light' className='w-100' onClick={this.reload} disabled={store.getState().userList.isFetching}>
+            <Col md={3}><Button variant='light' className='w-100' onClick={this.reload} disabled={store.getState().userList.isFetching || statusCode === 404}>
               <FontAwesomeIcon icon='sync' /> 再読込</Button></Col>
             <Col md={3}><Button variant='light' className='w-100' onClick={this.showModal} disabled={userInfoLength === 0}>
               <FontAwesomeIcon icon='edit' /> 自分編集</Button></Col>

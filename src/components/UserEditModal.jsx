@@ -105,11 +105,11 @@ class UserEditModal extends Component {
   deleteUser = (event) => {
     const { dispatch } = this.props;
     let userInfo = store.getState().userEditModal.userInfo;
-    const index = remote.dialog.showMessageBox(null, {
+    const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: '行き先掲示板',
       type: 'info',
       buttons: ['OK', 'Cancel'],
-      message: '以下のユーザを一覧から削除しますか？\n・' + userInfo['name'],
+      message: '以下のユーザを一覧から削除しますか？\n\n' + userInfo['name'],
     });
 
     if (index !== 0) {

@@ -6,7 +6,8 @@ import { showInitialStartupModalActionCreator } from '../actions/initialStartupM
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import Loading from './Loading'
 import store from '../store/configureStore';
-import { getUserListAction, updateUserInfoAction } from '../actions/userList';
+import { loginAction, getUserListAction, updateUserInfoAction } from '../actions/userList';
+import { AUTH_REQUEST_HEADERS } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -17,39 +18,58 @@ class App extends Component {
     const { dispatch } = this.props;
     const userID = electronStore.get('userID');
 
-    /**
-     * 初回起動チェック
-     * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
-     */
-    if (!userID) {
-      this._showModal();
-      return;
-    }
-
-    dispatch(getUserListAction())
+    dispatch(loginAction())
       .then(
         () => {
-          const userList = store.getState().userList['userList'];
-          const userInfo = this._getUserInfo(userList, userID);
-          const userInfoLength = Object.keys(userInfo).length;
-          const isError = store.getState().userList.isError;
-
-          if (isError.status === false && userInfoLength === 0) {
-            remote.dialog.showMessageBox(null, {
+          const statusCode = store.getState().userList.isError.code;
+          if (statusCode === 401) {
+            remote.dialog.showMessageBox(remote.getCurrentWindow(), {
               title: '行き先掲示板',
               type: 'info',
               buttons: ['OK'],
-              message: 'ユーザ情報が存在しません。\n新規ユーザ登録を行います。',
+              message: '認証に失敗しました。',
             });
-            dispatch(showInitialStartupModalActionCreator());
             return;
           }
 
-          // 登録済みユーザの場合、情報を初期化
-          userInfo['status'] = '在席';
-          userInfo['destination'] = '';
-          userInfo['return'] = '';
-          dispatch(updateUserInfoAction(userInfo, userID))
+          // APIリクエストヘッダに認証トークンを設定する
+          AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userList.token;
+
+          /**
+          * 初回起動チェック
+          * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
+          */
+          if (!userID) {
+            this._showModal();
+            return;
+          }
+
+          dispatch(getUserListAction())
+            .then(
+              () => {
+                const userList = store.getState().userList['userList'];
+                const userInfo = this._getUserInfo(userList, userID);
+                const userInfoLength = Object.keys(userInfo).length;
+                const isError = store.getState().userList.isError;
+
+                if (isError.status === false && userInfoLength === 0) {
+                  remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+                    title: '行き先掲示板',
+                    type: 'info',
+                    buttons: ['OK'],
+                    message: 'ユーザ情報が存在しません。\n新規ユーザ登録を行います。',
+                  });
+                  dispatch(showInitialStartupModalActionCreator());
+                  return;
+                }
+
+                // 登録済みユーザの場合、情報を初期化
+                userInfo['status'] = '在席';
+                userInfo['destination'] = '';
+                userInfo['return'] = '';
+                dispatch(updateUserInfoAction(userInfo, userID))
+              }
+            );
         }
       );
   }

@@ -1,8 +1,10 @@
-import { API_URL, REQUEST_HEADERS } from '../define';
+import { API_URL, LOGIN_REQUEST_HEADERS, AUTH_REQUEST_HEADERS, LOGIN_USER } from '../define';
 
 /**
  * Action type
  */
+export const LOGIN = 'LOGIN';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
 export const PUT_USER_INFO = 'PUT_USER_INFO';
@@ -20,6 +22,16 @@ export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
 /**
  * Action Creator
  */
+
+export const loginActionCreator = () => ({
+  type: LOGIN
+});
+export const loginSuccessActionCreator = (json) => ({
+  type: LOGIN_SUCCESS,
+  payload: {
+    response: json
+  }
+});
 export const getUserListActionCreator = () => ({
   type: GET_USER_LIST
 });
@@ -70,7 +82,28 @@ export const selectUserActionCreator = (selectedUserId) => ({
 export const returnEmptyUserListActionCreator = () => ({
   type: RETURN_EMPTY_USER_LIST,
   userList: []
-})
+});
+
+export const loginAction = () => {
+  return (dispatch) => {
+    dispatch(loginActionCreator());
+    return fetch(API_URL + 'auth/login',
+      {
+        method: 'POST',
+        headers: LOGIN_REQUEST_HEADERS,
+        body: JSON.stringify(LOGIN_USER)
+      })
+      .then(async res => {
+        if (!res.ok) {
+          return Promise.reject(res);
+        }
+        const json = await res.json();
+        return json;
+      })
+      .then(json => dispatch(loginSuccessActionCreator(json)))
+      .catch(error => dispatch(failRequestActionCreator(error)));
+  }
+};
 
 export const deleteUserAction = (userID) => {
   return (dispatch) => {
@@ -78,11 +111,11 @@ export const deleteUserAction = (userID) => {
     return fetch(API_URL + 'userList/' + userID,
       {
         method: 'DELETE',
-        headers: REQUEST_HEADERS
+        headers: AUTH_REQUEST_HEADERS
       })
       .then(async res => {
         if (!res.ok) {
-          return Promise.reject(new Error(res.statusText));
+          return Promise.reject(res);
         }
         return;
       })
@@ -97,12 +130,12 @@ export const addUserAction = (userInfo) => {
     return fetch(API_URL + 'userList',
       {
         method: 'POST',
-        headers: REQUEST_HEADERS,
+        headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(userInfo),
       })
       .then(async res => {
         if (!res.ok) {
-          return Promise.reject(new Error(res.statusText));
+          return Promise.reject(res);
         }
         const json = await res.json();
         return json;
@@ -118,12 +151,12 @@ export const updateUserInfoAction = (userInfo, userID) => {
     return fetch(API_URL + 'userList/' + userID,
       {
         method: 'PUT',
-        headers: REQUEST_HEADERS,
+        headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(userInfo),
       })
       .then(res => {
         if (!res.ok || res.status === 404) {
-          return Promise.reject(new Error(res.statusText));
+          return Promise.reject(res);
         }
         return;
       })
@@ -138,11 +171,11 @@ export const getUserListAction = () => {
     return fetch(API_URL + 'userList',
       {
         method: 'GET',
-        headers: REQUEST_HEADERS
+        headers: AUTH_REQUEST_HEADERS
       })
       .then( async res => {
         if (!res.ok) {
-          return Promise.reject(new Error(res.statusText));
+          return Promise.reject(res);
         }
         const json = await res.json();
         return json;
@@ -161,12 +194,12 @@ export const patchUserInfoAction = (userInfo, userID) => {
     return fetch(API_URL + 'userList/' + userID,
       {
         method: 'PATCH',
-        headers: REQUEST_HEADERS,
+        headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(userInfo),
       })
       .then(res => {
         if (!res.ok || res.status === 404) {
-          return Promise.reject(new Error(res.statusText));
+          return Promise.reject(res);
         }
         return;
       })
@@ -175,13 +208,6 @@ export const patchUserInfoAction = (userInfo, userID) => {
         dispatch(failRequestActionCreator(error))
         dispatch(returnEmptyUserListAction());
       });
-  }
-};
-
-export const selectUserAction = (selectedUserId) => {
-  return (dispatch) => {
-    dispatch(selectUserActionCreator(selectedUserId));
-    return selectedUserId;
   }
 };
 
