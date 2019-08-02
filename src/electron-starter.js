@@ -33,13 +33,22 @@ function createWindow() {
   // and load the index.html of the app.
   // const loadURL = process.env.LOAD_URL || `file://${path.join(__dirname, "../build/index.html")}`;
 
-  // 設定ファイルに接続先URLを設定する。既に設定されていればその設定値を読み込んで使用する
-  if (!electronStore.get('loadURL')) {
-    const loadURL = 'http://********/';
+  /**
+   * 設定ファイルに接続先URLを設定する。既に設定されていればその設定値を読み込んで使用する。
+   * 環境変数が設定されていれば、その設定を最優先にする
+   */
+  let loadURL;
+
+  if (process.env.LOAD_URL) {
+    loadURL = process.env.LOAD_URL;
+  } else if (!electronStore.get('loadURL')) {
+    loadURL = 'http://********/';
     electronStore.set('loadURL', loadURL);
+  } else {
+    loadURL = electronStore.get('loadURL');
   }
 
-  mainWindow.loadURL(electronStore.get('loadURL'));
+  mainWindow.loadURL(loadURL);
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
