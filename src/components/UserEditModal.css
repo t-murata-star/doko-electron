@@ -29,6 +29,11 @@
 }
 .userChange {
     font-size: 13px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 4px;
+    position: relative;
 }
 .modal-button-user-delete.btn.btn-outline-light {
     margin-right: auto !important;

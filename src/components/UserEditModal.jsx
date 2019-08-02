@@ -154,7 +154,7 @@ class UserEditModal extends Component {
                     <Form.Group as={Col} controlId='name'>
                       <Form.Label><span className='name'>氏名</span></Form.Label>
                       {userInfo['id'] === electronStore.get('userID') &&
-                        <a href='/#' className='userChange' onClick={this.handleChangeUser}>ユーザ変更</a>
+                        <Button variant='link' className='modal-button-user-delete userChange' onClick={this.handleChangeUser}>ユーザ変更</Button>
                       }
                       <Form.Control name="name" placeholder="" defaultValue={userInfo.name} onChange={this.onInfoChange} maxLength={100} />
                     </Form.Group>
@@ -191,7 +191,8 @@ class UserEditModal extends Component {
                     <Col md="2" />
                     <Col md="8">
                       <Form.Group as={Col} controlId='name'>
-                        <Form.Label><span className='name'>氏名</span></Form.Label> <a href='/#' className='userChange' onClick={this.handleEditUser}>戻る</a>
+                        <Form.Label><span className='name'>氏名</span></Form.Label>
+                        <Button variant='link' className='modal-button-user-delete userChange' onClick={this.handleEditUser}>戻る</Button>
                         <Form.Control name="usesrID" as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
                           {userList.userList.map((userInfo, index) => (

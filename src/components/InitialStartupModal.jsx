@@ -142,7 +142,8 @@ class InitialStartupModal extends Component {
                           ))}
                         </Form.Control>
                         <Form.Text>
-                          <span>新規登録は<a href='/#' onClick={this.registUserInput}>こちら</a></span>
+                          <span>新規登録は</span>
+                          <Button variant='link' className='modal-button-user-delete userChange' onClick={this.registUserInput}>こちら</Button>
                         </Form.Text>
                       </div>
                     }
@@ -150,7 +151,8 @@ class InitialStartupModal extends Component {
                       <div>
                         <Form.Control name="name" placeholder="氏名を入力してください" onChange={this.onNameChange} maxLength={100} />
                         <Form.Text>
-                          <span>登録済みの場合は<a href='/#' onClick={this.changeUserInput}>こちら</a></span>
+                          <span>登録済みの場合は</span>
+                          <Button variant='link' className='modal-button-user-delete userChange' onClick={this.changeUserInput}>こちら</Button>
                         </Form.Text>
                       </div>
                     }
