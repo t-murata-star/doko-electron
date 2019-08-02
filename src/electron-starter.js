@@ -121,7 +121,7 @@ function createWindow() {
 
     if (index === 0) {
       app.setLoginItemSettings({
-        openAtLogin: false,
+        openAtLogin: true,
         path: electron.app.getPath('exe'),
       });
     }
