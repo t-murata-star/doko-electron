@@ -8,6 +8,7 @@ import { faPowerOff, faSync, faEdit, faWindowMinimize, } from '@fortawesome/free
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
+import $ from 'jquery';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく
 
@@ -23,7 +24,11 @@ class MenuButtonGroup extends Component {
 
   reload = () => {
     const { dispatch } = this.props;
-    dispatch(getUserListAction());
+    const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
+
+    // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
+    dispatch(getUserListAction())
+      .then(() => $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop));
   }
 
   minimize = () => {
