@@ -10,7 +10,6 @@ const BrowserWindow = electron.BrowserWindow;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-let secondInstance = false;
 
 function createWindow() {
   // Create the browser window.
@@ -55,17 +54,6 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', (closeEvent) => {
-    // 2重起動の場合、終了確認ダイアログを表示しない
-    if (secondInstance) {
-      electron.dialog.showMessageBox(mainWindow, {
-        title: '行き先掲示板',
-        type: 'info',
-        buttons: ['OK'],
-        message: '既に起動しています。',
-      });
-      return;
-    }
-
     const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
       type: 'info',
@@ -169,34 +157,39 @@ function createTray() {
   });
 }
 
-// 二重起動防止
-app.requestSingleInstanceLock()
-app.on('second-instance', (event, argv, cwd) => {
-  secondInstance = true;
+// 二重起動防止処理
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
   app.quit();
-})
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // 2つ目のアプリケーションが起動された場合、1つ目のアプリケーションのウィンドウにフォーカスする
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.show()
+    }
+  });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+  // This method will be called when Electron has finished
+  // initialization and is ready to create browser windows.
+  // Some APIs can only be used after this event occurs.
+  app.on('ready', createWindow);
 
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
+  // Quit when all windows are closed.
+  app.on('window-all-closed', () => {
+    // On OS X it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
 
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+  app.on('activate', () => {
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (mainWindow === null) {
+      createWindow();
+    }
+  });
+}
