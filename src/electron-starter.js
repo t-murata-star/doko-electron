@@ -31,8 +31,15 @@ function createWindow() {
   mainWindow.setMenuBarVisibility(false);
 
   // and load the index.html of the app.
-  const loadURL = process.env.LOAD_URL || `file://${path.join(__dirname, "../build/index.html")}`;
-  mainWindow.loadURL(loadURL);
+  // const loadURL = process.env.LOAD_URL || `file://${path.join(__dirname, "../build/index.html")}`;
+
+  // 設定ファイルに接続先URLを設定する。既に設定されていればその設定値を読み込んで使用する
+  if (!electronStore.get('loadURL')) {
+    const loadURL = 'http://********/';
+    electronStore.set('loadURL', loadURL);
+  }
+
+  mainWindow.loadURL(electronStore.get('loadURL'));
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
