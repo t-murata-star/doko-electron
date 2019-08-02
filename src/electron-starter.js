@@ -18,8 +18,11 @@ function createWindow() {
     width: 1000,
     height: 625,
     resizable: false,
+    fullscreen: false,
+    fullscreenable: false,
     maximizable: false,
     webPreferences: {
+      devTools: false,
       nodeIntegration: true
     }
   });
@@ -32,7 +35,7 @@ function createWindow() {
   mainWindow.loadURL(loadURL);
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', (closeEvent) => {
     const index = electron.dialog.showMessageBox(mainWindow, {
