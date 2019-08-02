@@ -10,6 +10,7 @@ const BrowserWindow = electron.BrowserWindow;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let secondInstance = false;
 
 function createWindow() {
   // Create the browser window.
@@ -54,6 +55,17 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', (closeEvent) => {
+    // 2重起動の場合、終了確認ダイアログを表示しない
+    if (secondInstance) {
+      electron.dialog.showMessageBox(mainWindow, {
+        title: '行き先掲示板',
+        type: 'info',
+        buttons: ['OK'],
+        message: '既に起動しています。',
+      });
+      return;
+    }
+
     const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
       type: 'info',
@@ -156,6 +168,13 @@ function createTray() {
     tray.popUpContextMenu(contextMenu)
   });
 }
+
+// 二重起動防止
+app.requestSingleInstanceLock()
+app.on('second-instance', (event, argv, cwd) => {
+  secondInstance = true;
+  app.quit();
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
