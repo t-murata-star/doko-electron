@@ -9,10 +9,11 @@ const packagejson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 builder.build({
   targets: Platform.MAC.createTarget(),
   config: {
+    'productName': '行き先掲示板',
     'appId': `com.electron.${packagejson.name}`,
     'mac': {
       'target': {
-        'target': 'zip',
+        'target': 'nsis',
         'arch': [
           'x64',
           'ia32',
