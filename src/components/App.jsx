@@ -63,11 +63,13 @@ class App extends Component {
                   return;
                 }
 
-                // 登録済みユーザの場合、情報を初期化
-                userInfo['status'] = '在席';
-                userInfo['destination'] = '';
-                userInfo['return'] = '';
-                dispatch(updateUserInfoAction(userInfo, userID))
+                // 状態が「退社」のユーザのみ、状態を「在席」に変更して情報を初期化
+                if (userInfo['status'] === '退社') {
+                  userInfo['status'] = '在席';
+                  userInfo['destination'] = '';
+                  userInfo['return'] = '';
+                  dispatch(updateUserInfoAction(userInfo, userID))
+                }
               }
             );
         }
