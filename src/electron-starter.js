@@ -128,8 +128,6 @@ function createWindow() {
 
     electronStore.set('notified_startup', 1);
   }
-  // const userHome = process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"];
-  // const startupPath = path.join(userHome, 'AppData', 'Roaming', 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup');
 }
 
 // タスクトレイを作成
