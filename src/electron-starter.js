@@ -113,8 +113,8 @@ function createWindow() {
 
   createTray();
 
-  // 初回起動時、スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
-  if (!electronStore.get('notified_startup')) {
+  // MacOS以外の初回起動時、スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
+  if (!electronStore.get('notified_startup') && process.platform !== 'darwin') {
     const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
       type: 'info',
