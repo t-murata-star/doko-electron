@@ -10,7 +10,7 @@ export const AUTH_REQUEST_HEADERS = {
   "Content-type": "application/json; charset=UTF-8",
 };
 export const TABLE_COLUMNS = [
-  { rowHandle: true, formatter: "handle", headerSort: false, frozen: true, width: 25, minWidth: 25, maxWidth: 25 },
+  { rowHandle: true, formatter: "handle", headerSort: false, frozen: true, width: 25, minWidth: 25, resizable: false },
   { title: "順序", field: "order", visible: false, headerSort: false, sorter: 'number' },
   { title: "氏名", field: "name", width: 150, headerSort: false },
   { title: "状態", field: "status", width: 100, headerSort: false },
