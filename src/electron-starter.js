@@ -11,6 +11,9 @@ const BrowserWindow = electron.BrowserWindow;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
+// ビルド用接続先URL
+const DEFAULT_LOAD_URL = 'http://********/';
+
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -42,7 +45,7 @@ function createWindow() {
   if (process.env.LOAD_URL) {
     loadURL = process.env.LOAD_URL;
   } else if (!electronStore.get('loadURL')) {
-    loadURL = 'http://********/';
+    loadURL = DEFAULT_LOAD_URL;
     electronStore.set('loadURL', loadURL);
   } else {
     loadURL = electronStore.get('loadURL');
