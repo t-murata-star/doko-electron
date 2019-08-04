@@ -8,6 +8,7 @@ import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { patchUserInfoAction } from '../actions/userList';
+import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -29,6 +30,7 @@ class UserList extends Component {
     const userList = store.getState().userList['userList'];
     const selectedUserId = row.getData()['id'];
     const userInfo = this._getUserInfo(userList, selectedUserId);
+    dispatch(disableSubmitButtonActionCreator());
     dispatch(showUserEditModalActionCreator(selectedUserId, userInfo));
   }
 

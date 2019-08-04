@@ -7,6 +7,8 @@ export const DISABLE_SUBMIT_BUTTON = 'DISABLE_SUBMIT_BUTTON';
 export const ENABLE_SUBMIT_BUTTON = 'ENABLE_SUBMIT_BUTTON';
 export const HANDLE_CHANGE_USER = 'HANDLE_CHANGE_USER';
 export const HANDLE_EDIT_USER = 'HANDLE_EDIT_USER';
+export const INPUT_CLEAR = 'INPUT_CLEAR';
+export const CHANGE_USER_INFO = 'CHANGE_USER_INFO';
 
 /**
  * Action Creator
@@ -25,9 +27,8 @@ export const disableSubmitButtonActionCreator = () => ({
   type: DISABLE_SUBMIT_BUTTON,
 });
 
-export const enableSubmitButtonActionCreator = (userInfo) => ({
+export const enableSubmitButtonActionCreator = () => ({
   type: ENABLE_SUBMIT_BUTTON,
-  userInfo,
 });
 
 export const handleChangeUserActionCreator = () => ({
@@ -36,4 +37,16 @@ export const handleChangeUserActionCreator = () => ({
 
 export const handleEditUserActionCreator = () => ({
   type: HANDLE_EDIT_USER,
+});
+
+export const inputClearActionCreator = (userInfo) => ({
+  type: INPUT_CLEAR,
+  userInfo,
+});
+
+export const changeUserInfoActionCreator = (userInfo, key, value) => ({
+  type: CHANGE_USER_INFO,
+  userInfo,
+  key,
+  value
 });

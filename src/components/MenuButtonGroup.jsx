@@ -9,6 +9,7 @@ import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
 import $ from 'jquery';
+import {disableSubmitButtonActionCreator} from '../actions/userEditModal';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize) //あらかじめ使用するアイコンを追加しておく
 
@@ -41,6 +42,7 @@ class MenuButtonGroup extends Component {
     const userList = store.getState().userList['userList'];
     const userID = electronStore.get('userID');
     const userInfo = this._getUserInfo(userList, userID);
+    dispatch(disableSubmitButtonActionCreator());
     dispatch(showUserEditModalActionCreator(userID, userInfo));
   }
 

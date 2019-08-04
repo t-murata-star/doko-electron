@@ -1,11 +1,12 @@
 import * as Actions from '../actions/userEditModal';
+import { USER_INFO } from '../define';
 
 export default function userEditModal(state = {
   onHide: false,
   submitButtonStatus: true,
   isChangeUser: false,
   userID: null,
-  userInfo: {}
+  userInfo: USER_INFO
 }, action) {
   switch (action.type) {
     case Actions.SHOW_USER_EDIT_MODAL:
@@ -29,7 +30,6 @@ export default function userEditModal(state = {
     case Actions.ENABLE_SUBMIT_BUTTON:
       return {
         ...state,
-        userInfo: action.userInfo,
         submitButtonStatus: false,
       };
     case Actions.HANDLE_CHANGE_USER:
@@ -44,6 +44,21 @@ export default function userEditModal(state = {
         submitButtonStatus: true,
         isChangeUser: false,
       };
+    case Actions.INPUT_CLEAR:
+      action.userInfo['status'] = '在席';
+      action.userInfo['destination'] = '';
+      action.userInfo['return'] = '';
+      return {
+        ...state,
+        userInfo: action.userInfo
+      };
+    case Actions.CHANGE_USER_INFO:
+      action.userInfo[action.key] = action.value;
+      return {
+        ...state,
+        userInfo: action.userInfo
+      };
+
     default:
       return state;
   }

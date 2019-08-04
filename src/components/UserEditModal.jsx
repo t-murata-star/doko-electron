@@ -12,11 +12,13 @@ import {
   enableSubmitButtonActionCreator,
   disableSubmitButtonActionCreator,
   handleChangeUserActionCreator,
-  handleEditUserActionCreator
+  handleEditUserActionCreator,
+  inputClearActionCreator,
+  changeUserInfoActionCreator
 } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction, deleteUserAction } from '../actions/userList';
-import { USER_INFO, STATUS_LIST } from '../define';
+import { STATUS_LIST } from '../define';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -25,13 +27,11 @@ const electronStore = new Store();
 class UserEditModal extends Component {
   constructor(props) {
     super(props)
-    this.userInfo = USER_INFO;
     this.userID = null;
   }
 
   componentDidUpdate() {
-    const userInfo = store.getState().userEditModal.userInfo;
-    this.userInfo = Object.assign({}, userInfo);
+    this.userInfo = Object.assign({}, this.props.userInfo);
   }
 
   closeModal = () => {
@@ -41,13 +41,13 @@ class UserEditModal extends Component {
 
   _updateUserInfo = (userInfo) => {
     const { dispatch } = this.props;
-    const userID = store.getState().userEditModal.userID;
+    const userID = this.props.userID;
     dispatch(updateUserInfoAction(userInfo, userID))
       .then(
         () => {
           const userList = store.getState().userList;
           if (userList.isError.status) {
-            dispatch(enableSubmitButtonActionCreator(userInfo));
+            dispatch(enableSubmitButtonActionCreator());
             return;
           }
           this.closeModal();
@@ -63,19 +63,19 @@ class UserEditModal extends Component {
     dispatch(getUserListAction());
   }
 
-  onInfoChange = (event) => {
+  onUserInfoChange = (event) => {
     const { dispatch } = this.props;
-    this.userInfo[event.target.name] = event.target.value;
-    if (store.getState().userEditModal.submitButtonStatus) {
-      dispatch(enableSubmitButtonActionCreator(this.userInfo));
+    dispatch(changeUserInfoActionCreator(this.userInfo, event.target.name, event.target.value));
+    if (this.props.submitButtonStatus) {
+      dispatch(enableSubmitButtonActionCreator());
     }
   }
 
   onUserChange = (event) => {
     const { dispatch } = this.props;
     this.userID = event.target.value;
-    if (store.getState().userEditModal.submitButtonStatus) {
-      dispatch(enableSubmitButtonActionCreator(this.userInfo));
+    if (this.props.submitButtonStatus) {
+      dispatch(enableSubmitButtonActionCreator());
     }
   }
 
@@ -84,7 +84,7 @@ class UserEditModal extends Component {
     const { dispatch } = this.props;
     dispatch(disableSubmitButtonActionCreator());
 
-    if (store.getState().userEditModal.isChangeUser) {
+    if (this.props.isChangeUser) {
       this._changeUser();
     } else {
       this._updateUserInfo(this.userInfo);
@@ -103,8 +103,7 @@ class UserEditModal extends Component {
   }
 
   deleteUser = (event) => {
-    const { dispatch } = this.props;
-    let userInfo = store.getState().userEditModal.userInfo;
+    const { dispatch } = this.props;;
     const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: '行き先掲示板',
       type: 'info',
@@ -115,7 +114,7 @@ class UserEditModal extends Component {
     if (index !== 0) {
       return;
     }
-    dispatch(deleteUserAction(userInfo['id']))
+    dispatch(deleteUserAction(this.props.userInfo['id']))
       .then(
         () => {
           const userList = store.getState().userList;
@@ -128,15 +127,18 @@ class UserEditModal extends Component {
       );
   }
 
+  inputClear = () => {
+    const { dispatch } = this.props;
+    dispatch(inputClearActionCreator(this.userInfo));
+    dispatch(enableSubmitButtonActionCreator());
+  }
+
   render() {
-    const userEditModal = store.getState().userEditModal;
     const userList = store.getState().userList;
-    userEditModal.userInfo = userEditModal.userInfo ? userEditModal.userInfo : USER_INFO;
-    let userInfo = store.getState().userEditModal.userInfo;
-    userInfo = userInfo ? userInfo : USER_INFO;
+    const userInfo = this.props.userInfo;
 
     return (
-      <Modal dialogClassName='userEditModal' show={userEditModal.onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
+      <Modal dialogClassName='userEditModal' show={this.props.onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
         <Modal.Header>
           <Modal.Title id='contained-modal-title-vcenter'>
             情報変更
@@ -148,19 +150,20 @@ class UserEditModal extends Component {
         <Form onSubmit={this.handleSubmit}>
           <Modal.Body>
             <Container>
-              {!userEditModal.isChangeUser &&
+              {!this.props.isChangeUser &&
                 <div>
                   <Form.Row>
                     <Form.Group as={Col} controlId='name'>
                       <Form.Label><span className='name'>氏名</span></Form.Label>
                       {userInfo['id'] === electronStore.get('userID') &&
-                        <Button variant='link' className='modal-button-user-delete userChange' onClick={this.handleChangeUser}>ユーザ変更</Button>
+                        <Button variant='link' className='userChange' onClick={this.handleChangeUser}>ユーザ変更</Button>
                       }
-                      <Form.Control name="name" placeholder="" defaultValue={userInfo.name} onChange={this.onInfoChange} maxLength={100} />
+                      <Form.Control name="name" placeholder="" value={userInfo.name} onChange={this.onUserInfoChange} maxLength={100} />
                     </Form.Group>
                     <Form.Group as={Col} controlId='status'>
-                      <Form.Label>状態</Form.Label>
-                      <Form.Control name="status" as='select' defaultValue={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.onInfoChange}>
+                    <Form.Label><span className='status'>状態</span></Form.Label>
+                    <Button variant='light' className='btn-sm modal-button-clear' onClick={this.inputClear}>クリア</Button>
+                      <Form.Control name="status" as='select' value={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.onUserInfoChange}>
                         {STATUS_LIST.map((status, index) => (
                           <option key={index}>{status}</option>
                         ))}
@@ -171,21 +174,21 @@ class UserEditModal extends Component {
                   <Form.Row>
                     <Form.Group as={Col} controlId='destination'>
                       <Form.Label>行き先</Form.Label>
-                      <Form.Control name="destination" placeholder="" defaultValue={userInfo.destination} onChange={this.onInfoChange} maxLength={100} />
+                      <Form.Control name="destination" placeholder="" value={userInfo.destination} onChange={this.onUserInfoChange} maxLength={100} />
                     </Form.Group>
                     <Form.Group as={Col} controlId='return'>
                       <Form.Label>戻り</Form.Label>
-                      <Form.Control name="return" placeholder="" defaultValue={userInfo.return} onChange={this.onInfoChange} maxLength={100} />
+                      <Form.Control name="return" placeholder="" value={userInfo.return} onChange={this.onUserInfoChange} maxLength={100} />
                     </Form.Group>
                   </Form.Row>
                   <Form.Group controlId='message'>
                     <Form.Label>メッセージ</Form.Label>
-                    <Form.Control name="message" placeholder="" defaultValue={userInfo.message} onChange={this.onInfoChange} maxLength={100} />
+                    <Form.Control name="message" placeholder="" value={userInfo.message} onChange={this.onUserInfoChange} maxLength={100} />
                   </Form.Group>
                 </div>
               }
 
-              {userEditModal.isChangeUser &&
+              {this.props.isChangeUser &&
                 <div>
                   <Form.Row>
                     <Col md="2" />
@@ -208,10 +211,10 @@ class UserEditModal extends Component {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            {!userEditModal.isChangeUser &&
+            {!this.props.isChangeUser &&
               <Button variant='outline-light' className='modal-button-user-delete' onClick={this.deleteUser}>削除</Button>
             }
-            <Button type="submit" variant='primary' className='modal-button' disabled={store.getState().userEditModal.submitButtonStatus}>更新</Button>
+            <Button type="submit" variant='primary' className='modal-button' disabled={this.props.submitButtonStatus}>更新</Button>
             <Button variant='light' className='modal-button' onClick={this.closeModal}>キャンセル</Button>
           </Modal.Footer>
         </Form>

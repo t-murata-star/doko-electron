@@ -2,8 +2,13 @@ import { connect } from 'react-redux';
 import UserEditModal from '../components/UserEditModal';
 
 function mapStateToProps(state) {
+  const { userInfo, onHide, isChangeUser, submitButtonStatus, userID } = state.userEditModal;
   return {
-    state
+    userInfo,
+    onHide,
+    isChangeUser,
+    submitButtonStatus,
+    userID
   };
 }
 
