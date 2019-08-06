@@ -1,7 +1,7 @@
 export const API_URL = process.env.REACT_APP_API_URL;
 export const LOGIN_USER = {
-  username: '********',
-  password: '********'
+  username: process.env.REACT_APP_USERNAME,
+  password: process.env.REACT_APP_PASSWORD
 }
 export const LOGIN_REQUEST_HEADERS = {
   "Content-type": "application/json; charset=UTF-8"
