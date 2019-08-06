@@ -39,8 +39,8 @@ function createWindow() {
   // const loadURL = process.env.LOAD_URL || `file://${path.join(__dirname, "../build/index.html")}`;
 
   /**
-   * 設定ファイルに接続先URLを設定する。既に設定されていればその設定値を読み込んで使用する。
-   * 環境変数が設定されていれば、その設定を最優先にする
+   * 環境変数が設定されていればその設定値を接続先を使用する
+   * 設定されていなければ、当プログラムにて定義した接続先を使用する
    */
   let loadURL;
 
