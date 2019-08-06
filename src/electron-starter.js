@@ -2,6 +2,8 @@ const electron = require('electron');
 const path = require("path");
 const Store = require('electron-store');
 const electronStore = new Store();
+const { ipcMain } = require('electron');
+const { session } = require('electron');
 
 // Module to control application life.
 const app = electron.app;
@@ -44,11 +46,8 @@ function createWindow() {
 
   if (process.env.LOAD_URL) {
     loadURL = process.env.LOAD_URL;
-  } else if (!electronStore.get('loadURL')) {
-    loadURL = DEFAULT_LOAD_URL;
-    electronStore.set('loadURL', loadURL);
   } else {
-    loadURL = electronStore.get('loadURL');
+    loadURL = DEFAULT_LOAD_URL;
   }
 
   mainWindow.loadURL(loadURL);
@@ -57,6 +56,7 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 
   mainWindow.on('close', (closeEvent) => {
+    closeEvent.preventDefault();
     const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
       type: 'info',
@@ -70,11 +70,10 @@ function createWindow() {
          * アプリ終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
          */
-        mainWindow.webContents.send('updateInfo', 'status', '退社');
+        mainWindow.webContents.send('appClose');
         break;
 
       case 1:
-        closeEvent.preventDefault();
         break;
 
       default:
@@ -87,6 +86,7 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    session.defaultSession.clearCache(() => { })
     mainWindow = null
   });
 
@@ -192,3 +192,6 @@ if (!gotTheLock) {
     }
   });
 }
+ipcMain.on('close', function (event, arg) {
+  mainWindow.destroy();
+});

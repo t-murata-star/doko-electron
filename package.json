@@ -1,6 +1,6 @@
 {
   "name": "doko_electron",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "t-murata",
   "description": "行き先掲示板",
   "private": true,

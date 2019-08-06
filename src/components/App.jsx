@@ -107,6 +107,27 @@ class App extends Component {
     dispatch(updateUserInfoAction(userInfo, userID))
   });
 
+  appClose = ipcRenderer.on('appClose', (event) => {
+    const { dispatch } = this.props;
+
+    const userID = electronStore.get('userID');
+    const userList = store.getState().userList['userList'];
+    const userInfo = this._getUserInfo(userList, userID);
+    const userInfoLength = Object.keys(userInfo).length;
+    if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+      ipcRenderer.send('close');
+      return;
+    }
+
+    userInfo['status'] = '退社';
+    dispatch(updateUserInfoAction(userInfo, userID))
+      .then(
+        () => {
+          ipcRenderer.send('close');
+      }
+    )
+  });
+
   render() {
     const isFetching = store.getState().userList.isFetching;
 
