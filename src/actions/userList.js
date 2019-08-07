@@ -7,14 +7,16 @@ export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
-export const PUT_USER_INFO = 'PUT_USER_INFO';
-export const PUT_USER_INFO_SUCCESS = 'PUT_USER_INFO_SUCCESS';
 export const ADD_USER = 'ADD_USER';
 export const ADD_USER_SUCCESS = 'ADD_USER_SUCCESS';
 export const DELETE_USER = 'DELETE_USER';
 export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
-export const PATCH_USER_INFO = 'PATCH_USER_INFO';
-export const PATCH_USER_INFO_SUCCESS = 'PATCH_USER_INFO_SUCCESS';
+export const UPDATE_USER_INFO = 'UPDATE_USER_INFO';
+export const UPDATE_USER_INFO_SUCCESS = 'UPDATE_USER_INFO_SUCCESS';
+export const CHANGE_ORDER = 'CHANGE_ORDER';
+export const CHANGE_ORDER_SUCCESS = 'CHANGE_ORDER_SUCCESS';
+export const UPDATE_FOR_ADDED_USER_INFO = 'UPDATE_FOR_ADDED_USER_INFO';
+export const UPDATE_FOR_ADDED_USER_INFO_SUCCESS = 'UPDATE_FOR_ADDED_USER_INFO_SUCCESS';
 export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
@@ -42,12 +44,6 @@ export const getUserListSccessActionCreator = (json) => ({
     response: json
   }
 });
-export const updateUserInfoActionCreator = () => ({
-  type: PUT_USER_INFO
-});
-export const updateUserInfoSuccessActionCreator = () => ({
-  type: PUT_USER_INFO_SUCCESS
-});
 export const addUserActionCreator = () => ({
   type: ADD_USER
 });
@@ -63,11 +59,23 @@ export const deleteUserActionCreator = () => ({
 export const deleteUserSuccessActionCreator = () => ({
   type: DELETE_USER_SUCCESS,
 });
-export const patchUserInfoActionCreator = () => ({
-  type: PATCH_USER_INFO
+export const updateUserInfoActionCreator = () => ({
+  type: UPDATE_USER_INFO
 });
-export const patchUserInfoSuccessActionCreator = () => ({
-  type: PATCH_USER_INFO_SUCCESS
+export const updateUserInfoSuccessActionCreator = () => ({
+  type: UPDATE_USER_INFO_SUCCESS
+});
+export const changeOrderActionCreator = () => ({
+  type: CHANGE_ORDER
+});
+export const changeOrderSuccessActionCreator = () => ({
+  type: CHANGE_ORDER_SUCCESS
+});
+export const updateForAddedUserInfoActionCreator = () => ({
+  type: UPDATE_FOR_ADDED_USER_INFO
+});
+export const updateForAddedUserInfoSuccessActionCreator = () => ({
+  type: UPDATE_FOR_ADDED_USER_INFO_SUCCESS
 });
 export const failRequestActionCreator = (error) => ({
   type: FAIL_REQUEST,
@@ -156,29 +164,6 @@ export const addUserAction = (userInfo) => {
   }
 };
 
-export const updateUserInfoAction = (userInfo, userID) => {
-  return (dispatch) => {
-    dispatch(updateUserInfoActionCreator());
-    return fetch(API_URL + 'userList/' + userID,
-      {
-        method: 'PUT',
-        headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(userInfo),
-      })
-      .then(res => {
-        if (res.status === 401) {
-          dispatch(unauthorizedActionCreator());
-        }
-        if (!res.ok) {
-          return Promise.reject(res);
-        }
-        return;
-      })
-      .then(() => dispatch(updateUserInfoSuccessActionCreator()))
-      .catch(error => dispatch(failRequestActionCreator(error)));
-  }
-};
-
 export const getUserListAction = () => {
   return (dispatch) => {
     dispatch(getUserListActionCreator());
@@ -205,14 +190,15 @@ export const getUserListAction = () => {
   }
 };
 
-export const patchUserInfoAction = (userInfo, userID) => {
+export const changeOrderAction = (userInfo, userID) => {
   return (dispatch) => {
-    dispatch(patchUserInfoActionCreator());
+    dispatch(changeOrderActionCreator());
+    const body = Object.assign({}, userInfo);
     return fetch(API_URL + 'userList/' + userID,
       {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(userInfo),
+        body: JSON.stringify(body),
       })
       .then(res => {
         if (res.status === 401) {
@@ -223,7 +209,64 @@ export const patchUserInfoAction = (userInfo, userID) => {
         }
         return;
       })
-      .then(() => dispatch(patchUserInfoSuccessActionCreator()))
+      .then(() => dispatch(changeOrderSuccessActionCreator()))
+      .catch(error => {
+        dispatch(failRequestActionCreator(error))
+        dispatch(returnEmptyUserListAction());
+      });
+  }
+};
+
+export const updateUserInfoAction = (userInfo, userID) => {
+  return (dispatch) => {
+    dispatch(updateUserInfoActionCreator());
+    const body = Object.assign({}, userInfo);
+    delete body['id'];
+    delete body['order'];
+    return fetch(API_URL + 'userList/' + userID,
+      {
+        method: 'PATCH',
+        headers: AUTH_REQUEST_HEADERS,
+        body: JSON.stringify(body),
+      })
+      .then(res => {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
+        if (!res.ok) {
+          return Promise.reject(res);
+        }
+        return;
+      })
+      .then(() => dispatch(updateUserInfoSuccessActionCreator()))
+      .catch(error => {
+        dispatch(failRequestActionCreator(error))
+        dispatch(returnEmptyUserListAction());
+      });
+  }
+};
+
+export const updateForAddedUserInfoAction = (userInfo, userID) => {
+  return (dispatch) => {
+    dispatch(updateForAddedUserInfoActionCreator());
+    const body = Object.assign({}, userInfo);
+    delete body['id'];
+    return fetch(API_URL + 'userList/' + userID,
+      {
+        method: 'PATCH',
+        headers: AUTH_REQUEST_HEADERS,
+        body: JSON.stringify(body),
+      })
+      .then(res => {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
+        if (!res.ok) {
+          return Promise.reject(res);
+        }
+        return;
+      })
+      .then(() => dispatch(updateForAddedUserInfoSuccessActionCreator()))
       .catch(error => {
         dispatch(failRequestActionCreator(error))
         dispatch(returnEmptyUserListAction());

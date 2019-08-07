@@ -7,7 +7,7 @@ import { ReactTabulator } from 'react-tabulator'
 import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
-import { patchUserInfoAction } from '../actions/userList';
+import { getUserListAction, changeOrderAction } from '../actions/userList';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 
 const Store = window.require('electron-store');
@@ -85,7 +85,12 @@ class UserList extends Component {
     const rows = rowComponent.getTable().getRows();
     rows.forEach((row) => {
       const patchInfoUser = { 'order': row.getPosition(true) + 1 };
-      dispatch(patchUserInfoAction(patchInfoUser, row.getData().id));
+      dispatch(changeOrderAction(patchInfoUser, row.getData().id))
+        .then(
+          () => {
+            dispatch(getUserListAction());
+          }
+        );
     });
   }
 

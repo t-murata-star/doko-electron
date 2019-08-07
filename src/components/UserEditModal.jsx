@@ -42,6 +42,7 @@ class UserEditModal extends Component {
   _updateUserInfo = (userInfo) => {
     const { dispatch } = this.props;
     const userID = this.props.userID;
+
     dispatch(updateUserInfoAction(userInfo, userID))
       .then(
         () => {

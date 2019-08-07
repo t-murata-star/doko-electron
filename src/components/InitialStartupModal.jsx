@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import store from '../store/configureStore';
-import { addUserAction, getUserListAction, updateUserInfoAction } from '../actions/userList';
+import { addUserAction, getUserListAction, updateForAddedUserInfoAction } from '../actions/userList';
 import { USER_INFO } from '../define';
 
 const { remote } = window.require('electron');
@@ -47,13 +47,13 @@ class InitialStartupModal extends Component {
           // orderパラメータをidと同じ値に更新する
           const userInfo = userList.userInfo;
           userInfo['order'] = userInfo['id'];
-          dispatch(updateUserInfoAction(userInfo, userInfo['id']))
+          dispatch(updateForAddedUserInfoAction(userInfo, userInfo['id']))
             .then(
               () => dispatch(getUserListAction())
             );
 
-          // userIDを設定ファイルに登録（既に存在する場合は上書き）
-          electronStore.set('userID', userList.userInfo['id']);
+            // userIDを設定ファイルに登録（既に存在する場合は上書き）
+          electronStore.set('userID', userInfo['id']);
           this.closeModal();
         }
       );
