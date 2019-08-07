@@ -39,8 +39,8 @@ function createWindow() {
   // const loadURL = process.env.LOAD_URL || `file://${path.join(__dirname, "../build/index.html")}`;
 
   /**
-   * 設定ファイルに接続先URLを設定する。既に設定されていればその設定値を読み込んで使用する。
-   * 環境変数が設定されていれば、その設定を最優先にする
+   * 環境変数が設定されていればその設定値を接続先を使用する
+   * 設定されていなければ、当プログラムにて定義した接続先を使用する
    */
   let loadURL;
 
@@ -120,8 +120,8 @@ function createWindow() {
 
   createTray();
 
-  // MacOS以外の初回起動時、スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
-  if (!electronStore.get('notified_startup') && process.platform !== 'darwin') {
+  // スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
+  if (!electronStore.get('notified_startup')) {
     const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
       type: 'info',
