@@ -70,7 +70,14 @@ function createWindow() {
          * アプリ終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
          */
-        mainWindow.webContents.send('appClose');
+        session.defaultSession.cookies.get({ name: 'isConnected' })
+          .then((cookies) => {
+            if (cookies[0]) {
+              mainWindow.webContents.send('appClose');
+            } else {
+              mainWindow.destroy();
+            }
+          })
         break;
 
       case 1:

@@ -18,6 +18,8 @@ class App extends Component {
     const { dispatch } = this.props;
     const userID = electronStore.get('userID');
 
+    document.cookie = 'isConnected=true';
+
     dispatch(loginAction())
       .then(
         () => {
