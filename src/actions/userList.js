@@ -21,6 +21,7 @@ export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
 export const UNAUTHORIZED = 'UNAUTHORIZED';
+export const CHECK_NOTIFICATION = 'CHECK_NOTIFICATION';
 
 /**
  * Action Creator
@@ -95,6 +96,13 @@ export const returnEmptyUserListActionCreator = () => ({
 export const unauthorizedActionCreator = () => ({
   type: UNAUTHORIZED,
   unauthorized: true
+});
+export const checkNotificationActionCreator = () => ({
+  type: CHECK_NOTIFICATION
+});
+export const checkNotificationSuccessActionCreator = (notification) => ({
+  type: CHECK_NOTIFICATION,
+  notification
 });
 
 export const loginAction = () => {
@@ -279,3 +287,28 @@ export const returnEmptyUserListAction = () => {
     dispatch(returnEmptyUserListActionCreator());
   }
 }
+
+export const checkNotificationAction = () => {
+  return (dispatch) => {
+    dispatch(getUserListActionCreator());
+    return fetch(API_URL + 'notification',
+      {
+        method: 'GET',
+        headers: AUTH_REQUEST_HEADERS
+      })
+      .then(async res => {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
+        if (!res.ok) {
+          return Promise.reject(res);
+        }
+        const json = await res.json();
+        return json;
+      })
+      .then(json => dispatch(checkNotificationSuccessActionCreator(json)))
+      .catch(error => {
+        dispatch(failRequestActionCreator(error))
+      });
+  }
+};

@@ -6,7 +6,7 @@ import { showInitialStartupModalActionCreator } from '../actions/initialStartupM
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import Loading from './Loading'
 import store from '../store/configureStore';
-import { loginAction, getUserListAction, updateUserInfoAction } from '../actions/userList';
+import { loginAction, getUserListAction, updateUserInfoAction, checkNotificationAction } from '../actions/userList';
 import { AUTH_REQUEST_HEADERS } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
@@ -45,6 +45,27 @@ class App extends Component {
             this._showModal();
             return;
           }
+
+          // お知らせチェック
+          dispatch(checkNotificationAction())
+            .then(
+              () => {
+                const isError = store.getState().userList.isError;
+                const notification = store.getState().userList.notification;
+                if (isError.status || notification.content === '') {
+                  return;
+                }
+
+                if (notification.targetIDs.includes(userID)) {
+                  remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+                    title: '行き先掲示板',
+                    type: 'info',
+                    buttons: ['OK'],
+                    message: notification.content,
+                  });
+                }
+              }
+            );
 
           dispatch(getUserListAction())
             .then(

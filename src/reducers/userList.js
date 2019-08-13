@@ -12,6 +12,8 @@ function userListIsFetching(state = false, action) {
       return true;
     case Actions.DELETE_USER:
       return true;
+    case Actions.CHECK_NOTIFICATION:
+      return true;
     default:
       return false;
   }
@@ -54,6 +56,11 @@ export default function userList(state = {
     text: ''
   },
   selectedUserId: 1,
+  notification: {
+    'targetIDs': [
+    ],
+    'content': ''
+  },
 }, action) {
   switch (action.type) {
     case Actions.LOGIN:
@@ -150,6 +157,11 @@ export default function userList(state = {
       window.location.reload();
       return {
         ...state,
+      }
+    case Actions.CHECK_NOTIFICATION:
+      return {
+        ...state,
+        notification: action.notification
       }
     default:
       return state;
