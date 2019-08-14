@@ -86,13 +86,21 @@ class App extends Component {
                   return;
                 }
 
-                // 状態が「退社」のユーザのみ、状態を「在席」に変更して情報を初期化
-                if (userInfo['status'] === '退社') {
-                  userInfo['status'] = '在席';
-                  userInfo['destination'] = '';
-                  userInfo['return'] = '';
-                  dispatch(updateUserInfoAction(userInfo, userID))
-                }
+                remote.session.defaultSession.cookies.get({ name: 'version' })
+                  .then((cookies) => {
+                    if (cookies[0]) {
+                      userInfo['version'] = cookies[0].value;
+                    }
+
+                    // 状態が「退社」のユーザのみ、状態を「在席」に変更して情報を初期化
+                    if (userInfo['status'] === '退社') {
+                      userInfo['status'] = '在席';
+                      userInfo['destination'] = '';
+                      userInfo['return'] = '';
+                    }
+
+                    dispatch(updateUserInfoAction(userInfo, userID));
+                  });
               }
             );
         }

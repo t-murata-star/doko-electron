@@ -31,7 +31,8 @@ export const USER_INFO = {
   destination: '',
   return: '',
   updated_at: '',
-  message: ''
+  message: '',
+  version: '',
 };
 export const STATUS_LIST = [
   '在席',
