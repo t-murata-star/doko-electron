@@ -14,11 +14,13 @@ const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
 // ビルド用接続先URL
+const VERSION = '1.0.3';
 const DEFAULT_LOAD_URL = 'http://********/';
 
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    title: `行き先掲示板 Version ${VERSION}`,
     toolbar: false,
     width: 1000,
     height: 625,
@@ -49,6 +51,9 @@ function createWindow() {
   } else {
     loadURL = DEFAULT_LOAD_URL;
   }
+
+  // Cookieにアプリケーションのバージョンを追加
+  session.defaultSession.cookies.set({ url: loadURL, name: 'version', value: VERSION });
 
   mainWindow.loadURL(loadURL);
 
