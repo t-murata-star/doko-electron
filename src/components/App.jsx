@@ -6,8 +6,8 @@ import { showInitialStartupModalActionCreator } from '../actions/initialStartupM
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import Loading from './Loading'
 import store from '../store/configureStore';
-import { loginAction, getUserListAction, updateUserInfoAction, checkNotificationAction } from '../actions/userList';
-import { AUTH_REQUEST_HEADERS } from '../define';
+import { loginAction, getUserListAction, updateUserInfoAction, checkNotificationAction, sendHeartbeatAction } from '../actions/userList';
+import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -86,23 +86,30 @@ class App extends Component {
                   return;
                 }
 
+                const updatedUserInfo = {};
+                updatedUserInfo['id'] = userID;
+
                 remote.session.defaultSession.cookies.get({ name: 'version' })
                   .then((cookies) => {
                     if (cookies[0]) {
-                      userInfo['version'] = cookies[0].value;
+                      updatedUserInfo['version'] = cookies[0].value;
                     }
 
                     // 状態が「退社」のユーザのみ、状態を「在席」に変更して情報を初期化
                     if (userInfo['status'] === '退社') {
-                      userInfo['status'] = '在席';
-                      userInfo['destination'] = '';
-                      userInfo['return'] = '';
+                      updatedUserInfo['status'] = '在席';
+                      updatedUserInfo['destination'] = '';
+                      updatedUserInfo['return'] = '';
                     }
 
-                    dispatch(updateUserInfoAction(userInfo, userID));
+                    Object.assign(userInfo, updatedUserInfo);
+
+                    dispatch(updateUserInfoAction(updatedUserInfo, userID));
                   });
               }
-            );
+          );
+
+          setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
         }
       );
   }
@@ -123,6 +130,18 @@ class App extends Component {
     return userInfo || {};
   }
 
+  _heartbeat = () => {
+    if (store.getState().userList.isError.status === false) {
+      const { dispatch } = this.props;
+
+      const userID = electronStore.get('userID');
+      const updatedUserInfo = {};
+      updatedUserInfo['id'] = userID;
+      updatedUserInfo['heartbeat'] = "";
+      dispatch(sendHeartbeatAction(updatedUserInfo, userID));
+    }
+  }
+
   updateInfo = ipcRenderer.on('updateInfo', (event, key, value) => {
     const { dispatch } = this.props;
 
@@ -134,8 +153,11 @@ class App extends Component {
       return;
     }
 
-    userInfo[key] = value;
-    dispatch(updateUserInfoAction(userInfo, userID))
+    const updatedUserInfo = {};
+    updatedUserInfo['id'] = userID;
+    updatedUserInfo[key] = value;
+    Object.assign(userInfo, updatedUserInfo);
+    dispatch(updateUserInfoAction(updatedUserInfo, userID))
   });
 
   appClose = ipcRenderer.on('appClose', (event) => {
@@ -150,13 +172,12 @@ class App extends Component {
       return;
     }
 
-    userInfo['status'] = '退社';
-    dispatch(updateUserInfoAction(userInfo, userID))
-      .then(
-        () => {
-          ipcRenderer.send('close');
-      }
-    )
+    const updatedUserInfo = {};
+    updatedUserInfo['id'] = userID;
+    updatedUserInfo['status'] = '退社';
+    Object.assign(userInfo, updatedUserInfo);
+    dispatch(updateUserInfoAction(updatedUserInfo, userID))
+      .then(() => ipcRenderer.send('close'));
   });
 
   render() {

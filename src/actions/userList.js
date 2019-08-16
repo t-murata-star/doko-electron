@@ -22,6 +22,9 @@ export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
 export const UNAUTHORIZED = 'UNAUTHORIZED';
 export const CHECK_NOTIFICATION = 'CHECK_NOTIFICATION';
+export const CHECK_NOTIFICATION_SUCCESS = 'CHECK_NOTIFICATION_SUCCESS';
+export const SEND_HEARTBEAT = 'SEND_HEARTBEAT';
+export const SEND_HEARTBEAT_SUCCESS = 'SEND_HEARTBEAT_SUCCESS';
 
 /**
  * Action Creator
@@ -101,8 +104,14 @@ export const checkNotificationActionCreator = () => ({
   type: CHECK_NOTIFICATION
 });
 export const checkNotificationSuccessActionCreator = (notification) => ({
-  type: CHECK_NOTIFICATION,
+  type: CHECK_NOTIFICATION_SUCCESS,
   notification
+});
+export const sendHeartbeatActionCreator = () => ({
+  type: SEND_HEARTBEAT
+});
+export const sendHeartbeatSuccessActionCreator = () => ({
+  type: SEND_HEARTBEAT_SUCCESS,
 });
 
 export const loginAction = () => {
@@ -307,6 +316,34 @@ export const checkNotificationAction = () => {
         return json;
       })
       .then(json => dispatch(checkNotificationSuccessActionCreator(json)))
+      .catch(error => {
+        dispatch(failRequestActionCreator(error))
+      });
+  }
+};
+
+export const sendHeartbeatAction = (userInfo, userID) => {
+  return (dispatch) => {
+    dispatch(sendHeartbeatActionCreator());
+    const body = Object.assign({}, userInfo);
+    delete body['id'];
+    delete body['order'];
+    return fetch(API_URL + 'userList/' + userID,
+      {
+        method: 'PATCH',
+        headers: AUTH_REQUEST_HEADERS,
+        body: JSON.stringify(body),
+      })
+      .then(res => {
+        if (res.status === 401) {
+          dispatch(unauthorizedActionCreator());
+        }
+        if (!res.ok) {
+          return Promise.reject(res);
+        }
+        return;
+      })
+      .then(() => dispatch(sendHeartbeatSuccessActionCreator()))
       .catch(error => {
         dispatch(failRequestActionCreator(error))
       });

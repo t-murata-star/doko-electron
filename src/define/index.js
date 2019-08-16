@@ -33,6 +33,7 @@ export const USER_INFO = {
   updated_at: '',
   message: '',
   version: '',
+  heartbeat: ''
 };
 export const STATUS_LIST = [
   '在席',
@@ -49,3 +50,4 @@ export const STATUS_LIST = [
   '接客中',
   '在席 (離席中)'
 ];
+export const HEARTBEAT_INTERVAL_MS = 3000;

@@ -163,6 +163,10 @@ export default function userList(state = {
         ...state,
         notification: action.notification
       }
+    case Actions.SEND_HEARTBEAT:
+      return {
+        ...state,
+      }
     default:
       return state;
   }
