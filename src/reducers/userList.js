@@ -59,7 +59,8 @@ export default function userList(state = {
   notification: {
     'targetIDs': [
     ],
-    'content': ''
+    'content': '',
+    'latestAppVersion': ''
   },
 }, action) {
   switch (action.type) {

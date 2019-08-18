@@ -52,7 +52,24 @@ class App extends Component {
               () => {
                 const isError = store.getState().userList.isError;
                 const notification = store.getState().userList.notification;
-                if (isError.status || notification.content === '') {
+                if (isError.status) {
+                  return;
+                }
+
+                // バージョンチェック
+                remote.session.defaultSession.cookies.get({ name: 'version' })
+                  .then((cookies) => {
+                    if (notification.latestAppVersion !== cookies[0].value) {
+                      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+                        title: '行き先掲示板',
+                        type: 'info',
+                        buttons: ['OK'],
+                        message: '新しい行き先掲示板が公開されました。\nお手数ですがアップデートをお願いします。',
+                      });
+                    }
+                  });
+
+                if (notification.content === '') {
                   return;
                 }
 
@@ -107,7 +124,7 @@ class App extends Component {
                     dispatch(updateUserInfoAction(updatedUserInfo, userID));
                   });
               }
-          );
+            );
 
           setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
         }
