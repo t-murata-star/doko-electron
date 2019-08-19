@@ -37,15 +37,6 @@ class App extends Component {
           // APIリクエストヘッダに認証トークンを設定する
           AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userList.token;
 
-          /**
-          * 初回起動チェック
-          * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
-          */
-          if (!userID) {
-            this._showModal();
-            return;
-          }
-
           // お知らせチェック
           dispatch(getNotificationAction())
             .then(
@@ -84,6 +75,17 @@ class App extends Component {
                 }
               }
             );
+
+          setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
+
+          /**
+           * 初回起動チェック
+           * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
+           */
+          if (!userID) {
+            this._showModal();
+            return;
+          }
 
           dispatch(getUserListAction())
             .then(
@@ -126,8 +128,6 @@ class App extends Component {
                   });
               }
             );
-
-          setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
         }
       );
   }
@@ -149,12 +149,16 @@ class App extends Component {
   }
 
   _heartbeat = () => {
-      const { dispatch } = this.props;
+    const { dispatch } = this.props;
 
-      const userID = electronStore.get('userID');
-      const updatedUserInfo = {};
-      updatedUserInfo['id'] = userID;
-      updatedUserInfo['heartbeat'] = "";
+    const userID = electronStore.get('userID');
+    if (!userID) {
+      return;
+    }
+
+    const updatedUserInfo = {};
+    updatedUserInfo['id'] = userID;
+    updatedUserInfo['heartbeat'] = "";
       dispatch(sendHeartbeatAction(updatedUserInfo, userID));
   }
 
