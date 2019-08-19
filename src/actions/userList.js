@@ -100,7 +100,7 @@ export const unauthorizedActionCreator = () => ({
   type: UNAUTHORIZED,
   unauthorized: true
 });
-export const checkNotificationActionCreator = () => ({
+export const getNotificationActionCreator = () => ({
   type: CHECK_NOTIFICATION
 });
 export const checkNotificationSuccessActionCreator = (notification) => ({
@@ -297,7 +297,7 @@ export const returnEmptyUserListAction = () => {
   }
 }
 
-export const checkNotificationAction = () => {
+export const getNotificationAction = () => {
   return (dispatch) => {
     dispatch(getUserListActionCreator());
     return fetch(API_URL + 'notification',

@@ -50,4 +50,5 @@ export const STATUS_LIST = [
   '接客中',
   '在席 (離席中)'
 ];
-export const HEARTBEAT_INTERVAL_MS = 3000;
+export const HEARTBEAT_INTERVAL_MS = 270000; // 4分30秒
+export const LEAVING_THRESHOLD_MIN = 10; // 10分

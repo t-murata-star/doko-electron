@@ -83,15 +83,27 @@ class UserList extends Component {
   _updateUserInfoOrder = (rowComponent) => {
     const { dispatch } = this.props;
     const rows = rowComponent.getTable().getRows();
-    rows.forEach((row) => {
-      const patchInfoUser = { 'order': row.getPosition(true) + 1 };
-      dispatch(changeOrderAction(patchInfoUser, row.getData().id))
-        .then(
-          () => {
-            dispatch(getUserListAction());
-          }
-        );
+
+    return new Promise(resolve => {
+      rows.forEach((row, index) => {
+        const patchInfoUser = { 'order': row.getPosition(true) + 1 };
+        dispatch(changeOrderAction(patchInfoUser, row.getData().id))
+          .then(
+            () => {
+              if (index + 1 === rows.length) {
+                resolve();
+              }
+            }
+          );
+      });
     });
+  }
+
+  _rowMovedCallback = async (rowComponent) => {
+    const { dispatch } = this.props;
+
+    await this._updateUserInfoOrder(rowComponent);
+    dispatch(getUserListAction());
   }
 
   render() {
@@ -115,7 +127,7 @@ class UserList extends Component {
               { column: "order", dir: "asc" },
             ]
           }}
-          rowMoved={this._updateUserInfoOrder}
+          rowMoved={this._rowMovedCallback}
         />
       </div>
     );

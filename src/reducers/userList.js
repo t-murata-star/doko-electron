@@ -1,4 +1,5 @@
 import * as Actions from '../actions/userList';
+import { LEAVING_THRESHOLD_MIN } from '../define';
 
 function userListIsFetching(state = false, action) {
   switch (action.type) {
@@ -85,7 +86,7 @@ export default function userList(state = {
     case Actions.GET_USER_LIST_SUCCESS:
       return {
         ...state,
-        userList: action.payload.response,
+        userList: checkLeaving(action.payload.response),
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action),
       };
@@ -159,7 +160,7 @@ export default function userList(state = {
       return {
         ...state,
       }
-    case Actions.CHECK_NOTIFICATION:
+    case Actions.CHECK_NOTIFICATION_SUCCESS:
       return {
         ...state,
         notification: action.notification
@@ -171,4 +172,22 @@ export default function userList(state = {
     default:
       return state;
   }
+}
+
+// 全ユーザの退社チェック
+function checkLeaving(userList) {
+  if (!userList) return [];
+
+  const nowDate = new Date();
+  userList.forEach(userInfo => {
+    if (userInfo['status'] === '在席') {
+      const heartbeat = new Date(userInfo['heartbeat']);
+      const diffMin = Math.floor((nowDate - heartbeat) / (1000 * 60));
+      if (diffMin >= LEAVING_THRESHOLD_MIN) {
+        userInfo['status'] = '退社';
+      }
+    }
+  });
+
+  return userList;
 }

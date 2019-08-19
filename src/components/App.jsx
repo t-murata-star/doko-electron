@@ -6,7 +6,7 @@ import { showInitialStartupModalActionCreator } from '../actions/initialStartupM
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import Loading from './Loading'
 import store from '../store/configureStore';
-import { loginAction, getUserListAction, updateUserInfoAction, checkNotificationAction, sendHeartbeatAction } from '../actions/userList';
+import { loginAction, getUserListAction, updateUserInfoAction, getNotificationAction, sendHeartbeatAction } from '../actions/userList';
 import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
@@ -47,14 +47,15 @@ class App extends Component {
           }
 
           // お知らせチェック
-          dispatch(checkNotificationAction())
+          dispatch(getNotificationAction())
             .then(
               () => {
                 const isError = store.getState().userList.isError;
-                const notification = store.getState().userList.notification;
                 if (isError.status) {
                   return;
                 }
+
+                const notification = store.getState().userList.notification;
 
                 // バージョンチェック
                 remote.session.defaultSession.cookies.get({ name: 'version' })
