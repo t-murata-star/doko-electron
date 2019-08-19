@@ -56,7 +56,7 @@ class App extends Component {
                         title: '行き先掲示板',
                         type: 'info',
                         buttons: ['OK'],
-                        message: '新しい行き先掲示板が公開されました。\nお手数ですがアップデートをお願いします。',
+                        message: `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`,
                       });
                     }
                   });
