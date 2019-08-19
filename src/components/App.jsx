@@ -149,7 +149,6 @@ class App extends Component {
   }
 
   _heartbeat = () => {
-    if (store.getState().userList.isError.status === false) {
       const { dispatch } = this.props;
 
       const userID = electronStore.get('userID');
@@ -157,7 +156,6 @@ class App extends Component {
       updatedUserInfo['id'] = userID;
       updatedUserInfo['heartbeat'] = "";
       dispatch(sendHeartbeatAction(updatedUserInfo, userID));
-    }
   }
 
   updateInfo = ipcRenderer.on('updateInfo', (event, key, value) => {
