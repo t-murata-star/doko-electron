@@ -299,7 +299,7 @@ export const returnEmptyUserListAction = () => {
 
 export const getNotificationAction = () => {
   return (dispatch) => {
-    dispatch(getUserListActionCreator());
+    dispatch(getNotificationActionCreator());
     return fetch(API_URL + 'notification',
       {
         method: 'GET',
