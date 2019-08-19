@@ -98,8 +98,15 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    session.defaultSession.clearCache(() => { })
     mainWindow = null
+  });
+
+  /**
+   * シャットダウンのイベントキャッチ（Windows限定）
+   * HTTPキャッシュをクリアする
+   */
+  mainWindow.on('session-end', () => {
+    session.defaultSession.clearCache(() => { })
   });
 
   mainWindow.on('minimize', (event) => {
@@ -121,6 +128,14 @@ function createWindow() {
    */
   electron.powerMonitor.on('unlock-screen', () => {
     mainWindow.webContents.send('updateInfo', 'status', '在席');
+  });
+
+  /**
+   * シャットダウンのイベントキャッチ（Electron ver5時点ではLinuxとMacOSのみ対応）
+   * HTTPキャッシュをクリアする
+   */
+  electron.powerMonitor.on('shutdown', () => {
+    session.defaultSession.clearCache(() => { })
   });
 
   createTray();
