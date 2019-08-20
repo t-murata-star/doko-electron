@@ -185,6 +185,8 @@ function checkLeaving(userList) {
       const diffMin = Math.floor((nowDate - heartbeat) / (1000 * 60));
       if (diffMin >= LEAVING_THRESHOLD_MIN) {
         userInfo['status'] = '退社';
+        // 更新日時を最後のheartbeat送信日時に設定する
+        userInfo['updated_at'] = userInfo['heartbeat'];
       }
     }
   });
