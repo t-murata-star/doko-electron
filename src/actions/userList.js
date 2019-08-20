@@ -240,6 +240,7 @@ export const updateUserInfoAction = (userInfo, userID) => {
     const body = Object.assign({}, userInfo);
     delete body['id'];
     delete body['order'];
+    delete body['heartbeat'];
     return fetch(API_URL + 'userList/' + userID,
       {
         method: 'PATCH',
