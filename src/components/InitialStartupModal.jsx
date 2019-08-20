@@ -52,7 +52,7 @@ class InitialStartupModal extends Component {
               () => dispatch(getUserListAction())
             );
 
-            // userIDを設定ファイルに登録（既に存在する場合は上書き）
+          // userIDを設定ファイルに登録（既に存在する場合は上書き）
           electronStore.set('userID', userInfo['id']);
           this.closeModal();
         }
@@ -137,7 +137,7 @@ class InitialStartupModal extends Component {
                       <div>
                         <Form.Control name="usesrID" as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
-                          {userList.map((userInfo, index) => (
+                          {userList.sort((a, b) => { return a.order - b.order; }).map((userInfo, index) => (
                             <option key={index} value={userInfo['id']}>{userInfo['name']}</option>
                           ))}
                         </Form.Control>
