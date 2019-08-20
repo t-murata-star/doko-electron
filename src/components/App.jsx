@@ -157,7 +157,11 @@ class App extends Component {
     const { dispatch } = this.props;
 
     const userID = electronStore.get('userID');
-    if (!userID) {
+    const userList = store.getState().userList['userList'];
+    const userInfo = this._getUserInfo(userList, userID);
+    const userInfoLength = Object.keys(userInfo).length;
+
+    if (userInfoLength === 0) {
       return;
     }
 

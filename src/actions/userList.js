@@ -343,9 +343,6 @@ export const sendHeartbeatAction = (userInfo, userID) => {
         }
         return;
       })
-      .then(() => dispatch(sendHeartbeatSuccessActionCreator()))
-      .catch(error => {
-        dispatch(failRequestActionCreator(error))
-      });
+      .then(() => dispatch(sendHeartbeatSuccessActionCreator()));
   }
 };
