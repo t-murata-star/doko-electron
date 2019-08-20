@@ -130,6 +130,7 @@ class App extends Component {
                     Object.assign(userInfo, updatedUserInfo);
 
                     dispatch(updateUserInfoAction(updatedUserInfo, userID));
+                    this._heartbeat();
                   });
               }
             );

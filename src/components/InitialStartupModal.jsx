@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import store from '../store/configureStore';
-import { addUserAction, getUserListAction, updateForAddedUserInfoAction } from '../actions/userList';
+import { addUserAction, getUserListAction, updateForAddedUserInfoAction, sendHeartbeatAction } from '../actions/userList';
 import { USER_INFO } from '../define';
 
 const { remote } = window.require('electron');
@@ -49,7 +49,14 @@ class InitialStartupModal extends Component {
           userInfo['order'] = userInfo['id'];
           dispatch(updateForAddedUserInfoAction(userInfo, userInfo['id']))
             .then(
-              () => dispatch(getUserListAction())
+              () => {
+                dispatch(getUserListAction())
+                  .then(
+                    () => {
+                      this._heartbeat();
+                    }
+                  );
+              }
             );
 
           // userIDを設定ファイルに登録（既に存在する場合は上書き）
@@ -75,6 +82,24 @@ class InitialStartupModal extends Component {
         return userInfo['id'] === userID;
       })[0];
     return userInfo || {};
+  }
+
+  _heartbeat = () => {
+    const { dispatch } = this.props;
+
+    const userID = electronStore.get('userID');
+    const userList = store.getState().userList['userList'];
+    const userInfo = this._getUserInfo(userList, userID);
+    const userInfoLength = Object.keys(userInfo).length;
+
+    if (userInfoLength === 0) {
+      return;
+    }
+
+    const updatedUserInfo = {};
+    updatedUserInfo['id'] = userID;
+    updatedUserInfo['heartbeat'] = "";
+    dispatch(sendHeartbeatAction(updatedUserInfo, userID));
   }
 
   onNameChange = (event) => {
