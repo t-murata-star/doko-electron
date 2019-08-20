@@ -48,17 +48,22 @@ class App extends Component {
 
                 const notification = store.getState().userList.notification;
 
+                const options = {
+                  title: '行き先掲示板',
+                  type: 'info',
+                  buttons: ['OK'],
+                  message: `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`,
+                };
+
                 // バージョンチェック
                 remote.session.defaultSession.cookies.get({ name: 'version' })
                   .then((cookies) => {
                     if (notification.latestAppVersion !== cookies[0].value) {
-                      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-                        title: '行き先掲示板',
-                        type: 'info',
-                        buttons: ['OK'],
-                        message: `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`,
-                      });
+                      remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
                     }
+                  })
+                  .catch((error) => {
+                    remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
                   });
 
                 if (notification.content === '') {
@@ -159,7 +164,7 @@ class App extends Component {
     const updatedUserInfo = {};
     updatedUserInfo['id'] = userID;
     updatedUserInfo['heartbeat'] = "";
-      dispatch(sendHeartbeatAction(updatedUserInfo, userID));
+    dispatch(sendHeartbeatAction(updatedUserInfo, userID));
   }
 
   updateInfo = ipcRenderer.on('updateInfo', (event, key, value) => {
