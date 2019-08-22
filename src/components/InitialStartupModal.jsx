@@ -59,6 +59,7 @@ class InitialStartupModal extends Component {
     electronStore.set('userID', Number(this.userID));
     this.closeModal();
     dispatch(getUserListAction());
+    this._heartbeat();
   }
 
   _getUserInfo = (userList, userID) => {
