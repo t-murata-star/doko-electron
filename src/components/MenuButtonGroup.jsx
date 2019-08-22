@@ -23,13 +23,13 @@ class MenuButtonGroup extends Component {
     window.close();
   }
 
-  reload = () => {
+  reload = async () => {
     const { dispatch } = this.props;
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
 
     // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
-    dispatch(getUserListAction())
-      .then(() => $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop));
+    await dispatch(getUserListAction());
+    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop)
   }
 
   minimize = () => {

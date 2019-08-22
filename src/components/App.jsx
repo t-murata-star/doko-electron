@@ -174,7 +174,7 @@ class App extends Component {
     dispatch(updateUserInfoAction(updatedUserInfo, userID))
   });
 
-  appClose = ipcRenderer.on('appClose', (event) => {
+  appClose = ipcRenderer.on('appClose', async event => {
     const { dispatch } = this.props;
 
     const userID = electronStore.get('userID');
@@ -190,8 +190,8 @@ class App extends Component {
     updatedUserInfo['id'] = userID;
     updatedUserInfo['status'] = '退社';
     Object.assign(userInfo, updatedUserInfo);
-    dispatch(updateUserInfoAction(updatedUserInfo, userID))
-      .then(() => ipcRenderer.send('close'));
+    await dispatch(updateUserInfoAction(updatedUserInfo, userID));
+    ipcRenderer.send('close');
   });
 
   render() {

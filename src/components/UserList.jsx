@@ -80,21 +80,17 @@ class UserList extends Component {
     }
   }
 
-  _updateUserInfoOrder = (rowComponent) => {
+  _updateUserInfoOrder = rowComponent => {
     const { dispatch } = this.props;
     const rows = rowComponent.getTable().getRows();
 
     return new Promise(resolve => {
-      rows.forEach((row, index) => {
+      rows.forEach(async (row, index) => {
         const patchInfoUser = { 'order': row.getPosition(true) + 1 };
-        dispatch(changeOrderAction(patchInfoUser, row.getData().id))
-          .then(
-            () => {
-              if (index + 1 === rows.length) {
-                resolve();
-              }
-            }
-          );
+        await dispatch(changeOrderAction(patchInfoUser, row.getData().id));
+        if (index + 1 === rows.length) {
+          resolve();
+        }
       });
     });
   }

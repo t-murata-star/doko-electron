@@ -33,37 +33,25 @@ class InitialStartupModal extends Component {
     dispatch(closeInitialStartupModalActionCreator());
   }
 
-  _addUser = () => {
+  _addUser = async () => {
     const { dispatch } = this.props;
-    dispatch(addUserAction(this.userInfo))
-      .then(
-        () => {
-          const userList = store.getState().userList;
-          if (userList.isError.status) {
-            this.setState({ submitButtonStatus: false });
-            return;
-          }
+    await dispatch(addUserAction(this.userInfo));
+    const userList = store.getState().userList;
+    if (userList.isError.status) {
+      this.setState({ submitButtonStatus: false });
+      return;
+    }
 
-          // orderパラメータをidと同じ値に更新する
-          const userInfo = userList.userInfo;
-          userInfo['order'] = userInfo['id'];
-          dispatch(updateForAddedUserInfoAction(userInfo, userInfo['id']))
-            .then(
-              () => {
-                dispatch(getUserListAction())
-                  .then(
-                    () => {
-                      this._heartbeat();
-                    }
-                  );
-              }
-            );
+    // orderパラメータをidと同じ値に更新する
+    const userInfo = userList.userInfo;
+    userInfo['order'] = userInfo['id'];
+    await dispatch(updateForAddedUserInfoAction(userInfo, userInfo['id']));
+    dispatch(getUserListAction());
+    this._heartbeat();
 
-          // userIDを設定ファイルに登録（既に存在する場合は上書き）
-          electronStore.set('userID', userInfo['id']);
-          this.closeModal();
-        }
-      );
+    // userIDを設定ファイルに登録（既に存在する場合は上書き）
+    electronStore.set('userID', userInfo['id']);
+    this.closeModal();
   }
 
   _changeUser = () => {
@@ -104,12 +92,12 @@ class InitialStartupModal extends Component {
 
   onNameChange = (event) => {
     this.userInfo[event.target.name] = event.target.value;
-    this.setState({ submitButtonStatus: event.target.value.length === 0 ? true : false })
+    this.setState({ submitButtonStatus: event.target.value.length === 0 ? true : false });
   }
 
   onUserChange = (event) => {
     this.userID = event.target.value;
-    this.setState({ submitButtonStatus: false })
+    this.setState({ submitButtonStatus: false });
   }
 
   handleSubmit = (event) => {
@@ -127,7 +115,7 @@ class InitialStartupModal extends Component {
     const { dispatch } = this.props;
     this.setState({ submitButtonStatus: true });
     this.setState({ isChangeUser: true });
-    dispatch(getUserListAction())
+    dispatch(getUserListAction());
   }
 
   registUserInput = (event) => {
