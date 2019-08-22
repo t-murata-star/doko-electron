@@ -253,7 +253,6 @@ export const updateUserInfoAction = (userInfo, userID) => {
     }
     catch (error) {
       dispatch(failRequestActionCreator(error));
-      dispatch(returnEmptyUserListAction());
     }
   }
 };
