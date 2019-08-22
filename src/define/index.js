@@ -52,3 +52,4 @@ export const STATUS_LIST = [
 ];
 export const HEARTBEAT_INTERVAL_MS = 270000; // 4分30秒
 export const LEAVING_THRESHOLD_MIN = 10; // 10分
+export const APP_DOWNLOAD_URL = '********';

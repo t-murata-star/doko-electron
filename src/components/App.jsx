@@ -7,7 +7,7 @@ import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import Loading from './Loading'
 import store from '../store/configureStore';
 import { loginAction, getUserListAction, updateUserInfoAction, getNotificationAction, sendHeartbeatAction } from '../actions/userList';
-import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS } from '../define';
+import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -57,9 +57,11 @@ class App extends Component {
       const cookies = await remote.session.defaultSession.cookies.get({ name: 'version' });
       if (notification.latestAppVersion !== cookies[0].value) {
         remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
+        remote.shell.openExternal(APP_DOWNLOAD_URL);
       }
     } catch (error) {
       remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
+      remote.shell.openExternal(APP_DOWNLOAD_URL);
     }
 
     if (notification.targetIDs.includes(userID) && notification.content !== '') {
