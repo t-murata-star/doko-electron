@@ -14,129 +14,111 @@ const Store = window.require('electron-store');
 const electronStore = new Store();
 
 class App extends Component {
-  componentDidMount() {
+  async componentDidMount() {
     const { dispatch } = this.props;
     const userID = electronStore.get('userID');
 
     document.cookie = 'isConnected=true';
 
-    dispatch(loginAction())
-      .then(
-        () => {
-          const statusCode = store.getState().userList.isError.code;
-          if (statusCode === 401) {
-            remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-              title: '行き先掲示板',
-              type: 'info',
-              buttons: ['OK'],
-              message: '認証に失敗しました。',
-            });
-            return;
-          }
+    await dispatch(loginAction());
 
-          // APIリクエストヘッダに認証トークンを設定する
-          AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userList.token;
+    const statusCode = store.getState().userList.isError.code;
+    if (statusCode === 401) {
+      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+        title: '行き先掲示板',
+        type: 'info',
+        buttons: ['OK'],
+        message: '認証に失敗しました。',
+      });
+      return;
+    }
 
-          // お知らせチェック
-          dispatch(getNotificationAction())
-            .then(
-              () => {
-                const isError = store.getState().userList.isError;
-                if (isError.status) {
-                  return;
-                }
+    // APIリクエストヘッダに認証トークンを設定する
+    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userList.token;
 
-                const notification = store.getState().userList.notification;
+    // お知らせチェック
+    await dispatch(getNotificationAction());
 
-                const options = {
-                  title: '行き先掲示板',
-                  type: 'info',
-                  buttons: ['OK'],
-                  message: `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`,
-                };
+    const isError = store.getState().userList.isError;
+    if (isError.status) {
+      return;
+    }
 
-                // バージョンチェック
-                remote.session.defaultSession.cookies.get({ name: 'version' })
-                  .then((cookies) => {
-                    if (notification.latestAppVersion !== cookies[0].value) {
-                      remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
-                    }
-                  })
-                  .catch((error) => {
-                    remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
-                  });
+    const notification = store.getState().userList.notification;
+    const options = {
+      title: '行き先掲示板',
+      type: 'info',
+      buttons: ['OK'],
+      message: `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`,
+    };
 
-                if (notification.content === '') {
-                  return;
-                }
+    // バージョンチェック
+    try {
+      const cookies = await remote.session.defaultSession.cookies.get({ name: 'version' });
+      if (notification.latestAppVersion !== cookies[0].value) {
+        remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
+      }
+    } catch (error) {
+      remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
+    }
 
-                if (notification.targetIDs.includes(userID)) {
-                  remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-                    title: '行き先掲示板',
-                    type: 'info',
-                    buttons: ['OK'],
-                    message: notification.content,
-                  });
-                }
-              }
-            );
+    if (notification.targetIDs.includes(userID) && notification.content !== '') {
+      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+        title: '行き先掲示板',
+        type: 'info',
+        buttons: ['OK'],
+        message: notification.content,
+      });
+    }
 
-          setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
+    setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
 
-          /**
-           * 初回起動チェック
-           * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
-           */
-          if (!userID) {
-            this._showModal();
-            return;
-          }
+    /**
+     * 初回起動チェック
+     * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
+     */
+    if (!userID) {
+      this._showModal();
+      return;
+    }
 
-          dispatch(getUserListAction())
-            .then(
-              () => {
-                const userList = store.getState().userList['userList'];
-                const userInfo = this._getUserInfo(userList, userID);
-                const userInfoLength = Object.keys(userInfo).length;
-                const isError = store.getState().userList.isError;
+    await dispatch(getUserListAction());
+    const userList = store.getState().userList['userList'];
+    const userInfo = this._getUserInfo(userList, userID);
+    const userInfoLength = Object.keys(userInfo).length;
 
-                if (isError.status === false && userInfoLength === 0) {
-                  remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-                    title: '行き先掲示板',
-                    type: 'info',
-                    buttons: ['OK'],
-                    message: 'ユーザ情報が存在しません。\nユーザ登録を行います。',
-                  });
-                  dispatch(showInitialStartupModalActionCreator());
-                  return;
-                }
+    if (isError.status === false && userInfoLength === 0) {
+      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+        title: '行き先掲示板',
+        type: 'info',
+        buttons: ['OK'],
+        message: 'ユーザ情報が存在しません。\nユーザ登録を行います。',
+      });
+      dispatch(showInitialStartupModalActionCreator());
+      return;
+    }
 
-                const updatedUserInfo = {};
-                updatedUserInfo['id'] = userID;
+    const updatedUserInfo = {};
+    updatedUserInfo['id'] = userID;
 
-                remote.session.defaultSession.cookies.get({ name: 'version' })
-                  .then((cookies) => {
-                    if (cookies[0]) {
-                      updatedUserInfo['version'] = cookies[0].value;
-                    }
+    const cookies = await remote.session.defaultSession.cookies.get({ name: 'version' });
+    if (cookies[0]) {
+      updatedUserInfo['version'] = cookies[0].value;
+    }
 
-                    // 状態が「退社」のユーザのみ、状態を「在席」に変更して情報を初期化
-                    if (userInfo['status'] === '退社') {
-                      updatedUserInfo['status'] = '在席';
-                      updatedUserInfo['destination'] = '';
-                      updatedUserInfo['return'] = '';
-                    }
+    // 状態が「退社」のユーザのみ、状態を「在席」に変更して情報を初期化
+    if (userInfo['status'] === '退社') {
+      updatedUserInfo['status'] = '在席';
+      updatedUserInfo['destination'] = '';
+      updatedUserInfo['return'] = '';
+    }
 
-                    Object.assign(userInfo, updatedUserInfo);
+    Object.assign(userInfo, updatedUserInfo);
 
-                    dispatch(updateUserInfoAction(updatedUserInfo, userID));
-                    this._heartbeat();
-                  });
-              }
-            );
-        }
-      );
+    dispatch(updateUserInfoAction(updatedUserInfo, userID));
+    this._heartbeat();
   }
+
 
   _showModal = () => {
     const { dispatch } = this.props;
