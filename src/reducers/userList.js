@@ -180,7 +180,7 @@ function checkLeaving(userList) {
 
   const nowDate = new Date();
   userList.forEach(userInfo => {
-    if (userInfo['status'] === '在席') {
+    if (['在席', '在席 (離席中)'].includes(userInfo['status']) === true) {
       const heartbeat = new Date(userInfo['heartbeat']);
       const diffMin = Math.floor((nowDate - heartbeat) / (1000 * 60));
       if (diffMin >= LEAVING_THRESHOLD_MIN) {

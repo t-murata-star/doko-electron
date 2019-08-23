@@ -39,22 +39,18 @@ class UserEditModal extends Component {
     dispatch(closeUserEditModalActionCreator());
   }
 
-  _updateUserInfo = (userInfo) => {
+  _updateUserInfo = async userInfo => {
     const { dispatch } = this.props;
     const userID = this.props.userID;
 
-    dispatch(updateUserInfoAction(userInfo, userID))
-      .then(
-        () => {
-          const userList = store.getState().userList;
-          if (userList.isError.status) {
-            dispatch(enableSubmitButtonActionCreator());
-            return;
-          }
-          this.closeModal();
-          dispatch(getUserListAction());
-        }
-      );
+    await dispatch(updateUserInfoAction(userInfo, userID));
+    const userList = store.getState().userList;
+    if (userList.isError.status) {
+      dispatch(enableSubmitButtonActionCreator());
+      return;
+    }
+    this.closeModal();
+    dispatch(getUserListAction());
   }
 
   _changeUser = () => {
@@ -162,8 +158,8 @@ class UserEditModal extends Component {
                       <Form.Control name="name" placeholder="" value={userInfo.name} onChange={this.onUserInfoChange} maxLength={100} />
                     </Form.Group>
                     <Form.Group as={Col} controlId='status'>
-                    <Form.Label><span className='status'>状態</span></Form.Label>
-                    <Button variant='light' className='btn-sm modal-button-clear' onClick={this.inputClear}>クリア</Button>
+                      <Form.Label><span className='status'>状態</span></Form.Label>
+                      <Button variant='light' className='btn-sm modal-button-clear' onClick={this.inputClear}>クリア</Button>
                       <Form.Control name="status" as='select' value={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.onUserInfoChange}>
                         {STATUS_LIST.map((status, index) => (
                           <option key={index}>{status}</option>
