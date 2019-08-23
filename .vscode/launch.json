@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Main",
+      "program": "${workspaceRoot}/src/electron-starter.js",
+      "env": {
+        "LOAD_URL": "http://localhost:3000"
+      },
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "runtimeArgs": [
+        "--remote-debugging-port=9222"
+      ],
+      "cwd": "${workspaceRoot}"
+    },
+    {
+      "name": "Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Main & Renderer",
+      "configurations": [
+        "Main",
+        "Renderer"
+      ]
+    }
+  ]
+}
