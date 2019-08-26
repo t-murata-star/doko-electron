@@ -12,7 +12,6 @@ class Loading extends Component {
     if (this.props.isFetching) {
       return (
         <div className='mx-auto'>
-          <div className='background'>a</div>
           <table className='loading'>
             <tbody>
               <tr><th>通信中 <FontAwesomeIcon icon='spinner' spin /></th></tr>
