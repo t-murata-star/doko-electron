@@ -6,7 +6,14 @@ import { showInitialStartupModalActionCreator } from '../actions/initialStartupM
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import Loading from './Loading'
 import store from '../store/configureStore';
-import { loginAction, getUserListAction, updateUserInfoAction, getNotificationAction, sendHeartbeatAction } from '../actions/userList';
+import {
+  loginAction,
+  getUserListAction,
+  updateUserInfoAction,
+  getNotificationAction,
+  sendHeartbeatAction,
+  returnEmptyUserListAction
+} from '../actions/userList';
 import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
@@ -90,6 +97,7 @@ class App extends Component {
     const userInfoLength = Object.keys(userInfo).length;
 
     if (isError.status === false && userInfoLength === 0) {
+      dispatch(returnEmptyUserListAction());
       remote.dialog.showMessageBox(remote.getCurrentWindow(), {
         title: '行き先掲示板',
         type: 'info',

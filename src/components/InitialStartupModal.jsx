@@ -3,7 +3,13 @@ import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import store from '../store/configureStore';
-import { addUserAction, getUserListAction, updateForAddedUserInfoAction, sendHeartbeatAction } from '../actions/userList';
+import {
+  addUserAction,
+  getUserListAction,
+  getChangeUserListAction,
+  updateForAddedUserInfoAction,
+  sendHeartbeatAction
+} from '../actions/userList';
 import { USER_INFO } from '../define';
 
 const { remote } = window.require('electron');
@@ -116,7 +122,7 @@ class InitialStartupModal extends Component {
     const { dispatch } = this.props;
     this.setState({ submitButtonStatus: true });
     this.setState({ isChangeUser: true });
-    dispatch(getUserListAction());
+    dispatch(getChangeUserListAction());
   }
 
   registUserInput = (event) => {
@@ -127,7 +133,7 @@ class InitialStartupModal extends Component {
   render() {
     const onHide = store.getState().initialStartupModal.onHide;
     const isError = store.getState().userList.isError.status;
-    const userList = store.getState().userList['userList'];
+    const changeUserList = store.getState().userList['changeUserList'];
 
     return (
       <Modal dialogClassName='initialStartupModal' show={onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
@@ -151,7 +157,7 @@ class InitialStartupModal extends Component {
                       <div>
                         <Form.Control name="usesrID" as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
-                          {userList.sort((a, b) => { return a.order - b.order; }).map((userInfo, index) => (
+                          {changeUserList.sort((a, b) => { return a.order - b.order; }).map((userInfo, index) => (
                             <option key={index} value={userInfo['id']}>{userInfo['name']}</option>
                           ))}
                         </Form.Control>

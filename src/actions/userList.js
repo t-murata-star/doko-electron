@@ -7,6 +7,8 @@ export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
+export const GET_CHANGE_USER_LIST = 'GET_CHANGE_USER_LIST';
+export const GET_CHANGE_USER_LIST_SUCCESS = 'GET_CHANGE_USER_LIST_SUCCESS';
 export const ADD_USER = 'ADD_USER';
 export const ADD_USER_SUCCESS = 'ADD_USER_SUCCESS';
 export const DELETE_USER = 'DELETE_USER';
@@ -20,6 +22,7 @@ export const UPDATE_FOR_ADDED_USER_INFO_SUCCESS = 'UPDATE_FOR_ADDED_USER_INFO_SU
 export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
+export const RETURN_EMPTY_CHANGE_USER_LIST = 'RETURN_EMPTY_CHANGE_USER_LIST';
 export const UNAUTHORIZED = 'UNAUTHORIZED';
 export const CHECK_NOTIFICATION = 'CHECK_NOTIFICATION';
 export const CHECK_NOTIFICATION_SUCCESS = 'CHECK_NOTIFICATION_SUCCESS';
@@ -44,6 +47,15 @@ export const getUserListActionCreator = () => ({
 });
 export const getUserListSccessActionCreator = json => ({
   type: GET_USER_LIST_SUCCESS,
+  payload: {
+    response: json
+  }
+});
+export const getChangeUserListActionCreator = () => ({
+  type: GET_CHANGE_USER_LIST
+});
+export const getChangeUserListSccessActionCreator = json => ({
+  type: GET_CHANGE_USER_LIST_SUCCESS,
   payload: {
     response: json
   }
@@ -95,6 +107,10 @@ export const selectUserActionCreator = selectedUserId => ({
 export const returnEmptyUserListActionCreator = () => ({
   type: RETURN_EMPTY_USER_LIST,
   userList: []
+});
+export const returnEmptyChangeUserListActionCreator = () => ({
+  type: RETURN_EMPTY_CHANGE_USER_LIST,
+  changeUserList: []
 });
 export const unauthorizedActionCreator = () => ({
   type: UNAUTHORIZED,
@@ -205,6 +221,30 @@ export const getUserListAction = () => {
   }
 };
 
+export const getChangeUserListAction = () => {
+  return async dispatch => {
+    dispatch(getChangeUserListActionCreator());
+    try {
+      const res = await fetch(API_URL + 'userList', {
+        method: 'GET',
+        headers: AUTH_REQUEST_HEADERS
+      });
+      if (res.status === 401) {
+        dispatch(unauthorizedActionCreator());
+      }
+      if (!res.ok) {
+        return Promise.reject(res);
+      }
+      const json = await res.json();
+      return dispatch(getChangeUserListSccessActionCreator(json));
+    }
+    catch (error) {
+      dispatch(failRequestActionCreator(error));
+      dispatch(returnEmptyChangeUserListAction());
+    }
+  }
+};
+
 export const changeOrderAction = (userInfo, userID) => {
   return async dispatch => {
     dispatch(changeOrderActionCreator());
@@ -284,6 +324,10 @@ export const updateForAddedUserInfoAction = (userInfo, userID) => {
 
 export const returnEmptyUserListAction = () => {
   return dispatch => dispatch(returnEmptyUserListActionCreator());
+}
+
+export const returnEmptyChangeUserListAction = () => {
+  return dispatch => dispatch(returnEmptyChangeUserListActionCreator());
 }
 
 export const getNotificationAction = () => {

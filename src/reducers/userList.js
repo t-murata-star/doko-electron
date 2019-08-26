@@ -7,6 +7,8 @@ function userListIsFetching(state = false, action) {
       return true;
     case Actions.GET_USER_LIST:
       return true;
+    case Actions.GET_CHANGE_USER_LIST:
+      return true;
     case Actions.UPDATE_USER_INFO:
       return true;
     case Actions.ADD_USER:
@@ -50,6 +52,7 @@ export default function userList(state = {
   token: '',
   isAuthenticated: false,
   userList: [],
+  changeUserList: [],
   isFetching: false,
   isError: {
     status: false,
@@ -87,6 +90,18 @@ export default function userList(state = {
       return {
         ...state,
         userList: checkLeaving(action.payload.response),
+        isFetching: userListIsFetching(state.isFetching, action),
+        isError: userListIsError(state.isError, action),
+      };
+    case Actions.GET_CHANGE_USER_LIST:
+      return {
+        ...state,
+        isFetching: userListIsFetching(state.isFetching, action)
+      };
+    case Actions.GET_CHANGE_USER_LIST_SUCCESS:
+      return {
+        ...state,
+        changeUserList: action.payload.response,
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action),
       };
@@ -150,6 +165,11 @@ export default function userList(state = {
       return {
         ...state,
         userList: action.userList
+      }
+    case Actions.RETURN_EMPTY_CHANGE_USER_LIST:
+      return {
+        ...state,
+        changeUserList: action.changeUserList
       }
     case Actions.UNAUTHORIZED:
       /**
