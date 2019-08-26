@@ -91,7 +91,6 @@ class UserEditModal extends Component {
   handleChangeUser = event => {
     const { dispatch } = this.props;
     dispatch(handleChangeUserActionCreator());
-    dispatch(getUserListAction());
   }
 
   handleEditUser = event => {
