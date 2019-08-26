@@ -195,9 +195,9 @@ class UserEditModal extends Component {
                         <Button variant='link' className='modal-button-user-delete userChange' onClick={this.handleEditUser}>戻る</Button>
                         <Form.Control name="usesrID" as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
-                          {userList.userList.map((userInfo, index) => (
-                            <option key={index} value={userInfo['id']}>{userInfo['name']}</option>
-                          ))}
+                        {userList.userList.sort((a, b) => { return a.order - b.order; }).map((userInfo, index) => (
+                          <option key={index} value={userInfo['id']}>{userInfo['name']}</option>
+                        ))}
                         </Form.Control>
                       </Form.Group>
                     </Col>
