@@ -60,7 +60,7 @@ class UserEditModal extends Component {
     dispatch(getUserListAction());
   }
 
-  onUserInfoChange = (event) => {
+  onUserInfoChange = event => {
     const { dispatch } = this.props;
     dispatch(changeUserInfoActionCreator(this.userInfo, event.target.name, event.target.value));
     if (this.props.submitButtonStatus) {
@@ -68,7 +68,7 @@ class UserEditModal extends Component {
     }
   }
 
-  onUserChange = (event) => {
+  onUserChange = event => {
     const { dispatch } = this.props;
     this.userID = event.target.value;
     if (this.props.submitButtonStatus) {
@@ -76,7 +76,7 @@ class UserEditModal extends Component {
     }
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     event.preventDefault();
     const { dispatch } = this.props;
     dispatch(disableSubmitButtonActionCreator());
@@ -88,18 +88,18 @@ class UserEditModal extends Component {
     }
   }
 
-  handleChangeUser = (event) => {
+  handleChangeUser = event => {
     const { dispatch } = this.props;
     dispatch(handleChangeUserActionCreator());
     dispatch(getUserListAction());
   }
 
-  handleEditUser = (event) => {
+  handleEditUser = event => {
     const { dispatch } = this.props;
     dispatch(handleEditUserActionCreator());
   }
 
-  deleteUser = (event) => {
+  deleteUser = event => {
     const { dispatch } = this.props;;
     const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: '行き先掲示板',

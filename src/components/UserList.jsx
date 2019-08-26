@@ -34,7 +34,7 @@ class UserList extends Component {
     dispatch(showUserEditModalActionCreator(selectedUserId, userInfo));
   }
 
-  _rowFormatter = (row) => {
+  _rowFormatter = row => {
     const rowData = row.getData();
     // 状態によってテキストの色を変える
     switch (rowData.status) {
@@ -95,7 +95,7 @@ class UserList extends Component {
     });
   }
 
-  _rowMovedCallback = async (rowComponent) => {
+  _rowMovedCallback = async rowComponent => {
     const { dispatch } = this.props;
 
     await this._updateUserInfoOrder(rowComponent);

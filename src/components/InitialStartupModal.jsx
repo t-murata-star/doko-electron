@@ -97,17 +97,17 @@ class InitialStartupModal extends Component {
     dispatch(sendHeartbeatAction(updatedUserInfo, userID));
   }
 
-  onNameChange = (event) => {
+  onNameChange = event => {
     this.userInfo[event.target.name] = event.target.value;
     this.setState({ submitButtonStatus: event.target.value.length === 0 ? true : false });
   }
 
-  onUserChange = (event) => {
+  onUserChange = event => {
     this.userID = event.target.value;
     this.setState({ submitButtonStatus: false });
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     this.setState({ submitButtonStatus: true });
     event.preventDefault();
 
@@ -118,14 +118,14 @@ class InitialStartupModal extends Component {
     }
   }
 
-  changeUserInput = (event) => {
+  changeUserInput = event => {
     const { dispatch } = this.props;
     this.setState({ submitButtonStatus: true });
     this.setState({ isChangeUser: true });
     dispatch(getChangeUserListAction());
   }
 
-  registUserInput = (event) => {
+  registUserInput = event => {
     this.setState({ submitButtonStatus: true });
     this.setState({ isChangeUser: false });
   }
