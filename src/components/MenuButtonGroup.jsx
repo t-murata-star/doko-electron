@@ -58,11 +58,10 @@ class MenuButtonGroup extends Component {
   }
 
   render() {
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userList;
     const userID = electronStore.get('userID');
-    const userInfo = this._getUserInfo(userList, userID);
+    const userInfo = this._getUserInfo(userList['userList'], userID);
     const userInfoLength = Object.keys(userInfo).length;
-    const isAuthenticated = store.getState().userList.isAuthenticated;
 
     return (
       <Row className='menu-button-group'>
@@ -73,11 +72,11 @@ class MenuButtonGroup extends Component {
                   <FontAwesomeIcon icon='power-off' /> 終了</Button>
               </Form.Group>
               <Form.Group as={Col} controlId='reload'>
-                <Button variant='light' className='w-100' onClick={this.reload}>
+              <Button variant='light' className='w-100' onClick={this.reload} disabled={userList.isFetching === true}>
                   <FontAwesomeIcon icon='sync' /> 再読込</Button>
               </Form.Group>
               <Form.Group as={Col} controlId='showUserEditModal'>
-                <Button variant='light' className='w-100' onClick={this.showUserEditModal} disabled={userInfoLength === 0 || isAuthenticated === false}>
+              <Button variant='light' className='w-100' onClick={this.showUserEditModal} disabled={userInfoLength === 0 || userList.isAuthenticated === false}>
                   <FontAwesomeIcon icon='edit' /> 自分編集</Button>
               </Form.Group>
               <Form.Group as={Col} controlId='minimize'>
