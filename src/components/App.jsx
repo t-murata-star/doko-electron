@@ -38,13 +38,13 @@ class App extends Component {
     // APIリクエストヘッダに認証トークンを設定する
     AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userList.token;
 
-    // お知らせチェック
-    await dispatch(getNotificationAction());
-
     const isError = store.getState().userList.isError;
     if (isError.status) {
       return;
     }
+
+    // お知らせチェック
+    await dispatch(getNotificationAction());
 
     const notification = store.getState().userList.notification;
     const updateNotificationMessage = `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
