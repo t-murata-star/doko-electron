@@ -3,6 +3,7 @@ export const LOGIN_USER = {
   username: process.env.REACT_APP_USERNAME,
   password: process.env.REACT_APP_PASSWORD
 }
+export const APP_DOWNLOAD_URL = process.env.REACT_APP_DOWNLOAD_URL;
 export const LOGIN_REQUEST_HEADERS = {
   "Content-type": "application/json; charset=UTF-8"
 };
@@ -52,4 +53,3 @@ export const STATUS_LIST = [
 ];
 export const HEARTBEAT_INTERVAL_MS = 270000; // 4分30秒
 export const LEAVING_THRESHOLD_MIN = 10; // 10分
-export const APP_DOWNLOAD_URL = '********';
