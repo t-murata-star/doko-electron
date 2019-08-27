@@ -31,12 +31,7 @@ class App extends Component {
 
     const statusCode = store.getState().userList.isError.code;
     if (statusCode === 401) {
-      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-        title: '行き先掲示板',
-        type: 'info',
-        buttons: ['OK'],
-        message: '認証に失敗しました。',
-      });
+      this._showMessageBox('認証に失敗しました。');
       return;
     }
 
@@ -52,32 +47,22 @@ class App extends Component {
     }
 
     const notification = store.getState().userList.notification;
-    const options = {
-      title: '行き先掲示板',
-      type: 'info',
-      buttons: ['OK'],
-      message: `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`,
-    };
+    const updateNotificationMessage = `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
 
     // バージョンチェック
     try {
       const cookies = await remote.session.defaultSession.cookies.get({ name: 'version' });
       if (notification.latestAppVersion !== cookies[0].value) {
-        remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
+        this._showMessageBox(updateNotificationMessage);
         remote.shell.openExternal(APP_DOWNLOAD_URL);
       }
     } catch (error) {
-      remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
+      this._showMessageBox(updateNotificationMessage);
       remote.shell.openExternal(APP_DOWNLOAD_URL);
     }
 
     if (notification.targetIDs.includes(userID) && notification.content !== '') {
-      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-        title: '行き先掲示板',
-        type: 'info',
-        buttons: ['OK'],
-        message: notification.content,
-      });
+      this._showMessageBox(notification.content);
     }
 
     setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
@@ -98,12 +83,7 @@ class App extends Component {
 
     if (isError.status === false && userInfoLength === 0) {
       dispatch(returnEmptyUserListAction());
-      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-        title: '行き先掲示板',
-        type: 'info',
-        buttons: ['OK'],
-        message: 'ユーザ情報が存在しません。\nユーザ登録を行います。',
-      });
+      this._showMessageBox('ユーザ情報が存在しません。\nユーザ登録を行います。');
       dispatch(showInitialStartupModalActionCreator());
       return;
     }
@@ -201,6 +181,15 @@ class App extends Component {
     await dispatch(updateUserInfoAction(updatedUserInfo, userID));
     ipcRenderer.send('close');
   });
+
+  _showMessageBox = message => {
+    remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+      title: '行き先掲示板',
+      type: 'info',
+      buttons: ['OK'],
+      message,
+    });
+  }
 
   render() {
     const isFetching = store.getState().userList.isFetching;
