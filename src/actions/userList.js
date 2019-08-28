@@ -73,7 +73,7 @@ export const deleteUserActionCreator = () => ({
   type: DELETE_USER
 });
 export const deleteUserSuccessActionCreator = () => ({
-  type: DELETE_USER_SUCCESS,
+  type: DELETE_USER_SUCCESS
 });
 export const updateUserInfoActionCreator = () => ({
   type: UPDATE_USER_INFO
@@ -127,7 +127,7 @@ export const sendHeartbeatActionCreator = () => ({
   type: SEND_HEARTBEAT
 });
 export const sendHeartbeatSuccessActionCreator = () => ({
-  type: SEND_HEARTBEAT_SUCCESS,
+  type: SEND_HEARTBEAT_SUCCESS
 });
 
 export const loginAction = () => {
@@ -144,14 +144,13 @@ export const loginAction = () => {
       }
       const json = await res.json();
       return dispatch(loginSuccessActionCreator(json));
-    }
-    catch (error) {
+    } catch (error) {
       return dispatch(failRequestActionCreator(error));
     }
-  }
+  };
 };
 
-export const deleteUserAction = (userID) => {
+export const deleteUserAction = userID => {
   return async dispatch => {
     dispatch(deleteUserActionCreator());
     try {
@@ -166,21 +165,20 @@ export const deleteUserAction = (userID) => {
         return Promise.reject(res);
       }
       return dispatch(deleteUserSuccessActionCreator());
-    }
-    catch (error) {
+    } catch (error) {
       return dispatch(failRequestActionCreator(error));
     }
-  }
+  };
 };
 
-export const addUserAction = (userInfo) => {
+export const addUserAction = userInfo => {
   return async dispatch => {
     dispatch(addUserActionCreator());
     try {
       const res = await fetch(API_URL + 'userList', {
         method: 'POST',
         headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(userInfo),
+        body: JSON.stringify(userInfo)
       });
       if (res.status === 401) {
         dispatch(unauthorizedActionCreator());
@@ -190,11 +188,10 @@ export const addUserAction = (userInfo) => {
       }
       const json = await res.json();
       return dispatch(addUserSuccessActionCreator(json));
-    }
-    catch (error) {
+    } catch (error) {
       return dispatch(failRequestActionCreator(error));
     }
-  }
+  };
 };
 
 export const getUserListAction = () => {
@@ -213,12 +210,11 @@ export const getUserListAction = () => {
       }
       const json = await res.json();
       return dispatch(getUserListSccessActionCreator(json));
-    }
-    catch (error) {
+    } catch (error) {
       dispatch(failRequestActionCreator(error));
       dispatch(returnEmptyUserListAction());
     }
-  }
+  };
 };
 
 export const getChangeUserListAction = () => {
@@ -237,12 +233,11 @@ export const getChangeUserListAction = () => {
       }
       const json = await res.json();
       return dispatch(getChangeUserListSccessActionCreator(json));
-    }
-    catch (error) {
+    } catch (error) {
       dispatch(failRequestActionCreator(error));
       dispatch(returnEmptyChangeUserListAction());
     }
-  }
+  };
 };
 
 export const changeOrderAction = (userInfo, userID) => {
@@ -253,7 +248,7 @@ export const changeOrderAction = (userInfo, userID) => {
       const res = await fetch(API_URL + 'userList/' + userID, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       });
       if (res.status === 401) {
         dispatch(unauthorizedActionCreator());
@@ -262,12 +257,11 @@ export const changeOrderAction = (userInfo, userID) => {
         return Promise.reject(res);
       }
       return dispatch(changeOrderSuccessActionCreator());
-    }
-    catch (error) {
+    } catch (error) {
       dispatch(failRequestActionCreator(error));
       dispatch(returnEmptyUserListAction());
     }
-  }
+  };
 };
 
 export const updateUserInfoAction = (userInfo, userID) => {
@@ -281,7 +275,7 @@ export const updateUserInfoAction = (userInfo, userID) => {
       const res = await fetch(API_URL + 'userList/' + userID, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       });
       if (res.status === 401) {
         dispatch(unauthorizedActionCreator());
@@ -290,11 +284,10 @@ export const updateUserInfoAction = (userInfo, userID) => {
         return Promise.reject(res);
       }
       return dispatch(updateUserInfoSuccessActionCreator());
-    }
-    catch (error) {
+    } catch (error) {
       dispatch(failRequestActionCreator(error));
     }
-  }
+  };
 };
 
 export const updateForAddedUserInfoAction = (userInfo, userID) => {
@@ -306,7 +299,7 @@ export const updateForAddedUserInfoAction = (userInfo, userID) => {
       const res = await fetch(API_URL + 'userList/' + userID, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       });
       if (res.status === 401) {
         dispatch(unauthorizedActionCreator());
@@ -315,20 +308,19 @@ export const updateForAddedUserInfoAction = (userInfo, userID) => {
         return Promise.reject(res);
       }
       return dispatch(updateForAddedUserInfoSuccessActionCreator());
-    }
-    catch (error) {
+    } catch (error) {
       dispatch(failRequestActionCreator(error));
     }
-  }
+  };
 };
 
 export const returnEmptyUserListAction = () => {
   return dispatch => dispatch(returnEmptyUserListActionCreator());
-}
+};
 
 export const returnEmptyChangeUserListAction = () => {
   return dispatch => dispatch(returnEmptyChangeUserListActionCreator());
-}
+};
 
 export const getNotificationAction = () => {
   return async dispatch => {
@@ -346,11 +338,10 @@ export const getNotificationAction = () => {
       }
       const json = await res.json();
       return dispatch(checkNotificationSuccessActionCreator(json));
-    }
-    catch (error) {
+    } catch (error) {
       return dispatch(failRequestActionCreator(error));
     }
-  }
+  };
 };
 
 export const sendHeartbeatAction = (userInfo, userID) => {
@@ -362,7 +353,7 @@ export const sendHeartbeatAction = (userInfo, userID) => {
     const res = await fetch(API_URL + 'userList/' + userID, {
       method: 'PATCH',
       headers: AUTH_REQUEST_HEADERS,
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     if (res.status === 401) {
       dispatch(unauthorizedActionCreator());
@@ -371,5 +362,5 @@ export const sendHeartbeatAction = (userInfo, userID) => {
       return Promise.reject(res);
     }
     return dispatch(sendHeartbeatSuccessActionCreator());
-  }
+  };
 };

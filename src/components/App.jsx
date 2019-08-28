@@ -14,11 +14,7 @@ import {
   sendHeartbeatAction,
   returnEmptyUserListAction
 } from '../actions/userList';
-import {
-  AUTH_REQUEST_HEADERS,
-  HEARTBEAT_INTERVAL_MS,
-  APP_DOWNLOAD_URL
-} from '../define';
+import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -40,8 +36,7 @@ class App extends Component {
     }
 
     // APIリクエストヘッダに認証トークンを設定する
-    AUTH_REQUEST_HEADERS['Authorization'] =
-      'Bearer ' + store.getState().userList.token;
+    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userList.token;
 
     const isError = store.getState().userList.isError;
     if (isError.status) {
@@ -68,10 +63,7 @@ class App extends Component {
       remote.shell.openExternal(APP_DOWNLOAD_URL);
     }
 
-    if (
-      notification.targetIDs.includes(userID) &&
-      notification.content !== ''
-    ) {
+    if (notification.targetIDs.includes(userID) && notification.content !== '') {
       this._showMessageBox(notification.content);
     }
 
@@ -93,9 +85,7 @@ class App extends Component {
 
     if (isError.status === false && userInfoLength === 0) {
       dispatch(returnEmptyUserListAction());
-      this._showMessageBox(
-        'ユーザ情報が存在しません。\nユーザ登録を行います。'
-      );
+      this._showMessageBox('ユーザ情報が存在しません。\nユーザ登録を行います。');
       dispatch(showInitialStartupModalActionCreator());
       return;
     }
@@ -163,10 +153,7 @@ class App extends Component {
     const userList = store.getState().userList['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
-    if (
-      userInfoLength === 0 ||
-      ['在席', '在席 (離席中)'].includes(userInfo['status']) === false
-    ) {
+    if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       return;
     }
 
@@ -184,10 +171,7 @@ class App extends Component {
     const userList = store.getState().userList['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
-    if (
-      userInfoLength === 0 ||
-      ['在席', '在席 (離席中)'].includes(userInfo['status']) === false
-    ) {
+    if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       ipcRenderer.send('close');
       return;
     }
