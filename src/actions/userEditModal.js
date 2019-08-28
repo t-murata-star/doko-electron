@@ -16,32 +16,32 @@ export const CHANGE_USER_INFO = 'CHANGE_USER_INFO';
 export const showUserEditModalActionCreator = (userID, userInfo) => ({
   type: SHOW_USER_EDIT_MODAL,
   userID,
-  userInfo,
+  userInfo
 });
 
 export const closeUserEditModalActionCreator = () => ({
-  type: CLOSE_USER_EDIT_MODAL,
+  type: CLOSE_USER_EDIT_MODAL
 });
 
 export const disableSubmitButtonActionCreator = () => ({
-  type: DISABLE_SUBMIT_BUTTON,
+  type: DISABLE_SUBMIT_BUTTON
 });
 
 export const enableSubmitButtonActionCreator = () => ({
-  type: ENABLE_SUBMIT_BUTTON,
+  type: ENABLE_SUBMIT_BUTTON
 });
 
 export const handleChangeUserActionCreator = () => ({
-  type: HANDLE_CHANGE_USER,
+  type: HANDLE_CHANGE_USER
 });
 
 export const handleEditUserActionCreator = () => ({
-  type: HANDLE_EDIT_USER,
+  type: HANDLE_EDIT_USER
 });
 
-export const inputClearActionCreator = (userInfo) => ({
+export const inputClearActionCreator = userInfo => ({
   type: INPUT_CLEAR,
-  userInfo,
+  userInfo
 });
 
 export const changeUserInfoActionCreator = (userInfo, key, value) => ({

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import UserList from '../containers/UserListPanel'
-import MenuButtonGroup from '../containers/MenuButtonGroupPanel'
+import UserList from '../containers/UserListPanel';
+import MenuButtonGroup from '../containers/MenuButtonGroupPanel';
 import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
-import Loading from './Loading'
+import Loading from './Loading';
 import store from '../store/configureStore';
 import {
   loginAction,
@@ -14,7 +14,11 @@ import {
   sendHeartbeatAction,
   returnEmptyUserListAction
 } from '../actions/userList';
-import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
+import {
+  AUTH_REQUEST_HEADERS,
+  HEARTBEAT_INTERVAL_MS,
+  APP_DOWNLOAD_URL
+} from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -36,7 +40,8 @@ class App extends Component {
     }
 
     // APIリクエストヘッダに認証トークンを設定する
-    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userList.token;
+    AUTH_REQUEST_HEADERS['Authorization'] =
+      'Bearer ' + store.getState().userList.token;
 
     const isError = store.getState().userList.isError;
     if (isError.status) {
@@ -51,7 +56,9 @@ class App extends Component {
 
     // バージョンチェック
     try {
-      const cookies = await remote.session.defaultSession.cookies.get({ name: 'version' });
+      const cookies = await remote.session.defaultSession.cookies.get({
+        name: 'version'
+      });
       if (notification.latestAppVersion !== cookies[0].value) {
         this._showMessageBox(updateNotificationMessage);
         remote.shell.openExternal(APP_DOWNLOAD_URL);
@@ -61,7 +68,10 @@ class App extends Component {
       remote.shell.openExternal(APP_DOWNLOAD_URL);
     }
 
-    if (notification.targetIDs.includes(userID) && notification.content !== '') {
+    if (
+      notification.targetIDs.includes(userID) &&
+      notification.content !== ''
+    ) {
       this._showMessageBox(notification.content);
     }
 
@@ -83,7 +93,9 @@ class App extends Component {
 
     if (isError.status === false && userInfoLength === 0) {
       dispatch(returnEmptyUserListAction());
-      this._showMessageBox('ユーザ情報が存在しません。\nユーザ登録を行います。');
+      this._showMessageBox(
+        'ユーザ情報が存在しません。\nユーザ登録を行います。'
+      );
       dispatch(showInitialStartupModalActionCreator());
       return;
     }
@@ -91,7 +103,9 @@ class App extends Component {
     const updatedUserInfo = {};
     updatedUserInfo['id'] = userID;
 
-    const cookies = await remote.session.defaultSession.cookies.get({ name: 'version' });
+    const cookies = await remote.session.defaultSession.cookies.get({
+      name: 'version'
+    });
     if (cookies[0]) {
       updatedUserInfo['version'] = cookies[0].value;
     }
@@ -109,22 +123,20 @@ class App extends Component {
     this._heartbeat();
   }
 
-
   _showModal = () => {
     const { dispatch } = this.props;
     dispatch(showInitialStartupModalActionCreator());
-  }
+  };
 
   _getUserInfo = (userList, userID) => {
     if (!userList) {
       return {};
     }
-    const userInfo = userList
-      .filter(userInfo => {
-        return userInfo['id'] === userID;
-      })[0];
+    const userInfo = userList.filter(userInfo => {
+      return userInfo['id'] === userID;
+    })[0];
     return userInfo || {};
-  }
+  };
 
   _heartbeat = () => {
     const { dispatch } = this.props;
@@ -140,9 +152,9 @@ class App extends Component {
 
     const updatedUserInfo = {};
     updatedUserInfo['id'] = userID;
-    updatedUserInfo['heartbeat'] = "";
+    updatedUserInfo['heartbeat'] = '';
     dispatch(sendHeartbeatAction(updatedUserInfo, userID));
-  }
+  };
 
   updateInfo = ipcRenderer.on('updateInfo', (event, key, value) => {
     const { dispatch } = this.props;
@@ -151,7 +163,10 @@ class App extends Component {
     const userList = store.getState().userList['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
-    if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+    if (
+      userInfoLength === 0 ||
+      ['在席', '在席 (離席中)'].includes(userInfo['status']) === false
+    ) {
       return;
     }
 
@@ -159,7 +174,7 @@ class App extends Component {
     updatedUserInfo['id'] = userID;
     updatedUserInfo[key] = value;
     Object.assign(userInfo, updatedUserInfo);
-    dispatch(updateUserInfoAction(updatedUserInfo, userID))
+    dispatch(updateUserInfoAction(updatedUserInfo, userID));
   });
 
   appClose = ipcRenderer.on('appClose', async event => {
@@ -169,7 +184,10 @@ class App extends Component {
     const userList = store.getState().userList['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
-    if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+    if (
+      userInfoLength === 0 ||
+      ['在席', '在席 (離席中)'].includes(userInfo['status']) === false
+    ) {
       ipcRenderer.send('close');
       return;
     }
@@ -187,21 +205,21 @@ class App extends Component {
       title: '行き先掲示板',
       type: 'info',
       buttons: ['OK'],
-      message,
+      message
     });
-  }
+  };
 
   render() {
     const isFetching = store.getState().userList.isFetching;
 
     return (
       <div>
-        {electronStore.get('userID') &&
+        {electronStore.get('userID') && (
           <div>
             <UserList />
             <MenuButtonGroup />
           </div>
-        }
+        )}
         <InitialStartupModal />
         <Loading isFetching={isFetching} />
       </div>

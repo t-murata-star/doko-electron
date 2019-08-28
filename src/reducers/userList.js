@@ -22,11 +22,14 @@ function userListIsFetching(state = false, action) {
   }
 }
 
-function userListIsError(state = {
-  status: false,
-  code: null,
-  text: ''
-}, action) {
+function userListIsError(
+  state = {
+    status: false,
+    code: null,
+    text: ''
+  },
+  action
+) {
   switch (action.type) {
     case Actions.FAIL_REQUEST:
       return {
@@ -48,25 +51,27 @@ function userListIsError(state = {
 /**
  * 登録者情報一覧のstateを管理するReducer
  */
-export default function userList(state = {
-  token: '',
-  isAuthenticated: false,
-  userList: [],
-  changeUserList: [],
-  isFetching: false,
-  isError: {
-    status: false,
-    code: null,
-    text: ''
+export default function userList(
+  state = {
+    token: '',
+    isAuthenticated: false,
+    userList: [],
+    changeUserList: [],
+    isFetching: false,
+    isError: {
+      status: false,
+      code: null,
+      text: ''
+    },
+    selectedUserId: 1,
+    notification: {
+      targetIDs: [],
+      content: '',
+      latestAppVersion: ''
+    }
   },
-  selectedUserId: 1,
-  notification: {
-    'targetIDs': [
-    ],
-    'content': '',
-    'latestAppVersion': ''
-  },
-}, action) {
+  action
+) {
   switch (action.type) {
     case Actions.LOGIN:
       return {
@@ -79,7 +84,7 @@ export default function userList(state = {
         token: action.payload.response.token,
         isAuthenticated: true,
         isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action),
+        isError: userListIsError(state.isError, action)
       };
     case Actions.GET_USER_LIST:
       return {
@@ -91,7 +96,7 @@ export default function userList(state = {
         ...state,
         userList: checkLeaving(action.payload.response),
         isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action),
+        isError: userListIsError(state.isError, action)
       };
     case Actions.GET_CHANGE_USER_LIST:
       return {
@@ -103,7 +108,7 @@ export default function userList(state = {
         ...state,
         changeUserList: action.payload.response,
         isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action),
+        isError: userListIsError(state.isError, action)
       };
     case Actions.FAIL_REQUEST:
       return {
@@ -120,7 +125,7 @@ export default function userList(state = {
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action),
+        isError: userListIsError(state.isError, action)
       };
     case Actions.CHANGE_ORDER:
       return {
@@ -131,7 +136,7 @@ export default function userList(state = {
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action),
+        isError: userListIsError(state.isError, action)
       };
     case Actions.ADD_USER:
       return {
@@ -143,7 +148,7 @@ export default function userList(state = {
         ...state,
         userInfo: action.payload.response,
         isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action),
+        isError: userListIsError(state.isError, action)
       };
     case Actions.DELETE_USER:
       return {
@@ -154,7 +159,7 @@ export default function userList(state = {
       return {
         ...state,
         isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action),
+        isError: userListIsError(state.isError, action)
       };
     case Actions.SELECT_USER:
       return {
@@ -165,12 +170,12 @@ export default function userList(state = {
       return {
         ...state,
         userList: action.userList
-      }
+      };
     case Actions.RETURN_EMPTY_CHANGE_USER_LIST:
       return {
         ...state,
         changeUserList: action.changeUserList
-      }
+      };
     case Actions.UNAUTHORIZED:
       /**
        * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
@@ -178,17 +183,17 @@ export default function userList(state = {
        */
       window.location.reload();
       return {
-        ...state,
-      }
+        ...state
+      };
     case Actions.CHECK_NOTIFICATION_SUCCESS:
       return {
         ...state,
         notification: action.notification
-      }
+      };
     case Actions.SEND_HEARTBEAT:
       return {
-        ...state,
-      }
+        ...state
+      };
     default:
       return state;
   }

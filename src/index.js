@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.css';
-import AppPanel from './containers/AppPanel'
+import AppPanel from './containers/AppPanel';
 import * as serviceWorker from './serviceWorker';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';

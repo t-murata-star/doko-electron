@@ -17,7 +17,11 @@ import {
   changeUserInfoActionCreator
 } from '../actions/userEditModal';
 import store from '../store/configureStore';
-import { updateUserInfoAction, getUserListAction, deleteUserAction } from '../actions/userList';
+import {
+  updateUserInfoAction,
+  getUserListAction,
+  deleteUserAction
+} from '../actions/userList';
 import { STATUS_LIST } from '../define';
 
 const { remote } = window.require('electron');
@@ -26,7 +30,7 @@ const electronStore = new Store();
 
 class UserEditModal extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.userID = null;
   }
 
@@ -37,7 +41,7 @@ class UserEditModal extends Component {
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch(closeUserEditModalActionCreator());
-  }
+  };
 
   _updateUserInfo = async userInfo => {
     const { dispatch } = this.props;
@@ -51,22 +55,28 @@ class UserEditModal extends Component {
     }
     this.closeModal();
     dispatch(getUserListAction());
-  }
+  };
 
   _changeUser = () => {
     const { dispatch } = this.props;
     electronStore.set('userID', Number(this.userID));
     this.closeModal();
     dispatch(getUserListAction());
-  }
+  };
 
   onUserInfoChange = event => {
     const { dispatch } = this.props;
-    dispatch(changeUserInfoActionCreator(this.userInfo, event.target.name, event.target.value));
+    dispatch(
+      changeUserInfoActionCreator(
+        this.userInfo,
+        event.target.name,
+        event.target.value
+      )
+    );
     if (this.props.submitButtonStatus) {
       dispatch(enableSubmitButtonActionCreator());
     }
-  }
+  };
 
   onUserChange = event => {
     const { dispatch } = this.props;
@@ -74,7 +84,7 @@ class UserEditModal extends Component {
     if (this.props.submitButtonStatus) {
       dispatch(enableSubmitButtonActionCreator());
     }
-  }
+  };
 
   handleSubmit = event => {
     event.preventDefault();
@@ -86,80 +96,113 @@ class UserEditModal extends Component {
     } else {
       this._updateUserInfo(this.userInfo);
     }
-  }
+  };
 
   handleChangeUser = event => {
     const { dispatch } = this.props;
     dispatch(handleChangeUserActionCreator());
-  }
+  };
 
   handleEditUser = event => {
     const { dispatch } = this.props;
     dispatch(handleEditUserActionCreator());
-  }
+  };
 
   deleteUser = event => {
-    const { dispatch } = this.props;;
+    const { dispatch } = this.props;
     const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: '行き先掲示板',
       type: 'info',
       buttons: ['OK', 'Cancel'],
-      message: '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo['name'],
+      message:
+        '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo['name']
     });
 
     if (index !== 0) {
       return;
     }
-    dispatch(deleteUserAction(this.props.userInfo['id']))
-      .then(
-        () => {
-          const userList = store.getState().userList;
-          if (userList.isError.status) {
-            return;
-          }
-          this.closeModal();
-          dispatch(getUserListAction());
-        }
-      );
-  }
+    dispatch(deleteUserAction(this.props.userInfo['id'])).then(() => {
+      const userList = store.getState().userList;
+      if (userList.isError.status) {
+        return;
+      }
+      this.closeModal();
+      dispatch(getUserListAction());
+    });
+  };
 
   inputClear = () => {
     const { dispatch } = this.props;
     dispatch(inputClearActionCreator(this.userInfo));
     dispatch(enableSubmitButtonActionCreator());
-  }
+  };
 
   render() {
     const userList = store.getState().userList;
     const userInfo = this.props.userInfo;
 
     return (
-      <Modal dialogClassName='userEditModal' show={this.props.onHide} aria-labelledby='contained-modal-title-vcenter' centered backdrop='static' animation={true} size='xl'>
+      <Modal
+        dialogClassName='userEditModal'
+        show={this.props.onHide}
+        aria-labelledby='contained-modal-title-vcenter'
+        centered
+        backdrop='static'
+        animation={true}
+        size='xl'>
         <Modal.Header>
           <Modal.Title id='contained-modal-title-vcenter'>
             情報変更
-            {userList.isError.status &&
+            {userList.isError.status && (
               <span className='error-message'>通信に失敗しました。</span>
-            }
+            )}
           </Modal.Title>
         </Modal.Header>
         <Form onSubmit={this.handleSubmit}>
           <Modal.Body>
             <Container>
-              {!this.props.isChangeUser &&
+              {!this.props.isChangeUser && (
                 <div>
                   <Form.Row>
                     <Form.Group as={Col} controlId='name'>
-                      <Form.Label><span className='name'>氏名</span></Form.Label>
-                      {userInfo['id'] === electronStore.get('userID') &&
-                        <Button variant='link' className='userChange' onClick={this.handleChangeUser}>ユーザ変更</Button>
-                      }
-                      <Form.Control name="name" placeholder="" value={userInfo.name} onChange={this.onUserInfoChange} maxLength={100} />
+                      <Form.Label>
+                        <span className='name'>氏名</span>
+                      </Form.Label>
+                      {userInfo['id'] === electronStore.get('userID') && (
+                        <Button
+                          variant='link'
+                          className='userChange'
+                          onClick={this.handleChangeUser}>
+                          ユーザ変更
+                        </Button>
+                      )}
+                      <Form.Control
+                        name='name'
+                        placeholder=''
+                        value={userInfo.name}
+                        onChange={this.onUserInfoChange}
+                        maxLength={100}
+                      />
                     </Form.Group>
                     <Form.Group as={Col} controlId='status'>
-                      <Form.Label><span className='status'>状態</span></Form.Label>
-                      <Button variant='light' className='btn-sm modal-button-clear' onClick={this.inputClear}>クリア</Button>
-                      <Form.Control name="status" as='select' value={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'} onChange={this.onUserInfoChange}>
+                      <Form.Label>
+                        <span className='status'>状態</span>
+                      </Form.Label>
+                      <Button
+                        variant='light'
+                        className='btn-sm modal-button-clear'
+                        onClick={this.inputClear}>
+                        クリア
+                      </Button>
+                      <Form.Control
+                        name='status'
+                        as='select'
+                        value={
+                          STATUS_LIST.includes(userInfo.status)
+                            ? userInfo.status
+                            : '？？？'
+                        }
+                        onChange={this.onUserInfoChange}>
                         {STATUS_LIST.map((status, index) => (
                           <option key={index}>{status}</option>
                         ))}
@@ -170,48 +213,98 @@ class UserEditModal extends Component {
                   <Form.Row>
                     <Form.Group as={Col} controlId='destination'>
                       <Form.Label>行き先</Form.Label>
-                      <Form.Control name="destination" placeholder="" value={userInfo.destination} onChange={this.onUserInfoChange} maxLength={100} />
+                      <Form.Control
+                        name='destination'
+                        placeholder=''
+                        value={userInfo.destination}
+                        onChange={this.onUserInfoChange}
+                        maxLength={100}
+                      />
                     </Form.Group>
                     <Form.Group as={Col} controlId='return'>
                       <Form.Label>戻り</Form.Label>
-                      <Form.Control name="return" placeholder="" value={userInfo.return} onChange={this.onUserInfoChange} maxLength={100} />
+                      <Form.Control
+                        name='return'
+                        placeholder=''
+                        value={userInfo.return}
+                        onChange={this.onUserInfoChange}
+                        maxLength={100}
+                      />
                     </Form.Group>
                   </Form.Row>
                   <Form.Group controlId='message'>
                     <Form.Label>メッセージ</Form.Label>
-                    <Form.Control name="message" placeholder="" value={userInfo.message} onChange={this.onUserInfoChange} maxLength={100} />
+                    <Form.Control
+                      name='message'
+                      placeholder=''
+                      value={userInfo.message}
+                      onChange={this.onUserInfoChange}
+                      maxLength={100}
+                    />
                   </Form.Group>
                 </div>
-              }
+              )}
 
-              {this.props.isChangeUser &&
+              {this.props.isChangeUser && (
                 <div>
                   <Form.Row>
-                    <Col md="2" />
-                    <Col md="8">
+                    <Col md='2' />
+                    <Col md='8'>
                       <Form.Group as={Col} controlId='name'>
-                        <Form.Label><span className='name'>氏名</span></Form.Label>
-                        <Button variant='link' className='modal-button-user-delete userChange' onClick={this.handleEditUser}>戻る</Button>
-                        <Form.Control name="usesrID" as='select' onChange={this.onUserChange}>
+                        <Form.Label>
+                          <span className='name'>氏名</span>
+                        </Form.Label>
+                        <Button
+                          variant='link'
+                          className='modal-button-user-delete userChange'
+                          onClick={this.handleEditUser}>
+                          戻る
+                        </Button>
+                        <Form.Control
+                          name='usesrID'
+                          as='select'
+                          onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
-                        {userList.userList.sort((a, b) => { return a.order - b.order; }).map((userInfo, index) => (
-                          <option key={index} value={userInfo['id']}>{userInfo['name']}</option>
-                        ))}
+                          {userList.userList
+                            .sort((a, b) => {
+                              return a.order - b.order;
+                            })
+                            .map((userInfo, index) => (
+                              <option key={index} value={userInfo['id']}>
+                                {userInfo['name']}
+                              </option>
+                            ))}
                         </Form.Control>
                       </Form.Group>
                     </Col>
-                    <Col md="2" />
+                    <Col md='2' />
                   </Form.Row>
                 </div>
-              }
+              )}
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            {!this.props.isChangeUser &&
-              <Button variant='outline-light' className='modal-button-user-delete' onClick={this.deleteUser}>削除</Button>
-            }
-            <Button type="submit" variant='primary' className='modal-button' disabled={this.props.submitButtonStatus}>更新</Button>
-            <Button variant='light' className='modal-button' onClick={this.closeModal}>キャンセル</Button>
+            {!this.props.isChangeUser && (
+              <Button
+                variant='outline-light'
+                className='modal-button-user-delete'
+                onClick={this.deleteUser}>
+                削除
+              </Button>
+            )}
+            <Button
+              type='submit'
+              variant='primary'
+              className='modal-button'
+              disabled={this.props.submitButtonStatus}>
+              更新
+            </Button>
+            <Button
+              variant='light'
+              className='modal-button'
+              onClick={this.closeModal}>
+              キャンセル
+            </Button>
           </Modal.Footer>
         </Form>
       </Modal>

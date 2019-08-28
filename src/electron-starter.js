@@ -1,5 +1,5 @@
 const electron = require('electron');
-const path = require("path");
+const path = require('path');
 const Store = require('electron-store');
 const electronStore = new Store();
 const { ipcMain } = require('electron');
@@ -60,13 +60,13 @@ function createWindow() {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
-  mainWindow.on('close', (closeEvent) => {
+  mainWindow.on('close', closeEvent => {
     closeEvent.preventDefault();
     const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
       type: 'info',
       buttons: ['OK', 'Cancel'],
-      message: '行き先掲示板を終了しますか？',
+      message: '行き先掲示板を終了しますか？'
     });
 
     switch (index) {
@@ -75,14 +75,13 @@ function createWindow() {
          * アプリ終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
          */
-        session.defaultSession.cookies.get({ name: 'isConnected' })
-          .then((cookies) => {
-            if (cookies[0]) {
-              mainWindow.webContents.send('appClose');
-            } else {
-              mainWindow.destroy();
-            }
-          })
+        session.defaultSession.cookies.get({ name: 'isConnected' }).then(cookies => {
+          if (cookies[0]) {
+            mainWindow.webContents.send('appClose');
+          } else {
+            mainWindow.destroy();
+          }
+        });
         break;
 
       case 1:
@@ -98,7 +97,7 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null
+    mainWindow = null;
   });
 
   /**
@@ -106,10 +105,10 @@ function createWindow() {
    * HTTPキャッシュをクリアする
    */
   mainWindow.on('session-end', () => {
-    session.defaultSession.clearCache(() => { })
+    session.defaultSession.clearCache(() => {});
   });
 
-  mainWindow.on('minimize', (event) => {
+  mainWindow.on('minimize', event => {
     event.preventDefault();
     mainWindow.hide();
   });
@@ -135,7 +134,7 @@ function createWindow() {
    * HTTPキャッシュをクリアする
    */
   electron.powerMonitor.on('shutdown', () => {
-    session.defaultSession.clearCache(() => { })
+    session.defaultSession.clearCache(() => {});
   });
 
   createTray();
@@ -146,13 +145,13 @@ function createWindow() {
       title: '行き先掲示板',
       type: 'info',
       buttons: ['YES', 'NO'],
-      message: 'スタートアップを有効にしますか？\n※PC起動時、自動的に行き先掲示板が起動します。',
+      message: 'スタートアップを有効にしますか？\n※PC起動時、自動的に行き先掲示板が起動します。'
     });
 
     if (index === 0) {
       app.setLoginItemSettings({
         openAtLogin: true,
-        path: electron.app.getPath('exe'),
+        path: electron.app.getPath('exe')
       });
     }
 
@@ -173,7 +172,7 @@ function createTray() {
         app.quit();
       }
     }
-  ])
+  ]);
 
   tray.setContextMenu(contextMenu);
   tray.setToolTip('行き先掲示板');
@@ -181,12 +180,12 @@ function createTray() {
     mainWindow.show();
   });
   tray.on('right-click', () => {
-    tray.popUpContextMenu(contextMenu)
+    tray.popUpContextMenu(contextMenu);
   });
 }
 
 // 二重起動防止処理
-const gotTheLock = app.requestSingleInstanceLock()
+const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
   app.quit();
@@ -194,8 +193,8 @@ if (!gotTheLock) {
   app.on('second-instance', (event, commandLine, workingDirectory) => {
     // 2つ目のアプリケーションが起動された場合、1つ目のアプリケーションのウィンドウにフォーカスする
     if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.show()
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
     }
   });
 
@@ -219,6 +218,6 @@ if (!gotTheLock) {
     }
   });
 }
-ipcMain.on('close', function (event, arg) {
+ipcMain.on('close', function(event, arg) {
   mainWindow.destroy();
 });
