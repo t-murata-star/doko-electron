@@ -160,7 +160,13 @@ class UserEditModal extends Component {
                           ユーザ変更
                         </Button>
                       )}
-                      <Form.Control name='name' placeholder='' value={userInfo.name} onChange={this.onUserInfoChange} maxLength={100} />
+                      <Form.Control
+                        name='name'
+                        placeholder=''
+                        value={userInfo.name}
+                        onChange={this.onUserInfoChange}
+                        maxLength={100}
+                      />
                     </Form.Group>
                     <Form.Group as={Col} controlId='status'>
                       <Form.Label>
@@ -169,31 +175,45 @@ class UserEditModal extends Component {
                       <Button variant='light' className='btn-sm modal-button-clear' onClick={this.inputClear}>
                         クリア
                       </Button>
-                      <Form.Control
-                        name='status'
-                        as='select'
-                        value={STATUS_LIST.includes(userInfo.status) ? userInfo.status : '？？？'}
-                        onChange={this.onUserInfoChange}>
+                      <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
                         {STATUS_LIST.map((status, index) => (
                           <option key={index}>{status}</option>
                         ))}
-                        <option hidden>？？？</option>
+                        <option hidden>{userInfo.status}</option>
                       </Form.Control>
                     </Form.Group>
                   </Form.Row>
                   <Form.Row>
                     <Form.Group as={Col} controlId='destination'>
                       <Form.Label>行き先</Form.Label>
-                      <Form.Control name='destination' placeholder='' value={userInfo.destination} onChange={this.onUserInfoChange} maxLength={100} />
+                      <Form.Control
+                        name='destination'
+                        placeholder=''
+                        value={userInfo.destination}
+                        onChange={this.onUserInfoChange}
+                        maxLength={100}
+                      />
                     </Form.Group>
                     <Form.Group as={Col} controlId='return'>
                       <Form.Label>戻り</Form.Label>
-                      <Form.Control name='return' placeholder='' value={userInfo.return} onChange={this.onUserInfoChange} maxLength={100} />
+                      <Form.Control
+                        name='return'
+                        placeholder=''
+                        value={userInfo.return}
+                        onChange={this.onUserInfoChange}
+                        maxLength={100}
+                      />
                     </Form.Group>
                   </Form.Row>
                   <Form.Group controlId='message'>
                     <Form.Label>メッセージ</Form.Label>
-                    <Form.Control name='message' placeholder='' value={userInfo.message} onChange={this.onUserInfoChange} maxLength={100} />
+                    <Form.Control
+                      name='message'
+                      placeholder=''
+                      value={userInfo.message}
+                      onChange={this.onUserInfoChange}
+                      maxLength={100}
+                    />
                   </Form.Group>
                 </div>
               )}
