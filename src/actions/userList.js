@@ -15,6 +15,7 @@ export const DELETE_USER = 'DELETE_USER';
 export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
 export const UPDATE_USER_INFO = 'UPDATE_USER_INFO';
 export const UPDATE_USER_INFO_SUCCESS = 'UPDATE_USER_INFO_SUCCESS';
+export const SET_UPDATED_AT = 'SET_UPDATED_AT';
 export const CHANGE_ORDER = 'CHANGE_ORDER';
 export const CHANGE_ORDER_SUCCESS = 'CHANGE_ORDER_SUCCESS';
 export const UPDATE_FOR_ADDED_USER_INFO = 'UPDATE_FOR_ADDED_USER_INFO';
@@ -78,8 +79,15 @@ export const deleteUserSuccessActionCreator = () => ({
 export const updateUserInfoActionCreator = () => ({
   type: UPDATE_USER_INFO
 });
-export const updateUserInfoSuccessActionCreator = () => ({
-  type: UPDATE_USER_INFO_SUCCESS
+export const updateUserInfoSuccessActionCreator = json => ({
+  type: UPDATE_USER_INFO_SUCCESS,
+  payload: {
+    response: json
+  }
+});
+export const setUpdatedAtActionCreator = userList => ({
+  type: SET_UPDATED_AT,
+  userList
 });
 export const changeOrderActionCreator = () => ({
   type: CHANGE_ORDER
@@ -283,7 +291,8 @@ export const updateUserInfoAction = (userInfo, userID) => {
       if (!res.ok) {
         return Promise.reject(res);
       }
-      return dispatch(updateUserInfoSuccessActionCreator());
+      const json = await res.json();
+      return dispatch(updateUserInfoSuccessActionCreator(json));
     } catch (error) {
       dispatch(failRequestActionCreator(error));
     }

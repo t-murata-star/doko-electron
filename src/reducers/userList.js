@@ -57,6 +57,7 @@ export default function userList(
     isAuthenticated: false,
     userList: [],
     changeUserList: [],
+    updatedAt: '',
     isFetching: false,
     isError: {
       status: false,
@@ -124,6 +125,7 @@ export default function userList(
     case Actions.UPDATE_USER_INFO_SUCCESS:
       return {
         ...state,
+        updatedAt: action.payload.response.updated_at,
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
@@ -138,6 +140,12 @@ export default function userList(
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
+    case Actions.SET_UPDATED_AT:
+      return {
+        ...state,
+        userList: action.userList
+      };
+
     case Actions.ADD_USER:
       return {
         ...state,

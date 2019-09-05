@@ -12,7 +12,8 @@ import {
   updateUserInfoAction,
   getNotificationAction,
   sendHeartbeatAction,
-  returnEmptyUserListAction
+  returnEmptyUserListAction,
+  setUpdatedAtActionCreator
 } from '../actions/userList';
 import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
 
@@ -109,7 +110,12 @@ class App extends Component {
 
     Object.assign(userInfo, updatedUserInfo);
 
-    dispatch(updateUserInfoAction(updatedUserInfo, userID));
+    await dispatch(updateUserInfoAction(updatedUserInfo, userID));
+
+    // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
+    userInfo['updated_at'] = store.getState().userList.updatedAt;
+    dispatch(setUpdatedAtActionCreator(Object.assign([], userList)));
+
     this._heartbeat();
   }
 
