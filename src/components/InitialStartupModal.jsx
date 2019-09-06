@@ -53,6 +53,14 @@ class InitialStartupModal extends Component {
     // orderパラメータをidと同じ値に更新する
     const userInfo = userList.userInfo;
     userInfo['order'] = userInfo['id'];
+
+    const cookies = await remote.session.defaultSession.cookies.get({
+      name: 'version'
+    });
+    if (cookies[0]) {
+      userInfo['version'] = cookies[0].value;
+    }
+
     await dispatch(updateForAddedUserInfoAction(userInfo, userInfo['id']));
     dispatch(getUserListAction());
     this._heartbeat();
