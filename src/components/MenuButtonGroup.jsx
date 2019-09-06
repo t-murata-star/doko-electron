@@ -39,7 +39,7 @@ class MenuButtonGroup extends Component {
 
   showUserEditModal = () => {
     const { dispatch } = this.props;
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userListState['userList'];
     const userID = electronStore.get('userID');
     const userInfo = this._getUserInfo(userList, userID);
     dispatch(disableSubmitButtonActionCreator());
@@ -57,7 +57,7 @@ class MenuButtonGroup extends Component {
   };
 
   render() {
-    const userList = store.getState().userList;
+    const userList = store.getState().userListState;
     const userID = electronStore.get('userID');
     const userInfo = this._getUserInfo(userList['userList'], userID);
     const userInfoLength = Object.keys(userInfo).length;

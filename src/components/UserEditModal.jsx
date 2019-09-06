@@ -44,7 +44,7 @@ class UserEditModal extends Component {
     const userID = this.props.userID;
 
     await dispatch(updateUserInfoAction(userInfo, userID));
-    const userList = store.getState().userList;
+    const userList = store.getState().userListState;
     if (userList.isError.status) {
       dispatch(enableSubmitButtonActionCreator());
       return;
@@ -111,7 +111,7 @@ class UserEditModal extends Component {
       return;
     }
     dispatch(deleteUserAction(this.props.userInfo['id'])).then(() => {
-      const userList = store.getState().userList;
+      const userList = store.getState().userListState;
       if (userList.isError.status) {
         return;
       }
@@ -127,7 +127,7 @@ class UserEditModal extends Component {
   };
 
   render() {
-    const userList = store.getState().userList;
+    const userList = store.getState().userListState;
     const userInfo = this.props.userInfo;
 
     return (

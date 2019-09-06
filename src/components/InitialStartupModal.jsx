@@ -44,7 +44,7 @@ class InitialStartupModal extends Component {
   _addUser = async () => {
     const { dispatch } = this.props;
     await dispatch(addUserAction(this.userInfo));
-    const userList = store.getState().userList;
+    const userList = store.getState().userListState;
     if (userList.isError.status) {
       this.setState({ submitButtonStatus: false });
       return;
@@ -77,10 +77,10 @@ class InitialStartupModal extends Component {
     await dispatch(getUserListAction());
 
     const userID = electronStore.get('userID');
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
-    const isError = store.getState().userList.isError;
+    const isError = store.getState().userListState.isError;
 
     if (isError.status === false && userInfoLength === 0) {
       return;
@@ -108,7 +108,7 @@ class InitialStartupModal extends Component {
     await dispatch(updateUserInfoAction(updatedUserInfo, userID));
 
     // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
-    userInfo['updated_at'] = store.getState().userList.updatedAt;
+    userInfo['updated_at'] = store.getState().userListState.updatedAt;
     dispatch(setUpdatedAtActionCreator(Object.assign([], userList)));
 
     this._heartbeat();
@@ -128,7 +128,7 @@ class InitialStartupModal extends Component {
     const { dispatch } = this.props;
 
     const userID = electronStore.get('userID');
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
 
@@ -177,8 +177,8 @@ class InitialStartupModal extends Component {
 
   render() {
     const onHide = store.getState().initialStartupModal.onHide;
-    const isError = store.getState().userList.isError.status;
-    const changeUserList = store.getState().userList['changeUserList'];
+    const isError = store.getState().userListState.isError.status;
+    const changeUserList = store.getState().userListState['changeUserList'];
 
     return (
       <Modal

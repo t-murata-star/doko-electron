@@ -30,16 +30,16 @@ class App extends Component {
 
     await dispatch(loginAction());
 
-    const statusCode = store.getState().userList.isError.code;
+    const statusCode = store.getState().userListState.isError.code;
     if (statusCode === 401) {
       this._showMessageBox('認証に失敗しました。');
       return;
     }
 
     // APIリクエストヘッダに認証トークンを設定する
-    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userList.token;
+    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userListState.token;
 
-    const isError = store.getState().userList.isError;
+    const isError = store.getState().userListState.isError;
     if (isError.status) {
       return;
     }
@@ -47,7 +47,7 @@ class App extends Component {
     // お知らせチェック
     await dispatch(getNotificationAction());
 
-    const notification = store.getState().userList.notification;
+    const notification = store.getState().userListState.notification;
     const updateNotificationMessage = `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
 
     // バージョンチェック
@@ -80,7 +80,7 @@ class App extends Component {
     }
 
     await dispatch(getUserListAction());
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
 
@@ -113,7 +113,7 @@ class App extends Component {
     await dispatch(updateUserInfoAction(updatedUserInfo, userID));
 
     // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
-    userInfo['updated_at'] = store.getState().userList.updatedAt;
+    userInfo['updated_at'] = store.getState().userListState.updatedAt;
     dispatch(setUpdatedAtActionCreator(Object.assign([], userList)));
 
     this._heartbeat();
@@ -138,7 +138,7 @@ class App extends Component {
     const { dispatch } = this.props;
 
     const userID = electronStore.get('userID');
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
 
@@ -156,7 +156,7 @@ class App extends Component {
     const { dispatch } = this.props;
 
     const userID = electronStore.get('userID');
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
     if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
@@ -174,7 +174,7 @@ class App extends Component {
     const { dispatch } = this.props;
 
     const userID = electronStore.get('userID');
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
     if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
@@ -200,7 +200,7 @@ class App extends Component {
   };
 
   render() {
-    const isFetching = store.getState().userList.isFetching;
+    const isFetching = store.getState().userListState.isFetching;
 
     return (
       <div>

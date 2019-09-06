@@ -51,7 +51,7 @@ function userListIsError(
 /**
  * 登録者情報一覧のstateを管理するReducer
  */
-export default function userList(
+export default function userListState(
   state = {
     token: '',
     isAuthenticated: false,

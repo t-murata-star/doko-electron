@@ -26,7 +26,7 @@ class UserList extends Component {
 
   showModal = (e, row) => {
     const { dispatch } = this.props;
-    const userList = store.getState().userList['userList'];
+    const userList = store.getState().userListState['userList'];
     const selectedUserId = row.getData()['id'];
     const userInfo = this._getUserInfo(userList, selectedUserId);
     dispatch(disableSubmitButtonActionCreator());
