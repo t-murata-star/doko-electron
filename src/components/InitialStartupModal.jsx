@@ -3,7 +3,15 @@ import React, { Component } from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import store from '../store/configureStore';
-import { addUserAction, getUserListAction, getChangeUserListAction, updateForAddedUserInfoAction, sendHeartbeatAction } from '../actions/userList';
+import {
+  addUserAction,
+  getUserListAction,
+  getChangeUserListAction,
+  updateForAddedUserInfoAction,
+  sendHeartbeatAction,
+  updateUserInfoAction,
+  setUpdatedAtActionCreator
+} from '../actions/userList';
 import { USER_INFO } from '../define';
 
 const { remote } = window.require('electron');
@@ -54,11 +62,47 @@ class InitialStartupModal extends Component {
     this.closeModal();
   };
 
-  _changeUser = () => {
+  _changeUser = async () => {
     const { dispatch } = this.props;
     electronStore.set('userID', Number(this.userID));
     this.closeModal();
-    dispatch(getUserListAction());
+    await dispatch(getUserListAction());
+
+    const userID = electronStore.get('userID');
+    const userList = store.getState().userList['userList'];
+    const userInfo = this._getUserInfo(userList, userID);
+    const userInfoLength = Object.keys(userInfo).length;
+    const isError = store.getState().userList.isError;
+
+    if (isError.status === false && userInfoLength === 0) {
+      return;
+    }
+
+    const updatedUserInfo = {};
+    updatedUserInfo['id'] = userID;
+
+    const cookies = await remote.session.defaultSession.cookies.get({
+      name: 'version'
+    });
+    if (cookies[0]) {
+      updatedUserInfo['version'] = cookies[0].value;
+    }
+
+    // 状態が「退社」のユーザのみ、状態を「在席」に変更して情報を初期化
+    if (userInfo['status'] === '退社') {
+      updatedUserInfo['status'] = '在席';
+      updatedUserInfo['destination'] = '';
+      updatedUserInfo['return'] = '';
+    }
+
+    Object.assign(userInfo, updatedUserInfo);
+
+    await dispatch(updateUserInfoAction(updatedUserInfo, userID));
+
+    // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
+    userInfo['updated_at'] = store.getState().userList.updatedAt;
+    dispatch(setUpdatedAtActionCreator(Object.assign([], userList)));
+
     this._heartbeat();
   };
 
@@ -175,7 +219,12 @@ class InitialStartupModal extends Component {
                     )}
                     {!this.state.isChangeUser && (
                       <div>
-                        <Form.Control name='name' placeholder='氏名を入力してください' onChange={this.onNameChange} maxLength={100} />
+                        <Form.Control
+                          name='name'
+                          placeholder='氏名を入力してください'
+                          onChange={this.onNameChange}
+                          maxLength={100}
+                        />
                         <Form.Text>
                           <span>登録済みの場合は</span>
                           <Button variant='link' className='modal-button-user-delete userChange' onClick={this.changeUserInput}>
