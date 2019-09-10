@@ -28,6 +28,9 @@ class UserEditModal extends Component {
   constructor(props) {
     super(props);
     this.userID = null;
+    this.state = {
+      isError: false
+    };
   }
 
   componentDidUpdate() {
@@ -113,6 +116,7 @@ class UserEditModal extends Component {
     dispatch(deleteUserAction(this.props.userInfo['id'])).then(() => {
       const userList = store.getState().userListState;
       if (userList.isError.status) {
+        this.setState({ isError: true });
         return;
       }
       this.closeModal();
