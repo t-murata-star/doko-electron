@@ -204,6 +204,7 @@ class App extends Component {
 
     return (
       <div>
+        <Loading isFetching={isFetching} />
         {electronStore.get('userID') && (
           <div>
             <UserList />
@@ -211,7 +212,6 @@ class App extends Component {
           </div>
         )}
         <InitialStartupModal />
-        <Loading isFetching={isFetching} />
       </div>
     );
   }

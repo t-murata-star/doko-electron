@@ -12,6 +12,7 @@ class Loading extends Component {
     if (this.props.isFetching) {
       return (
         <div className='mx-auto'>
+          <div className='background'></div>
           <table className='loading'>
             <tbody>
               <tr>
