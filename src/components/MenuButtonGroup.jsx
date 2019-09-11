@@ -10,6 +10,7 @@ import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
 import $ from 'jquery';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
+import MaterialButton from '@material/react-button';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 
@@ -67,28 +68,32 @@ class MenuButtonGroup extends Component {
         <Container>
           <Form.Row>
             <Form.Group as={Col} controlId='close'>
-              <Button variant='light' className='w-100' onClick={this.close}>
+              <MaterialButton outlined className='w-100 menu-button-group-button' onClick={this.close}>
                 <FontAwesomeIcon icon='power-off' /> 終了
-              </Button>
+              </MaterialButton>
             </Form.Group>
             <Form.Group as={Col} controlId='reload'>
-              <Button variant='light' className='w-100' onClick={this.reload} disabled={userList.isFetching === true}>
+              <MaterialButton
+                outlined
+                className='w-100 menu-button-group-button'
+                onClick={this.reload}
+                disabled={userList.isFetching === true}>
                 <FontAwesomeIcon icon='sync' /> 再読込
-              </Button>
+              </MaterialButton>
             </Form.Group>
             <Form.Group as={Col} controlId='showUserEditModal'>
-              <Button
-                variant='light'
-                className='w-100'
+              <MaterialButton
+                outlined
+                className='w-100 menu-button-group-button'
                 onClick={this.showUserEditModal}
                 disabled={userInfoLength === 0 || userList.isAuthenticated === false}>
                 <FontAwesomeIcon icon='edit' /> 自分編集
-              </Button>
+              </MaterialButton>
             </Form.Group>
             <Form.Group as={Col} controlId='minimize'>
-              <Button variant='light' className='w-100' onClick={this.minimize}>
+              <MaterialButton outlined className='w-100 menu-button-group-button' onClick={this.minimize}>
                 <FontAwesomeIcon icon='window-minimize' /> 最小化
-              </Button>
+              </MaterialButton>
             </Form.Group>
           </Form.Row>
         </Container>

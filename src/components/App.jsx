@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './App.scss';
 import UserList from '../containers/UserListPanel';
 import MenuButtonGroup from '../containers/MenuButtonGroupPanel';
 import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';

@@ -1,0 +1,23 @@
+@import '@material/react-button/index.scss';
+@import '@material/button/mixins';
+.row {
+  margin-right: 0px;
+}
+:root {
+  --mdc-theme-primary: #bdbdbd;
+}
+button:focus {
+  outline: none;
+  outline: none;
+}
+.mdc-button__label {
+  font-size: 16px;
+}
+
+.menu-button-group-button {
+  @include mdc-button-filled-accessible(#f3f3f3);
+  @include mdc-button-ink-color(#212529);
+  // @include mdc-button-horizontal-padding(10px);
+  // @include mdc-button-outline-color(#000);
+  @include mdc-button-outline-width(1px);
+}
