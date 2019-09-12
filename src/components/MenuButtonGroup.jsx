@@ -68,14 +68,15 @@ class MenuButtonGroup extends Component {
         <Container>
           <Form.Row>
             <Form.Group as={Col} controlId='close'>
-              <MaterialButton outlined className='w-100 menu-button-group-button' onClick={this.close}>
+              <MaterialButton outlined type='button' className='w-100 button-primary' onClick={this.close}>
                 <FontAwesomeIcon icon='power-off' /> 終了
               </MaterialButton>
             </Form.Group>
             <Form.Group as={Col} controlId='reload'>
               <MaterialButton
                 outlined
-                className='w-100 menu-button-group-button'
+                type='button'
+                className='w-100 button-primary'
                 onClick={this.reload}
                 disabled={userList.isFetching === true}>
                 <FontAwesomeIcon icon='sync' /> 再読込
@@ -84,14 +85,15 @@ class MenuButtonGroup extends Component {
             <Form.Group as={Col} controlId='showUserEditModal'>
               <MaterialButton
                 outlined
-                className='w-100 menu-button-group-button'
+                type='button'
+                className='w-100 button-primary'
                 onClick={this.showUserEditModal}
                 disabled={userInfoLength === 0 || userList.isAuthenticated === false}>
                 <FontAwesomeIcon icon='edit' /> 自分編集
               </MaterialButton>
             </Form.Group>
             <Form.Group as={Col} controlId='minimize'>
-              <MaterialButton outlined className='w-100 menu-button-group-button' onClick={this.minimize}>
+              <MaterialButton outlined type='button' className='w-100 button-primary' onClick={this.minimize}>
                 <FontAwesomeIcon icon='window-minimize' /> 最小化
               </MaterialButton>
             </Form.Group>

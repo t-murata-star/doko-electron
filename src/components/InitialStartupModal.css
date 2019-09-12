@@ -1,34 +1,21 @@
-.btn-light {
-    color: #212529;
-    background-color: #eeeeee;
-    border-color: #d9dde0;
-}
-.btn-light:hover {
-    color: #212529;
-    background-color: #d9dde0;
-    border-color: #dae0e5;
-}
-.btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle {
-    background-color: #abaeb1;
-}
 .modal-button {
-    width: 10rem !important;
-    margin-left: 8px !important;
+  width: 10rem !important;
+  margin-left: 8px !important;
 }
 .initialStartupModal > .modal-content {
-    width: 50%;
-    margin-left: 25%;
+  width: 50%;
+  margin-left: 25%;
 }
 .error-message {
-    color: red;
-    font-size: 18px;
-    padding: 1rem;
+  color: red;
+  font-size: 18px;
+  padding: 1rem;
 }
 .userChange {
-    font-size: 13px;
-    padding-left: 0px;
-    padding-top: 0px;
-    padding-bottom: 4px;
-    position: relative;
-    padding-right: 0px;
+  font-size: 13px;
+  padding-left: 0px;
+  padding-top: 0px;
+  padding-bottom: 4px;
+  position: relative;
+  padding-right: 0px;
 }
