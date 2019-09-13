@@ -11,6 +11,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.9.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
     "@material/react-button": "^0.15.0",
+    "@material/react-text-field": "^0.15.0",
     "@svgr/webpack": "4.1.0",
     "@typescript-eslint/eslint-plugin": "1.6.0",
     "@typescript-eslint/parser": "1.6.0",
@@ -80,7 +81,7 @@
     "react:start": "node scripts/start.js",
     "react:build": "node scripts/build.js",
     "react:test": "node scripts/test.js",
-    "electron:start:mac": "LOAD_URL=http://localhost:3000 electron .",
+    "electron:start:mac": "LOAD_URL=http://localhost:3000 SASS_PATH=./node_modules electron .",
     "electron:start:windows": "set LOAD_URL=http://localhost:3000 && electron .",
     "electron:build:mac": "node build-macOS.js",
     "electron:build:windows": "node build-windows.js"

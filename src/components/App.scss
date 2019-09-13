@@ -1,4 +1,5 @@
 @import '@material/react-button/index.scss';
+@import '@material/react-text-field/index.scss';
 @import '@material/button/mixins';
 .row {
   margin-right: 0px;
@@ -41,4 +42,15 @@ button:focus {
   @include mdc-button-outline-color(#d4d9dd);
   @include mdc-button-outline-width(1px);
   margin-right: auto !important;
+}
+
+.text-field {
+  // @include mdc-text-field-focused-outline-color(#167bf0);
+
+  // @include mdc-text-field-ink-color(#167bf0);
+  @include mdc-text-field-label-color(#a5abb3);
+  @include mdc-text-field-caret-color(#212529);
+
+  @include mdc-text-field-line-ripple-color(#167bf0);
+  // height: 44px;
 }

@@ -20,6 +20,7 @@ import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction, deleteUserAction } from '../actions/userList';
 import { STATUS_LIST } from '../define';
 import MaterialButton from '@material/react-button';
+import MaterialTextField, { HelperText, Input } from '@material/react-text-field';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -157,21 +158,14 @@ class UserEditModal extends Component {
                 <div>
                   <Form.Row>
                     <Form.Group as={Col} controlId='name'>
-                      <Form.Label>
-                        <span className='name'>氏名</span>
-                      </Form.Label>
                       {userInfo['id'] === electronStore.get('userID') && (
                         <Button variant='link' className='userChange' onClick={this.handleChangeUser}>
                           ユーザ変更
                         </Button>
                       )}
-                      <Form.Control
-                        name='name'
-                        placeholder=''
-                        value={userInfo.name}
-                        onChange={this.onUserInfoChange}
-                        maxLength={100}
-                      />
+                      <MaterialTextField label='氏名' className='text-field' style={{ width: '100%' }}>
+                        <Input name='name' type='text' value={userInfo.name} onChange={this.onUserInfoChange} maxLength={100} />
+                      </MaterialTextField>
                     </Form.Group>
                     <Form.Group as={Col} controlId='status'>
                       <Form.Label>
@@ -195,35 +189,38 @@ class UserEditModal extends Component {
                   </Form.Row>
                   <Form.Row>
                     <Form.Group as={Col} controlId='destination'>
-                      <Form.Label>行き先</Form.Label>
-                      <Form.Control
-                        name='destination'
-                        placeholder=''
-                        value={userInfo.destination}
-                        onChange={this.onUserInfoChange}
-                        maxLength={100}
-                      />
+                      <MaterialTextField label='行き先' className='text-field' style={{ width: '100%' }}>
+                        <Input
+                          name='destination'
+                          type='text'
+                          value={userInfo.destination}
+                          onChange={this.onUserInfoChange}
+                          maxLength={100}
+                        />
+                      </MaterialTextField>
                     </Form.Group>
                     <Form.Group as={Col} controlId='return'>
-                      <Form.Label>戻り</Form.Label>
-                      <Form.Control
-                        name='return'
-                        placeholder=''
-                        value={userInfo.return}
-                        onChange={this.onUserInfoChange}
-                        maxLength={100}
-                      />
+                      <MaterialTextField label='戻り' className='text-field' style={{ width: '100%' }}>
+                        <Input
+                          name='return'
+                          type='text'
+                          value={userInfo.return}
+                          onChange={this.onUserInfoChange}
+                          maxLength={100}
+                        />
+                      </MaterialTextField>
                     </Form.Group>
                   </Form.Row>
                   <Form.Group controlId='message'>
-                    <Form.Label>メッセージ</Form.Label>
-                    <Form.Control
-                      name='message'
-                      placeholder=''
-                      value={userInfo.message}
-                      onChange={this.onUserInfoChange}
-                      maxLength={100}
-                    />
+                    <MaterialTextField label='メッセージ' className='text-field' style={{ width: '100%' }}>
+                      <Input
+                        name='message'
+                        type='text'
+                        value={userInfo.message}
+                        onChange={this.onUserInfoChange}
+                        maxLength={100}
+                      />
+                    </MaterialTextField>
                   </Form.Group>
                 </div>
               )}
