@@ -29,7 +29,7 @@ button:focus {
 }
 .modal-button-clear {
   @include mdc-button-outline-width(1px, 0px);
-  height: 20px;
+  height: 23px;
   margin-bottom: 4px;
 }
 .modal-button-clear > .mdc-button__label {

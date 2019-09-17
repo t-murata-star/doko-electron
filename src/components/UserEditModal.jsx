@@ -184,7 +184,6 @@ class UserEditModal extends Component {
                         onClick={this.inputClear}>
                         クリア
                       </MaterialButton>
-
                       <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
                         {STATUS_LIST.map((status, index) => (
                           <option key={index}>{status}</option>

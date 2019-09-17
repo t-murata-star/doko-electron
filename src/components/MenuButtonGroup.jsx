@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Container, Col, Button, Form } from 'react-bootstrap';
+import { Row, Container, Col, Form } from 'react-bootstrap';
 import { getUserListAction } from '../actions/userList';
 import './MenuButtonGroup.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
