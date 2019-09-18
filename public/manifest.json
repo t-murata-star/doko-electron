@@ -1,6 +1,6 @@
 {
   "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "行き先掲示板",
   "icons": [
     {
       "src": "favicon.ico",
