@@ -19,6 +19,7 @@ import {
 import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction, deleteUserAction } from '../actions/userList';
 import { STATUS_LIST } from '../define';
+import MaterialButton from '@material/react-button';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -176,9 +177,13 @@ class UserEditModal extends Component {
                       <Form.Label>
                         <span className='status'>状態</span>
                       </Form.Label>
-                      <Button variant='light' className='btn-sm modal-button-clear' onClick={this.inputClear}>
+                      <MaterialButton
+                        outlined
+                        type='button'
+                        className='modal-button-clear button-primary '
+                        onClick={this.inputClear}>
                         クリア
-                      </Button>
+                      </MaterialButton>
                       <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
                         {STATUS_LIST.map((status, index) => (
                           <option key={index}>{status}</option>
@@ -256,16 +261,20 @@ class UserEditModal extends Component {
           </Modal.Body>
           <Modal.Footer>
             {!this.props.isChangeUser && (
-              <Button variant='outline-light' className='modal-button-user-delete' onClick={this.deleteUser}>
+              <MaterialButton outlined type='button' className='button-user-delete' onClick={this.deleteUser}>
                 削除
-              </Button>
+              </MaterialButton>
             )}
-            <Button type='submit' variant='primary' className='modal-button' disabled={this.props.submitButtonStatus}>
-              更新
-            </Button>
-            <Button variant='light' className='modal-button' onClick={this.closeModal}>
+            <MaterialButton
+              outlined
+              type='submit'
+              className='modal-button button-submit'
+              disabled={this.props.submitButtonStatus}>
+              登録
+            </MaterialButton>
+            <MaterialButton outlined type='button' className='modal-button button-primary' onClick={this.closeModal}>
               キャンセル
-            </Button>
+            </MaterialButton>
           </Modal.Footer>
         </Form>
       </Modal>

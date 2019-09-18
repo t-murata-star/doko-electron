@@ -13,6 +13,7 @@ import {
   setUpdatedAtActionCreator
 } from '../actions/userList';
 import { USER_INFO } from '../define';
+import MaterialButton from '@material/react-button';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -248,12 +249,16 @@ class InitialStartupModal extends Component {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button type='submit' variant='primary' className='modal-button' disabled={this.state.submitButtonStatus}>
+            <MaterialButton
+              outlined
+              type='submit'
+              className='modal-button button-submit'
+              disabled={this.state.submitButtonStatus}>
               登録
-            </Button>
-            <Button variant='light' className='modal-button' onClick={this.close}>
+            </MaterialButton>
+            <MaterialButton outlined type='button' className='modal-button button-primary' onClick={this.close}>
               終了
-            </Button>
+            </MaterialButton>
           </Modal.Footer>
         </Form>
       </Modal>
