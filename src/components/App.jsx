@@ -86,7 +86,7 @@ class App extends Component {
 
     if (isError.status === false && userInfoLength === 0) {
       dispatch(returnEmptyUserListAction());
-      this._showMessageBox('ユーザ情報が存在しません。\nユーザ登録を行います。');
+      this._showMessageBox('ユーザ情報が存在しないため、ユーザ登録を行います。');
       dispatch(showInitialStartupModalActionCreator());
       return;
     }
