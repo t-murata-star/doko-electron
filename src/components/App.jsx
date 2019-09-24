@@ -106,6 +106,7 @@ class App extends Component {
       updatedUserInfo['status'] = '在席';
       updatedUserInfo['destination'] = '';
       updatedUserInfo['return'] = '';
+      updatedUserInfo['name'] = userInfo['name'];
     }
 
     Object.assign(userInfo, updatedUserInfo);
@@ -165,6 +166,7 @@ class App extends Component {
 
     const updatedUserInfo = {};
     updatedUserInfo['id'] = userID;
+    updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo[key] = value;
     Object.assign(userInfo, updatedUserInfo);
     dispatch(updateUserInfoAction(updatedUserInfo, userID));
@@ -185,6 +187,7 @@ class App extends Component {
     const updatedUserInfo = {};
     updatedUserInfo['id'] = userID;
     updatedUserInfo['status'] = '退社';
+    updatedUserInfo['name'] = userInfo['name'];
     Object.assign(userInfo, updatedUserInfo);
     await dispatch(updateUserInfoAction(updatedUserInfo, userID));
     ipcRenderer.send('close');
