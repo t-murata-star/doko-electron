@@ -20,6 +20,7 @@ import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction, deleteUserAction } from '../actions/userList';
 import { STATUS_LIST } from '../define';
 import MaterialButton from '@material/react-button';
+import ReactTooltip from 'react-tooltip';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -177,13 +178,16 @@ class UserEditModal extends Component {
                       <Form.Label>
                         <span className='status'>状態</span>
                       </Form.Label>
-                      <MaterialButton
-                        outlined
-                        type='button'
-                        className='modal-button-clear button-primary '
-                        onClick={this.inputClear}>
-                        クリア
-                      </MaterialButton>
+                      <span data-tip='状態を在席に変更し、行き先と戻りを削除します'>
+                        <MaterialButton
+                          outlined
+                          type='button'
+                          className='modal-button-clear button-primary '
+                          onClick={this.inputClear}>
+                          クリア
+                        </MaterialButton>
+                        <ReactTooltip effect='solid' place='top' />
+                      </span>
                       <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
                         {STATUS_LIST.map((status, index) => (
                           <option key={index}>{status}</option>

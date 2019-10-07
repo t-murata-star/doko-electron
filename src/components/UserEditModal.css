@@ -25,3 +25,9 @@
   padding-bottom: 4px;
   position: relative;
 }
+.__react_component_tooltip.type-dark.place-top:after {
+  border-top-color: #666;
+}
+.__react_component_tooltip.type-dark {
+  background-color: #666;
+}
