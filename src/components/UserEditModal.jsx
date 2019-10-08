@@ -184,7 +184,7 @@ class UserEditModal extends Component {
                           type='button'
                           className='modal-button-clear button-primary '
                           onClick={this.inputClear}>
-                          クリア
+                          在席
                         </MaterialButton>
                         <ReactTooltip effect='solid' place='top' />
                       </span>
