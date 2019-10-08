@@ -26,6 +26,7 @@ class App extends Component {
     const { dispatch } = this.props;
     const userID = electronStore.get('userID');
 
+    // WEBアプリケーション接続確認用のため、Cookieにパラメータを設定する
     document.cookie = 'isConnected=true';
 
     await dispatch(loginAction());
@@ -50,7 +51,10 @@ class App extends Component {
     const notification = store.getState().userListState.notification;
     const updateNotificationMessage = `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
 
-    // バージョンチェック
+    /**
+     * バージョンチェック
+     * 実行しているアプリケーションのバージョンが最新ではない場合、自動的に規定のブラウザでダウンロード先URLを開く
+     */
     try {
       const cookies = await remote.session.defaultSession.cookies.get({
         name: 'version'
@@ -64,10 +68,16 @@ class App extends Component {
       remote.shell.openExternal(APP_DOWNLOAD_URL);
     }
 
+    /**
+     * お知らせチェック
+     */
     if (notification.targetIDs.includes(userID) && notification.content !== '') {
       this._showMessageBox(notification.content);
     }
 
+    /**
+     * アプリケーションの死活監視ため、定期的にサーバにリクエストを送信する
+     */
     setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
 
     /**
@@ -84,6 +94,10 @@ class App extends Component {
     const userInfo = this._getUserInfo(userList, userID);
     const userInfoLength = Object.keys(userInfo).length;
 
+    /**
+     * サーバ上に自分の情報が存在するかどうかチェック
+     * 無ければ新規登録画面へ遷移する
+     */
     if (isError.status === false && userInfoLength === 0) {
       dispatch(returnEmptyUserListAction());
       this._showMessageBox('ユーザ情報が存在しないため、ユーザ登録を行います。');

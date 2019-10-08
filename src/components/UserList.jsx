@@ -79,6 +79,7 @@ class UserList extends Component {
     }
   };
 
+  // 各ユーザの「order」パラメータをユーザ一覧の表示順序を元に更新する
   _updateUserInfoOrder = rowComponent => {
     const { dispatch } = this.props;
     const rows = rowComponent.getTable().getRows();

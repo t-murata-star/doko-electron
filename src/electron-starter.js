@@ -9,8 +9,9 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
-// ビルド用接続先URL
+// アプリケーションのバージョンを定義
 const VERSION = '1.0.3';
+// 本番接続先URL
 const DEFAULT_LOAD_URL = 'http://********/';
 
 function createWindow() {
@@ -38,22 +39,24 @@ function createWindow() {
    * 環境変数が設定されていればその設定値を接続先を使用する
    * 設定されていなければ、当プログラムにて定義した接続先を使用する
    */
-  let loadURL;
+  let webAppURL;
 
   if (process.env.LOAD_URL) {
-    loadURL = process.env.LOAD_URL;
+    webAppURL = process.env.LOAD_URL;
   } else {
-    loadURL = DEFAULT_LOAD_URL;
+    webAppURL = DEFAULT_LOAD_URL;
   }
 
   // Cookieにアプリケーションのバージョンを追加
-  session.defaultSession.cookies.set({ url: loadURL, name: 'version', value: VERSION });
+  session.defaultSession.cookies.set({ url: webAppURL, name: 'version', value: VERSION });
 
-  mainWindow.loadURL(loadURL);
+  // WEBアプリケーションに接続する
+  mainWindow.loadURL(webAppURL);
 
   // デベロッパーツールを開く
   mainWindow.webContents.openDevTools();
 
+  // ウインドウがクローズされようとするときに発生するイベント
   mainWindow.on('close', closeEvent => {
     closeEvent.preventDefault();
     const index = electron.dialog.showMessageBox(mainWindow, {
@@ -64,9 +67,10 @@ function createWindow() {
     });
 
     switch (index) {
+      // ダイアログで「OK」を選択した場合
       case 0:
         /**
-         * アプリ終了時に状態を「退社」に更新する
+         * ElectronがWEBアプリケーションを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
          */
         session.defaultSession.cookies.get({ name: 'isConnected' }).then(cookies => {
@@ -78,9 +82,7 @@ function createWindow() {
         });
         break;
 
-      case 1:
-        break;
-
+      // ダイアログで「OK」以外を選択した場合
       default:
         break;
     }
@@ -99,6 +101,9 @@ function createWindow() {
     session.defaultSession.clearCache(() => {});
   });
 
+  /**
+   * ウィンドウが最小化されるときに発生するイベント
+   */
   mainWindow.on('minimize', event => {
     event.preventDefault();
     mainWindow.hide();
@@ -130,7 +135,10 @@ function createWindow() {
 
   createTray();
 
-  // スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
+  /**
+   * スタートアップ登録処理。
+   * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
+   */
   if (!electronStore.get('notified_startup')) {
     const index = electron.dialog.showMessageBox(mainWindow, {
       title: '行き先掲示板',
