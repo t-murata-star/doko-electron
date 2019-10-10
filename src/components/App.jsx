@@ -31,8 +31,7 @@ class App extends Component {
 
     await dispatch(loginAction());
 
-    const statusCode = store.getState().userListState.isError.code;
-    if (statusCode === 401) {
+    if (store.getState().userListState.isError.code === 401) {
       this._showMessageBox('認証に失敗しました。');
       return;
     }
@@ -40,8 +39,7 @@ class App extends Component {
     // APIリクエストヘッダに認証トークンを設定する
     AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userListState.token;
 
-    const isError = store.getState().userListState.isError;
-    if (isError.status) {
+    if (store.getState().userListState.isError.status) {
       return;
     }
 
@@ -98,7 +96,7 @@ class App extends Component {
      * サーバ上に自分の情報が存在するかどうかチェック
      * 無ければ新規登録画面へ遷移する
      */
-    if (isError.status === false && userInfoLength === 0) {
+    if (store.getState().userListState.isError.status === false && userInfoLength === 0) {
       dispatch(returnEmptyUserListAction());
       this._showMessageBox('ユーザ情報が存在しないため、ユーザ登録を行います。');
       dispatch(showInitialStartupModalActionCreator());
