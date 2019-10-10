@@ -24,7 +24,7 @@ class UserList extends Component {
     return userInfo || {};
   };
 
-  showModal = (e, row) => {
+  showUserEditModal = (e, row) => {
     const { dispatch } = this.props;
     const userList = store.getState().userListState['userList'];
     const selectedUserId = row.getData()['id'];
@@ -112,7 +112,7 @@ class UserList extends Component {
           tooltips={true}
           layout={'fitData'}
           height='88vh'
-          rowDblClick={this.showModal}
+          rowDblClick={this.showUserEditModal}
           resizableColumns={'header'}
           rowFormatter={this._rowFormatter}
           placeholder={'通信に失敗しました。'}
