@@ -1,13 +1,13 @@
 .user-list {
-  margin-bottom: 1.7%;
-  user-select: none /* 選択を禁止する */
+  margin-bottom: 0.6%;
+  user-select: none; /* 選択を禁止する */
 }
 .tabulator-row.tabulator-selectable:hover {
-    background-color: #e2e2e2 !important;
-    cursor: default !important;
+  background-color: #e2e2e2 !important;
+  cursor: default !important;
 }
 .tabulator-row.tabulator-row-even {
-    background-color: #f5f5f5 !important;
+  background-color: #f5f5f5 !important;
 }
 .tabulator {
   border-right-width: 0px !important;

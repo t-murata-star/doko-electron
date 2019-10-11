@@ -67,11 +67,6 @@ class MenuButtonGroup extends Component {
       <Row className='menu-button-group'>
         <Container>
           <Form.Row>
-            <Form.Group as={Col} controlId='close'>
-              <MaterialButton outlined type='button' className='w-100 button-primary' onClick={this.close}>
-                <FontAwesomeIcon icon='power-off' /> 終了
-              </MaterialButton>
-            </Form.Group>
             <Form.Group as={Col} controlId='reload'>
               <MaterialButton
                 outlined
@@ -90,11 +85,6 @@ class MenuButtonGroup extends Component {
                 onClick={this.showUserEditModal}
                 disabled={userInfoLength === 0 || userList.isAuthenticated === false}>
                 <FontAwesomeIcon icon='edit' /> 自分編集
-              </MaterialButton>
-            </Form.Group>
-            <Form.Group as={Col} controlId='minimize'>
-              <MaterialButton outlined type='button' className='w-100 button-primary' onClick={this.minimize}>
-                <FontAwesomeIcon icon='window-minimize' /> 最小化
               </MaterialButton>
             </Form.Group>
           </Form.Row>

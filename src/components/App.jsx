@@ -16,12 +16,19 @@ import {
   setUpdatedAtActionCreator
 } from '../actions/userList';
 import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
+import Tab from '@material/react-tab';
+import TabBar from '@material/react-tab-bar';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { activeIndex: 0 };
+  }
+
   async componentDidMount() {
     const { dispatch } = this.props;
     const userID = electronStore.get('userID');
@@ -212,13 +219,23 @@ class App extends Component {
     });
   };
 
+  handleActiveIndexUpdate = activeIndex => this.setState({ activeIndex });
+
   render() {
     const isFetching = store.getState().userListState.isFetching;
 
     return (
       <div>
         <Loading isFetching={isFetching} />
-        {electronStore.get('userID') && (
+        <TabBar className='tab' activeIndex={this.state.activeIndex} handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
+          <Tab className='tab'>
+            <span className='mdc-tab__text-label'>社員情報</span>
+          </Tab>
+          <Tab className='tab'>
+            <span className='mdc-tab__text-label'>社内情報</span>
+          </Tab>
+        </TabBar>
+        {electronStore.get('userID') && this.state.activeIndex === 0 && (
           <div>
             <UserList />
             <MenuButtonGroup />

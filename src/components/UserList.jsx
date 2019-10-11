@@ -111,7 +111,7 @@ class UserList extends Component {
           columns={TABLE_COLUMNS}
           tooltips={true}
           layout={'fitData'}
-          height='88vh'
+          height={window.innerHeight - 87}
           rowDblClick={this.showUserEditModal}
           resizableColumns={'header'}
           rowFormatter={this._rowFormatter}
