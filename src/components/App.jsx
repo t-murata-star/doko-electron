@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.scss';
 import UserList from '../containers/UserListPanel';
+import OfficeInfo from '../containers/OfficeInfoPanel';
 import MenuButtonGroup from '../containers/MenuButtonGroupPanel';
 import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
@@ -238,6 +239,12 @@ class App extends Component {
         {electronStore.get('userID') && this.state.activeIndex === 0 && (
           <div>
             <UserList />
+            <MenuButtonGroup />
+          </div>
+        )}
+        {electronStore.get('userID') && this.state.activeIndex === 1 && (
+          <div>
+            <OfficeInfo />
             <MenuButtonGroup />
           </div>
         )}
