@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Row, Container, Col, Form } from 'react-bootstrap';
 import { getUserListAction } from '../actions/userList';
-import './MenuButtonGroup.css';
+import './MenuButtonGroupForUserList.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPowerOff, faSync, faEdit, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
+import { faSync, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
@@ -12,18 +12,12 @@ import $ from 'jquery';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import MaterialButton from '@material/react-button';
 
-library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
+library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
-const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class MenuButtonGroup extends Component {
-  close = () => {
-    const window = remote.getCurrentWindow();
-    window.close();
-  };
-
+class MenuButtonGroupForUserList extends Component {
   reload = async () => {
     const { dispatch } = this.props;
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
@@ -31,11 +25,6 @@ class MenuButtonGroup extends Component {
     // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
     await dispatch(getUserListAction());
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop);
-  };
-
-  minimize = () => {
-    const window = remote.getCurrentWindow();
-    window.minimize();
   };
 
   showUserEditModal = () => {
@@ -64,7 +53,7 @@ class MenuButtonGroup extends Component {
     const userInfoLength = Object.keys(userInfo).length;
 
     return (
-      <Row className='menu-button-group'>
+      <Row className='menu-button-group-for-user-list'>
         <Container>
           <Form.Row>
             <Form.Group as={Col} controlId='reload'>
@@ -95,4 +84,4 @@ class MenuButtonGroup extends Component {
   }
 }
 
-export default MenuButtonGroup;
+export default MenuButtonGroupForUserList;

@@ -1,15 +1,18 @@
-import * as Actions from '../actions/officeInfo';
+import * as OfficeInfoActions from '../actions/officeInfo';
+import * as UserListActions from '../actions/userList';
 
-function userListIsFetching(state = false, action) {
+export function officeInfoIsFetching(state = false, action) {
   switch (action.type) {
-    case Actions.LOGIN:
+    case OfficeInfoActions.GET_RESTROOM_USAGE:
+      return true;
+    case OfficeInfoActions.UPDATE_RESTROOM_USAGE:
       return true;
     default:
       return false;
   }
 }
 
-function userListIsError(
+export function officrInfoIsError(
   state = {
     status: false,
     code: null,
@@ -18,7 +21,7 @@ function userListIsError(
   action
 ) {
   switch (action.type) {
-    case Actions.FAIL_REQUEST:
+    case UserListActions.FAIL_REQUEST:
       return {
         ...state,
         status: true,
@@ -38,7 +41,7 @@ function userListIsError(
 /**
  * 登録者情報一覧のstateを管理するReducer
  */
-export default function userListState(
+export default function officeInfoState(
   state = {
     isFetching: false,
     isError: {
@@ -46,21 +49,37 @@ export default function userListState(
       code: null,
       text: ''
     },
-    officeInfo: {}
+    restrooms: {
+      rooms: [],
+      isNoVacancyForMen: false,
+      isNoVacancyForWomen: false
+    }
   },
   action
 ) {
   switch (action.type) {
-    case Actions.GET_OFFICE_INFO:
+    case OfficeInfoActions.GET_RESTROOM_USAGE:
       return {
         ...state,
-        isFetching: userListIsFetching(state.isFetching, action)
+        isFetching: officeInfoIsFetching(state.isFetching, action)
       };
-    case Actions.GET_OFFICE_INFO_SUCCESS:
+    case OfficeInfoActions.GET_RESTROOM_USAGE_SUCCESS:
       return {
         ...state,
-        isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action)
+        isFetching: officeInfoIsFetching(state.isFetching, action),
+        isError: officrInfoIsError(state.isError, action)
+      };
+    case OfficeInfoActions.UPDATE_RESTROOM_USAGE:
+      return {
+        ...state,
+        isFetching: officeInfoIsFetching(state.isFetching, action)
+      };
+    case OfficeInfoActions.UPDATE_RESTROOM_USAGE_SUCCESS:
+      return {
+        ...state,
+        updatedAt: action.payload.response.updated_at,
+        isFetching: officeInfoIsFetching(state.isFetching, action),
+        isError: officrInfoIsError(state.isError, action)
       };
     default:
       return state;

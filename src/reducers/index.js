@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import userListState from './userList';
-import menuButtonGroup from './menuButtonGroup';
+import officeInfoState from './officeInfo';
 import userEditModal from './userEditModal';
 import initialStartupModal from './initialStartupModal';
 
 const rootReducer = combineReducers({
   userListState,
-  menuButtonGroup,
+  officeInfoState,
   userEditModal,
   initialStartupModal
 });

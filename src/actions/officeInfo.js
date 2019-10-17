@@ -1,5 +1,4 @@
 import { API_URL, AUTH_REQUEST_HEADERS } from '../define';
-import { unauthorizedActionCreator, failRequestActionCreator } from './userList';
 
 /**
  * Action type
@@ -8,11 +7,12 @@ export const GET_RESTROOM_USAGE = 'GET_RESTROOM_USAGE';
 export const GET_RESTROOM_USAGE_SUCCESS = 'GET_RESTROOM_USAGE_SUCCESS';
 export const UPDATE_RESTROOM_USAGE = 'UPDATE_RESTROOM_USAGE';
 export const UPDATE_RESTROOM_USAGE_SUCCESS = 'UPDATE_RESTROOM_USAGE_SUCCESS';
+export const FAIL_REQUEST = 'FAIL_REQUEST';
+export const UNAUTHORIZED = 'UNAUTHORIZED';
 
 /**
  * Action Creator
  */
-
 export const getRestroomUsageActionCreator = () => ({
   type: GET_RESTROOM_USAGE
 });
@@ -30,6 +30,17 @@ export const updateRestroomUsageSuccessActionCreator = json => ({
   payload: {
     response: json
   }
+});
+export const failRequestActionCreator = error => ({
+  type: FAIL_REQUEST,
+  error: true,
+  payload: {
+    error
+  }
+});
+export const unauthorizedActionCreator = () => ({
+  type: UNAUTHORIZED,
+  unauthorized: true
 });
 
 export const getRestroomUsageAction = (gender, place) => {
@@ -54,15 +65,14 @@ export const getRestroomUsageAction = (gender, place) => {
   };
 };
 
-export const updateRestroomUsageAction = (userInfo, userID) => {
+export const updateRestroomUsageAction = (id, isUsing) => {
   return async dispatch => {
     dispatch(updateRestroomUsageActionCreator());
-    const body = Object.assign({}, userInfo);
-    delete body['id'];
-    delete body['order'];
-    delete body['heartbeat'];
+    const body = {
+      isUsing
+    };
     try {
-      const res = await fetch(API_URL + 'userList/' + userID, {
+      const res = await fetch(API_URL + 'restroom/' + id, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(body)

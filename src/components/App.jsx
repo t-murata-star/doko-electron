@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import './App.scss';
 import UserList from '../containers/UserListPanel';
 import OfficeInfo from '../containers/OfficeInfoPanel';
-import MenuButtonGroup from '../containers/MenuButtonGroupPanel';
+import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUserList';
+import MenuButtonGroupForOfficeInfo from '../containers/MenuButtonGroupPanelForOfficeInfo';
 import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import Loading from './Loading';
@@ -27,7 +28,7 @@ const electronStore = new Store();
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { activeIndex: 0 };
+    this.state = { activeIndex: 1 };
   }
 
   async componentDidMount() {
@@ -239,13 +240,13 @@ class App extends Component {
         {electronStore.get('userID') && this.state.activeIndex === 0 && (
           <div>
             <UserList />
-            <MenuButtonGroup />
+            <MenuButtonGroupForUserList />
           </div>
         )}
         {electronStore.get('userID') && this.state.activeIndex === 1 && (
           <div>
             <OfficeInfo />
-            <MenuButtonGroup />
+            <MenuButtonGroupForOfficeInfo />
           </div>
         )}
         <InitialStartupModal />
