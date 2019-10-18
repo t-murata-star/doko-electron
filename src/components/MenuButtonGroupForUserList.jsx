@@ -5,11 +5,10 @@ import './MenuButtonGroupForUserList.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSync, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { showUserEditModalActionCreator } from '../actions/userEditModal';
+import { showUserEditModalActionCreator, disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
 import $ from 'jquery';
-import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import MaterialButton from '@material/react-button';
 
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく

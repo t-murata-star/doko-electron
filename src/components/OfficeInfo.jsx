@@ -21,22 +21,44 @@ class OfficeInfo extends Component {
           <Col md='1' />
           <Col md='5'>
             <Card>
-              <h4>
-                <h4>
-                  <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性トイレ
-                </h4>
+              <h4 style={{ textAlign: 'center' }}>
+                <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性トイレ
               </h4>
-              <p>Content</p>
+              {officeInfo.restrooms.isNoVacancyForWomen === true && (
+                <div style={{ color: 'red' }}>
+                  <p>
+                    <FontAwesomeIcon icon='door-closed' /> 満室
+                  </p>
+                </div>
+              )}
+              {officeInfo.restrooms.isNoVacancyForWomen === false && (
+                <div style={{ color: 'blue' }}>
+                  <p>
+                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForWomen}
+                  </p>
+                </div>
+              )}
             </Card>
           </Col>
           <Col md='5'>
             <Card>
-              <h4>
-                <h4>
-                  <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性トイレ(個室)
-                </h4>
+              <h4 style={{ textAlign: 'center' }}>
+                <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性トイレ(個室)
               </h4>
-              <p>Comming soon</p>
+              {officeInfo.restrooms.isNoVacancyForMen === true && (
+                <div style={{ color: 'red' }}>
+                  <p>
+                    <FontAwesomeIcon icon='door-closed' /> 満室
+                  </p>
+                </div>
+              )}
+              {officeInfo.restrooms.isNoVacancyForMen === false && (
+                <div style={{ color: 'blue' }}>
+                  <p>
+                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForMen}
+                  </p>
+                </div>
+              )}
             </Card>
           </Col>
           <Col md='1' />

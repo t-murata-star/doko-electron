@@ -5,8 +5,6 @@ export function officeInfoIsFetching(state = false, action) {
   switch (action.type) {
     case OfficeInfoActions.GET_RESTROOM_USAGE:
       return true;
-    case OfficeInfoActions.UPDATE_RESTROOM_USAGE:
-      return true;
     default:
       return false;
   }
@@ -52,7 +50,9 @@ export default function officeInfoState(
     restrooms: {
       rooms: [],
       isNoVacancyForMen: false,
-      isNoVacancyForWomen: false
+      isNoVacancyForWomen: false,
+      vacancyForMen: 0,
+      vacancyForWomen: 0
     }
   },
   action
@@ -66,22 +66,51 @@ export default function officeInfoState(
     case OfficeInfoActions.GET_RESTROOM_USAGE_SUCCESS:
       return {
         ...state,
+        restrooms: {
+          ...state.restrooms,
+          rooms: action.payload.response,
+          isNoVacancyForMen: checkNoVacantForRestroom(action.payload.response, 'men'),
+          isNoVacancyForWomen: checkNoVacantForRestroom(action.payload.response, 'women'),
+          vacancyForMen: getVacantCountForRestroom(action.payload.response, 'men'),
+          vacancyForWomen: getVacantCountForRestroom(action.payload.response, 'women')
+        },
         isFetching: officeInfoIsFetching(state.isFetching, action),
         isError: officrInfoIsError(state.isError, action)
       };
-    case OfficeInfoActions.UPDATE_RESTROOM_USAGE:
+    case OfficeInfoActions.UNAUTHORIZED:
+      /**
+       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
+       * 画面をリロードして認証トークンを再取得する
+       */
+      window.location.reload();
+      return {
+        ...state
+      };
+    case OfficeInfoActions.FAIL_REQUEST:
       return {
         ...state,
+        isError: officrInfoIsError(state.isError, action),
         isFetching: officeInfoIsFetching(state.isFetching, action)
-      };
-    case OfficeInfoActions.UPDATE_RESTROOM_USAGE_SUCCESS:
-      return {
-        ...state,
-        updatedAt: action.payload.response.updated_at,
-        isFetching: officeInfoIsFetching(state.isFetching, action),
-        isError: officrInfoIsError(state.isError, action)
       };
     default:
       return state;
   }
+}
+
+// トイレの満席チェック
+function checkNoVacantForRestroom(rooms, gender) {
+  if (!rooms) return true;
+
+  const filteredByGender = rooms.filter(room => room.gender === gender);
+  const filteredByUsing = filteredByGender.filter(room => room.isUsing === true);
+  return filteredByGender.length === filteredByUsing.length;
+}
+
+// トイレの空席数を計算
+function getVacantCountForRestroom(rooms, gender) {
+  if (!rooms) return 0;
+
+  const filteredByGender = rooms.filter(room => room.gender === gender);
+  const filteredByUsing = filteredByGender.filter(room => room.isUsing === false);
+  return filteredByUsing.length;
 }
