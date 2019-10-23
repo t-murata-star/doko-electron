@@ -9,7 +9,7 @@ library.add(faSpinner); //あらかじめ使用するアイコンを追加して
 // ローディングインジケータ
 class Loading extends Component {
   render() {
-    if (this.props.isFetching) {
+    if (this.props.state.userListState.isFetching || this.props.state.officeInfoState.isFetching) {
       return (
         <div className='mx-auto'>
           <div className='background'></div>

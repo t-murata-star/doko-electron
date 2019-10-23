@@ -17,6 +17,7 @@ import {
   returnEmptyUserListAction,
   setUpdatedAtActionCreator
 } from '../actions/userList';
+import { getRestroomUsageAction } from '../actions/officeInfo';
 import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
@@ -28,7 +29,7 @@ const electronStore = new Store();
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { activeIndex: 1 };
+    this.state = { activeIndex: 0 };
   }
 
   async componentDidMount() {
@@ -221,14 +222,35 @@ class App extends Component {
     });
   };
 
-  handleActiveIndexUpdate = activeIndex => this.setState({ activeIndex });
+  handleActiveIndexUpdate = async activeIndex => {
+    const { dispatch } = this.props;
+    this.setState({ activeIndex });
+
+    // 同じタブを複数押下した場合
+    if (this.state.activeIndex === activeIndex) {
+      return;
+    }
+
+    switch (activeIndex) {
+      // 社内情報タブを選択
+      case 0:
+        await dispatch(getUserListAction());
+        break;
+
+      // 社員情報タブを選択
+      case 1:
+        await dispatch(getRestroomUsageAction());
+        break;
+
+      default:
+        break;
+    }
+  };
 
   render() {
-    const isFetching = store.getState().userListState.isFetching;
-
     return (
       <div>
-        <Loading isFetching={isFetching} />
+        <Loading state={store.getState()} />
         <TabBar className='tab' activeIndex={this.state.activeIndex} handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
           <Tab className='tab'>
             <span className='mdc-tab__text-label'>社員情報</span>
