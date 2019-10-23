@@ -51,8 +51,8 @@ export default function officeInfoState(
       rooms: [],
       isNoVacancyForMen: false,
       isNoVacancyForWomen: false,
-      vacancyForMen: 0,
-      vacancyForWomen: 0
+      vacancyForMen: null,
+      vacancyForWomen: null
     }
   },
   action

@@ -9,11 +9,9 @@ import Card from '@material/react-card';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
 
-// ローディングインジケータ
 class OfficeInfo extends Component {
   render() {
     const officeInfo = store.getState().officeInfoState;
-    console.log(officeInfo);
 
     return (
       <div className='office_info'>
@@ -34,7 +32,7 @@ class OfficeInfo extends Component {
               {officeInfo.restrooms.isNoVacancyForWomen === false && (
                 <div style={{ color: 'blue' }}>
                   <p>
-                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForWomen}
+                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForWomen || '-'}
                   </p>
                 </div>
               )}
@@ -55,7 +53,7 @@ class OfficeInfo extends Component {
               {officeInfo.restrooms.isNoVacancyForMen === false && (
                 <div style={{ color: 'blue' }}>
                   <p>
-                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForMen}
+                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForMen || '-'}
                   </p>
                 </div>
               )}
