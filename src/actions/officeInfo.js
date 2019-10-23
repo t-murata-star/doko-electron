@@ -36,6 +36,7 @@ export const getRestroomUsageAction = () => {
   return async dispatch => {
     dispatch(getRestroomUsageActionCreator());
     try {
+      await sleep(200);
       const res = await fetch(API_URL + `restrooms`, {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
@@ -53,3 +54,6 @@ export const getRestroomUsageAction = () => {
     }
   };
 };
+
+// スリープ処理
+const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));

@@ -201,11 +201,11 @@ export const addUserAction = userInfo => {
     }
   };
 };
-
 export const getUserListAction = () => {
   return async dispatch => {
     dispatch(getUserListActionCreator());
     try {
+      await sleep(200);
       const res = await fetch(API_URL + 'userList', {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
@@ -373,3 +373,6 @@ export const sendHeartbeatAction = (userInfo, userID) => {
     return dispatch(sendHeartbeatSuccessActionCreator());
   };
 };
+
+// スリープ処理
+const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
