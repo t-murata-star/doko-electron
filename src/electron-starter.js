@@ -18,8 +18,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     title: `行き先掲示板 Version ${VERSION}`,
     toolbar: false,
-    width: 1000,
-    height: 625,
+    width: 1120,
+    height: 700,
     resizable: false,
     fullscreen: false,
     fullscreenable: false,
