@@ -10,7 +10,7 @@ const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
 // アプリケーションのバージョンを定義
-const VERSION = '1.0.3';
+const VERSION = '2.0.0';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = 'http://********/';
 
