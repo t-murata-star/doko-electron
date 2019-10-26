@@ -7,6 +7,7 @@ export const GET_RESTROOM_USAGE = 'GET_RESTROOM_USAGE';
 export const GET_RESTROOM_USAGE_SUCCESS = 'GET_RESTROOM_USAGE_SUCCESS';
 export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const UNAUTHORIZED = 'UNAUTHORIZED';
+export const RETURN_EMPTY_RESTROOM_USAGE = 'RETURN_EMPTY_RESTROOM_USAGE';
 
 /**
  * Action Creator
@@ -31,6 +32,10 @@ export const unauthorizedActionCreator = () => ({
   type: UNAUTHORIZED,
   unauthorized: true
 });
+export const returnEmptyRestroomUsageActionCreator = () => ({
+  type: RETURN_EMPTY_RESTROOM_USAGE,
+  rooms: []
+});
 
 export const getRestroomUsageAction = () => {
   return async dispatch => {
@@ -51,8 +56,13 @@ export const getRestroomUsageAction = () => {
       return dispatch(getRestroomUsageSccessActionCreator(json));
     } catch (error) {
       dispatch(failRequestActionCreator(error));
+      dispatch(returnEmptyRestroomUsageAction(error));
     }
   };
+};
+
+export const returnEmptyRestroomUsageAction = () => {
+  return dispatch => dispatch(returnEmptyRestroomUsageActionCreator());
 };
 
 // スリープ処理

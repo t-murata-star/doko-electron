@@ -22,18 +22,23 @@ class OfficeInfo extends Component {
               <h4 style={{ textAlign: 'center' }}>
                 <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性トイレ
               </h4>
-              {officeInfo.restrooms.isNoVacancyForWomen === true && (
+              {officeInfo.restrooms.isNoVacancyForWomen === true && officeInfo.isError.status === false && (
                 <div style={{ color: 'red' }}>
                   <p>
                     <FontAwesomeIcon icon='door-closed' /> 満室
                   </p>
                 </div>
               )}
-              {officeInfo.restrooms.isNoVacancyForWomen === false && (
+              {officeInfo.restrooms.isNoVacancyForWomen === false && officeInfo.isError.status === false && (
                 <div style={{ color: 'blue' }}>
                   <p>
                     <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForWomen || '-'}
                   </p>
+                </div>
+              )}
+              {officeInfo.isError.status === true && (
+                <div style={{ color: 'red' }}>
+                  <p>通信に失敗しました。</p>
                 </div>
               )}
             </Card>
@@ -43,18 +48,23 @@ class OfficeInfo extends Component {
               <h4 style={{ textAlign: 'center' }}>
                 <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性トイレ(個室)
               </h4>
-              {officeInfo.restrooms.isNoVacancyForMen === true && (
+              {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError.status === false && (
                 <div style={{ color: 'red' }}>
                   <p>
                     <FontAwesomeIcon icon='door-closed' /> 満室
                   </p>
                 </div>
               )}
-              {officeInfo.restrooms.isNoVacancyForMen === false && (
+              {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError.status === false && (
                 <div style={{ color: 'blue' }}>
                   <p>
                     <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForMen || '-'}
                   </p>
+                </div>
+              )}
+              {officeInfo.isError.status === true && (
+                <div style={{ color: 'red' }}>
+                  <p>通信に失敗しました。</p>
                 </div>
               )}
             </Card>

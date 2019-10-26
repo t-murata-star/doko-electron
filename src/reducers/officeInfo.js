@@ -92,6 +92,18 @@ export default function officeInfoState(
         isError: officrInfoIsError(state.isError, action),
         isFetching: officeInfoIsFetching(state.isFetching, action)
       };
+    case OfficeInfoActions.RETURN_EMPTY_RESTROOM_USAGE:
+      return {
+        ...state,
+        restrooms: {
+          ...state.restrooms,
+          rooms: action.rooms,
+          isNoVacancyForMen: false,
+          isNoVacancyForWomen: false,
+          vacancyForMen: null,
+          vacancyForWomen: null
+        }
+      };
     default:
       return state;
   }
