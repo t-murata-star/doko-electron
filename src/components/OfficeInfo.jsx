@@ -15,14 +15,16 @@ class OfficeInfo extends Component {
 
     return (
       <div className='office_info'>
+        <h4 style={{ textAlign: 'center' }}>トイレ利用状況</h4>
         <Row>
-          <Col md='1' />
-          <Col md='5'>
+          <Col md='2' />
+          <Col md='4'>
             <Card>
-              <h4 style={{ textAlign: 'center' }}>
-                <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性トイレ
-              </h4>
-              {officeInfo.restrooms.isNoVacancyForWomen === true && officeInfo.isError.status === false && (
+              <h5 style={{ textAlign: 'center' }}>
+                <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
+              </h5>
+              <p>Coming soon</p>
+              {/* {officeInfo.restrooms.isNoVacancyForWomen === true && officeInfo.isError.status === false && (
                 <div style={{ color: 'red' }}>
                   <p>
                     <FontAwesomeIcon icon='door-closed' /> 満室
@@ -40,14 +42,14 @@ class OfficeInfo extends Component {
                 <div style={{ color: 'red' }}>
                   <p>通信に失敗しました。</p>
                 </div>
-              )}
+              )} */}
             </Card>
           </Col>
-          <Col md='5'>
+          <Col md='4'>
             <Card>
-              <h4 style={{ textAlign: 'center' }}>
-                <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性トイレ(個室)
-              </h4>
+              <h5 style={{ textAlign: 'center' }}>
+                <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
+              </h5>
               {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError.status === false && (
                 <div style={{ color: 'red' }}>
                   <p>
@@ -69,7 +71,7 @@ class OfficeInfo extends Component {
               )}
             </Card>
           </Col>
-          <Col md='1' />
+          <Col md='2' />
         </Row>
       </div>
     );
