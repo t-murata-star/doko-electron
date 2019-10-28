@@ -1,9 +1,8 @@
 const electron = require('electron');
+const { ipcMain, session } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
 const electronStore = new Store();
-const { ipcMain } = require('electron');
-const { session } = require('electron');
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
