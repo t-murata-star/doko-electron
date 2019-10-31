@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Row, Container, Col, Form } from 'react-bootstrap';
 import './MenuButtonGroupForOfficeInfo.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,7 +10,7 @@ import { getRestroomUsageAction } from '../actions/officeInfo';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 
-class MenuButtonGroupForOfficeInfo extends Component {
+class MenuButtonGroupForOfficeInfo extends React.Component<any, any> {
   reload = async () => {
     const { dispatch } = this.props;
     await dispatch(getRestroomUsageAction());

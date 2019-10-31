@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import App from '../components/App';
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     state
   };

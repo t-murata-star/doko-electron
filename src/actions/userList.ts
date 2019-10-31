@@ -1,4 +1,7 @@
 import { API_URL, LOGIN_REQUEST_HEADERS, AUTH_REQUEST_HEADERS, LOGIN_USER } from '../define';
+import { UserInfo, Notification } from '../define/model';
+import { Dispatch } from 'react';
+import { Action } from 'redux';
 
 /**
  * Action type
@@ -29,6 +32,7 @@ export const CHECK_NOTIFICATION = 'CHECK_NOTIFICATION';
 export const CHECK_NOTIFICATION_SUCCESS = 'CHECK_NOTIFICATION_SUCCESS';
 export const SEND_HEARTBEAT = 'SEND_HEARTBEAT';
 export const SEND_HEARTBEAT_SUCCESS = 'SEND_HEARTBEAT_SUCCESS';
+export const SET_MY_USER_ID = 'SET_MY_USER_ID';
 
 /**
  * Action Creator
@@ -37,7 +41,7 @@ export const SEND_HEARTBEAT_SUCCESS = 'SEND_HEARTBEAT_SUCCESS';
 export const loginActionCreator = () => ({
   type: LOGIN
 });
-export const loginSuccessActionCreator = json => ({
+export const loginSuccessActionCreator = (json: Object) => ({
   type: LOGIN_SUCCESS,
   payload: {
     response: json
@@ -46,7 +50,7 @@ export const loginSuccessActionCreator = json => ({
 export const getUserListActionCreator = () => ({
   type: GET_USER_LIST
 });
-export const getUserListSccessActionCreator = json => ({
+export const getUserListSccessActionCreator = (json: Object) => ({
   type: GET_USER_LIST_SUCCESS,
   payload: {
     response: json
@@ -55,7 +59,7 @@ export const getUserListSccessActionCreator = json => ({
 export const getChangeUserListActionCreator = () => ({
   type: GET_CHANGE_USER_LIST
 });
-export const getChangeUserListSccessActionCreator = json => ({
+export const getChangeUserListSccessActionCreator = (json: Object) => ({
   type: GET_CHANGE_USER_LIST_SUCCESS,
   payload: {
     response: json
@@ -64,7 +68,7 @@ export const getChangeUserListSccessActionCreator = json => ({
 export const addUserActionCreator = () => ({
   type: ADD_USER
 });
-export const addUserSuccessActionCreator = userInfo => ({
+export const addUserSuccessActionCreator = (userInfo: UserInfo) => ({
   type: ADD_USER_SUCCESS,
   payload: {
     response: userInfo
@@ -79,13 +83,13 @@ export const deleteUserSuccessActionCreator = () => ({
 export const updateUserInfoActionCreator = () => ({
   type: UPDATE_USER_INFO
 });
-export const updateUserInfoSuccessActionCreator = json => ({
+export const updateUserInfoSuccessActionCreator = (json: Object) => ({
   type: UPDATE_USER_INFO_SUCCESS,
   payload: {
     response: json
   }
 });
-export const setUpdatedAtActionCreator = userList => ({
+export const setUpdatedAtActionCreator = (userList: UserInfo[]) => ({
   type: SET_UPDATED_AT,
   userList
 });
@@ -101,14 +105,14 @@ export const updateForAddedUserInfoActionCreator = () => ({
 export const updateForAddedUserInfoSuccessActionCreator = () => ({
   type: UPDATE_FOR_ADDED_USER_INFO_SUCCESS
 });
-export const failRequestActionCreator = error => ({
+export const failRequestActionCreator = (error: Error) => ({
   type: FAIL_REQUEST,
   error: true,
   payload: {
     error
   }
 });
-export const selectUserActionCreator = selectedUserId => ({
+export const selectUserActionCreator = (selectedUserId: number) => ({
   type: SELECT_USER,
   selectedUserId: selectedUserId
 });
@@ -127,7 +131,7 @@ export const unauthorizedActionCreator = () => ({
 export const getNotificationActionCreator = () => ({
   type: CHECK_NOTIFICATION
 });
-export const checkNotificationSuccessActionCreator = notification => ({
+export const checkNotificationSuccessActionCreator = (notification: Notification) => ({
   type: CHECK_NOTIFICATION_SUCCESS,
   notification
 });
@@ -137,9 +141,13 @@ export const sendHeartbeatActionCreator = () => ({
 export const sendHeartbeatSuccessActionCreator = () => ({
   type: SEND_HEARTBEAT_SUCCESS
 });
+export const setMyUserIDActionCreator = (userID: number) => ({
+  type: SET_MY_USER_ID,
+  userID
+});
 
 export const loginAction = () => {
-  return async dispatch => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(loginActionCreator());
     try {
       const res = await fetch(API_URL + 'auth/login', {
@@ -158,8 +166,8 @@ export const loginAction = () => {
   };
 };
 
-export const deleteUserAction = userID => {
-  return async dispatch => {
+export const deleteUserAction = (userID: number) => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(deleteUserActionCreator());
     try {
       const res = await fetch(API_URL + 'userList/' + userID, {
@@ -179,8 +187,8 @@ export const deleteUserAction = userID => {
   };
 };
 
-export const addUserAction = userInfo => {
-  return async dispatch => {
+export const addUserAction = (userInfo: UserInfo) => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(addUserActionCreator());
     try {
       const res = await fetch(API_URL + 'userList', {
@@ -202,7 +210,7 @@ export const addUserAction = userInfo => {
   };
 };
 export const getUserListAction = () => {
-  return async dispatch => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getUserListActionCreator());
     try {
       await sleep(200);
@@ -220,13 +228,13 @@ export const getUserListAction = () => {
       return dispatch(getUserListSccessActionCreator(json));
     } catch (error) {
       dispatch(failRequestActionCreator(error));
-      dispatch(returnEmptyUserListAction());
+      dispatch(returnEmptyUserListActionCreator());
     }
   };
 };
 
 export const getChangeUserListAction = () => {
-  return async dispatch => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getChangeUserListActionCreator());
     try {
       const res = await fetch(API_URL + 'userList', {
@@ -243,13 +251,13 @@ export const getChangeUserListAction = () => {
       return dispatch(getChangeUserListSccessActionCreator(json));
     } catch (error) {
       dispatch(failRequestActionCreator(error));
-      dispatch(returnEmptyChangeUserListAction());
+      dispatch(returnEmptyChangeUserListActionCreator());
     }
   };
 };
 
-export const changeOrderAction = (userInfo, userID) => {
-  return async dispatch => {
+export const changeOrderAction = (userInfo: { order: number }, userID: number) => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(changeOrderActionCreator());
     const body = Object.assign({}, userInfo);
     try {
@@ -267,13 +275,13 @@ export const changeOrderAction = (userInfo, userID) => {
       return dispatch(changeOrderSuccessActionCreator());
     } catch (error) {
       dispatch(failRequestActionCreator(error));
-      dispatch(returnEmptyUserListAction());
+      dispatch(returnEmptyUserListActionCreator());
     }
   };
 };
 
-export const updateUserInfoAction = (userInfo, userID) => {
-  return async dispatch => {
+export const updateUserInfoAction = (userInfo: UserInfo, userID: number) => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(updateUserInfoActionCreator());
     const body = Object.assign({}, userInfo);
     delete body['id'];
@@ -299,8 +307,8 @@ export const updateUserInfoAction = (userInfo, userID) => {
   };
 };
 
-export const updateForAddedUserInfoAction = (userInfo, userID) => {
-  return async dispatch => {
+export const updateForAddedUserInfoAction = (userInfo: UserInfo, userID: number) => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(updateForAddedUserInfoActionCreator());
     const body = Object.assign({}, userInfo);
     delete body['id'];
@@ -323,16 +331,8 @@ export const updateForAddedUserInfoAction = (userInfo, userID) => {
   };
 };
 
-export const returnEmptyUserListAction = () => {
-  return dispatch => dispatch(returnEmptyUserListActionCreator());
-};
-
-export const returnEmptyChangeUserListAction = () => {
-  return dispatch => dispatch(returnEmptyChangeUserListActionCreator());
-};
-
 export const getNotificationAction = () => {
-  return async dispatch => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getNotificationActionCreator());
     try {
       const res = await fetch(API_URL + 'notification', {
@@ -353,8 +353,8 @@ export const getNotificationAction = () => {
   };
 };
 
-export const sendHeartbeatAction = (userInfo, userID) => {
-  return async dispatch => {
+export const sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(sendHeartbeatActionCreator());
     const body = Object.assign({}, userInfo);
     delete body['id'];
@@ -375,4 +375,4 @@ export const sendHeartbeatAction = (userInfo, userID) => {
 };
 
 // スリープ処理
-const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+const sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));

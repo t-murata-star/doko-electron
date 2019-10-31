@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Row, Container, Col, Form } from 'react-bootstrap';
 import { getUserListAction } from '../actions/userList';
 import './MenuButtonGroupForUserList.css';
@@ -10,46 +10,48 @@ import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
 import $ from 'jquery';
 import MaterialButton from '@material/react-button';
+import { UserInfo } from '../define/model';
 
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
-const Store = window.require('electron-store');
-const electronStore = new Store();
-
-class MenuButtonGroupForUserList extends Component {
+class MenuButtonGroupForUserList extends React.Component<any, any> {
   reload = async () => {
     const { dispatch } = this.props;
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
 
     // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
     await dispatch(getUserListAction());
-    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop);
+    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
   showUserEditModal = () => {
     const { dispatch } = this.props;
     const userList = store.getState().userListState['userList'];
-    const userID = electronStore.get('userID');
-    const userInfo = this._getUserInfo(userList, userID);
+    const myUserID = store.getState().userListState['myUserId'];
+    const userInfo = this._getUserInfo(userList, myUserID);
+
+    if (userInfo === null) {
+      return;
+    }
+
     dispatch(disableSubmitButtonActionCreator());
-    dispatch(showUserEditModalActionCreator(userID, userInfo));
+    dispatch(showUserEditModalActionCreator(myUserID, userInfo));
   };
 
-  _getUserInfo = (userList, userID) => {
+  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
     if (!userList) {
-      return {};
+      return null;
     }
     const userInfo = userList.filter(userInfo => {
       return userInfo['id'] === userID;
     })[0];
-    return userInfo || {};
+    return userInfo || null;
   };
 
   render() {
     const userList = store.getState().userListState;
-    const userID = electronStore.get('userID');
-    const userInfo = this._getUserInfo(userList['userList'], userID);
-    const userInfoLength = Object.keys(userInfo).length;
+    const myUserID = store.getState().userListState['myUserId'];
+    const userInfo = this._getUserInfo(userList['userList'], myUserID);
 
     return (
       <Row className='menu-button-group-for-user-list'>
@@ -71,7 +73,7 @@ class MenuButtonGroupForUserList extends Component {
                 type='button'
                 className='w-100 button-primary'
                 onClick={this.showUserEditModal}
-                disabled={userInfoLength === 0 || userList.isAuthenticated === false}>
+                disabled={userInfo === null || userList.isAuthenticated === false}>
                 <FontAwesomeIcon icon='edit' /> 自分編集
               </MaterialButton>
             </Form.Group>

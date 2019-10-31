@@ -1,16 +1,17 @@
-export const API_URL = process.env.REACT_APP_API_URL;
-export const LOGIN_USER = {
+export const API_URL: string | undefined = process.env.REACT_APP_API_URL;
+export const LOGIN_USER: any = {
   username: process.env.REACT_APP_USERNAME,
   password: process.env.REACT_APP_PASSWORD
 };
-export const APP_DOWNLOAD_URL = process.env.REACT_APP_DOWNLOAD_URL;
-export const LOGIN_REQUEST_HEADERS = {
+export const APP_DOWNLOAD_URL: string | undefined = process.env.REACT_APP_DOWNLOAD_URL;
+export const LOGIN_REQUEST_HEADERS: any = {
   'Content-type': 'application/json; charset=UTF-8'
 };
-export const AUTH_REQUEST_HEADERS = {
-  'Content-type': 'application/json; charset=UTF-8'
+export const AUTH_REQUEST_HEADERS: any = {
+  'Content-type': 'application/json; charset=UTF-8',
+  'Authorization': ''
 };
-export const TABLE_COLUMNS = [
+export const TABLE_COLUMNS: any[] = [
   { rowHandle: true, formatter: 'handle', headerSort: false, frozen: true, width: 25, minWidth: 25, resizable: false },
   { title: '順序', field: 'order', visible: false, headerSort: false, sorter: 'number' },
   { title: '氏名', field: 'name', width: 150, headerSort: false },
@@ -32,19 +33,7 @@ export const TABLE_COLUMNS = [
   },
   { title: 'メッセージ', field: 'message', headerSort: false }
 ];
-export const USER_INFO = {
-  id: null,
-  order: null,
-  name: '',
-  status: '',
-  destination: '',
-  return: '',
-  updated_at: '',
-  message: '',
-  version: '',
-  heartbeat: ''
-};
-export const STATUS_LIST = [
+export const STATUS_LIST: string[] = [
   '在席',
   '退社',
   '年休',
@@ -59,5 +48,5 @@ export const STATUS_LIST = [
   '接客中',
   '在席 (離席中)'
 ];
-export const HEARTBEAT_INTERVAL_MS = 270000; // 4分30秒
-export const LEAVING_THRESHOLD_MIN = 10; // 10分
+export const HEARTBEAT_INTERVAL_MS: number = 270000; // 4分30秒
+export const LEAVING_THRESHOLD_MIN: number = 10; // 10分

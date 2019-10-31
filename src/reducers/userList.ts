@@ -1,7 +1,22 @@
 import * as UserListActions from '../actions/userList';
 import { LEAVING_THRESHOLD_MIN } from '../define';
+import { UserInfo, RequestError, Notification } from '../define/model';
 
-function userListIsFetching(state = false, action) {
+export class _UserListState {
+  token: string = '';
+  isAuthenticated: boolean = false;
+  userList: UserInfo[] = [];
+  addedUserInfo: UserInfo = new UserInfo();
+  changeUserList: UserInfo[] = [];
+  updatedAt: string = '';
+  isFetching: boolean = false;
+  isError: RequestError = new RequestError();
+  myUserId: number = -1;
+  selectedUserId: number = -1;
+  notification: Notification = new Notification()
+}
+
+function userListIsFetching(state = false, action: any) {
   switch (action.type) {
     case UserListActions.LOGIN:
       return true;
@@ -23,12 +38,8 @@ function userListIsFetching(state = false, action) {
 }
 
 function userListIsError(
-  state = {
-    status: false,
-    code: null,
-    text: ''
-  },
-  action
+  state = new RequestError(),
+  action: any
 ) {
   switch (action.type) {
     case UserListActions.FAIL_REQUEST:
@@ -52,26 +63,8 @@ function userListIsError(
  * 登録者情報一覧のstateを管理するReducer
  */
 export default function userListState(
-  state = {
-    token: '',
-    isAuthenticated: false,
-    userList: [],
-    changeUserList: [],
-    updatedAt: '',
-    isFetching: false,
-    isError: {
-      status: false,
-      code: null,
-      text: ''
-    },
-    selectedUserId: 1,
-    notification: {
-      targetIDs: [],
-      content: '',
-      latestAppVersion: ''
-    }
-  },
-  action
+  state = new _UserListState(),
+  action: any
 ) {
   switch (action.type) {
     case UserListActions.LOGIN:
@@ -145,7 +138,6 @@ export default function userListState(
         ...state,
         userList: action.userList
       };
-
     case UserListActions.ADD_USER:
       return {
         ...state,
@@ -202,20 +194,25 @@ export default function userListState(
       return {
         ...state
       };
+    case UserListActions.SET_MY_USER_ID:
+      return {
+        ...state,
+        myUserId: action.userID
+      };
     default:
       return state;
   }
 }
 
 // 全ユーザの退社チェック
-function checkLeaving(userList) {
+function checkLeaving(userList: UserInfo[]) {
   if (!userList) return [];
 
-  const nowDate = new Date();
+  const nowDate: Date = new Date();
   userList.forEach(userInfo => {
     if (['在席', '在席 (離席中)'].includes(userInfo['status']) === true) {
-      const heartbeat = new Date(userInfo['heartbeat']);
-      const diffMin = Math.floor((nowDate - heartbeat) / (1000 * 60));
+      const heartbeat: Date = new Date(userInfo['heartbeat']);
+      const diffMin = Math.floor((nowDate.getTime() - heartbeat.getTime()) / (1000 * 60));
       if (diffMin >= LEAVING_THRESHOLD_MIN) {
         userInfo['status'] = '退社';
         // 更新日時を最後のheartbeat送信日時に設定する

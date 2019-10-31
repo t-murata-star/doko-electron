@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './OfficeInfo.css';
 import store from '../store/configureStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +9,7 @@ import Card from '@material/react-card';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
 
-class OfficeInfo extends Component {
+class OfficeInfo extends React.Component<any, any> {
   render() {
     const officeInfo = store.getState().officeInfoState;
 
@@ -34,7 +34,7 @@ class OfficeInfo extends Component {
               {officeInfo.restrooms.isNoVacancyForWomen === false && officeInfo.isError.status === false && (
                 <div style={{ color: 'blue' }}>
                   <p>
-                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForWomen || '-'}
+                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForWomen === -1 ? '-' : officeInfo.restrooms.vacancyForWomen}
                   </p>
                 </div>
               )}
@@ -60,7 +60,8 @@ class OfficeInfo extends Component {
               {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError.status === false && (
                 <div style={{ color: 'blue' }}>
                   <p>
-                    <FontAwesomeIcon icon='door-open' /> 空室：{officeInfo.restrooms.vacancyForMen || '-'}
+                    <FontAwesomeIcon icon='door-open' /> 空室：
+                    {officeInfo.restrooms.vacancyForMen === -1 ? '-' : officeInfo.restrooms.vacancyForMen}
                   </p>
                 </div>
               )}

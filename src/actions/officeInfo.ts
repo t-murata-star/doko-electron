@@ -1,4 +1,6 @@
 import { API_URL, AUTH_REQUEST_HEADERS } from '../define';
+import { Dispatch } from 'react';
+import { Action } from 'redux';
 
 /**
  * Action type
@@ -15,13 +17,13 @@ export const RETURN_EMPTY_RESTROOM_USAGE = 'RETURN_EMPTY_RESTROOM_USAGE';
 export const getRestroomUsageActionCreator = () => ({
   type: GET_RESTROOM_USAGE
 });
-export const getRestroomUsageSccessActionCreator = json => ({
+export const getRestroomUsageSccessActionCreator = (json: Object) => ({
   type: GET_RESTROOM_USAGE_SUCCESS,
   payload: {
     response: json
   }
 });
-export const failRequestActionCreator = error => ({
+export const failRequestActionCreator = (error: Error) => ({
   type: FAIL_REQUEST,
   error: true,
   payload: {
@@ -38,7 +40,7 @@ export const returnEmptyRestroomUsageActionCreator = () => ({
 });
 
 export const getRestroomUsageAction = () => {
-  return async dispatch => {
+  return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getRestroomUsageActionCreator());
     try {
       await sleep(200);
@@ -56,14 +58,10 @@ export const getRestroomUsageAction = () => {
       return dispatch(getRestroomUsageSccessActionCreator(json));
     } catch (error) {
       dispatch(failRequestActionCreator(error));
-      dispatch(returnEmptyRestroomUsageAction(error));
+      dispatch(returnEmptyRestroomUsageActionCreator());
     }
   };
 };
 
-export const returnEmptyRestroomUsageAction = () => {
-  return dispatch => dispatch(returnEmptyRestroomUsageActionCreator());
-};
-
 // スリープ処理
-const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+const sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
