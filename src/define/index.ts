@@ -1,9 +1,9 @@
-export const API_URL: string | undefined = process.env.REACT_APP_API_URL;
+export const API_URL: string = process.env.REACT_APP_API_URL || '';
 export const LOGIN_USER: any = {
   username: process.env.REACT_APP_USERNAME,
   password: process.env.REACT_APP_PASSWORD
 };
-export const APP_DOWNLOAD_URL: string | undefined = process.env.REACT_APP_DOWNLOAD_URL;
+export const APP_DOWNLOAD_URL: string = process.env.REACT_APP_DOWNLOAD_URL || '';
 export const LOGIN_REQUEST_HEADERS: any = {
   'Content-type': 'application/json; charset=UTF-8'
 };
@@ -48,5 +48,8 @@ export const STATUS_LIST: string[] = [
   '接客中',
   '在席 (離席中)'
 ];
-export const HEARTBEAT_INTERVAL_MS: number = 270000; // 4分30秒
-export const LEAVING_THRESHOLD_MIN: number = 10; // 10分
+
+// 4分30秒
+export const HEARTBEAT_INTERVAL_MS: number = parseInt(process.env.REACT_APP_HEARTBEAT_INTERVAL_MS || '270000');
+// 10分
+export const LEAVING_THRESHOLD_MIN: number = parseInt(process.env.REACT_APP_LEAVING_THRESHOLD_M || '10');

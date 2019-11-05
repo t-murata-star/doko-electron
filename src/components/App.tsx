@@ -75,11 +75,11 @@ class App extends React.Component<any, any> {
       });
       if (notification.latestAppVersion !== cookies[0].value) {
         this._showMessageBox(updateNotificationMessage);
-        remote.shell.openExternal(APP_DOWNLOAD_URL || '');
+        remote.shell.openExternal(APP_DOWNLOAD_URL);
       }
     } catch (error) {
       this._showMessageBox(updateNotificationMessage);
-      remote.shell.openExternal(APP_DOWNLOAD_URL || '');
+      remote.shell.openExternal(APP_DOWNLOAD_URL);
     }
 
     /**
