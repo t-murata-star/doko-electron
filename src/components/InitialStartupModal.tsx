@@ -109,11 +109,9 @@ class InitialStartupModal extends React.Component<any, any> {
       updatedUserInfo['version'] = cookies[0].value;
     }
 
-    // 状態が「退社」のユーザのみ、状態を「在席」に変更して情報を初期化
+    // 状態が「退社」のユーザのみ、状態を「在席」に変更する
     if (userInfo['status'] === '退社') {
       updatedUserInfo['status'] = '在席';
-      updatedUserInfo['destination'] = '';
-      updatedUserInfo['return'] = '';
     }
 
     Object.assign(userInfo, updatedUserInfo);
