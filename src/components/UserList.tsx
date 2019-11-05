@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './UserList.css';
 import 'react-tabulator/lib/styles.css';
 // import 'react-tabulator/lib/css/tabulator_modern.min.css';
@@ -9,31 +9,34 @@ import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { getUserListAction, changeOrderAction } from '../actions/userList';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
+import { UserInfo } from '../define/model';
 
-const Store = window.require('electron-store');
-const electronStore = new Store();
-
-class UserList extends Component {
-  _getUserInfo = (userList, userID) => {
+class UserList extends React.Component<any, any> {
+  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
     if (!userList) {
-      return {};
+      return null;
     }
     const userInfo = userList.filter(userInfo => {
       return userInfo['id'] === userID;
     })[0];
-    return userInfo || {};
+    return userInfo || null;
   };
 
-  showUserEditModal = (e, row) => {
+  showUserEditModal = (e: any, row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
     const userList = store.getState().userListState['userList'];
     const selectedUserId = row.getData()['id'];
     const userInfo = this._getUserInfo(userList, selectedUserId);
+
+    if (userInfo === null) {
+      return;
+    }
+
     dispatch(disableSubmitButtonActionCreator());
     dispatch(showUserEditModalActionCreator(selectedUserId, userInfo));
   };
 
-  _rowFormatter = row => {
+  _rowFormatter = (row: Tabulator.RowComponent) => {
     const rowData = row.getData();
     // 状態によってテキストの色を変える
     switch (rowData.status) {
@@ -74,18 +77,18 @@ class UserList extends Component {
         break;
     }
     // 自分の名前を太字にする
-    if (rowData.id === electronStore.get('userID')) {
+    if (rowData.id === store.getState().userListState['myUserId']) {
       row.getCell('name').getElement().style.fontWeight = 'bold';
     }
   };
 
   // 各ユーザの「order」パラメータをユーザ一覧の表示順序を元に更新する
-  _updateUserInfoOrder = rowComponent => {
+  _updateUserInfoOrder = (row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
-    const rows = rowComponent.getTable().getRows();
+    const rows = row.getTable().getRows();
 
     return new Promise(resolve => {
-      rows.forEach(async (row, index) => {
+      rows.forEach(async (row: Tabulator.RowComponent, index: number) => {
         const patchInfoUser = { order: row.getPosition(true) + 1 };
         await dispatch(changeOrderAction(patchInfoUser, row.getData().id));
         if (index + 1 === rows.length) {
@@ -95,34 +98,36 @@ class UserList extends Component {
     });
   };
 
-  _rowMovedCallback = async rowComponent => {
+  _rowMovedCallback = async (row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
 
-    await this._updateUserInfoOrder(rowComponent);
+    await this._updateUserInfoOrder(row);
     dispatch(getUserListAction());
   };
 
   render() {
     const { userList } = this.props;
     return (
-      <div className='user-list'>
-        <ReactTabulator
-          data={userList}
-          columns={TABLE_COLUMNS}
-          tooltips={true}
-          layout={'fitData'}
-          height={window.innerHeight - 87}
-          rowDblClick={this.showUserEditModal}
-          resizableColumns={'header'}
-          rowFormatter={this._rowFormatter}
-          placeholder={'通信に失敗しました。'}
-          options={{
-            movableRows: true,
-            initialSort: [{ column: 'updated_at', dir: 'asc' }, { column: 'order', dir: 'asc' }]
-          }}
-          rowMoved={this._rowMovedCallback}
-        />
-      </div>
+      // ReactTabulatorで発生するエラーを @ts-ignore を用いて無視
+      // ※なぜか placeholder の型定義が存在しないため（公式の不具合？）
+      // @ts-ignore
+      <ReactTabulator
+        className='user-list'
+        data={userList}
+        columns={TABLE_COLUMNS}
+        tooltips={true}
+        layout={'fitData'}
+        height={window.innerHeight - 87}
+        rowDblClick={this.showUserEditModal}
+        resizableColumns={true}
+        rowFormatter={this._rowFormatter}
+        placeholder={'通信に失敗しました。'}
+        options={{
+          movableRows: true,
+          initialSort: [{ column: 'updated_at', dir: 'asc' }, { column: 'order', dir: 'asc' }]
+        }}
+        rowMoved={this._rowMovedCallback}
+      />
     );
   }
 }

@@ -1,15 +1,17 @@
 import * as Actions from '../actions/userEditModal';
-import { USER_INFO } from '../define';
+import { UserInfo } from '../define/model';
+
+export class _userEditModal {
+  onHide: boolean = false;
+  submitButtonStatus: boolean = true;
+  isChangeUser: boolean = false;
+  userID: number = -1;
+  userInfo: UserInfo = new UserInfo();
+}
 
 export default function userEditModal(
-  state = {
-    onHide: false,
-    submitButtonStatus: true,
-    isChangeUser: false,
-    userID: null,
-    userInfo: USER_INFO
-  },
-  action
+  state = new _userEditModal(),
+  action: any
 ) {
   switch (action.type) {
     case Actions.SHOW_USER_EDIT_MODAL:
@@ -48,7 +50,7 @@ export default function userEditModal(
         isChangeUser: false
       };
     case Actions.INPUT_CLEAR:
-      action.userInfo['status'] = '在席';
+      action.userInfo['status'] = '在席­';
       action.userInfo['destination'] = '';
       action.userInfo['return'] = '';
       return {

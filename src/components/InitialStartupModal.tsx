@@ -1,5 +1,5 @@
 import './InitialStartupModal.css';
-import React, { Component } from 'react';
+import React from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import store from '../store/configureStore';
@@ -10,24 +10,27 @@ import {
   updateForAddedUserInfoAction,
   sendHeartbeatAction,
   updateUserInfoAction,
-  setUpdatedAtActionCreator
+  setUpdatedAtActionCreator,
+  setMyUserIDActionCreator
 } from '../actions/userList';
-import { USER_INFO } from '../define';
+import { UserInfo } from '../define/model';
 import MaterialButton from '@material/react-button';
-
 const { remote } = window.require('electron');
+
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class InitialStartupModal extends Component {
-  constructor(props) {
+class InitialStartupModal extends React.Component<any, any> {
+  userID: number = -1;
+  userInfo: any = new UserInfo();
+
+  constructor(props: any) {
     super(props);
     this.state = {
       submitButtonStatus: true,
       isChangeUser: false
     };
-    this.userID = null;
-    this.userInfo = USER_INFO;
+    this.userID = -1;
     this.userInfo['status'] = '在席';
     delete this.userInfo['id'];
   }
@@ -52,45 +55,52 @@ class InitialStartupModal extends Component {
     }
 
     // orderパラメータをidと同じ値に更新する
-    const userInfo = userList.userInfo;
-    userInfo['order'] = userInfo['id'];
+    const addedUserInfo = userList.addedUserInfo;
+    addedUserInfo['order'] = addedUserInfo['id'];
 
-    const cookies = await remote.session.defaultSession.cookies.get({
+    const session = remote.session.defaultSession as Electron.Session;
+    const cookies: any = await session.cookies.get({
       name: 'version'
     });
+
     if (cookies[0]) {
-      userInfo['version'] = cookies[0].value;
+      addedUserInfo['version'] = cookies[0].value;
     }
 
-    await dispatch(updateForAddedUserInfoAction(userInfo, userInfo['id']));
+    await dispatch(updateForAddedUserInfoAction(addedUserInfo, addedUserInfo['id']));
     dispatch(getUserListAction());
     this._heartbeat();
 
     // userIDを設定ファイルに登録（既に存在する場合は上書き）
-    electronStore.set('userID', userInfo['id']);
+    electronStore.set('userID', addedUserInfo['id']);
+    await dispatch(setMyUserIDActionCreator(addedUserInfo['id']));
     this.closeModal();
   };
 
   _changeUser = async () => {
     const { dispatch } = this.props;
-    electronStore.set('userID', Number(this.userID));
+    electronStore.set('userID', this.userID);
+    await dispatch(setMyUserIDActionCreator(this.userID));
     this.closeModal();
+
     await dispatch(getUserListAction());
-
-    const userID = electronStore.get('userID');
-    const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, userID);
-    const userInfoLength = Object.keys(userInfo).length;
-    const isError = store.getState().userListState.isError;
-
-    if (isError.status === false && userInfoLength === 0) {
+    if (store.getState().userListState.isError.status === true) {
       return;
     }
 
-    const updatedUserInfo = {};
-    updatedUserInfo['id'] = userID;
+    const myUserID = store.getState().userListState['myUserId'];
+    const userList = store.getState().userListState['userList'];
+    const userInfo = this._getUserInfo(userList, myUserID);
 
-    const cookies = await remote.session.defaultSession.cookies.get({
+    if (userInfo === null) {
+      return;
+    }
+
+    const updatedUserInfo: any = {};
+    updatedUserInfo['id'] = myUserID;
+
+    const session = remote.session.defaultSession as Electron.Session;
+    const cookies: any = await session.cookies.get({
       name: 'version'
     });
     if (cookies[0]) {
@@ -106,7 +116,7 @@ class InitialStartupModal extends Component {
 
     Object.assign(userInfo, updatedUserInfo);
 
-    await dispatch(updateUserInfoAction(updatedUserInfo, userID));
+    await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
 
     // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
     userInfo['updated_at'] = store.getState().userListState.updatedAt;
@@ -115,45 +125,44 @@ class InitialStartupModal extends Component {
     this._heartbeat();
   };
 
-  _getUserInfo = (userList, userID) => {
+  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
     if (!userList) {
-      return {};
+      return null;
     }
     const userInfo = userList.filter(userInfo => {
       return userInfo['id'] === userID;
     })[0];
-    return userInfo || {};
+    return userInfo || null;
   };
 
   _heartbeat = () => {
     const { dispatch } = this.props;
 
-    const userID = electronStore.get('userID');
+    const myUserID = store.getState().userListState['myUserId'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, userID);
-    const userInfoLength = Object.keys(userInfo).length;
+    const userInfo = this._getUserInfo(userList, myUserID);
 
-    if (userInfoLength === 0) {
+    if (userInfo === null) {
       return;
     }
 
-    const updatedUserInfo = {};
-    updatedUserInfo['id'] = userID;
+    const updatedUserInfo: any = {};
+    updatedUserInfo['id'] = myUserID;
     updatedUserInfo['heartbeat'] = '';
-    dispatch(sendHeartbeatAction(updatedUserInfo, userID));
+    dispatch(sendHeartbeatAction(updatedUserInfo, myUserID));
   };
 
-  onNameChange = event => {
-    this.userInfo[event.target.name] = event.target.value;
-    this.setState({ submitButtonStatus: event.target.value.length === 0 ? true : false });
+  onNameChange = (event: any) => {
+    this.userInfo[event.currentTarget.name] = event.currentTarget.value;
+    this.setState({ submitButtonStatus: event.currentTarget.value.length === 0 ? true : false });
   };
 
-  onUserChange = event => {
-    this.userID = event.target.value;
+  onUserChange = (event: any) => {
+    this.userID = parseInt(event.currentTarget.value);
     this.setState({ submitButtonStatus: false });
   };
 
-  handleSubmit = event => {
+  handleSubmit = (event: any) => {
     this.setState({ submitButtonStatus: true });
     event.preventDefault();
 
@@ -164,14 +173,14 @@ class InitialStartupModal extends Component {
     }
   };
 
-  changeUserInput = event => {
+  changeUserInput = (event: any) => {
     const { dispatch } = this.props;
     this.setState({ submitButtonStatus: true });
     this.setState({ isChangeUser: true });
     dispatch(getChangeUserListAction());
   };
 
-  registUserInput = event => {
+  registUserInput = (event: any) => {
     this.setState({ submitButtonStatus: true });
     this.setState({ isChangeUser: false });
   };
@@ -209,10 +218,10 @@ class InitialStartupModal extends Component {
                         <Form.Control name='usesrID' as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
                           {changeUserList
-                            .sort((a, b) => {
+                            .sort((a: UserInfo, b: UserInfo) => {
                               return a.order - b.order;
                             })
-                            .map((userInfo, index) => (
+                            .map((userInfo: UserInfo, index: number) => (
                               <option key={index} value={userInfo['id']}>
                                 {userInfo['name']}
                               </option>

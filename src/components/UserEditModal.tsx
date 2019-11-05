@@ -5,7 +5,7 @@
  */
 
 import './UserEditModal.css';
-import React, { Component } from 'react';
+import React from 'react';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import {
   closeUserEditModalActionCreator,
@@ -17,19 +17,22 @@ import {
   changeUserInfoActionCreator
 } from '../actions/userEditModal';
 import store from '../store/configureStore';
-import { updateUserInfoAction, getUserListAction, deleteUserAction } from '../actions/userList';
+import { updateUserInfoAction, getUserListAction, deleteUserAction, setMyUserIDActionCreator } from '../actions/userList';
 import { STATUS_LIST } from '../define';
 import MaterialButton from '@material/react-button';
 import ReactTooltip from 'react-tooltip';
+import { UserInfo } from '../define/model';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class UserEditModal extends Component {
-  constructor(props) {
+class UserEditModal extends React.Component<any, any> {
+  userID: number = -1;
+  userInfo: any = new UserInfo();
+
+  constructor(props: any) {
     super(props);
-    this.userID = null;
     this.state = {
       isError: false
     };
@@ -44,7 +47,7 @@ class UserEditModal extends Component {
     dispatch(closeUserEditModalActionCreator());
   };
 
-  _updateUserInfo = async userInfo => {
+  _updateUserInfo = async (userInfo: UserInfo) => {
     const { dispatch } = this.props;
     const userID = this.props.userID;
 
@@ -58,14 +61,15 @@ class UserEditModal extends Component {
     dispatch(getUserListAction());
   };
 
-  _changeUser = () => {
+  _changeUser = async () => {
     const { dispatch } = this.props;
-    electronStore.set('userID', Number(this.userID));
+    electronStore.set('userID', this.userID);
+    await dispatch(setMyUserIDActionCreator(this.userID));
     this.closeModal();
     dispatch(getUserListAction());
   };
 
-  onUserInfoChange = event => {
+  onUserInfoChange = (event: any) => {
     const { dispatch } = this.props;
     dispatch(changeUserInfoActionCreator(this.userInfo, event.target.name, event.target.value));
     if (this.props.submitButtonStatus) {
@@ -73,15 +77,15 @@ class UserEditModal extends Component {
     }
   };
 
-  onUserChange = event => {
+  onUserChange = (event: any) => {
     const { dispatch } = this.props;
-    this.userID = event.target.value;
+    this.userID = parseInt(event.target.value);
     if (this.props.submitButtonStatus) {
       dispatch(enableSubmitButtonActionCreator());
     }
   };
 
-  handleSubmit = event => {
+  handleSubmit = (event: any) => {
     event.preventDefault();
     const { dispatch } = this.props;
     dispatch(disableSubmitButtonActionCreator());
@@ -93,17 +97,17 @@ class UserEditModal extends Component {
     }
   };
 
-  handleChangeUser = event => {
+  handleChangeUser = (event: any) => {
     const { dispatch } = this.props;
     dispatch(handleChangeUserActionCreator());
   };
 
-  handleEditUser = event => {
+  handleEditUser = (event: any) => {
     const { dispatch } = this.props;
     dispatch(handleEditUserActionCreator());
   };
 
-  deleteUser = event => {
+  deleteUser = (event: any) => {
     const { dispatch } = this.props;
     const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: '行き先掲示板',
@@ -135,6 +139,7 @@ class UserEditModal extends Component {
   render() {
     const userList = store.getState().userListState;
     const userInfo = this.props.userInfo;
+    const myUserID = store.getState().userListState['myUserId'];
 
     return (
       <Modal
@@ -161,7 +166,7 @@ class UserEditModal extends Component {
                       <Form.Label>
                         <span className='name'>氏名</span>
                       </Form.Label>
-                      {userInfo['id'] === electronStore.get('userID') && (
+                      {userInfo['id'] === myUserID && (
                         <Button variant='link' className='userChange' onClick={this.handleChangeUser}>
                           ユーザ変更
                         </Button>
@@ -189,7 +194,7 @@ class UserEditModal extends Component {
                         <ReactTooltip effect='solid' place='top' />
                       </span>
                       <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
-                        {STATUS_LIST.map((status, index) => (
+                        {STATUS_LIST.map((status: string, index: number) => (
                           <option key={index}>{status}</option>
                         ))}
                         <option hidden>{userInfo.status}</option>
@@ -246,10 +251,10 @@ class UserEditModal extends Component {
                         <Form.Control name='usesrID' as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
                           {userList.userList
-                            .sort((a, b) => {
+                            .sort((a: UserInfo, b: UserInfo) => {
                               return a.order - b.order;
                             })
-                            .map((userInfo, index) => (
+                            .map((userInfo: UserInfo, index: number) => (
                               <option key={index} value={userInfo['id']}>
                                 {userInfo['name']}
                               </option>

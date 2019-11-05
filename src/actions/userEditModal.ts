@@ -1,3 +1,5 @@
+import { UserInfo } from '../define/model';
+
 /**
  * Action type
  */
@@ -13,7 +15,7 @@ export const CHANGE_USER_INFO = 'CHANGE_USER_INFO';
 /**
  * Action Creator
  */
-export const showUserEditModalActionCreator = (userID, userInfo) => ({
+export const showUserEditModalActionCreator = (userID: number, userInfo: UserInfo) => ({
   type: SHOW_USER_EDIT_MODAL,
   userID,
   userInfo
@@ -39,12 +41,12 @@ export const handleEditUserActionCreator = () => ({
   type: HANDLE_EDIT_USER
 });
 
-export const inputClearActionCreator = userInfo => ({
+export const inputClearActionCreator = (userInfo: UserInfo) => ({
   type: INPUT_CLEAR,
   userInfo
 });
 
-export const changeUserInfoActionCreator = (userInfo, key, value) => ({
+export const changeUserInfoActionCreator = (userInfo: UserInfo, key: string, value: string) => ({
   type: CHANGE_USER_INFO,
   userInfo,
   key,

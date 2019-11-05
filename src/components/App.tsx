@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.scss';
 import UserList from '../containers/UserListPanel';
 import OfficeInfo from '../containers/OfficeInfoPanel';
@@ -14,11 +14,13 @@ import {
   updateUserInfoAction,
   getNotificationAction,
   sendHeartbeatAction,
-  returnEmptyUserListAction,
-  setUpdatedAtActionCreator
+  returnEmptyUserListActionCreator,
+  setUpdatedAtActionCreator,
+  setMyUserIDActionCreator
 } from '../actions/userList';
 import { getRestroomUsageAction } from '../actions/officeInfo';
 import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
+import { UserInfo, Notification } from '../define/model';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 
@@ -26,15 +28,18 @@ const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class App extends Component {
-  constructor(props) {
+class App extends React.Component<any, any> {
+  constructor(props: any) {
     super(props);
     this.state = { activeIndex: 0 };
   }
 
   async componentDidMount() {
     const { dispatch } = this.props;
-    const userID = electronStore.get('userID');
+    const userID: number = (electronStore.get('userID') as number | undefined) || -1;
+
+    // state ユーザIDを設定
+    await dispatch(setMyUserIDActionCreator(userID));
 
     // WEBアプリケーション接続確認用のため、Cookieにパラメータを設定する
     document.cookie = 'isConnected=true';
@@ -56,24 +61,25 @@ class App extends Component {
     // お知らせチェック
     await dispatch(getNotificationAction());
 
-    const notification = store.getState().userListState.notification;
-    const updateNotificationMessage = `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
+    const notification: Notification = store.getState().userListState.notification;
+    const updateNotificationMessage: string = `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
 
     /**
      * バージョンチェック
      * 実行しているアプリケーションのバージョンが最新ではない場合、自動的に規定のブラウザでダウンロード先URLを開く
      */
     try {
-      const cookies = await remote.session.defaultSession.cookies.get({
+      const session = remote.session.defaultSession as Electron.Session;
+      const cookies: any = await session.cookies.get({
         name: 'version'
       });
       if (notification.latestAppVersion !== cookies[0].value) {
         this._showMessageBox(updateNotificationMessage);
-        remote.shell.openExternal(APP_DOWNLOAD_URL);
+        remote.shell.openExternal(APP_DOWNLOAD_URL || '');
       }
     } catch (error) {
       this._showMessageBox(updateNotificationMessage);
-      remote.shell.openExternal(APP_DOWNLOAD_URL);
+      remote.shell.openExternal(APP_DOWNLOAD_URL || '');
     }
 
     /**
@@ -98,25 +104,29 @@ class App extends Component {
     }
 
     await dispatch(getUserListAction());
-    const userList = store.getState().userListState['userList'];
+    if (store.getState().userListState.isError.status === true) {
+      return;
+    }
+
+    const userList: UserInfo[] = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, userID);
-    const userInfoLength = Object.keys(userInfo).length;
 
     /**
      * サーバ上に自分の情報が存在するかどうかチェック
      * 無ければ新規登録画面へ遷移する
      */
-    if (store.getState().userListState.isError.status === false && userInfoLength === 0) {
-      dispatch(returnEmptyUserListAction());
+    if (userInfo === null) {
+      dispatch(returnEmptyUserListActionCreator());
       this._showMessageBox('ユーザ情報が存在しないため、ユーザ登録を行います。');
       dispatch(showInitialStartupModalActionCreator());
       return;
     }
 
-    const updatedUserInfo = {};
+    const updatedUserInfo: any = {};
     updatedUserInfo['id'] = userID;
 
-    const cookies = await remote.session.defaultSession.cookies.get({
+    const session = remote.session.defaultSession as Electron.Session;
+    const cookies: any = await session.cookies.get({
       name: 'version'
     });
     if (cookies[0]) {
@@ -145,75 +155,72 @@ class App extends Component {
     dispatch(showInitialStartupModalActionCreator());
   };
 
-  _getUserInfo = (userList, userID) => {
+  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
     if (!userList) {
-      return {};
+      return null;
     }
     const userInfo = userList.filter(userInfo => {
       return userInfo['id'] === userID;
     })[0];
-    return userInfo || {};
+    return userInfo || null;
   };
 
   _heartbeat = () => {
     const { dispatch } = this.props;
 
-    const userID = electronStore.get('userID');
+    const myUserID = store.getState().userListState['myUserId'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, userID);
-    const userInfoLength = Object.keys(userInfo).length;
+    const userInfo = this._getUserInfo(userList, myUserID);
 
-    if (userInfoLength === 0) {
+    if (userInfo === null) {
       return;
     }
 
-    const updatedUserInfo = {};
-    updatedUserInfo['id'] = userID;
+    const updatedUserInfo: any = {};
+    updatedUserInfo['id'] = myUserID;
     updatedUserInfo['heartbeat'] = '';
-    dispatch(sendHeartbeatAction(updatedUserInfo, userID));
+    dispatch(sendHeartbeatAction(updatedUserInfo, myUserID));
   };
 
-  updateInfo = ipcRenderer.on('updateInfo', (event, key, value) => {
+  updateInfo = ipcRenderer.on('updateInfo', (event: any, key: string | number, value: any) => {
     const { dispatch } = this.props;
 
-    const userID = electronStore.get('userID');
+    const myUserID = store.getState().userListState['myUserId'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, userID);
-    const userInfoLength = Object.keys(userInfo).length;
-    if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+    const userInfo = this._getUserInfo(userList, myUserID);
+    if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       return;
     }
 
-    const updatedUserInfo = {};
-    updatedUserInfo['id'] = userID;
+    const updatedUserInfo: any = {};
+    updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo[key] = value;
     Object.assign(userInfo, updatedUserInfo);
-    dispatch(updateUserInfoAction(updatedUserInfo, userID));
+    dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
-  appClose = ipcRenderer.on('appClose', async event => {
+  appClose = ipcRenderer.on('appClose', async (event: any) => {
     const { dispatch } = this.props;
 
-    const userID = electronStore.get('userID');
+    const myUserID = store.getState().userListState['myUserId'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, userID);
-    const userInfoLength = Object.keys(userInfo).length;
-    if (userInfoLength === 0 || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+    const userInfo = this._getUserInfo(userList, myUserID);
+    if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       ipcRenderer.send('close');
       return;
     }
 
-    const updatedUserInfo = {};
-    updatedUserInfo['id'] = userID;
+    const updatedUserInfo: any = {};
+    updatedUserInfo['id'] = myUserID;
     updatedUserInfo['status'] = '退社';
     updatedUserInfo['name'] = userInfo['name'];
     Object.assign(userInfo, updatedUserInfo);
-    await dispatch(updateUserInfoAction(updatedUserInfo, userID));
+    await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
     ipcRenderer.send('close');
   });
 
-  _showMessageBox = message => {
+  _showMessageBox = (message: any) => {
     remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: '行き先掲示板',
       type: 'info',
@@ -222,7 +229,7 @@ class App extends Component {
     });
   };
 
-  handleActiveIndexUpdate = async activeIndex => {
+  handleActiveIndexUpdate = async (activeIndex: any) => {
     const { dispatch } = this.props;
     this.setState({ activeIndex });
 
@@ -259,13 +266,13 @@ class App extends Component {
             <span className='mdc-tab__text-label'>社内情報</span>
           </Tab>
         </TabBar>
-        {electronStore.get('userID') && this.state.activeIndex === 0 && (
+        {this.state.activeIndex === 0 && (
           <div>
             <UserList />
             <MenuButtonGroupForUserList />
           </div>
         )}
-        {electronStore.get('userID') && this.state.activeIndex === 1 && (
+        {this.state.activeIndex === 1 && (
           <div>
             <OfficeInfo />
             <MenuButtonGroupForOfficeInfo />

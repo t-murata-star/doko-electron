@@ -1,7 +1,20 @@
 import * as OfficeInfoActions from '../actions/officeInfo';
 import * as UserListActions from '../actions/userList';
+import { Restroom, RequestError } from '../define/model';
 
-export function officeInfoIsFetching(state = false, action) {
+export class _OfficeInfoState {
+  isFetching: boolean = false;
+  isError: RequestError = new RequestError();
+  restrooms = {
+    rooms: new Restroom(),
+    isNoVacancyForMen: false,
+    isNoVacancyForWomen: false,
+    vacancyForMen: -1,
+    vacancyForWomen: -1
+  }
+}
+
+export function officeInfoIsFetching(state = false, action: any) {
   switch (action.type) {
     case OfficeInfoActions.GET_RESTROOM_USAGE:
       return true;
@@ -11,12 +24,8 @@ export function officeInfoIsFetching(state = false, action) {
 }
 
 export function officrInfoIsError(
-  state = {
-    status: false,
-    code: null,
-    text: ''
-  },
-  action
+  state = new RequestError(),
+  action: any
 ) {
   switch (action.type) {
     case UserListActions.FAIL_REQUEST:
@@ -40,22 +49,8 @@ export function officrInfoIsError(
  * 登録者情報一覧のstateを管理するReducer
  */
 export default function officeInfoState(
-  state = {
-    isFetching: false,
-    isError: {
-      status: false,
-      code: null,
-      text: ''
-    },
-    restrooms: {
-      rooms: [],
-      isNoVacancyForMen: false,
-      isNoVacancyForWomen: false,
-      vacancyForMen: null,
-      vacancyForWomen: null
-    }
-  },
-  action
+  state = new _OfficeInfoState(),
+  action: any
 ) {
   switch (action.type) {
     case OfficeInfoActions.GET_RESTROOM_USAGE:
@@ -100,8 +95,8 @@ export default function officeInfoState(
           rooms: action.rooms,
           isNoVacancyForMen: false,
           isNoVacancyForWomen: false,
-          vacancyForMen: null,
-          vacancyForWomen: null
+          vacancyForMen: -1,
+          vacancyForWomen: -1
         }
       };
     default:
@@ -110,7 +105,7 @@ export default function officeInfoState(
 }
 
 // トイレの満席チェック
-function checkNoVacantForRestroom(rooms, gender) {
+function checkNoVacantForRestroom(rooms: Restroom[], gender: string) {
   if (!rooms) return true;
 
   const filteredByGender = rooms.filter(room => room.gender === gender);
@@ -119,7 +114,7 @@ function checkNoVacantForRestroom(rooms, gender) {
 }
 
 // トイレの空席数を計算
-function getVacantCountForRestroom(rooms, gender) {
+function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
   if (!rooms) return 0;
 
   const filteredByGender = rooms.filter(room => room.gender === gender);
