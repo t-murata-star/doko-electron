@@ -50,7 +50,7 @@ export default function userEditModal(
         isChangeUser: false
       };
     case Actions.INPUT_CLEAR:
-      action.userInfo['status'] = '在席­';
+      action.userInfo['status'] = '在席';
       action.userInfo['destination'] = '';
       action.userInfo['return'] = '';
       return {
