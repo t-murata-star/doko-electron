@@ -168,7 +168,7 @@ class App extends React.Component<any, any> {
   _heartbeat = () => {
     const { dispatch } = this.props;
 
-    const myUserID = store.getState().userListState['myUserId'];
+    const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, myUserID);
 
@@ -185,7 +185,7 @@ class App extends React.Component<any, any> {
   updateInfo = ipcRenderer.on('updateInfo', (event: any, key: string | number, value: any) => {
     const { dispatch } = this.props;
 
-    const myUserID = store.getState().userListState['myUserId'];
+    const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
@@ -203,7 +203,7 @@ class App extends React.Component<any, any> {
   appClose = ipcRenderer.on('appClose', async (event: any) => {
     const { dispatch } = this.props;
 
-    const myUserID = store.getState().userListState['myUserId'];
+    const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {

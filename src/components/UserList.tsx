@@ -77,7 +77,7 @@ class UserList extends React.Component<any, any> {
         break;
     }
     // 自分の名前を太字にする
-    if (rowData.id === store.getState().userListState['myUserId']) {
+    if (rowData.id === store.getState().userListState['myUserID']) {
       row.getCell('name').getElement().style.fontWeight = 'bold';
     }
   };

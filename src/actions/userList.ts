@@ -70,9 +70,7 @@ export const addUserActionCreator = () => ({
 });
 export const addUserSuccessActionCreator = (userInfo: UserInfo) => ({
   type: ADD_USER_SUCCESS,
-  payload: {
-    response: userInfo
-  }
+  userID: userInfo.id
 });
 export const deleteUserActionCreator = () => ({
   type: DELETE_USER
@@ -237,6 +235,7 @@ export const getChangeUserListAction = () => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getChangeUserListActionCreator());
     try {
+      await sleep(200);
       const res = await fetch(API_URL + 'userList', {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS

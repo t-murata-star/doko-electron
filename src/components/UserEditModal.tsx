@@ -139,7 +139,7 @@ class UserEditModal extends React.Component<any, any> {
   render() {
     const userList = store.getState().userListState;
     const userInfo = this.props.userInfo;
-    const myUserID = store.getState().userListState['myUserId'];
+    const myUserID = store.getState().userListState['myUserID'];
 
     return (
       <Modal

@@ -6,12 +6,11 @@ export class _UserListState {
   token: string = '';
   isAuthenticated: boolean = false;
   userList: UserInfo[] = [];
-  addedUserInfo: UserInfo = new UserInfo();
   changeUserList: UserInfo[] = [];
   updatedAt: string = '';
   isFetching: boolean = false;
   isError: RequestError = new RequestError();
-  myUserId: number = -1;
+  myUserID: number = -1;
   selectedUserId: number = -1;
   notification: Notification = new Notification()
 }
@@ -146,7 +145,7 @@ export default function userListState(
     case UserListActions.ADD_USER_SUCCESS:
       return {
         ...state,
-        userInfo: action.payload.response,
+        myUserID: action.userID,
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
@@ -197,7 +196,7 @@ export default function userListState(
     case UserListActions.SET_MY_USER_ID:
       return {
         ...state,
-        myUserId: action.userID
+        myUserID: action.userID
       };
     default:
       return state;

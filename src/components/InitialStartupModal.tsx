@@ -47,6 +47,8 @@ class InitialStartupModal extends React.Component<any, any> {
 
   _addUser = async () => {
     const { dispatch } = this.props;
+
+    // addUserAction で userListState の myUserID に新規ユーザIDが設定される
     await dispatch(addUserAction(this.userInfo));
     const userList = store.getState().userListState;
     if (userList.isError.status) {
@@ -54,9 +56,12 @@ class InitialStartupModal extends React.Component<any, any> {
       return;
     }
 
+    // userIDを設定ファイルに登録（既に存在する場合は上書き）
+    electronStore.set('userID', userList.myUserID);
+
     // orderパラメータをidと同じ値に更新する
-    const addedUserInfo = userList.addedUserInfo;
-    addedUserInfo['order'] = addedUserInfo['id'];
+    const addedUserInfo: any = {};
+    addedUserInfo['order'] = userList.myUserID;
 
     const session = remote.session.defaultSession as Electron.Session;
     const cookies: any = await session.cookies.get({
@@ -67,13 +72,10 @@ class InitialStartupModal extends React.Component<any, any> {
       addedUserInfo['version'] = cookies[0].value;
     }
 
-    await dispatch(updateForAddedUserInfoAction(addedUserInfo, addedUserInfo['id']));
+    await dispatch(updateForAddedUserInfoAction(addedUserInfo, userList.myUserID));
     dispatch(getUserListAction());
     this._heartbeat();
 
-    // userIDを設定ファイルに登録（既に存在する場合は上書き）
-    electronStore.set('userID', addedUserInfo['id']);
-    await dispatch(setMyUserIDActionCreator(addedUserInfo['id']));
     this.closeModal();
   };
 
@@ -88,7 +90,7 @@ class InitialStartupModal extends React.Component<any, any> {
       return;
     }
 
-    const myUserID = store.getState().userListState['myUserId'];
+    const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, myUserID);
 
@@ -138,7 +140,7 @@ class InitialStartupModal extends React.Component<any, any> {
   _heartbeat = () => {
     const { dispatch } = this.props;
 
-    const myUserID = store.getState().userListState['myUserId'];
+    const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, myUserID);
 

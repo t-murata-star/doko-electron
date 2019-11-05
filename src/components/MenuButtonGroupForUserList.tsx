@@ -27,7 +27,7 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
   showUserEditModal = () => {
     const { dispatch } = this.props;
     const userList = store.getState().userListState['userList'];
-    const myUserID = store.getState().userListState['myUserId'];
+    const myUserID = store.getState().userListState['myUserID'];
     const userInfo = this._getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
@@ -50,7 +50,7 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
 
   render() {
     const userList = store.getState().userListState;
-    const myUserID = store.getState().userListState['myUserId'];
+    const myUserID = store.getState().userListState['myUserID'];
     const userInfo = this._getUserInfo(userList['userList'], myUserID);
 
     return (
