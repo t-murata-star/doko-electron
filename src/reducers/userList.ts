@@ -88,7 +88,7 @@ export default function userListState(
     case UserListActions.GET_USER_LIST_SUCCESS:
       return {
         ...state,
-        userList: checkLeaving(action.payload.response),
+        userList: updateLeavingTimeForUserList(action.payload.response),
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
@@ -205,7 +205,7 @@ export default function userListState(
 }
 
 // 全ユーザの退社チェック
-function checkLeaving(userList: UserInfo[]) {
+function updateLeavingTimeForUserList(userList: UserInfo[]) {
   if (!userList) return [];
 
   const nowDate: Date = new Date();
