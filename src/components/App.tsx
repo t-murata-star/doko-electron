@@ -135,17 +135,16 @@ class App extends React.Component<any, any> {
 
     // 状態が「退社」のユーザのみ、状態を「在席」に変更する
     if (userInfo['status'] === '退社') {
-      updatedUserInfo['status'] = '在席';
+      userInfo['status'] = '在席';
+      updatedUserInfo['status'] = userInfo['status'];
       updatedUserInfo['name'] = userInfo['name'];
     }
-
-    Object.assign(userInfo, updatedUserInfo);
 
     await dispatch(updateUserInfoAction(updatedUserInfo, userID));
 
     // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
     userInfo['updated_at'] = store.getState().userListState.updatedAt;
-    dispatch(setUpdatedAtActionCreator(Object.assign([], userList)));
+    dispatch(setUpdatedAtActionCreator(JSON.parse(JSON.stringify(userList))));
 
     this._heartbeat();
   }
@@ -155,6 +154,7 @@ class App extends React.Component<any, any> {
     dispatch(showInitialStartupModalActionCreator());
   };
 
+  // ※戻り値のuserInfoはuserListの参照
   _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
     if (!userList) {
       return null;
