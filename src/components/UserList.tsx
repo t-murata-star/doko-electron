@@ -124,7 +124,7 @@ class UserList extends React.Component<any, any> {
         placeholder={'通信に失敗しました。'}
         options={{
           movableRows: true,
-          initialSort: [{ column: 'updated_at', dir: 'asc' }, { column: 'order', dir: 'asc' }]
+          initialSort: [{ column: 'updatedAt', dir: 'asc' }, { column: 'order', dir: 'asc' }]
         }}
         rowMoved={this._rowMovedCallback}
       />

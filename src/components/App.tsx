@@ -143,7 +143,7 @@ class App extends React.Component<any, any> {
     await dispatch(updateUserInfoAction(updatedUserInfo, userID));
 
     // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
-    userInfo['updated_at'] = store.getState().userListState.updatedAt;
+    userInfo['updatedAt'] = store.getState().userListState.updatedAt;
     dispatch(setUpdatedAtActionCreator(JSON.parse(JSON.stringify(userList))));
 
     this._heartbeat();

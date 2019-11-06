@@ -20,7 +20,7 @@ export const TABLE_COLUMNS: any[] = [
   { title: '戻り', field: 'return', width: 140, headerSort: false },
   {
     title: '更新日時',
-    field: 'updated_at',
+    field: 'updatedAt',
     width: 90,
     headerSort: false,
     sorter: 'datetime',

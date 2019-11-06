@@ -15,7 +15,7 @@ export class UserInfo {
   status: string = '';
   destination: string = '';
   return: string = '';
-  updated_at: string = '';
+  updatedAt: string = '';
   message: string = '';
   version: string = '';
   heartbeat: string = '';

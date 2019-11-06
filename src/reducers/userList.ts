@@ -117,7 +117,7 @@ export default function userListState(
     case UserListActions.UPDATE_USER_INFO_SUCCESS:
       return {
         ...state,
-        updatedAt: action.payload.response.updated_at,
+        updatedAt: action.payload.response.updatedAt,
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
@@ -215,7 +215,7 @@ function updateLeavingTimeForUserList(userList: UserInfo[]) {
       if (diffMin >= LEAVING_THRESHOLD_MIN) {
         userInfo['status'] = '退社';
         // 更新日時を最後のheartbeat送信日時に設定する
-        userInfo['updated_at'] = userInfo['heartbeat'];
+        userInfo['updatedAt'] = userInfo['heartbeat'];
       }
     }
   });
