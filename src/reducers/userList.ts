@@ -1,5 +1,5 @@
 import * as UserListActions from '../actions/userList';
-import { LEAVING_THRESHOLD_MIN } from '../define';
+import { LEAVING_TIME_THRESHOLD_M } from '../define';
 import { UserInfo, RequestError, Notification } from '../define/model';
 
 export class _UserListState {
@@ -205,7 +205,7 @@ export default function userListState(
 
 /**
  * 全ユーザの退社チェック
- * LEAVING_THRESHOLD_MIN 以上heartbeatが更新されていないユーザの状態を「退社」に変更する。
+ * LEAVING_TIME_THRESHOLD_M 以上heartbeatが更新されていないユーザの状態を「退社」に変更する。
  * ただし、この変更は画面表示のみであり、サーバ上の情報は更新しない。
  */
 function updateLeavingTimeForUserList(userList: UserInfo[]) {
@@ -216,7 +216,7 @@ function updateLeavingTimeForUserList(userList: UserInfo[]) {
     if (['在席', '在席 (離席中)'].includes(userInfo['status']) === true) {
       const heartbeat: Date = new Date(userInfo['heartbeat']);
       const diffMin = Math.floor((nowDate.getTime() - heartbeat.getTime()) / (1000 * 60));
-      if (diffMin >= LEAVING_THRESHOLD_MIN) {
+      if (diffMin >= LEAVING_TIME_THRESHOLD_M) {
         userInfo['status'] = '退社';
         // 更新日時を最後のheartbeat送信日時に設定する
         userInfo['updatedAt'] = userInfo['heartbeat'];

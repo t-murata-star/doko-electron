@@ -49,7 +49,5 @@ export const STATUS_LIST: string[] = [
   '在席 (離席中)'
 ];
 
-// 4分30秒
 export const HEARTBEAT_INTERVAL_MS: number = parseInt(process.env.REACT_APP_HEARTBEAT_INTERVAL_MS || '270000');
-// 10分
-export const LEAVING_THRESHOLD_MIN: number = parseInt(process.env.REACT_APP_LEAVING_THRESHOLD_M || '10');
+export const LEAVING_TIME_THRESHOLD_M: number = parseInt(process.env.REACT_APP_LEAVING_TIME_THRESHOLD_M || '10');
