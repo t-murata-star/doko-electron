@@ -23,7 +23,7 @@ class OfficeInfo extends React.Component<any, any> {
               <h5 style={{ textAlign: 'center' }}>
                 <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
               </h5>
-              <p>Coming soon</p>
+              <p>Coming soon!</p>
               {/* {officeInfo.restrooms.isNoVacancyForWomen === true && officeInfo.isError.status === false && (
                 <div style={{ color: 'red' }}>
                   <p>

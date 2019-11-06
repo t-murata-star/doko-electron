@@ -3,15 +3,15 @@ import { LEAVING_THRESHOLD_MIN } from '../define';
 import { UserInfo, RequestError, Notification } from '../define/model';
 
 export class _UserListState {
-  token: string = '';
+  token: string = ''; // 認証トークン。このトークンを用いてAPIサーバにリクエストを行う
   isAuthenticated: boolean = false;
   userList: UserInfo[] = [];
-  changeUserList: UserInfo[] = [];
+  changeUserList: UserInfo[] = []; // サーバ上に登録されているユーザの中から自分のユーザを選択するために格納するユーザ一覧（userListと同じデータ）
   updatedAt: string = '';
   isFetching: boolean = false;
   isError: RequestError = new RequestError();
   myUserID: number = -1;
-  selectedUserId: number = -1;
+  selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
   notification: Notification = new Notification()
 }
 
@@ -203,7 +203,11 @@ export default function userListState(
   }
 }
 
-// 全ユーザの退社チェック
+/**
+ * 全ユーザの退社チェック
+ * LEAVING_THRESHOLD_MIN 以上heartbeatが更新されていないユーザの状態を「退社」に変更する。
+ * ただし、この変更は画面表示のみであり、サーバ上の情報は更新しない。
+ */
 function updateLeavingTimeForUserList(userList: UserInfo[]) {
   if (!userList) return [];
 
