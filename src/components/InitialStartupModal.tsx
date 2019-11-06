@@ -26,7 +26,7 @@ class InitialStartupModal extends React.Component<any, any> {
   userInfo: any = new UserInfo();
 
   componentDidUpdate() {
-    $('#name').focus();
+    $('.nameForInput').focus();
   }
 
   constructor(props: any) {
@@ -220,7 +220,7 @@ class InitialStartupModal extends React.Component<any, any> {
                     <Form.Label>氏名</Form.Label>
                     {this.state.isChangeUser && (
                       <div>
-                        <Form.Control name='usesrID' as='select' onChange={this.onUserChange}>
+                        <Form.Control name='name' as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
                           {changeUserList
                             .sort((a: UserInfo, b: UserInfo) => {
@@ -243,6 +243,7 @@ class InitialStartupModal extends React.Component<any, any> {
                     {!this.state.isChangeUser && (
                       <div>
                         <Form.Control
+                          className='nameForInput'
                           name='name'
                           placeholder='氏名を入力してください'
                           onChange={this.onNameChange}
