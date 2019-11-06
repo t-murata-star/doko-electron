@@ -15,6 +15,7 @@ import {
 } from '../actions/userList';
 import { UserInfo } from '../define/model';
 import MaterialButton from '@material/react-button';
+import $ from 'jquery';
 const { remote } = window.require('electron');
 
 const Store = window.require('electron-store');
@@ -23,6 +24,10 @@ const electronStore = new Store();
 class InitialStartupModal extends React.Component<any, any> {
   userID: number = -1;
   userInfo: any = new UserInfo();
+
+  componentDidUpdate() {
+    $('#name').focus();
+  }
 
   constructor(props: any) {
     super(props);
