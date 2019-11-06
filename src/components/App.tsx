@@ -98,7 +98,7 @@ class App extends React.Component<any, any> {
      * 初回起動チェック
      * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
      */
-    if (!userID) {
+    if (userID === -1) {
       this._showModal();
       return;
     }
@@ -255,24 +255,30 @@ class App extends React.Component<any, any> {
   };
 
   render() {
+    const myUserID = store.getState().userListState['myUserID'];
+
     return (
       <div>
-        <Loading state={store.getState()} />
-        <TabBar className='tab' activeIndex={this.state.activeIndex} handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
-          <Tab className='tab'>
-            <span className='mdc-tab__text-label'>社員情報</span>
-          </Tab>
-          <Tab className='tab'>
-            <span className='mdc-tab__text-label'>社内情報</span>
-          </Tab>
-        </TabBar>
-        {this.state.activeIndex === 0 && (
+        {myUserID !== -1 && (
+          <div>
+            <Loading state={store.getState()} />
+            <TabBar className='tab' activeIndex={this.state.activeIndex} handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
+              <Tab className='tab'>
+                <span className='mdc-tab__text-label'>社員情報</span>
+              </Tab>
+              <Tab className='tab'>
+                <span className='mdc-tab__text-label'>社内情報</span>
+              </Tab>
+            </TabBar>
+          </div>
+        )}
+        {myUserID !== -1 && this.state.activeIndex === 0 && (
           <div>
             <UserList />
             <MenuButtonGroupForUserList />
           </div>
         )}
-        {this.state.activeIndex === 1 && (
+        {myUserID !== -1 && this.state.activeIndex === 1 && (
           <div>
             <OfficeInfo />
             <MenuButtonGroupForOfficeInfo />
