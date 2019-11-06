@@ -1,7 +1,7 @@
 export const API_URL: string = process.env.REACT_APP_API_URL || '';
 export const LOGIN_USER: any = {
-  username: process.env.REACT_APP_USERNAME,
-  password: process.env.REACT_APP_PASSWORD
+  username: process.env.REACT_APP_USERNAME || '',
+  password: process.env.REACT_APP_PASSWORD || ''
 };
 export const APP_DOWNLOAD_URL: string = process.env.REACT_APP_DOWNLOAD_URL || '';
 export const LOGIN_REQUEST_HEADERS: any = {
