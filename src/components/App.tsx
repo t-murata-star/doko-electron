@@ -259,9 +259,9 @@ class App extends React.Component<any, any> {
 
     return (
       <div>
+        <Loading state={store.getState()} />
         {myUserID !== -1 && (
           <div>
-            <Loading state={store.getState()} />
             <TabBar className='tab' activeIndex={this.state.activeIndex} handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
               <Tab className='tab'>
                 <span className='mdc-tab__text-label'>社員情報</span>
