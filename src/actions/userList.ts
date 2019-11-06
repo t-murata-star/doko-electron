@@ -172,9 +172,9 @@ export const deleteUserAction = (userID: number) => {
         method: 'DELETE',
         headers: AUTH_REQUEST_HEADERS
       });
-      if (res.status === 401) {
-        dispatch(unauthorizedActionCreator());
-      }
+
+      responseStatusCheck(dispatch, res.status);
+
       if (!res.ok) {
         return Promise.reject(res);
       }
@@ -194,9 +194,9 @@ export const addUserAction = (userInfo: UserInfo) => {
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(userInfo)
       });
-      if (res.status === 401) {
-        dispatch(unauthorizedActionCreator());
-      }
+
+      responseStatusCheck(dispatch, res.status);
+
       if (!res.ok) {
         return Promise.reject(res);
       }
@@ -216,9 +216,9 @@ export const getUserListAction = () => {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
       });
-      if (res.status === 401) {
-        dispatch(unauthorizedActionCreator());
-      }
+
+      responseStatusCheck(dispatch, res.status);
+
       if (!res.ok) {
         return Promise.reject(res);
       }
@@ -240,9 +240,9 @@ export const getChangeUserListAction = () => {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
       });
-      if (res.status === 401) {
-        dispatch(unauthorizedActionCreator());
-      }
+
+      responseStatusCheck(dispatch, res.status);
+
       if (!res.ok) {
         return Promise.reject(res);
       }
@@ -265,9 +265,9 @@ export const changeOrderAction = (userInfo: { order: number }, userID: number) =
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(body)
       });
-      if (res.status === 401) {
-        dispatch(unauthorizedActionCreator());
-      }
+
+      responseStatusCheck(dispatch, res.status);
+
       if (!res.ok) {
         return Promise.reject(res);
       }
@@ -292,9 +292,9 @@ export const updateUserInfoAction = (userInfo: UserInfo, userID: number) => {
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(body)
       });
-      if (res.status === 401) {
-        dispatch(unauthorizedActionCreator());
-      }
+
+      responseStatusCheck(dispatch, res.status);
+
       if (!res.ok) {
         return Promise.reject(res);
       }
@@ -317,9 +317,9 @@ export const updateForAddedUserInfoAction = (userInfo: UserInfo, userID: number)
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(body)
       });
-      if (res.status === 401) {
-        dispatch(unauthorizedActionCreator());
-      }
+
+      responseStatusCheck(dispatch, res.status);
+
       if (!res.ok) {
         return Promise.reject(res);
       }
@@ -338,9 +338,9 @@ export const getNotificationAction = () => {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
       });
-      if (res.status === 401) {
-        dispatch(unauthorizedActionCreator());
-      }
+
+      responseStatusCheck(dispatch, res.status);
+
       if (!res.ok) {
         return Promise.reject(res);
       }
@@ -363,9 +363,9 @@ export const sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
       headers: AUTH_REQUEST_HEADERS,
       body: JSON.stringify(body)
     });
-    if (res.status === 401) {
-      dispatch(unauthorizedActionCreator());
-    }
+
+    responseStatusCheck(dispatch, res.status);
+
     if (!res.ok) {
       return Promise.reject(res);
     }
@@ -375,3 +375,14 @@ export const sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
 
 // スリープ処理
 const sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+
+const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
+  switch (statusCode) {
+    case 401:
+      dispatch(unauthorizedActionCreator());
+      break;
+
+    default:
+      break;
+  }
+}
