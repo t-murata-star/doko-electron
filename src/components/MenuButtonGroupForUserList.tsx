@@ -23,7 +23,7 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
     // await dispatch(getUserListAction());
     // $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
 
-    const mailAddress = 'y-iriki@townsystem.co.jp';
+    const mailAddress = '';
     const encodedMailAddress = encodeURI(mailAddress);
 
     let win: any = new remote.BrowserWindow({
