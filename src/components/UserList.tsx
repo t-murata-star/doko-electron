@@ -4,7 +4,6 @@ import 'react-tabulator/lib/styles.css';
 // import 'react-tabulator/lib/css/tabulator_modern.min.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import { ReactTabulator } from 'react-tabulator';
-import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { getUserListAction, changeOrderAction } from '../actions/userList';
@@ -12,6 +11,53 @@ import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import { UserInfo } from '../define/model';
 
 class UserList extends React.Component<any, any> {
+  formatter = (cell: Tabulator.CellComponent) => {
+    // cell.getRow().getData().name
+    var value = cell.getValue();
+    if (value !== '') {
+      return '<i class="fab fa-twitter">';
+    } else {
+      return;
+    }
+  };
+
+  TABLE_COLUMNS: any = [
+    { rowHandle: true, formatter: 'handle', headerSort: false, frozen: true, width: 25, minWidth: 25, resizable: false },
+    { title: '順序', field: 'order', visible: false, headerSort: false, sorter: 'number' },
+    { title: '氏名', field: 'name', width: 150, headerSort: false },
+    { title: '状態', field: 'status', width: 100, headerSort: false },
+    { title: '行き先', field: 'destination', width: 290, headerSort: false },
+    { title: '戻り', field: 'return', width: 140, headerSort: false },
+    {
+      title: '更新日時',
+      field: 'updatedAt',
+      width: 85,
+      headerSort: false,
+      sorter: 'datetime',
+      sorterParams: { format: 'YYYY-MM-DD hh:mm:ss.SSS' },
+      formatter: 'datetime',
+      formatterParams: {
+        outputFormat: 'YYYY/MM/DD',
+        invalidPlaceholder: ''
+      }
+    },
+    {
+      title: 'カレンダー',
+      field: 'destination',
+      align: 'center',
+      width: 80,
+      headerSort: false,
+      tooltip: false,
+      formatter: this.formatter
+    },
+    { title: 'メッセージ', field: 'message', headerSort: false }
+  ];
+
+  openCalendar = () => {
+    alert('window');
+    console.log('szafazsfasd');
+  };
+
   _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
     if (!userList) {
       return null;
@@ -114,7 +160,7 @@ class UserList extends React.Component<any, any> {
       <ReactTabulator
         className='user-list'
         data={userList}
-        columns={TABLE_COLUMNS}
+        columns={this.TABLE_COLUMNS}
         tooltips={true}
         layout={'fitData'}
         height={window.innerHeight - 87}
