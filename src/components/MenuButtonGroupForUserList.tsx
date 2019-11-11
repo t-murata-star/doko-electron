@@ -11,44 +11,15 @@ import store from '../store/configureStore';
 import $ from 'jquery';
 import MaterialButton from '@material/react-button';
 import { UserInfo } from '../define/model';
-const { remote } = window.require('electron');
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForUserList extends React.Component<any, any> {
   reload = async () => {
-    // const { dispatch } = this.props;
-    // const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
-
-    // // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
-    // await dispatch(getUserListAction());
-    // $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
-
-    const mailAddress = '';
-    const encodedMailAddress = encodeURI(mailAddress);
-
-    let win: any = new remote.BrowserWindow({
-      width: 1120,
-      height: 700,
-      resizable: false,
-      fullscreen: false,
-      fullscreenable: false,
-      maximizable: false,
-      webPreferences: {
-        devTools: false,
-        nodeIntegration: true
-      },
-      parent: remote.getCurrentWindow(),
-      modal: true
-    });
-    win.setMenuBarVisibility(false);
-
-    win.on('closed', () => {
-      win = null;
-    });
-    win.loadURL(
-      `https://calendar.google.com/calendar/embed?src=${encodedMailAddress}&ctz=Asia%2FTokyo&mode=WEEK&showTitle=0&showTz=0&showPrint=0`
-    );
-    win.show();
+    const { dispatch } = this.props;
+    const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
+    // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
+    await dispatch(getUserListAction());
+    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
   showUserEditModal = () => {

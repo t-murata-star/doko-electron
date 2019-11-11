@@ -9,16 +9,48 @@ import store from '../store/configureStore';
 import { getUserListAction, changeOrderAction } from '../actions/userList';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import { UserInfo } from '../define/model';
+const { remote } = window.require('electron');
 
 class UserList extends React.Component<any, any> {
   formatter = (cell: Tabulator.CellComponent) => {
-    // cell.getRow().getData().name
-    var value = cell.getValue();
-    if (value !== '') {
-      return '<i class="fab fa-twitter">';
+    const email = cell.getValue();
+    if (email !== '') {
+      return '<input type="button" value="表示" class="btn btn-link link_display_calendar" />';
     } else {
       return;
     }
+  };
+
+  openCalendar = (e: any, cell: Tabulator.CellComponent) => {
+    const email = cell.getValue();
+    if (email === '') {
+      return;
+    }
+
+    const encodedEmail = encodeURI(email);
+
+    let calendarWindow: any = new remote.BrowserWindow({
+      width: 1120,
+      height: 700,
+      resizable: false,
+      fullscreen: false,
+      fullscreenable: false,
+      minimizable: false,
+      maximizable: false,
+      parent: remote.getCurrentWindow()
+    });
+    calendarWindow.setMenuBarVisibility(false);
+
+    calendarWindow.on('closed', () => {
+      calendarWindow = null;
+      remote.getCurrentWindow().setEnabled(true);
+      remote.getCurrentWindow().focus();
+    });
+    calendarWindow.loadURL(
+      `https://calendar.google.com/calendar/embed?src=${encodedEmail}&ctz=Asia%2FTokyo&mode=WEEK&showTitle=0&showTz=0&showPrint=0`
+    );
+
+    remote.getCurrentWindow().setEnabled(false);
   };
 
   TABLE_COLUMNS: any = [
@@ -26,8 +58,8 @@ class UserList extends React.Component<any, any> {
     { title: '順序', field: 'order', visible: false, headerSort: false, sorter: 'number' },
     { title: '氏名', field: 'name', width: 150, headerSort: false },
     { title: '状態', field: 'status', width: 100, headerSort: false },
-    { title: '行き先', field: 'destination', width: 290, headerSort: false },
-    { title: '戻り', field: 'return', width: 140, headerSort: false },
+    { title: '行き先', field: 'destination', width: 300, headerSort: false },
+    { title: '戻り', field: 'return', width: 150, headerSort: false },
     {
       title: '更新日時',
       field: 'updatedAt',
@@ -43,20 +75,16 @@ class UserList extends React.Component<any, any> {
     },
     {
       title: 'カレンダー',
-      field: 'destination',
+      field: 'email',
       align: 'center',
       width: 80,
       headerSort: false,
       tooltip: false,
-      formatter: this.formatter
+      formatter: this.formatter,
+      cellClick: this.openCalendar
     },
     { title: 'メッセージ', field: 'message', headerSort: false }
   ];
-
-  openCalendar = () => {
-    alert('window');
-    console.log('szafazsfasd');
-  };
 
   _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
     if (!userList) {
