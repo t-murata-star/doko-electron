@@ -16,9 +16,8 @@ const DEFAULT_LOAD_URL = 'http://********/';
 function createWindow() {
   mainWindow = new BrowserWindow({
     title: `行き先掲示板 Version ${VERSION}`,
-    toolbar: false,
-    width: 1120,
-    height: 700,
+    width: 1200,
+    height: 750,
     resizable: false,
     fullscreen: false,
     fullscreenable: false,

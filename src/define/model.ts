@@ -18,6 +18,7 @@ export class UserInfo {
   updatedAt: string = '';
   message: string = '';
   version: string = '';
+  email: string = '';
   heartbeat: string = '';
 }
 

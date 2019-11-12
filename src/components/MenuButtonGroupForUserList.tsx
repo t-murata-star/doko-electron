@@ -11,14 +11,12 @@ import store from '../store/configureStore';
 import $ from 'jquery';
 import MaterialButton from '@material/react-button';
 import { UserInfo } from '../define/model';
-
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForUserList extends React.Component<any, any> {
   reload = async () => {
     const { dispatch } = this.props;
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
-
     // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
     await dispatch(getUserListAction());
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);

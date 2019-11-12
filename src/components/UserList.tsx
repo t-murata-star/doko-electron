@@ -4,14 +4,96 @@ import 'react-tabulator/lib/styles.css';
 // import 'react-tabulator/lib/css/tabulator_modern.min.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import { ReactTabulator } from 'react-tabulator';
-import { TABLE_COLUMNS } from '../define';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { getUserListAction, changeOrderAction } from '../actions/userList';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import { UserInfo } from '../define/model';
+import Inoperable from './Inoperable';
+import { CALENDAR_URL } from '../define';
+
+const { remote } = window.require('electron');
 
 class UserList extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      inoperable: false
+    };
+  }
+
+  formatter = (cell: Tabulator.CellComponent) => {
+    const email = cell.getValue();
+    if (email !== '') {
+      return '<input type="button" value="　 表示 　" class="btn btn-link link_display_calendar" />';
+    } else {
+      return '-';
+    }
+  };
+
+  openCalendar = (e: any, cell: Tabulator.CellComponent) => {
+    const email = cell.getValue();
+    if (email === '') {
+      return;
+    }
+
+    // 親ウインドウを操作不可にする
+    this.setState({ inoperable: true });
+
+    const encodedEmail = encodeURI(email);
+    // カレンダー表示のための子ウインドウを表示
+    let calendarWindow: any = new remote.BrowserWindow({
+      width: 1120,
+      height: 700,
+      resizable: false,
+      fullscreen: false,
+      fullscreenable: false,
+      minimizable: false,
+      maximizable: false,
+      parent: remote.getCurrentWindow()
+    });
+    calendarWindow.setMenuBarVisibility(false);
+    calendarWindow.loadURL(`${CALENDAR_URL}&src=${encodedEmail}&`);
+
+    calendarWindow.on('closed', () => {
+      calendarWindow = null;
+      this.setState({ inoperable: false });
+    });
+  };
+
+  COLUMNS_CONFIG_FOR_TABULATOR: any = [
+    { rowHandle: true, formatter: 'handle', headerSort: false, frozen: true, width: 25, minWidth: 25, resizable: false },
+    { title: '順序', field: 'order', visible: false, headerSort: false, sorter: 'number' },
+    { title: '氏名', field: 'name', width: 150, headerSort: false },
+    { title: '状態', field: 'status', width: 100, headerSort: false },
+    { title: '行き先', field: 'destination', width: 300, headerSort: false },
+    { title: '戻り', field: 'return', width: 150, headerSort: false },
+    {
+      title: '更新日時',
+      field: 'updatedAt',
+      width: 85,
+      headerSort: false,
+      sorter: 'datetime',
+      sorterParams: { format: 'YYYY-MM-DD hh:mm:ss.SSS' },
+      formatter: 'datetime',
+      formatterParams: {
+        outputFormat: 'YYYY/MM/DD',
+        invalidPlaceholder: ''
+      }
+    },
+    {
+      title: 'カレンダー',
+      field: 'email',
+      align: 'center',
+      width: 80,
+      headerSort: false,
+      tooltip: false,
+      formatter: this.formatter,
+      cellClick: this.openCalendar
+    },
+    { title: 'メッセージ', field: 'message', headerSort: false }
+  ];
+
   _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
     if (!userList) {
       return null;
@@ -108,26 +190,31 @@ class UserList extends React.Component<any, any> {
   render() {
     const { userList } = this.props;
     return (
-      // ReactTabulatorで発生するエラーを @ts-ignore を用いて無視
-      // ※なぜか placeholder の型定義が存在しないため（公式の不具合？）
-      // @ts-ignore
-      <ReactTabulator
-        className='user-list'
-        data={userList}
-        columns={TABLE_COLUMNS}
-        tooltips={true}
-        layout={'fitData'}
-        height={window.innerHeight - 87}
-        rowDblClick={this.showUserEditModal}
-        resizableColumns={true}
-        rowFormatter={this._rowFormatter}
-        placeholder={'通信に失敗しました。'}
-        options={{
-          movableRows: true,
-          initialSort: [{ column: 'updatedAt', dir: 'asc' }, { column: 'order', dir: 'asc' }]
-        }}
-        rowMoved={this._rowMovedCallback}
-      />
+      <div>
+        <Inoperable enabled={this.state.inoperable} />
+        {/*
+        // @ts-ignore */}
+        <ReactTabulator
+          className='user-list'
+          data={userList}
+          columns={this.COLUMNS_CONFIG_FOR_TABULATOR}
+          tooltips={true}
+          layout={'fitData'}
+          height={window.innerHeight - 87}
+          rowDblClick={this.showUserEditModal}
+          resizableColumns={true}
+          rowFormatter={this._rowFormatter}
+          placeholder={'通信に失敗しました。'}
+          options={{
+            movableRows: true,
+            initialSort: [
+              { column: 'updatedAt', dir: 'asc' },
+              { column: 'order', dir: 'asc' }
+            ]
+          }}
+          rowMoved={this._rowMovedCallback}
+        />
+      </div>
     );
   }
 }

@@ -1,0 +1,8 @@
+.inoperable {
+  z-index: 99999;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
