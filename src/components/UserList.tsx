@@ -9,9 +9,19 @@ import store from '../store/configureStore';
 import { getUserListAction, changeOrderAction } from '../actions/userList';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import { UserInfo } from '../define/model';
+import Inoperable from './Inoperable';
+import { CALENDAR_URL } from '../define';
+
 const { remote } = window.require('electron');
 
 class UserList extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      inoperable: false
+    };
+  }
+
   formatter = (cell: Tabulator.CellComponent) => {
     const email = cell.getValue();
     if (email !== '') {
@@ -27,8 +37,11 @@ class UserList extends React.Component<any, any> {
       return;
     }
 
-    const encodedEmail = encodeURI(email);
+    // 親ウインドウを操作不可にする
+    this.setState({ inoperable: true });
 
+    const encodedEmail = encodeURI(email);
+    // カレンダー表示のための子ウインドウを表示
     let calendarWindow: any = new remote.BrowserWindow({
       width: 1120,
       height: 700,
@@ -40,20 +53,15 @@ class UserList extends React.Component<any, any> {
       parent: remote.getCurrentWindow()
     });
     calendarWindow.setMenuBarVisibility(false);
+    calendarWindow.loadURL(`${CALENDAR_URL}&src=${encodedEmail}&`);
 
     calendarWindow.on('closed', () => {
       calendarWindow = null;
-      remote.getCurrentWindow().setEnabled(true);
-      remote.getCurrentWindow().focus();
+      this.setState({ inoperable: false });
     });
-    calendarWindow.loadURL(
-      `https://calendar.google.com/calendar/embed?src=${encodedEmail}&ctz=Asia%2FTokyo&mode=WEEK&showTitle=0&showTz=0&showPrint=0`
-    );
-
-    remote.getCurrentWindow().setEnabled(false);
   };
 
-  TABLE_COLUMNS: any = [
+  COLUMNS_CONFIG_FOR_TABULATOR: any = [
     { rowHandle: true, formatter: 'handle', headerSort: false, frozen: true, width: 25, minWidth: 25, resizable: false },
     { title: '順序', field: 'order', visible: false, headerSort: false, sorter: 'number' },
     { title: '氏名', field: 'name', width: 150, headerSort: false },
@@ -182,26 +190,31 @@ class UserList extends React.Component<any, any> {
   render() {
     const { userList } = this.props;
     return (
-      // ReactTabulatorで発生するエラーを @ts-ignore を用いて無視
-      // ※なぜか placeholder の型定義が存在しないため（公式の不具合？）
-      // @ts-ignore
-      <ReactTabulator
-        className='user-list'
-        data={userList}
-        columns={this.TABLE_COLUMNS}
-        tooltips={true}
-        layout={'fitData'}
-        height={window.innerHeight - 87}
-        rowDblClick={this.showUserEditModal}
-        resizableColumns={true}
-        rowFormatter={this._rowFormatter}
-        placeholder={'通信に失敗しました。'}
-        options={{
-          movableRows: true,
-          initialSort: [{ column: 'updatedAt', dir: 'asc' }, { column: 'order', dir: 'asc' }]
-        }}
-        rowMoved={this._rowMovedCallback}
-      />
+      <div>
+        <Inoperable enabled={this.state.inoperable} />
+        {/*
+        // @ts-ignore */}
+        <ReactTabulator
+          className='user-list'
+          data={userList}
+          columns={this.COLUMNS_CONFIG_FOR_TABULATOR}
+          tooltips={true}
+          layout={'fitData'}
+          height={window.innerHeight - 87}
+          rowDblClick={this.showUserEditModal}
+          resizableColumns={true}
+          rowFormatter={this._rowFormatter}
+          placeholder={'通信に失敗しました。'}
+          options={{
+            movableRows: true,
+            initialSort: [
+              { column: 'updatedAt', dir: 'asc' },
+              { column: 'order', dir: 'asc' }
+            ]
+          }}
+          rowMoved={this._rowMovedCallback}
+        />
+      </div>
     );
   }
 }

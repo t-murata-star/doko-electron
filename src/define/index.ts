@@ -29,3 +29,4 @@ export const STATUS_LIST: string[] = [
 
 export const HEARTBEAT_INTERVAL_MS: number = parseInt(process.env.REACT_APP_HEARTBEAT_INTERVAL_MS || '270000');
 export const LEAVING_TIME_THRESHOLD_M: number = parseInt(process.env.REACT_APP_LEAVING_TIME_THRESHOLD_M || '10');
+export const CALENDAR_URL: string = process.env.REACT_APP_CALENDAR_URL || '';
