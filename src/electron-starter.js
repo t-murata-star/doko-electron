@@ -145,12 +145,24 @@ function createWindow() {
       message: 'スタートアップを有効にしますか？\n※PC起動時、自動的に行き先掲示板が起動します。'
     });
 
-    if (index === 0) {
-      app.setLoginItemSettings({
-        openAtLogin: true,
-        path: electron.app.getPath('exe')
-      });
+    let openAtLogin;
+
+    switch (index) {
+      // ダイアログで「OK」を選択した場合
+      case 0:
+        openAtLogin = true;
+        break;
+
+      // ダイアログで「OK」以外を選択した場合
+      default:
+        openAtLogin = false;
+        break;
     }
+
+    app.setLoginItemSettings({
+      openAtLogin,
+      path: electron.app.getPath('exe')
+    });
 
     electronStore.set('notified_startup', 1);
   }
