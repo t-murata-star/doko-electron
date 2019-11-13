@@ -4,11 +4,17 @@ import store from '../store/configureStore';
 import { Col, Row, Form, ListGroup } from 'react-bootstrap';
 import Switch from '@material/react-switch';
 import MaterialButton from '@material/react-button';
+import { UserInfo } from '../define/model';
 
 class Settings extends React.Component<any, any> {
+  user = {
+    userID: -1
+  };
+
   constructor(props: any) {
     super(props);
     this.state = {
+      submitButtonStatus: false,
       checked: {
         startup: false
       }
@@ -21,7 +27,16 @@ class Settings extends React.Component<any, any> {
     this.settings.system[event.currentTarget.name] = event.currentTarget.value;
   };
 
+  onUserChange = (event: any) => {
+    this.user.userID = parseInt(event.target.value);
+    if (this.props.submitButtonStatus) {
+      this.setState({ submitButtonStatus: true });
+    }
+  };
+
   render() {
+    const changeUserList = store.getState().userListState['changeUserList'];
+
     return (
       <div className='settings'>
         <Row className='setting_user'>
@@ -29,6 +44,26 @@ class Settings extends React.Component<any, any> {
           <Col md='8'>
             <h4>ユーザ</h4>
             <ListGroup>
+              <ListGroup.Item>
+                <Form.Row>
+                  <Form.Group as={Col}>
+                    <Form.Label>ユーザ変更</Form.Label>
+                    <Form.Control name='user-change' as='select' onChange={this.onUserChange}>
+                      <option hidden>選択してください</option>
+                      {changeUserList
+                        .sort((a: UserInfo, b: UserInfo) => {
+                          return a.order - b.order;
+                        })
+                        .map((userInfo: UserInfo, index: number) => (
+                          <option key={index} value={userInfo['id']}>
+                            {userInfo['name']}
+                          </option>
+                        ))}
+                    </Form.Control>
+                  </Form.Group>
+                  <Form.Group as={Col} />
+                </Form.Row>
+              </ListGroup.Item>
               <ListGroup.Item>
                 <Form.Row>
                   <Form.Group as={Col}>
