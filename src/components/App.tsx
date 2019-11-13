@@ -2,6 +2,7 @@ import React from 'react';
 import './App.scss';
 import UserList from '../containers/UserListPanel';
 import OfficeInfo from '../containers/OfficeInfoPanel';
+import Settings from '../containers/SettingsPanel';
 import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUserList';
 import MenuButtonGroupForOfficeInfo from '../containers/MenuButtonGroupPanelForOfficeInfo';
 import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
@@ -31,7 +32,7 @@ const electronStore = new Store();
 class App extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = { activeIndex: 0 };
+    this.state = { activeIndex: 2 };
   }
 
   async componentDidMount() {
@@ -262,28 +263,41 @@ class App extends React.Component<any, any> {
         <Loading state={store.getState()} />
         {myUserID !== -1 && (
           <div>
-            <TabBar className='tab' activeIndex={this.state.activeIndex} handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
+            <TabBar
+              className='tab header'
+              activeIndex={this.state.activeIndex}
+              handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
               <Tab className='tab'>
                 <span className='mdc-tab__text-label'>社員情報</span>
               </Tab>
               <Tab className='tab'>
                 <span className='mdc-tab__text-label'>社内情報</span>
               </Tab>
+              <Tab className='tab'>
+                <span className='mdc-tab__text-label'>設定</span>
+              </Tab>
             </TabBar>
           </div>
         )}
-        {myUserID !== -1 && this.state.activeIndex === 0 && (
-          <div>
-            <UserList />
-            <MenuButtonGroupForUserList />
-          </div>
-        )}
-        {myUserID !== -1 && this.state.activeIndex === 1 && (
-          <div>
-            <OfficeInfo />
-            <MenuButtonGroupForOfficeInfo />
-          </div>
-        )}
+        <div className='contents'>
+          {myUserID !== -1 && this.state.activeIndex === 0 && (
+            <div>
+              <UserList />
+              <MenuButtonGroupForUserList />
+            </div>
+          )}
+          {myUserID !== -1 && this.state.activeIndex === 1 && (
+            <div>
+              <OfficeInfo />
+              <MenuButtonGroupForOfficeInfo />
+            </div>
+          )}
+          {myUserID !== -1 && this.state.activeIndex === 2 && (
+            <div>
+              <Settings />
+            </div>
+          )}
+        </div>
         <InitialStartupModal />
       </div>
     );
