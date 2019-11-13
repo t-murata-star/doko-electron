@@ -3,6 +3,7 @@ import './Settings.css';
 import store from '../store/configureStore';
 import { Col, Row, Form, ListGroup } from 'react-bootstrap';
 import Switch from '@material/react-switch';
+import MaterialButton from '@material/react-button';
 
 class Settings extends React.Component<any, any> {
   constructor(props: any) {
@@ -30,7 +31,7 @@ class Settings extends React.Component<any, any> {
             <ListGroup>
               <ListGroup.Item>
                 <Form.Row>
-                  <Form.Group as={Col} controlId='email'>
+                  <Form.Group as={Col}>
                     <Form.Label>メールアドレス</Form.Label>
                     <p>
                       <small className='text-muted'>社員情報からGoogleカレンダーを表示する事ができます。</small>
@@ -59,13 +60,12 @@ class Settings extends React.Component<any, any> {
             <ListGroup>
               <ListGroup.Item>
                 <Form.Row>
-                  <Form.Group as={Col} controlId='email'>
+                  <Form.Group as={Col} controlId='startup'>
                     <Form.Label>スタートアップ</Form.Label>
                     <p>
                       <small className='text-muted'>有効にすると、PC起動時に自動的に行き先掲示板が起動します。</small>
                     </p>
                     <Switch
-                      nativeControlId='my-switch'
                       checked={this.state.checked.startup}
                       onChange={(e: any) => this.setState({ checked: e.target.checked })}
                     />
@@ -76,6 +76,9 @@ class Settings extends React.Component<any, any> {
           </Col>
           <Col md='2' />
         </Row>
+        <MaterialButton outlined type='button' className='modal-button button-submit button-save'>
+          保存
+        </MaterialButton>
       </div>
     );
   }

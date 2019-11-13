@@ -9,3 +9,8 @@
 .setting_system {
   margin-bottom: 1%;
 }
+.button-save {
+  position: absolute;
+  bottom: 10%;
+  right: 3%;
+}
