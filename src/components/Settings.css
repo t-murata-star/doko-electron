@@ -1,5 +1,5 @@
 .settings {
-  margin-top: 3%;
+  margin-top: 2%;
   margin-bottom: 3%;
   font-size: 18px;
 }
@@ -11,6 +11,6 @@
 }
 .button-save {
   position: absolute;
-  bottom: 10%;
+  bottom: 12%;
   right: 3%;
 }
