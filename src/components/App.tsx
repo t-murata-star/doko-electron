@@ -32,16 +32,53 @@ const electronStore = new Store();
 class App extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = { activeIndex: 0 };
+    this.state = { activeIndex: 2 };
   }
 
   async componentDidMount() {
     const { dispatch } = this.props;
     const userID: number = (electronStore.get('userID') as number | undefined) || -1;
 
+    /**
+     * スタートアップ登録処理。
+     * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
+     */
+    if (!electronStore.get('startup.notified')) {
+      const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+        title: '行き先掲示板',
+        type: 'info',
+        buttons: ['YES', 'NO'],
+        message: 'スタートアップを有効にしますか？\n※PCを起動した際に自動的に行き先掲示板が起動します。'
+      });
+
+      let openAtLogin;
+
+      switch (index) {
+        // ダイアログで「OK」を選択した場合
+        case 0:
+          openAtLogin = true;
+          electronStore.set('startup.enabled', 1);
+          break;
+
+        // ダイアログで「OK」以外を選択した場合
+        default:
+          openAtLogin = false;
+          electronStore.set('startup.enabled', 0);
+          break;
+      }
+
+      electronStore.set('startup.notified', 1);
+
+      remote.app.setLoginItemSettings({
+        openAtLogin,
+        path: remote.app.getPath('exe')
+      });
+    }
+    // TODO: notified_startup は廃止予定のため、次回アプリケーションのアップデートの際に該当処理を削除する
+    electronStore.delete('notified_startup');
+
     // state ユーザIDを設定
     await dispatch(setMyUserIDActionCreator(userID));
-    electronStore.delete('notified_startup');
 
     // WEBアプリケーション接続確認用のため、Cookieにパラメータを設定する
     document.cookie = 'isConnected=true';

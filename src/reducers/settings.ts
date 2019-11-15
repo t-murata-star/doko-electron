@@ -85,6 +85,8 @@ export default function settingState(
           timeoutMs: action.timeoutMs
         },
       };
+    case SettingsActions.INITIALIZE_SETTING_STATE:
+      return new _SettingsState();
 
     default:
       return state;

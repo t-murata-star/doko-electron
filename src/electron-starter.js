@@ -1,8 +1,6 @@
 const electron = require('electron');
 const { ipcMain, session } = require('electron');
 const path = require('path');
-const Store = require('electron-store');
-const electronStore = new Store();
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -132,42 +130,6 @@ function createWindow() {
   });
 
   createTray();
-
-  /**
-   * スタートアップ登録処理。
-   * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
-   */
-  if (!electronStore.get('startup.notified')) {
-    const index = electron.dialog.showMessageBox(mainWindow, {
-      title: '行き先掲示板',
-      type: 'info',
-      buttons: ['YES', 'NO'],
-      message: 'スタートアップを有効にしますか？\n※PCを起動した際に自動的に行き先掲示板が起動します。'
-    });
-
-    let openAtLogin;
-
-    switch (index) {
-      // ダイアログで「OK」を選択した場合
-      case 0:
-        openAtLogin = true;
-        electronStore.set('startup.enabled', 1);
-        break;
-
-      // ダイアログで「OK」以外を選択した場合
-      default:
-        openAtLogin = false;
-        electronStore.set('startup.enabled', 0);
-        break;
-    }
-
-    electronStore.set('startup.notified', 1);
-
-    app.setLoginItemSettings({
-      openAtLogin,
-      path: electron.app.getPath('exe')
-    });
-  }
 }
 
 // タスクトレイを作成

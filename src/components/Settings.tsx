@@ -13,7 +13,8 @@ import {
   changeDisabledSubmitButtonEmailActionCreator,
   changeEnabledStartupActionCreator,
   setEmailActionCreator,
-  changeEnabledSnackbarActionCreator
+  changeEnabledSnackbarActionCreator,
+  initializeSettingStateActionCreator
 } from '../actions/settings';
 import { EMAIL_DOMAIN } from '../define';
 const { remote } = window.require('electron');
@@ -24,10 +25,8 @@ class Settings extends React.Component<any, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
 
-    // 各ボタンを無効化
-    dispatch(changeDisabledSubmitButtonUserChangeActionCreator(true));
-    dispatch(changeDisabledSubmitButtonEmailActionCreator(true));
-    dispatch(changeEnabledSnackbarActionCreator(false));
+    // state を初期化
+    dispatch(initializeSettingStateActionCreator());
 
     // メールアドレス
     const myUserID = store.getState().userListState.myUserID;
@@ -220,7 +219,7 @@ class Settings extends React.Component<any, any> {
                         value={settingState.user.email}
                         onChange={this.onUserEmailInputChange}
                         maxLength={100}
-                        disabled={userList.length === 0}
+                        disabled={userInfo.id === -1}
                       />
                       {EMAIL_DOMAIN}
                     </div>
