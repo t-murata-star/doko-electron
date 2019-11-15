@@ -105,6 +105,11 @@ function createWindow() {
     mainWindow.hide();
   });
 
+  // ウインドウが表示されるときに発生するイベント
+  mainWindow.on('show', () => {
+    mainWindow.webContents.send('electronShowEvent');
+  });
+
   /**
    * スクリーンロックのイベントキャッチ
    * 状態を「離席中」に更新する
