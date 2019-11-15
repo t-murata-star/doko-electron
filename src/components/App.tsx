@@ -24,6 +24,7 @@ import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '.
 import { UserInfo, Notification } from '../define/model';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
+import { getUserInfo } from './common/functions';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -32,7 +33,7 @@ const electronStore = new Store();
 class App extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = { activeIndex: 2 };
+    this.state = { activeIndex: 0 };
   }
 
   async componentDidMount() {
@@ -148,7 +149,7 @@ class App extends React.Component<any, any> {
     }
 
     const userList: UserInfo[] = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, userID);
+    const userInfo = getUserInfo(userList, userID);
 
     /**
      * サーバ上に自分の情報が存在するかどうかチェック
@@ -193,23 +194,12 @@ class App extends React.Component<any, any> {
     dispatch(showInitialStartupModalActionCreator());
   };
 
-  // ※戻り値のuserInfoはuserListの参照
-  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
-    if (!userList) {
-      return null;
-    }
-    const userInfo = userList.filter(userInfo => {
-      return userInfo['id'] === userID;
-    })[0];
-    return userInfo || null;
-  };
-
   _heartbeat = () => {
     const { dispatch } = this.props;
 
     const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
       return;
@@ -225,7 +215,7 @@ class App extends React.Component<any, any> {
     const { dispatch } = this.props;
     const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       return;
     }
@@ -242,7 +232,7 @@ class App extends React.Component<any, any> {
     const { dispatch } = this.props;
     const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       return;
     }
@@ -260,7 +250,7 @@ class App extends React.Component<any, any> {
 
     const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       ipcRenderer.send('close');
       return;
@@ -272,9 +262,10 @@ class App extends React.Component<any, any> {
     updatedUserInfo['name'] = userInfo['name'];
     Object.assign(userInfo, updatedUserInfo);
     await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
+    await this.sleep(5000);
     ipcRenderer.send('close');
   });
-
+  sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
   _showMessageBox = (message: any) => {
     remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: '行き先掲示板',

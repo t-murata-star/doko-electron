@@ -16,6 +16,7 @@ import {
 import { UserInfo } from '../define/model';
 import MaterialButton from '@material/react-button';
 import $ from 'jquery';
+import { getUserInfo } from './common/functions';
 const { remote } = window.require('electron');
 
 const Store = window.require('electron-store');
@@ -92,7 +93,7 @@ class InitialStartupModal extends React.Component<any, any> {
 
     const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
       return;
@@ -125,22 +126,12 @@ class InitialStartupModal extends React.Component<any, any> {
     this._heartbeat();
   };
 
-  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
-    if (!userList) {
-      return null;
-    }
-    const userInfo = userList.filter(userInfo => {
-      return userInfo['id'] === userID;
-    })[0];
-    return userInfo || null;
-  };
-
   _heartbeat = () => {
     const { dispatch } = this.props;
 
     const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
-    const userInfo = this._getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
       return;

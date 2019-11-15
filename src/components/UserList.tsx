@@ -8,9 +8,9 @@ import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { getUserListAction, changeOrderAction } from '../actions/userList';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
-import { UserInfo } from '../define/model';
 import Inoperable from './Inoperable';
 import { CALENDAR_URL, EMAIL_DOMAIN } from '../define';
+import { getUserInfo } from './common/functions';
 
 const { remote } = window.require('electron');
 
@@ -94,21 +94,11 @@ class UserList extends React.Component<any, any> {
     { title: 'メッセージ', field: 'message', headerSort: false }
   ];
 
-  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
-    if (!userList) {
-      return null;
-    }
-    const userInfo = userList.filter(userInfo => {
-      return userInfo['id'] === userID;
-    })[0];
-    return userInfo || null;
-  };
-
   showUserEditModal = (e: any, row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
     const userList = store.getState().userListState['userList'];
     const selectedUserId = row.getData()['id'];
-    const userInfo = this._getUserInfo(userList, selectedUserId);
+    const userInfo = getUserInfo(userList, selectedUserId);
 
     if (userInfo === null) {
       return;

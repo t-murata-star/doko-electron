@@ -17,6 +17,7 @@ import {
   initializeSettingStateActionCreator
 } from '../actions/settings';
 import { EMAIL_DOMAIN } from '../define';
+import { getUserInfo } from './common/functions';
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -31,7 +32,7 @@ class Settings extends React.Component<any, any> {
     // メールアドレス
     const myUserID = store.getState().userListState.myUserID;
     const userList = store.getState().userListState.userList;
-    const userInfo = this._getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
     if (userInfo !== null) {
       dispatch(setEmailActionCreator(userInfo.email));
     }
@@ -51,7 +52,7 @@ class Settings extends React.Component<any, any> {
     const changedUserID = parseInt(event.target.value);
     const userList = store.getState().userListState.userList;
 
-    const userInfo = this._getUserInfo(userList, changedUserID);
+    const userInfo = getUserInfo(userList, changedUserID);
     if (userInfo === null) {
       return;
     }
@@ -79,7 +80,7 @@ class Settings extends React.Component<any, any> {
       // メールアドレス
       const myUserID = store.getState().userListState.myUserID;
       const userList = store.getState().userListState.userList;
-      const userInfo = this._getUserInfo(userList, myUserID);
+      const userInfo = getUserInfo(userList, myUserID);
       if (userInfo !== null) {
         dispatch(setEmailActionCreator(userInfo.email));
       }
@@ -144,20 +145,10 @@ class Settings extends React.Component<any, any> {
     dispatch(changeEnabledSnackbarActionCreator(false));
   };
 
-  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
-    if (!userList) {
-      return null;
-    }
-    const userInfo = userList.filter(userInfo => {
-      return userInfo['id'] === userID;
-    })[0];
-    return userInfo || null;
-  };
-
   render() {
     const myUserID = store.getState().userListState.myUserID;
     const userList = store.getState().userListState.userList;
-    const userInfo = this._getUserInfo(userList, myUserID) || new UserInfo();
+    const userInfo = getUserInfo(userList, myUserID) || new UserInfo();
     const settingState = store.getState().settingsState;
 
     return (

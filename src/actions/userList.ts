@@ -258,12 +258,11 @@ export const getChangeUserListAction = () => {
 export const changeOrderAction = (userInfo: { order: number }, userID: number) => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(changeOrderActionCreator());
-    const body = Object.assign({}, userInfo);
     try {
       const res = await fetch(API_URL + 'userList/' + userID, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(body)
+        body: JSON.stringify(userInfo)
       });
 
       responseStatusCheck(dispatch, res.status);

@@ -10,7 +10,7 @@ import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
 import $ from 'jquery';
 import MaterialButton from '@material/react-button';
-import { UserInfo } from '../define/model';
+import { getUserInfo } from './common/functions';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForUserList extends React.Component<any, any> {
@@ -26,7 +26,7 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
     const { dispatch } = this.props;
     const userList = store.getState().userListState['userList'];
     const myUserID = store.getState().userListState['myUserID'];
-    const userInfo = this._getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
       return;
@@ -36,20 +36,10 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
     dispatch(showUserEditModalActionCreator(myUserID, userInfo));
   };
 
-  _getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
-    if (!userList) {
-      return null;
-    }
-    const userInfo = userList.filter(userInfo => {
-      return userInfo['id'] === userID;
-    })[0];
-    return userInfo || null;
-  };
-
   render() {
     const userList = store.getState().userListState;
     const myUserID = store.getState().userListState['myUserID'];
-    const userInfo = this._getUserInfo(userList['userList'], myUserID);
+    const userInfo = getUserInfo(userList['userList'], myUserID);
 
     return (
       <Row className='menu-button-group-for-user-list'>
