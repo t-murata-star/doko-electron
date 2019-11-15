@@ -262,10 +262,9 @@ class App extends React.Component<any, any> {
     updatedUserInfo['name'] = userInfo['name'];
     Object.assign(userInfo, updatedUserInfo);
     await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
-    await this.sleep(5000);
     ipcRenderer.send('close');
   });
-  sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+
   _showMessageBox = (message: any) => {
     remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: '行き先掲示板',
