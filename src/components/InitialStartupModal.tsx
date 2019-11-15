@@ -115,8 +115,6 @@ class InitialStartupModal extends React.Component<any, any> {
       updatedUserInfo['status'] = '在席';
     }
 
-    Object.assign(userInfo, updatedUserInfo);
-
     await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
 
     // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
