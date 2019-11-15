@@ -110,7 +110,7 @@ function createWindow() {
    * 状態を「離席中」に更新する
    */
   electron.powerMonitor.on('lock-screen', () => {
-    mainWindow.webContents.send('updateInfo', 'status', '在席 (離席中)');
+    mainWindow.webContents.send('electronLockScreenEvent');
   });
 
   /**
@@ -118,7 +118,7 @@ function createWindow() {
    * 状態を「在席」に更新する
    */
   electron.powerMonitor.on('unlock-screen', () => {
-    mainWindow.webContents.send('updateInfo', 'status', '在席');
+    mainWindow.webContents.send('electronUnlockScreenEvent');
   });
 
   /**

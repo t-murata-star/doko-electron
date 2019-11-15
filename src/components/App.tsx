@@ -221,9 +221,8 @@ class App extends React.Component<any, any> {
     dispatch(sendHeartbeatAction(updatedUserInfo, myUserID));
   };
 
-  updateInfo = ipcRenderer.on('updateInfo', (event: any, key: string | number, value: any) => {
+  electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
-
     const myUserID = store.getState().userListState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = this._getUserInfo(userList, myUserID);
@@ -234,7 +233,24 @@ class App extends React.Component<any, any> {
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
-    updatedUserInfo[key] = value;
+    updatedUserInfo['status'] = '在席 (離席中)';
+    Object.assign(userInfo, updatedUserInfo);
+    dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
+  });
+
+  electronUnlockScreenEvent = ipcRenderer.on('electronUnlockScreenEvent', () => {
+    const { dispatch } = this.props;
+    const myUserID = store.getState().userListState['myUserID'];
+    const userList = store.getState().userListState['userList'];
+    const userInfo = this._getUserInfo(userList, myUserID);
+    if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+      return;
+    }
+
+    const updatedUserInfo: any = {};
+    updatedUserInfo['id'] = myUserID;
+    updatedUserInfo['name'] = userInfo['name'];
+    updatedUserInfo['status'] = '在席';
     Object.assign(userInfo, updatedUserInfo);
     dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
   });
