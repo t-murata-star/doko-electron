@@ -6,12 +6,11 @@
 
 import './UserEditModal.css';
 import React from 'react';
-import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
+import { Container, Col, Form, Modal } from 'react-bootstrap';
 import {
   closeUserEditModalActionCreator,
   enableSubmitButtonActionCreator,
   disableSubmitButtonActionCreator,
-  handleChangeUserActionCreator,
   handleEditUserActionCreator,
   inputClearActionCreator,
   changeUserInfoActionCreator
@@ -77,29 +76,11 @@ class UserEditModal extends React.Component<any, any> {
     }
   };
 
-  onUserChange = (event: any) => {
-    const { dispatch } = this.props;
-    this.userID = parseInt(event.target.value);
-    if (this.props.submitButtonStatus) {
-      dispatch(enableSubmitButtonActionCreator());
-    }
-  };
-
   handleSubmit = (event: any) => {
     event.preventDefault();
     const { dispatch } = this.props;
     dispatch(disableSubmitButtonActionCreator());
-
-    if (this.props.isChangeUser) {
-      this._changeUser();
-    } else {
-      this._updateUserInfo(this.userInfo);
-    }
-  };
-
-  handleChangeUser = (event: any) => {
-    const { dispatch } = this.props;
-    dispatch(handleChangeUserActionCreator());
+    this._updateUserInfo(this.userInfo);
   };
 
   handleEditUser = (event: any) => {
@@ -139,7 +120,6 @@ class UserEditModal extends React.Component<any, any> {
   render() {
     const userList = store.getState().userListState;
     const userInfo = this.props.userInfo;
-    const myUserID = store.getState().userListState['myUserID'];
 
     return (
       <Modal
@@ -159,113 +139,73 @@ class UserEditModal extends React.Component<any, any> {
         <Form onSubmit={this.handleSubmit}>
           <Modal.Body>
             <Container>
-              {!this.props.isChangeUser && (
-                <div>
-                  <Form.Row>
-                    <Form.Group as={Col} controlId='name'>
-                      <Form.Label>
-                        <span className='name'>氏名</span>
-                      </Form.Label>
-                      {userInfo['id'] === myUserID && (
-                        <Button variant='link' className='userChange' onClick={this.handleChangeUser}>
-                          ユーザ変更
-                        </Button>
-                      )}
-                      <Form.Control
-                        name='name'
-                        placeholder=''
-                        value={userInfo.name}
-                        onChange={this.onUserInfoChange}
-                        maxLength={100}
-                      />
-                    </Form.Group>
-                    <Form.Group as={Col} controlId='status'>
-                      <Form.Label>
-                        <span className='status'>状態</span>
-                      </Form.Label>
-                      <span data-tip='状態を在席に変更し、行き先と戻りを削除します'>
-                        <MaterialButton
-                          outlined
-                          type='button'
-                          className='modal-button-clear button-primary '
-                          onClick={this.inputClear}>
-                          在席
-                        </MaterialButton>
-                        <ReactTooltip effect='solid' place='top' />
-                      </span>
-                      <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
-                        {STATUS_LIST.map((status: string, index: number) => (
-                          <option key={index}>{status}</option>
-                        ))}
-                        <option hidden>{userInfo.status}</option>
-                      </Form.Control>
-                    </Form.Group>
-                  </Form.Row>
-                  <Form.Row>
-                    <Form.Group as={Col} controlId='destination'>
-                      <Form.Label>行き先</Form.Label>
-                      <Form.Control
-                        name='destination'
-                        placeholder=''
-                        value={userInfo.destination}
-                        onChange={this.onUserInfoChange}
-                        maxLength={100}
-                      />
-                    </Form.Group>
-                    <Form.Group as={Col} controlId='return'>
-                      <Form.Label>戻り</Form.Label>
-                      <Form.Control
-                        name='return'
-                        placeholder=''
-                        value={userInfo.return}
-                        onChange={this.onUserInfoChange}
-                        maxLength={100}
-                      />
-                    </Form.Group>
-                  </Form.Row>
-                  <Form.Group controlId='message'>
-                    <Form.Label>メッセージ</Form.Label>
-                    <Form.Control
-                      name='message'
-                      placeholder=''
-                      value={userInfo.message}
-                      onChange={this.onUserInfoChange}
-                      maxLength={100}
-                    />
-                  </Form.Group>
-                </div>
-              )}
-
-              {this.props.isChangeUser && (
-                <div>
-                  <Form.Row>
-                    <Col md='2' />
-                    <Col md='8'>
-                      <Form.Group as={Col} controlId='name'>
-                        <Form.Label>
-                          <span className='name'>氏名</span>
-                        </Form.Label>
-                        <Button variant='link' className='modal-button-user-delete userChange' onClick={this.handleEditUser}>
-                          戻る
-                        </Button>
-                        <Form.Control name='usesrID' as='select' onChange={this.onUserChange}>
-                          <option hidden>選択してください</option>
-                          {userList.userList
-                            .sort((a: UserInfo, b: UserInfo) => {
-                              return a.order - b.order;
-                            })
-                            .map((userInfo: UserInfo, index: number) => (
-                              <option key={index} value={userInfo['id']}>
-                                {userInfo['name']}
-                              </option>
-                            ))}
-                        </Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col md='2' />
-                  </Form.Row>
-                </div>
-              )}
+              <Form.Row>
+                <Form.Group as={Col} controlId='name'>
+                  <Form.Label>
+                    <span className='name'>氏名</span>
+                  </Form.Label>
+                  <Form.Control
+                    name='name'
+                    placeholder=''
+                    value={userInfo.name}
+                    onChange={this.onUserInfoChange}
+                    maxLength={100}
+                  />
+                </Form.Group>
+                <Form.Group as={Col} controlId='status'>
+                  <Form.Label>
+                    <span className='status'>状態</span>
+                  </Form.Label>
+                  <span data-tip='状態を在席に変更し、行き先と戻りを削除します'>
+                    <MaterialButton
+                      outlined
+                      type='button'
+                      className='modal-button-clear button-primary '
+                      onClick={this.inputClear}>
+                      在席
+                    </MaterialButton>
+                    <ReactTooltip effect='solid' place='top' />
+                  </span>
+                  <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
+                    {STATUS_LIST.map((status: string, index: number) => (
+                      <option key={index}>{status}</option>
+                    ))}
+                    <option hidden>{userInfo.status}</option>
+                  </Form.Control>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col} controlId='destination'>
+                  <Form.Label>行き先</Form.Label>
+                  <Form.Control
+                    name='destination'
+                    placeholder=''
+                    value={userInfo.destination}
+                    onChange={this.onUserInfoChange}
+                    maxLength={100}
+                  />
+                </Form.Group>
+                <Form.Group as={Col} controlId='return'>
+                  <Form.Label>戻り</Form.Label>
+                  <Form.Control
+                    name='return'
+                    placeholder=''
+                    value={userInfo.return}
+                    onChange={this.onUserInfoChange}
+                    maxLength={100}
+                  />
+                </Form.Group>
+              </Form.Row>
+              <Form.Group controlId='message'>
+                <Form.Label>メッセージ</Form.Label>
+                <Form.Control
+                  name='message'
+                  placeholder=''
+                  value={userInfo.message}
+                  onChange={this.onUserInfoChange}
+                  maxLength={100}
+                />
+              </Form.Group>
             </Container>
           </Modal.Body>
           <Modal.Footer>

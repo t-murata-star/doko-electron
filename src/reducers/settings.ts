@@ -2,7 +2,10 @@ import * as SettingsActions from '../actions/settings';
 
 export class _SettingsState {
   submitButtonsDisable = {
-    userChange: true
+    user: {
+      userChange: true,
+      email: true
+    }
   }
   snackbar = {
     enabled: false,
@@ -47,9 +50,22 @@ export default function settingState(
         ...state,
         submitButtonsDisable: {
           ...state.submitButtonsDisable,
-          userChange: action.disabled
+          user: {
+            ...state.submitButtonsDisable.user,
+            userChange: action.disabled
+          },
         },
-        submitButtonDisabled: action.disabled
+      };
+    case SettingsActions.CHANGE_DISABLED_SUBMIT_BUTTON_EMAIL:
+      return {
+        ...state,
+        submitButtonsDisable: {
+          ...state.submitButtonsDisable,
+          user: {
+            ...state.submitButtonsDisable.user,
+            email: action.disabled
+          },
+        },
       };
     case SettingsActions.CHANGE_ENABLED_STARTUP:
       return {

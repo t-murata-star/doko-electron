@@ -32,7 +32,7 @@ const electronStore = new Store();
 class App extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = { activeIndex: 2 };
+    this.state = { activeIndex: 0 };
   }
 
   async componentDidMount() {
@@ -41,6 +41,7 @@ class App extends React.Component<any, any> {
 
     // state ユーザIDを設定
     await dispatch(setMyUserIDActionCreator(userID));
+    electronStore.delete('notified_startup');
 
     // WEBアプリケーション接続確認用のため、Cookieにパラメータを設定する
     document.cookie = 'isConnected=true';

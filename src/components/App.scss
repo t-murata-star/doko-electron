@@ -83,3 +83,6 @@ body {
   @include mdc-snackbar-min-width(170px);
   @include mdc-snackbar-viewport-margin(20px);
 }
+.switch-base {
+  @include mdc-switch-toggled-on-color(#2a91ff);
+}
