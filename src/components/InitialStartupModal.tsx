@@ -40,11 +40,6 @@ class InitialStartupModal extends React.Component<any, any> {
     delete this.userInfo['id'];
   }
 
-  close = () => {
-    const window = remote.getCurrentWindow();
-    window.close();
-  };
-
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch(closeInitialStartupModalActionCreator());
@@ -270,9 +265,6 @@ class InitialStartupModal extends React.Component<any, any> {
               className='modal-button button-submit'
               disabled={this.state.submitButtonStatus}>
               登録
-            </MaterialButton>
-            <MaterialButton outlined type='button' className='modal-button button-primary' onClick={this.close}>
-              終了
             </MaterialButton>
           </Modal.Footer>
         </Form>
