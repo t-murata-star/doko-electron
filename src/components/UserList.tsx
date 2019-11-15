@@ -10,7 +10,7 @@ import { getUserListAction, changeOrderAction } from '../actions/userList';
 import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import { UserInfo } from '../define/model';
 import Inoperable from './Inoperable';
-import { CALENDAR_URL } from '../define';
+import { CALENDAR_URL, EMAIL_DOMAIN } from '../define';
 
 const { remote } = window.require('electron');
 
@@ -53,7 +53,7 @@ class UserList extends React.Component<any, any> {
       parent: remote.getCurrentWindow()
     });
     calendarWindow.setMenuBarVisibility(false);
-    calendarWindow.loadURL(`${CALENDAR_URL}&src=${encodedEmail}&`);
+    calendarWindow.loadURL(`${CALENDAR_URL}&src=${encodedEmail}${EMAIL_DOMAIN}&`);
 
     calendarWindow.on('closed', () => {
       calendarWindow = null;

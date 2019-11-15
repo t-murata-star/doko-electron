@@ -19,7 +19,7 @@ class OfficeInfo extends React.Component<any, any> {
         <Row>
           <Col md='2' />
           <Col md='4'>
-            <Card>
+            <Card outlined>
               <h5 style={{ textAlign: 'center' }}>
                 <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
               </h5>
@@ -46,7 +46,7 @@ class OfficeInfo extends React.Component<any, any> {
             </Card>
           </Col>
           <Col md='4'>
-            <Card>
+            <Card outlined>
               <h5 style={{ textAlign: 'center' }}>
                 <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
               </h5>

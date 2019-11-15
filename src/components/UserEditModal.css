@@ -3,8 +3,10 @@
   margin-left: 8px !important;
 }
 .userEditModal > .modal-content {
-  width: 82%;
-  margin-left: 9%;
+  width: 85%;
+  margin-left: 7.5%;
+  /* width: 65%;
+  margin-left: 17.5%; */
 }
 .error-message {
   color: red;
@@ -16,14 +18,6 @@
 }
 .status {
   padding-right: 10px;
-}
-.userChange {
-  font-size: 13px;
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-top: 0px;
-  padding-bottom: 4px;
-  position: relative;
 }
 .__react_component_tooltip.type-dark.place-top:after {
   border-top-color: #666;

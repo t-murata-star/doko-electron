@@ -9,6 +9,10 @@
 
 @import '@material/react-card/index.scss';
 
+@import '@material/react-switch/index.scss';
+
+@import '@material/react-snackbar/index.scss';
+
 .row {
   margin-right: 0px;
 }
@@ -51,10 +55,34 @@ button:focus {
   @include mdc-button-outline-width(1px);
   margin-right: auto !important;
 }
-
+.header {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  background-color: #ffffff;
+  border-bottom: solid 1px #dee2e6;
+}
+.contents {
+  z-index: 0;
+  padding-top: 35px;
+  overflow-y: auto;
+  height: 100vh;
+}
 .tab.mdc-tab {
   height: 35px;
 }
 .tab.mdc-tab-bar {
   height: 35px;
+}
+body {
+  overflow-y: hidden;
+  overflow-x: auto;
+  margin: 0;
+}
+.settings-snackbar {
+  @include mdc-snackbar-min-width(170px);
+  @include mdc-snackbar-viewport-margin(20px);
+}
+.switch-base {
+  @include mdc-switch-toggled-on-color(#2a91ff);
 }

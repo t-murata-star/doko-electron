@@ -12,6 +12,8 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "@material/react-button": "^0.15.0",
     "@material/react-card": "^0.15.0",
+    "@material/react-snackbar": "^0.15.0",
+    "@material/react-switch": "^0.15.0",
     "@material/react-tab": "^0.15.0",
     "@material/react-tab-bar": "^0.15.0",
     "@material/react-tab-indicator": "^0.15.0",

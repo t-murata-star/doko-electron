@@ -1,0 +1,16 @@
+.settings {
+  margin-top: 2%;
+  margin-bottom: 3%;
+  font-size: 18px;
+}
+.setting_user {
+  margin-bottom: 2%;
+}
+.setting_system {
+  margin-bottom: 2%;
+}
+.button-save {
+  position: absolute;
+  bottom: 13%;
+  right: 3%;
+}
