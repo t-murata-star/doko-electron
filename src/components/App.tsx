@@ -123,7 +123,7 @@ class App extends React.Component<any, any> {
     /**
      * お知らせチェック
      */
-    if (notification.targetIDs.includes(userID) && notification.content !== '') {
+    if (notification.enabled) {
       this._showMessageBox(notification.content);
     }
 

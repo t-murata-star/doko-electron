@@ -23,7 +23,7 @@ export class UserInfo {
 }
 
 export class Notification {
-  targetIDs: number[] = [];
+  enabled: boolean = false;
   content: string = '';
   latestAppVersion: string = '';
 }
