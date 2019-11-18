@@ -173,8 +173,7 @@ class Settings extends React.Component<any, any> {
                     <p>
                       <small className='text-muted'>現在のユーザ: {userInfo.name}</small>
                     </p>
-                    <Form.Control name='user-change' as='select' onChange={this.onUserChange}>
-                      <option hidden>選択してください</option>
+                    <Form.Control name='user-change' as='select' onChange={this.onUserChange} value={myUserID}>
                       {userList
                         .sort((a: UserInfo, b: UserInfo) => {
                           return a.order - b.order;
