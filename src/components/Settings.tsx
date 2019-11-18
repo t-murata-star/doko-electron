@@ -38,7 +38,8 @@ class Settings extends React.Component<any, any> {
     }
 
     // スタートアップ
-    if (electronStore.get('startup.enabled') === 1) {
+    const loginItemSettingsOptions = remote.app.getLoginItemSettings({ path: remote.app.getPath('exe') });
+    if (loginItemSettingsOptions.openAtLogin) {
       dispatch(changeEnabledStartupActionCreator(true));
     } else {
       dispatch(changeEnabledStartupActionCreator(false));

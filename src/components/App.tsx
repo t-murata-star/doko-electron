@@ -58,13 +58,11 @@ class App extends React.Component<any, any> {
         // ダイアログで「OK」を選択した場合
         case 0:
           openAtLogin = true;
-          electronStore.set('startup.enabled', 1);
           break;
 
         // ダイアログで「OK」以外を選択した場合
         default:
           openAtLogin = false;
-          electronStore.set('startup.enabled', 0);
           break;
       }
 
