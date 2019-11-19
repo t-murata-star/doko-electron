@@ -103,7 +103,8 @@ class App extends React.Component<any, any> {
 
     /**
      * バージョンチェック
-     * 実行しているアプリケーションのバージョンが最新ではない場合、自動的に規定のブラウザでダウンロード先URLを開く
+     * 実行しているアプリケーションのバージョンが最新ではない場合、
+     * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
      */
     try {
       const session = remote.session.defaultSession as Electron.Session;
@@ -113,10 +114,14 @@ class App extends React.Component<any, any> {
       if (notification.latestAppVersion !== cookies[0].value) {
         this._showMessageBox(updateNotificationMessage);
         remote.shell.openExternal(APP_DOWNLOAD_URL);
+        remote.getCurrentWindow().destroy();
+        return;
       }
     } catch (error) {
       this._showMessageBox(updateNotificationMessage);
       remote.shell.openExternal(APP_DOWNLOAD_URL);
+      remote.getCurrentWindow().destroy();
+      return;
     }
 
     /**
