@@ -3,10 +3,8 @@
   margin-left: 8px !important;
 }
 .userEditModal > .modal-content {
-  width: 85%;
-  margin-left: 7.5%;
-  /* width: 65%;
-  margin-left: 17.5%; */
+  width: 680px;
+  margin: auto;
 }
 .error-message {
   color: red;
