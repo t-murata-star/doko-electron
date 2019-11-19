@@ -8,7 +8,6 @@ import {
   getUserListAction,
   getChangeUserListAction,
   updateForAddedUserInfoAction,
-  sendHeartbeatAction,
   updateUserInfoAction,
   setUpdatedAtActionCreator,
   setMyUserIDActionCreator
@@ -16,7 +15,7 @@ import {
 import { UserInfo } from '../define/model';
 import MaterialButton from '@material/react-button';
 import $ from 'jquery';
-import { getUserInfo } from './common/functions';
+import { getUserInfo, sendHeartbeat } from './common/functions';
 const { remote } = window.require('electron');
 
 const Store = window.require('electron-store');
@@ -75,7 +74,8 @@ class InitialStartupModal extends React.Component<any, any> {
 
     await dispatch(updateForAddedUserInfoAction(addedUserInfo, userList.myUserID));
     dispatch(getUserListAction());
-    this._heartbeat();
+
+    sendHeartbeat(dispatch);
 
     this.closeModal();
   };
@@ -121,24 +121,7 @@ class InitialStartupModal extends React.Component<any, any> {
     userInfo['updatedAt'] = store.getState().userListState.updatedAt;
     dispatch(setUpdatedAtActionCreator(JSON.parse(JSON.stringify(userList))));
 
-    this._heartbeat();
-  };
-
-  _heartbeat = () => {
-    const { dispatch } = this.props;
-
-    const myUserID = store.getState().userListState['myUserID'];
-    const userList = store.getState().userListState['userList'];
-    const userInfo = getUserInfo(userList, myUserID);
-
-    if (userInfo === null) {
-      return;
-    }
-
-    const updatedUserInfo: any = {};
-    updatedUserInfo['id'] = myUserID;
-    updatedUserInfo['heartbeat'] = '';
-    dispatch(sendHeartbeatAction(updatedUserInfo, myUserID));
+    sendHeartbeat(dispatch);
   };
 
   onNameChange = (event: any) => {

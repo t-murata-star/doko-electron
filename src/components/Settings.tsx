@@ -17,7 +17,7 @@ import {
   initializeSettingStateActionCreator
 } from '../actions/settings';
 import { EMAIL_DOMAIN } from '../define';
-import { getUserInfo } from './common/functions';
+import { getUserInfo, sendHeartbeat } from './common/functions';
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -77,22 +77,26 @@ class Settings extends React.Component<any, any> {
     const oldMyUserID = store.getState().userListState.myUserID;
     let changedUserID = settingState.user.userID;
 
-    if (changedUserID !== -1 && changedUserID !== oldMyUserID) {
-      electronStore.set('userID', changedUserID);
-      await dispatch(setMyUserIDActionCreator(changedUserID));
-      await dispatch(getUserListAction());
-
-      // メールアドレス
-      const myUserID = store.getState().userListState.myUserID;
-      const userList = store.getState().userListState.userList;
-      const userInfo = getUserInfo(userList, myUserID);
-      if (userInfo !== null) {
-        dispatch(setEmailActionCreator(userInfo.email));
-      }
-
-      dispatch(changeEnabledSnackbarActionCreator(true, '設定を保存しました。'));
-      dispatch(changeDisabledSubmitButtonUserChangeActionCreator(true));
+    if (changedUserID === -1 || changedUserID === oldMyUserID) {
+      return;
     }
+
+    electronStore.set('userID', changedUserID);
+    await dispatch(setMyUserIDActionCreator(changedUserID));
+    await dispatch(getUserListAction());
+
+    // メールアドレス
+    const myUserID = store.getState().userListState.myUserID;
+    const userList = store.getState().userListState.userList;
+    const userInfo = getUserInfo(userList, myUserID);
+    if (userInfo !== null) {
+      dispatch(setEmailActionCreator(userInfo.email));
+    }
+
+    dispatch(changeEnabledSnackbarActionCreator(true, '設定を保存しました。'));
+    dispatch(changeDisabledSubmitButtonUserChangeActionCreator(true));
+
+    sendHeartbeat(dispatch);
   };
 
   // メールアドレスの変更

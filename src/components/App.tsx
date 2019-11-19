@@ -14,7 +14,6 @@ import {
   getUserListAction,
   updateUserInfoAction,
   getNotificationAction,
-  sendHeartbeatAction,
   returnEmptyUserListActionCreator,
   setUpdatedAtActionCreator,
   setMyUserIDActionCreator
@@ -24,7 +23,7 @@ import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '.
 import { UserInfo, Notification } from '../define/model';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import { getUserInfo } from './common/functions';
+import { getUserInfo, sendHeartbeat } from './common/functions';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -128,9 +127,9 @@ class App extends React.Component<any, any> {
     }
 
     /**
-     * アプリケーションの死活監視ため、定期的にサーバにリクエストを送信する
+     * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
      */
-    setInterval(this._heartbeat, HEARTBEAT_INTERVAL_MS);
+    setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
 
     /**
      * 初回起動チェック
@@ -184,29 +183,12 @@ class App extends React.Component<any, any> {
     userInfo['updatedAt'] = store.getState().userListState.updatedAt;
     dispatch(setUpdatedAtActionCreator(JSON.parse(JSON.stringify(userList))));
 
-    this._heartbeat();
+    sendHeartbeat(dispatch);
   }
 
   _showModal = () => {
     const { dispatch } = this.props;
     dispatch(showInitialStartupModalActionCreator());
-  };
-
-  _heartbeat = () => {
-    const { dispatch } = this.props;
-
-    const myUserID = store.getState().userListState['myUserID'];
-    const userList = store.getState().userListState['userList'];
-    const userInfo = getUserInfo(userList, myUserID);
-
-    if (userInfo === null) {
-      return;
-    }
-
-    const updatedUserInfo: any = {};
-    updatedUserInfo['id'] = myUserID;
-    updatedUserInfo['heartbeat'] = '';
-    dispatch(sendHeartbeatAction(updatedUserInfo, myUserID));
   };
 
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
@@ -241,6 +223,8 @@ class App extends React.Component<any, any> {
     updatedUserInfo['status'] = '在席';
     Object.assign(userInfo, updatedUserInfo);
     dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
+
+    sendHeartbeat(dispatch);
   });
 
   closeApp = ipcRenderer.on('closeApp', async (event: any) => {
