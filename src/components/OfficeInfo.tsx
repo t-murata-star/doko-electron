@@ -15,7 +15,7 @@ class OfficeInfo extends React.Component<any, any> {
 
     return (
       <div className='office_info'>
-        <h4 style={{ textAlign: 'center' }}>トイレ利用状況</h4>
+        <h4 style={{ textAlign: 'center' }}>トイレ空席状況</h4>
         <Row>
           <Col md='2' />
           <Col md='4'>
