@@ -1,15 +1,15 @@
 import React from 'react';
+import $ from 'jquery';
 import { Row, Container, Col, Form } from 'react-bootstrap';
-import { getUserListAction } from '../actions/userList';
-import './MenuButtonGroupForUserList.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import MaterialButton from '@material/react-button';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSync, faEdit } from '@fortawesome/free-solid-svg-icons';
+import './MenuButtonGroupForUserList.css';
+import { getUserListAction } from '../actions/userList';
 import { showUserEditModalActionCreator, disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
-import $ from 'jquery';
-import MaterialButton from '@material/react-button';
 import { getUserInfo } from './common/functions';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 

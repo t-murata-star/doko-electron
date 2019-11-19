@@ -1,6 +1,8 @@
-import './InitialStartupModal.css';
 import React from 'react';
+import $ from 'jquery';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
+import './InitialStartupModal.css';
+import MaterialButton from '@material/react-button';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import store from '../store/configureStore';
 import {
@@ -13,11 +15,9 @@ import {
   setMyUserIDActionCreator
 } from '../actions/userList';
 import { UserInfo } from '../define/model';
-import MaterialButton from '@material/react-button';
-import $ from 'jquery';
 import { getUserInfo, sendHeartbeat } from './common/functions';
-const { remote } = window.require('electron');
 
+const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 

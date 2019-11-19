@@ -1,11 +1,11 @@
 import React from 'react';
 import { Row, Container, Col, Form } from 'react-bootstrap';
-import './MenuButtonGroupForOfficeInfo.css';
+import { faPowerOff, faSync, faEdit, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPowerOff, faSync, faEdit, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
-import store from '../store/configureStore';
 import MaterialButton from '@material/react-button';
+import './MenuButtonGroupForOfficeInfo.css';
+import store from '../store/configureStore';
 import { getRestroomUsageAction } from '../actions/officeInfo';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく

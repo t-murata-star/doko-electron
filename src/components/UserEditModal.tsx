@@ -6,7 +6,9 @@
 
 import './UserEditModal.css';
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import { Container, Col, Form, Modal } from 'react-bootstrap';
+import MaterialButton from '@material/react-button';
 import {
   closeUserEditModalActionCreator,
   enableSubmitButtonActionCreator,
@@ -18,8 +20,6 @@ import {
 import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction, deleteUserAction, setMyUserIDActionCreator } from '../actions/userList';
 import { STATUS_LIST } from '../define';
-import MaterialButton from '@material/react-button';
-import ReactTooltip from 'react-tooltip';
 import { UserInfo } from '../define/model';
 
 const { remote } = window.require('electron');

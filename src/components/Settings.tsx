@@ -1,10 +1,10 @@
 import React from 'react';
-import './Settings.css';
-import store from '../store/configureStore';
 import { Col, Row, Form, ListGroup } from 'react-bootstrap';
 import Switch from '@material/react-switch';
 import MaterialButton from '@material/react-button';
 import { Snackbar } from '@material/react-snackbar';
+import './Settings.css';
+import store from '../store/configureStore';
 import { UserInfo } from '../define/model';
 import { setMyUserIDActionCreator, updateUserInfoAction, getUserListAction } from '../actions/userList';
 import {

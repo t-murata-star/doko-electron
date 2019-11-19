@@ -1,9 +1,8 @@
 import React from 'react';
+import { ReactTabulator } from 'react-tabulator';
 import './UserList.css';
 import 'react-tabulator/lib/styles.css';
-// import 'react-tabulator/lib/css/tabulator_modern.min.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
-import { ReactTabulator } from 'react-tabulator';
 import { showUserEditModalActionCreator } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { getUserListAction, changeOrderAction } from '../actions/userList';

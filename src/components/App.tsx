@@ -1,4 +1,6 @@
 import React from 'react';
+import Tab from '@material/react-tab';
+import TabBar from '@material/react-tab-bar';
 import './App.scss';
 import UserList from '../containers/UserListPanel';
 import OfficeInfo from '../containers/OfficeInfoPanel';
@@ -21,8 +23,6 @@ import {
 import { getRestroomUsageAction } from '../actions/officeInfo';
 import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
 import { UserInfo, Notification } from '../define/model';
-import Tab from '@material/react-tab';
-import TabBar from '@material/react-tab-bar';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 
 const { remote, ipcRenderer } = window.require('electron');
