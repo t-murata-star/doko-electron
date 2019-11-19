@@ -29,8 +29,12 @@ class Settings extends React.Component<any, any> {
     // state を初期化
     dispatch(initializeSettingStateActionCreator());
 
-    // メールアドレス
     const myUserID = store.getState().userListState.myUserID;
+
+    // ユーザ変更(プルダウンの初期選択で自分を選択する)
+    dispatch(setUserIDActionCreator(myUserID));
+
+    // メールアドレス
     const userList = store.getState().userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo !== null) {
@@ -173,7 +177,7 @@ class Settings extends React.Component<any, any> {
                     <p>
                       <small className='text-muted'>現在のユーザ: {userInfo.name}</small>
                     </p>
-                    <Form.Control name='user-change' as='select' onChange={this.onUserChange} value={myUserID}>
+                    <Form.Control name='user-change' as='select' onChange={this.onUserChange} value={settingState.user.userID}>
                       {userList
                         .sort((a: UserInfo, b: UserInfo) => {
                           return a.order - b.order;
