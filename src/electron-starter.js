@@ -79,7 +79,7 @@ function createWindow() {
          */
         session.defaultSession.cookies.get({ name: 'isConnected' }).then(cookies => {
           if (cookies[0]) {
-            mainWindow.webContents.send('appClose');
+            mainWindow.webContents.send('closeApp');
           } else {
             mainWindow.destroy();
           }

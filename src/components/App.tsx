@@ -243,7 +243,7 @@ class App extends React.Component<any, any> {
     dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
-  appClose = ipcRenderer.on('appClose', async (event: any) => {
+  closeApp = ipcRenderer.on('closeApp', async (event: any) => {
     const { dispatch } = this.props;
 
     const myUserID = store.getState().userListState['myUserID'];
