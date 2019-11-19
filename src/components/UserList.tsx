@@ -192,6 +192,7 @@ class UserList extends React.Component<any, any> {
           height={window.innerHeight - 87}
           rowDblClick={this.showUserEditModal}
           resizableColumns={true}
+          // @ts-ignore
           rowFormatter={this._rowFormatter}
           placeholder={'通信に失敗しました。'}
           options={{
