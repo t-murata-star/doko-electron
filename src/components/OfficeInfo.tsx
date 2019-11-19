@@ -20,47 +20,39 @@ class OfficeInfo extends React.Component<any, any> {
           <Col md='4'>
             <ListGroup>
               <ListGroup.Item>
-                <Form.Row>
-                  <Form.Group as={Col} controlId='startup'>
-                    <Form.Label>
-                      <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
-                    </Form.Label>
-                    <p>Coming soon!</p>
-                  </Form.Group>
-                </Form.Row>
+                <Form.Label>
+                  <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
+                </Form.Label>
+                <p>Coming soon!</p>
               </ListGroup.Item>
             </ListGroup>
           </Col>
           <Col md='4'>
             <ListGroup>
               <ListGroup.Item>
-                <Form.Row>
-                  <Form.Group as={Col} controlId='startup'>
-                    <Form.Label>
-                      <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
-                    </Form.Label>
-                    {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError.status === false && (
-                      <div style={{ color: 'red' }}>
-                        <p>
-                          <FontAwesomeIcon icon='door-closed' /> 満室
-                        </p>
-                      </div>
-                    )}
-                    {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError.status === false && (
-                      <div style={{ color: 'blue' }}>
-                        <p>
-                          <FontAwesomeIcon icon='door-open' /> 空室：
-                          {officeInfo.restrooms.vacancyForMen === -1 ? '-' : officeInfo.restrooms.vacancyForMen}
-                        </p>
-                      </div>
-                    )}
-                    {officeInfo.isError.status === true && (
-                      <div style={{ color: 'red' }}>
-                        <p>通信に失敗しました。</p>
-                      </div>
-                    )}
-                  </Form.Group>
-                </Form.Row>
+                <Form.Label>
+                  <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
+                </Form.Label>
+                {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError.status === false && (
+                  <div style={{ color: 'red' }}>
+                    <p>
+                      <FontAwesomeIcon icon='door-closed' /> 満室
+                    </p>
+                  </div>
+                )}
+                {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError.status === false && (
+                  <div style={{ color: 'blue' }}>
+                    <p>
+                      <FontAwesomeIcon icon='door-open' /> 空室：
+                      {officeInfo.restrooms.vacancyForMen === -1 ? '-' : officeInfo.restrooms.vacancyForMen}
+                    </p>
+                  </div>
+                )}
+                {officeInfo.isError.status === true && (
+                  <div style={{ color: 'red' }}>
+                    <p>通信に失敗しました。</p>
+                  </div>
+                )}
               </ListGroup.Item>
             </ListGroup>
           </Col>
