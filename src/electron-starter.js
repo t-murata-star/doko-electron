@@ -1,9 +1,7 @@
-const electron = require('electron');
-const { ipcMain, session } = require('electron');
 const path = require('path');
+const electron = require('electron');
+const { app } = electron;
 
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
 // アプリケーションのバージョンを定義
@@ -12,7 +10,7 @@ const VERSION = '2.0.0';
 const DEFAULT_LOAD_URL = 'http://********/';
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
+  mainWindow = new electron.BrowserWindow({
     title: `行き先掲示板 Version ${VERSION}`,
     width: 1200,
     height: 750,
@@ -45,7 +43,7 @@ function createWindow() {
   }
 
   // Cookieにアプリケーションのバージョンを追加
-  session.defaultSession.cookies.set({ url: webAppURL, name: 'version', value: VERSION });
+  electron.session.defaultSession.cookies.set({ url: webAppURL, name: 'version', value: VERSION });
 
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL).catch(() => {
@@ -77,7 +75,7 @@ function createWindow() {
          * ElectronがWEBアプリケーションを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
          */
-        session.defaultSession.cookies.get({ name: 'isConnected' }).then(cookies => {
+        electron.session.defaultSession.cookies.get({ name: 'isConnected' }).then(cookies => {
           if (cookies[0]) {
             mainWindow.webContents.send('closeApp');
           } else {
@@ -102,7 +100,7 @@ function createWindow() {
    * HTTPキャッシュをクリアする
    */
   mainWindow.on('session-end', () => {
-    session.defaultSession.clearCache(() => {});
+    electron.session.defaultSession.clearCache(() => {});
   });
 
   /**
@@ -139,7 +137,7 @@ function createWindow() {
    * HTTPキャッシュをクリアする
    */
   electron.powerMonitor.on('shutdown', () => {
-    session.defaultSession.clearCache(() => {});
+    electron.session.defaultSession.clearCache(() => {});
   });
 
   createTray();
@@ -201,6 +199,6 @@ if (!gotTheLock) {
 }
 
 // レンダラープロセスからメインプロセスへのデータ送信（非同期通信）
-ipcMain.on('close', (event, arg) => {
+electron.ipcMain.on('close', (event, arg) => {
   mainWindow.destroy();
 });
