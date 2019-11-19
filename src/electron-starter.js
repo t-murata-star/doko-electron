@@ -100,15 +100,14 @@ function createWindow() {
    * HTTPキャッシュをクリアする
    */
   mainWindow.on('session-end', () => {
-    electron.session.defaultSession.clearCache(() => {});
+    mainWindow.webContents.send('electronSessionEndEvent');
   });
 
   /**
    * ウィンドウが最小化されるときに発生するイベント
    */
-  mainWindow.on('minimize', event => {
-    event.preventDefault();
-    mainWindow.hide();
+  mainWindow.on('minimize', () => {
+    mainWindow.webContents.send('electronMinimizeEvent');
   });
 
   // ウインドウが表示されるときに発生するイベント
@@ -134,10 +133,9 @@ function createWindow() {
 
   /**
    * シャットダウンのイベントキャッチ（Electron ver5時点ではLinuxとMacOSのみ対応）
-   * HTTPキャッシュをクリアする
    */
   electron.powerMonitor.on('shutdown', () => {
-    electron.session.defaultSession.clearCache(() => {});
+    mainWindow.webContents.send('electronShutdownEvent');
   });
 
   createTray();
