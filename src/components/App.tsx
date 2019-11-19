@@ -129,7 +129,9 @@ class App extends React.Component<any, any> {
     /**
      * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
      */
-    setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+    setInterval(() => {
+      sendHeartbeat(dispatch);
+    }, HEARTBEAT_INTERVAL_MS);
 
     /**
      * 初回起動チェック
