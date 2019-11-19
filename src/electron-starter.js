@@ -48,7 +48,9 @@ function createWindow() {
   session.defaultSession.cookies.set({ url: webAppURL, name: 'version', value: VERSION });
 
   // WEBアプリケーションに接続する
-  mainWindow.loadURL(webAppURL);
+  mainWindow.loadURL(webAppURL).catch(() => {
+    mainWindow.reload();
+  });
 
   // デベロッパーツールを開く
   mainWindow.webContents.openDevTools();
