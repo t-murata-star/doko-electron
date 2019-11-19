@@ -23,7 +23,8 @@ function createWindow() {
     webPreferences: {
       devTools: false,
       nodeIntegration: true
-    }
+    },
+    show: false
   });
 
   // メニューバーを非表示にする
@@ -51,6 +52,11 @@ function createWindow() {
 
   // デベロッパーツールを開く
   mainWindow.webContents.openDevTools();
+
+  // アプリケーションの読み込みが完了してからウインドウを表示する
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
 
   // ウインドウがクローズされようとするときに発生するイベント
   mainWindow.on('close', closeEvent => {
