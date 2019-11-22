@@ -21,8 +21,6 @@ function userListIsFetching(state = false, action: any) {
       return true;
     case UserListActions.GET_USER_LIST:
       return true;
-    case UserListActions.GET_CHANGE_USER_LIST:
-      return true;
     case UserListActions.UPDATE_USER_INFO:
       return true;
     case UserListActions.ADD_USER:
@@ -91,18 +89,6 @@ export default function userListState(
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
-    case UserListActions.GET_CHANGE_USER_LIST:
-      return {
-        ...state,
-        isFetching: userListIsFetching(state.isFetching, action)
-      };
-    case UserListActions.GET_CHANGE_USER_LIST_SUCCESS:
-      return {
-        ...state,
-        changeUserList: action.payload.response,
-        isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action)
-      };
     case UserListActions.FAIL_REQUEST:
       return {
         ...state,
@@ -132,7 +118,7 @@ export default function userListState(
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
-    case UserListActions.SET_UPDATED_AT:
+    case UserListActions.UPDATE_STATE_USERLIST:
       return {
         ...state,
         userList: action.userList

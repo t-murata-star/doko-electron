@@ -10,15 +10,13 @@ export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
-export const GET_CHANGE_USER_LIST = 'GET_CHANGE_USER_LIST';
-export const GET_CHANGE_USER_LIST_SUCCESS = 'GET_CHANGE_USER_LIST_SUCCESS';
 export const ADD_USER = 'ADD_USER';
 export const ADD_USER_SUCCESS = 'ADD_USER_SUCCESS';
 export const DELETE_USER = 'DELETE_USER';
 export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
 export const UPDATE_USER_INFO = 'UPDATE_USER_INFO';
 export const UPDATE_USER_INFO_SUCCESS = 'UPDATE_USER_INFO_SUCCESS';
-export const SET_UPDATED_AT = 'SET_UPDATED_AT';
+export const UPDATE_STATE_USERLIST = 'UPDATE_STATE_USERLIST';
 export const CHANGE_ORDER = 'CHANGE_ORDER';
 export const CHANGE_ORDER_SUCCESS = 'CHANGE_ORDER_SUCCESS';
 export const UPDATE_FOR_ADDED_USER_INFO = 'UPDATE_FOR_ADDED_USER_INFO';
@@ -56,15 +54,6 @@ export const getUserListSccessActionCreator = (json: Object) => ({
     response: json
   }
 });
-export const getChangeUserListActionCreator = () => ({
-  type: GET_CHANGE_USER_LIST
-});
-export const getChangeUserListSccessActionCreator = (json: Object) => ({
-  type: GET_CHANGE_USER_LIST_SUCCESS,
-  payload: {
-    response: json
-  }
-});
 export const addUserActionCreator = () => ({
   type: ADD_USER
 });
@@ -87,9 +76,9 @@ export const updateUserInfoSuccessActionCreator = (json: Object) => ({
     response: json
   }
 });
-export const setUpdatedAtActionCreator = (userList: UserInfo[]) => ({
-  type: SET_UPDATED_AT,
-  userList
+export const updateStateUserListActionCreator = (userList: UserInfo[]) => ({
+  type: UPDATE_STATE_USERLIST,
+  userList: JSON.parse(JSON.stringify(userList))
 });
 export const changeOrderActionCreator = () => ({
   type: CHANGE_ORDER
@@ -207,11 +196,11 @@ export const addUserAction = (userInfo: UserInfo) => {
     }
   };
 };
-export const getUserListAction = () => {
+export const getUserListAction = (sleepMs: number = 0) => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getUserListActionCreator());
     try {
-      await sleep(200);
+      await sleep(sleepMs);
       const res = await fetch(API_URL + 'userList', {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
@@ -227,30 +216,6 @@ export const getUserListAction = () => {
     } catch (error) {
       dispatch(failRequestActionCreator(error));
       dispatch(returnEmptyUserListActionCreator());
-    }
-  };
-};
-
-export const getChangeUserListAction = () => {
-  return async (dispatch: Dispatch<Action<any>>) => {
-    dispatch(getChangeUserListActionCreator());
-    try {
-      await sleep(200);
-      const res = await fetch(API_URL + 'userList', {
-        method: 'GET',
-        headers: AUTH_REQUEST_HEADERS
-      });
-
-      responseStatusCheck(dispatch, res.status);
-
-      if (!res.ok) {
-        return Promise.reject(res);
-      }
-      const json = await res.json();
-      return dispatch(getChangeUserListSccessActionCreator(json));
-    } catch (error) {
-      dispatch(failRequestActionCreator(error));
-      dispatch(returnEmptyChangeUserListActionCreator());
     }
   };
 };

@@ -83,7 +83,7 @@ class Settings extends React.Component<any, any> {
 
     electronStore.set('userID', changedUserID);
     await dispatch(setMyUserIDActionCreator(changedUserID));
-    await dispatch(getUserListAction());
+    await dispatch(getUserListAction(250));
 
     // メールアドレス
     const myUserID = store.getState().userListState.myUserID;

@@ -57,7 +57,7 @@ class UserEditModal extends React.Component<any, any> {
       return;
     }
     this.closeModal();
-    dispatch(getUserListAction());
+    dispatch(getUserListAction(250));
   };
 
   _changeUser = async () => {
@@ -65,7 +65,7 @@ class UserEditModal extends React.Component<any, any> {
     electronStore.set('userID', this.userID);
     await dispatch(setMyUserIDActionCreator(this.userID));
     this.closeModal();
-    dispatch(getUserListAction());
+    dispatch(getUserListAction(250));
   };
 
   onUserInfoChange = (event: any) => {
@@ -107,7 +107,7 @@ class UserEditModal extends React.Component<any, any> {
         return;
       }
       this.closeModal();
-      dispatch(getUserListAction());
+      dispatch(getUserListAction(250));
     });
   };
 

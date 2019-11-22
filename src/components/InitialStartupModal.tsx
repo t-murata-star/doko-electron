@@ -8,10 +8,9 @@ import store from '../store/configureStore';
 import {
   addUserAction,
   getUserListAction,
-  getChangeUserListAction,
   updateForAddedUserInfoAction,
   updateUserInfoAction,
-  setUpdatedAtActionCreator,
+  updateStateUserListActionCreator,
   setMyUserIDActionCreator
 } from '../actions/userList';
 import { UserInfo } from '../define/model';
@@ -73,7 +72,7 @@ class InitialStartupModal extends React.Component<any, any> {
     }
 
     await dispatch(updateForAddedUserInfoAction(addedUserInfo, userList.myUserID));
-    dispatch(getUserListAction());
+    dispatch(getUserListAction(250));
 
     sendHeartbeat(dispatch);
 
@@ -82,22 +81,16 @@ class InitialStartupModal extends React.Component<any, any> {
 
   _changeUser = async () => {
     const { dispatch } = this.props;
-    electronStore.set('userID', this.userID);
-    await dispatch(setMyUserIDActionCreator(this.userID));
-    this.closeModal();
-
-    await dispatch(getUserListAction());
-    if (store.getState().userListState.isError.status === true) {
-      return;
-    }
-
-    const myUserID = store.getState().userListState['myUserID'];
+    const myUserID = this.userID;
     const userList = store.getState().userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
       return;
     }
+
+    electronStore.set('userID', myUserID);
+    dispatch(setMyUserIDActionCreator(myUserID));
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
@@ -116,11 +109,14 @@ class InitialStartupModal extends React.Component<any, any> {
     }
 
     await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
+    if (store.getState().userListState.isError.status === true) {
+      return;
+    }
 
-    // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
-    userInfo['updatedAt'] = store.getState().userListState.updatedAt;
-    dispatch(setUpdatedAtActionCreator(JSON.parse(JSON.stringify(userList))));
+    dispatch(updateStateUserListActionCreator(userList));
+    this.closeModal();
 
+    dispatch(getUserListAction(250));
     sendHeartbeat(dispatch);
   };
 
@@ -149,7 +145,7 @@ class InitialStartupModal extends React.Component<any, any> {
     const { dispatch } = this.props;
     this.setState({ submitButtonStatus: true });
     this.setState({ isChangeUser: true });
-    dispatch(getChangeUserListAction());
+    dispatch(getUserListAction(250));
   };
 
   registUserInput = (event: any) => {
@@ -160,7 +156,7 @@ class InitialStartupModal extends React.Component<any, any> {
   render() {
     const onHide = store.getState().initialStartupModal.onHide;
     const isError = store.getState().userListState.isError.status;
-    const changeUserList = store.getState().userListState['changeUserList'];
+    const userList = store.getState().userListState['userList'];
 
     return (
       <Modal
@@ -189,7 +185,7 @@ class InitialStartupModal extends React.Component<any, any> {
                       <div>
                         <Form.Control name='name' as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
-                          {changeUserList
+                          {userList
                             .sort((a: UserInfo, b: UserInfo) => {
                               return a.order - b.order;
                             })

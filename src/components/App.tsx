@@ -17,7 +17,7 @@ import {
   updateUserInfoAction,
   getNotificationAction,
   returnEmptyUserListActionCreator,
-  setUpdatedAtActionCreator,
+  updateStateUserListActionCreator,
   setMyUserIDActionCreator
 } from '../actions/userList';
 import { getRestroomUsageAction } from '../actions/officeInfo';
@@ -74,9 +74,6 @@ class App extends React.Component<any, any> {
     }
     // TODO: notified_startup は廃止予定のため、次回アプリケーションのアップデートの際に該当処理を削除する
     electronStore.delete('notified_startup');
-
-    // state ユーザIDを設定
-    await dispatch(setMyUserIDActionCreator(userID));
 
     // WEBアプリケーション接続確認用のため、Cookieにパラメータを設定する
     document.cookie = 'isConnected=true';
@@ -184,11 +181,9 @@ class App extends React.Component<any, any> {
       updatedUserInfo['name'] = userInfo['name'];
     }
 
-    await dispatch(updateUserInfoAction(updatedUserInfo, userID));
-
-    // 情報更新(updateUserInfoAction)の結果を元に、更新日時を更新する
-    userInfo['updatedAt'] = store.getState().userListState.updatedAt;
-    dispatch(setUpdatedAtActionCreator(JSON.parse(JSON.stringify(userList))));
+    dispatch(setMyUserIDActionCreator(userID));
+    dispatch(updateStateUserListActionCreator(userList));
+    dispatch(updateUserInfoAction(updatedUserInfo, userID));
 
     sendHeartbeat(dispatch);
   }
@@ -275,12 +270,12 @@ class App extends React.Component<any, any> {
     switch (activeIndex) {
       // 社内情報タブを選択
       case 0:
-        await dispatch(getUserListAction());
+        await dispatch(getUserListAction(250));
         break;
 
       // 社員情報タブを選択
       case 1:
-        await dispatch(getRestroomUsageAction());
+        await dispatch(getRestroomUsageAction(250));
         break;
 
       default:

@@ -39,11 +39,11 @@ export const returnEmptyRestroomUsageActionCreator = () => ({
   rooms: []
 });
 
-export const getRestroomUsageAction = () => {
+export const getRestroomUsageAction = (sleepMs: number = 0) => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getRestroomUsageActionCreator());
     try {
-      await sleep(200);
+      await sleep(sleepMs);
       const res = await fetch(API_URL + `restrooms`, {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
