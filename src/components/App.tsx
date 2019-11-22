@@ -193,6 +193,10 @@ class App extends React.Component<any, any> {
     dispatch(showInitialStartupModalActionCreator());
   };
 
+  electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
+    remote.getCurrentWindow().hide();
+  });
+
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
     const myUserID = store.getState().userListState['myUserID'];
