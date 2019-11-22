@@ -81,18 +81,18 @@ class Settings extends React.Component<any, any> {
       return;
     }
 
-    electronStore.set('userID', changedUserID);
-    await dispatch(setMyUserIDActionCreator(changedUserID));
-    await dispatch(getUserListAction(250));
-
     // メールアドレス
-    const myUserID = store.getState().userListState.myUserID;
+    const myUserID = changedUserID;
     const userList = store.getState().userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo !== null) {
-      dispatch(setEmailActionCreator(userInfo.email));
+    if (userInfo === null) {
+      dispatch(changeEnabledSnackbarActionCreator(true, '設定の保存に失敗しました。'));
+      return;
     }
 
+    electronStore.set('userID', changedUserID);
+    dispatch(setEmailActionCreator(userInfo.email));
+    dispatch(setMyUserIDActionCreator(myUserID));
     dispatch(changeEnabledSnackbarActionCreator(true, '設定を保存しました。'));
     dispatch(changeDisabledSubmitButtonUserChangeActionCreator(true));
 
