@@ -1,6 +1,6 @@
 import React from 'react';
-import Tab from '@material/react-tab';
-import TabBar from '@material/react-tab-bar';
+// import Tab from '@material/react-tab';
+// import TabBar from '@material/react-tab-bar';
 import './App.scss';
 import UserList from '../containers/UserListPanel';
 import OfficeInfo from '../containers/OfficeInfoPanel';
@@ -25,14 +25,22 @@ import { APP_NAME, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL
 import { UserInfo, Notification } from '../define/model';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 
+import MaterialUiAppBar from '@material-ui/core/AppBar';
+import MaterialUiTabs from '@material-ui/core/Tabs';
+import MaterialUiTab from '@material-ui/core/Tab';
+import styled from 'styled-components';
+
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
+const Tabs = styled(MaterialUiTabs)`
+  background-color: #000;
+`;
 class App extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = { activeIndex: 0 };
+    this.state = { activeIndex: 2 };
   }
 
   async componentDidMount() {
@@ -264,7 +272,7 @@ class App extends React.Component<any, any> {
     });
   };
 
-  handleActiveIndexUpdate = async (activeIndex: any) => {
+  handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     this.setState({ activeIndex });
 
@@ -289,6 +297,13 @@ class App extends React.Component<any, any> {
     }
   };
 
+  a11yProps = (index: any) => {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`
+    };
+  };
+
   render() {
     const myUserID = store.getState().userListState['myUserID'];
 
@@ -297,7 +312,7 @@ class App extends React.Component<any, any> {
         <Loading state={store.getState()} />
         {myUserID !== -1 && (
           <div>
-            <TabBar
+            {/* <TabBar
               className='tab header'
               activeIndex={this.state.activeIndex}
               handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
@@ -310,7 +325,14 @@ class App extends React.Component<any, any> {
               <Tab className='tab'>
                 <span className='mdc-tab__text-label'>設定</span>
               </Tab>
-            </TabBar>
+            </TabBar> */}
+            <MaterialUiAppBar position='static' color='default'>
+              <Tabs value={this.state.activeIndex} variant='fullWidth' onChange={this.handleActiveIndexUpdate}>
+                <MaterialUiTab label='Item One' {...this.a11yProps(0)} />
+                <MaterialUiTab label='Item Two' {...this.a11yProps(1)} />
+                <MaterialUiTab label='Item Three' {...this.a11yProps(2)} />
+              </Tabs>
+            </MaterialUiAppBar>
           </div>
         )}
         <div className='contents'>

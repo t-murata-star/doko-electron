@@ -18,9 +18,20 @@ import {
 } from '../actions/settings';
 import { APP_NAME, EMAIL_DOMAIN } from '../define';
 import { getUserInfo, sendHeartbeat } from './common/functions';
+import MaterialUiButton from '@material-ui/core/Button';
+import styled from 'styled-components';
+
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
+
+const SaveButton = styled(MaterialUiButton)`
+  position: absolute;
+  bottom: 13%;
+  right: 3%;
+  width: 10rem;
+  margin-left: 8px;
+`;
 
 class Settings extends React.Component<any, any> {
   async componentDidMount() {
@@ -198,14 +209,17 @@ class Settings extends React.Component<any, any> {
                   </Form.Group>
                   <Form.Group as={Col} />
                 </Form.Row>
-                <MaterialButton
+                {/* <MaterialButton
                   outlined
                   type='submit'
                   className='modal-button button-submit button-save'
                   onClick={this.onSaveSettingsForUserChange}
                   disabled={settingState.submitButtonsDisable.user.userChange}>
                   保存
-                </MaterialButton>
+                </MaterialButton> */}
+                <SaveButton variant='contained' color='primary'>
+                  保存
+                </SaveButton>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Form.Row>
@@ -227,14 +241,17 @@ class Settings extends React.Component<any, any> {
                     </div>
                   </Form.Group>
                 </Form.Row>
-                <MaterialButton
+                {/* <MaterialButton
                   outlined
                   type='submit'
                   className='modal-button button-submit button-save'
                   onClick={this.onSaveSettingsForEmail}
                   disabled={settingState.submitButtonsDisable.user.email}>
                   保存
-                </MaterialButton>
+                </MaterialButton> */}
+                <SaveButton variant='contained' color='primary'>
+                  保存
+                </SaveButton>
               </ListGroup.Item>
             </ListGroup>
           </Col>
