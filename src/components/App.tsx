@@ -21,7 +21,7 @@ import {
   setMyUserIDActionCreator
 } from '../actions/userList';
 import { getRestroomUsageAction } from '../actions/officeInfo';
-import { AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
+import { APP_NAME, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
 import { UserInfo, Notification } from '../define/model';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 
@@ -45,10 +45,10 @@ class App extends React.Component<any, any> {
      */
     if (!electronStore.get('startup.notified')) {
       const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-        title: '行き先掲示板',
+        title: APP_NAME,
         type: 'info',
         buttons: ['YES', 'NO'],
-        message: 'スタートアップを有効にしますか？\n※PCを起動した際に自動的に行き先掲示板が起動します。'
+        message: `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
       });
 
       let openAtLogin;
@@ -96,7 +96,7 @@ class App extends React.Component<any, any> {
     await dispatch(getNotificationAction());
 
     const notification: Notification = store.getState().userListState.notification;
-    const updateNotificationMessage: string = `新しい行き先掲示板が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
+    const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
 
     /**
      * バージョンチェック
@@ -197,6 +197,7 @@ class App extends React.Component<any, any> {
     remote.getCurrentWindow().hide();
   });
 
+  // 状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
     const myUserID = store.getState().userListState['myUserID'];
@@ -214,6 +215,7 @@ class App extends React.Component<any, any> {
     dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
+  // 状態を「在席」に更新する
   electronUnlockScreenEvent = ipcRenderer.on('electronUnlockScreenEvent', () => {
     const { dispatch } = this.props;
     const myUserID = store.getState().userListState['myUserID'];
@@ -255,7 +257,7 @@ class App extends React.Component<any, any> {
 
   _showMessageBox = (message: any) => {
     remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-      title: '行き先掲示板',
+      title: APP_NAME,
       type: 'info',
       buttons: ['OK'],
       message

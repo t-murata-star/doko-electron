@@ -19,7 +19,7 @@ import {
 } from '../actions/userEditModal';
 import store from '../store/configureStore';
 import { updateUserInfoAction, getUserListAction, deleteUserAction, setMyUserIDActionCreator } from '../actions/userList';
-import { STATUS_LIST } from '../define';
+import { APP_NAME, STATUS_LIST } from '../define';
 import { UserInfo } from '../define/model';
 
 const { remote } = window.require('electron');
@@ -91,7 +91,7 @@ class UserEditModal extends React.Component<any, any> {
   deleteUser = (event: any) => {
     const { dispatch } = this.props;
     const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-      title: '行き先掲示板',
+      title: APP_NAME,
       type: 'info',
       buttons: ['OK', 'Cancel'],
       message: '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo['name']

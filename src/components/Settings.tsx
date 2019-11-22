@@ -16,7 +16,7 @@ import {
   changeEnabledSnackbarActionCreator,
   initializeSettingStateActionCreator
 } from '../actions/settings';
-import { EMAIL_DOMAIN } from '../define';
+import { APP_NAME, EMAIL_DOMAIN } from '../define';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -250,7 +250,7 @@ class Settings extends React.Component<any, any> {
                   <Form.Group as={Col} controlId='startup'>
                     <Form.Label>スタートアップ</Form.Label>
                     <p>
-                      <small className='text-muted'>有効にすると、PCを起動した際に自動的に行き先掲示板が起動します。</small>
+                      <small className='text-muted'>有効にすると、PCを起動した際に自動的に{APP_NAME}が起動します。</small>
                     </p>
                     <Switch
                       className='switch-base'

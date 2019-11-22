@@ -1,3 +1,4 @@
+export const APP_NAME: string = process.env.REACT_APP_NAME || '';
 export const API_URL: string = process.env.REACT_APP_API_URL || '';
 export const LOGIN_USER: any = {
   username: process.env.REACT_APP_USERNAME || '',

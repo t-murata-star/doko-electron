@@ -4,6 +4,8 @@ const { app } = electron;
 
 let mainWindow;
 
+// アプリケーション名
+const APP_NAME = '行き先掲示板';
 // アプリケーションのバージョンを定義
 const VERSION = '2.0.0';
 // 本番接続先URL
@@ -11,7 +13,7 @@ const DEFAULT_LOAD_URL = 'http://********/';
 
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
-    title: `行き先掲示板 Version ${VERSION}`,
+    title: `${APP_NAME} Version ${VERSION}`,
     width: 1200,
     height: 750,
     resizable: false,
@@ -56,10 +58,10 @@ function createWindow() {
   mainWindow.on('close', closeEvent => {
     closeEvent.preventDefault();
     const index = electron.dialog.showMessageBox(mainWindow, {
-      title: '行き先掲示板',
+      title: APP_NAME,
       type: 'info',
       buttons: ['OK', 'Cancel'],
-      message: '行き先掲示板を終了しますか？'
+      message: `${APP_NAME}を終了しますか？`
     });
 
     switch (index) {
@@ -109,25 +111,17 @@ function createWindow() {
     mainWindow.webContents.send('electronShowEvent');
   });
 
-  /**
-   * スクリーンロックのイベントキャッチ
-   * 状態を「離席中」に更新する
-   */
+  // スクリーンロックのイベントキャッチ
   electron.powerMonitor.on('lock-screen', () => {
     mainWindow.webContents.send('electronLockScreenEvent');
   });
 
-  /**
-   * スクリーンアンロックのイベントキャッチ
-   * 状態を「在席」に更新する
-   */
+  // スクリーンアンロックのイベントキャッチ
   electron.powerMonitor.on('unlock-screen', () => {
     mainWindow.webContents.send('electronUnlockScreenEvent');
   });
 
-  /**
-   * シャットダウンのイベントキャッチ（Electron ver5時点ではLinuxとMacOSのみ対応）
-   */
+  // シャットダウンのイベントキャッチ（Electron ver5時点ではLinuxとMacOSのみ対応）
   electron.powerMonitor.on('shutdown', () => {
     mainWindow.webContents.send('electronShutdownEvent');
   });
@@ -151,7 +145,7 @@ function createTray() {
   ]);
 
   tray.setContextMenu(contextMenu);
-  tray.setToolTip('行き先掲示板');
+  tray.setToolTip(APP_NAME);
   tray.on('click', () => {
     mainWindow.show();
   });
