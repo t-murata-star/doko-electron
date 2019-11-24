@@ -6,7 +6,7 @@ import { Snackbar } from '@material/react-snackbar';
 import './Settings.css';
 import store from '../store/configureStore';
 import { UserInfo } from '../define/model';
-import { setMyUserIDActionCreator, updateUserInfoAction, getUserListAction } from '../actions/userList';
+import { setMyUserIDActionCreator, updateUserInfoAction } from '../actions/userList';
 import {
   setUserIDActionCreator,
   changeDisabledSubmitButtonUserChangeActionCreator,
