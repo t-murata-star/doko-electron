@@ -43,7 +43,7 @@ class App extends React.Component<any, any> {
      * スタートアップ登録処理。
      * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
      */
-    if (!electronStore.get('startup.notified')) {
+    if (!electronStore.get('startup.notified') && !electronStore.get('notified_startup')) {
       const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
         title: APP_NAME,
         type: 'info',
@@ -71,6 +71,8 @@ class App extends React.Component<any, any> {
         openAtLogin,
         path: remote.app.getPath('exe')
       });
+    } else {
+      electronStore.set('startup.notified', 1);
     }
     // TODO: notified_startup は廃止予定のため、次回アプリケーションのアップデートの際に該当処理を削除する
     electronStore.delete('notified_startup');
