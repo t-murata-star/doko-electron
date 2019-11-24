@@ -137,10 +137,8 @@ class Settings extends React.Component<any, any> {
     let openAtLogin: boolean;
     if (settingState.system.startupEnabled) {
       openAtLogin = true;
-      electronStore.set('startup.enabled', 1);
     } else {
       openAtLogin = false;
-      electronStore.set('startup.enabled', 0);
     }
     remote.app.setLoginItemSettings({
       openAtLogin
