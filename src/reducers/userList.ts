@@ -12,7 +12,7 @@ export class _UserListState {
   isError: RequestError = new RequestError();
   myUserID: number = -1;
   selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
-  notification: Notification = new Notification()
+  notification: Notification = new Notification();
 }
 
 function userListIsFetching(state = false, action: any) {
@@ -34,10 +34,7 @@ function userListIsFetching(state = false, action: any) {
   }
 }
 
-function userListIsError(
-  state = new RequestError(),
-  action: any
-) {
+function userListIsError(state = new RequestError(), action: any) {
   switch (action.type) {
     case UserListActions.FAIL_REQUEST:
       return {
@@ -59,10 +56,7 @@ function userListIsError(
 /**
  * 登録者情報一覧のstateを管理するReducer
  */
-export default function userListState(
-  state = new _UserListState(),
-  action: any
-) {
+export default function userListState(state = new _UserListState(), action: any) {
   switch (action.type) {
     case UserListActions.LOGIN:
       return {
@@ -85,7 +79,7 @@ export default function userListState(
     case UserListActions.GET_USER_LIST_SUCCESS:
       return {
         ...state,
-        userList: updateLeavingTimeForUserList(action.payload.response),
+        userList: updateLeavingTimeForUserList(action.payload.response, state.myUserID),
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
@@ -194,11 +188,14 @@ export default function userListState(
  * LEAVING_TIME_THRESHOLD_M 以上heartbeatが更新されていないユーザの状態を「退社」に変更する。
  * ただし、この変更は画面表示のみであり、サーバ上の情報は更新しない。
  */
-function updateLeavingTimeForUserList(userList: UserInfo[]) {
+function updateLeavingTimeForUserList(userList: UserInfo[], myUserID: number) {
   if (!userList) return [];
 
   const nowDate: Date = new Date();
   userList.forEach(userInfo => {
+    if (userInfo.id === myUserID) {
+      return;
+    }
     if (['在席', '在席 (離席中)'].includes(userInfo['status']) === true) {
       const heartbeat: Date = new Date(userInfo['heartbeat']);
       const diffMin = Math.floor((nowDate.getTime() - heartbeat.getTime()) / (1000 * 60));
