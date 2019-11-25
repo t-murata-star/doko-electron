@@ -3,7 +3,7 @@ import { Row, Container, Col, Form } from 'react-bootstrap';
 import { faPowerOff, faSync, faEdit, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import MaterialButton from '@material/react-button';
+import Button from '@material-ui/core/Button';
 import './MenuButtonGroupForOfficeInfo.css';
 import store from '../store/configureStore';
 import { getRestroomUsageAction } from '../actions/officeInfo';
@@ -24,14 +24,16 @@ class MenuButtonGroupForOfficeInfo extends React.Component<any, any> {
         <Container>
           <Form.Row>
             <Form.Group as={Col} controlId='reload'>
-              <MaterialButton
-                outlined
-                type='button'
-                className='w-100 button-primary'
+              <Button
+                variant='outlined'
+                color='default'
                 onClick={this.reload}
-                disabled={officeInfo.isFetching === true}>
-                <FontAwesomeIcon icon='sync' /> 再読込
-              </MaterialButton>
+                disabled={officeInfo.isFetching === true}
+                className='menu-button-group-for-user-list-base-button'
+                style={{ boxShadow: 'none' }}>
+                <FontAwesomeIcon icon='sync' />
+                &nbsp;再読込
+              </Button>
             </Form.Group>
           </Form.Row>
         </Container>

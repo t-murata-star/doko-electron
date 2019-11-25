@@ -1,6 +1,6 @@
 import React from 'react';
-import Tab from '@material/react-tab';
-import TabBar from '@material/react-tab-bar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import './App.scss';
 import UserList from '../containers/UserListPanel';
 import OfficeInfo from '../containers/OfficeInfoPanel';
@@ -266,7 +266,7 @@ class App extends React.Component<any, any> {
     });
   };
 
-  handleActiveIndexUpdate = async (activeIndex: any) => {
+  handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     this.setState({ activeIndex });
 
@@ -299,20 +299,18 @@ class App extends React.Component<any, any> {
         <Loading state={store.getState()} />
         {myUserID !== -1 && (
           <div>
-            <TabBar
-              className='tab header'
-              activeIndex={this.state.activeIndex}
-              handleActiveIndexUpdate={this.handleActiveIndexUpdate}>
-              <Tab className='tab'>
-                <span className='mdc-tab__text-label'>社員情報</span>
-              </Tab>
-              <Tab className='tab'>
-                <span className='mdc-tab__text-label'>社内情報</span>
-              </Tab>
-              <Tab className='tab'>
-                <span className='mdc-tab__text-label'>設定</span>
-              </Tab>
-            </TabBar>
+            <Tabs
+              value={this.state.activeIndex}
+              variant='fullWidth'
+              onChange={this.handleActiveIndexUpdate}
+              style={{ minHeight: '35px' }}
+              indicatorColor='primary'
+              textColor='primary'
+              className='app-tabs'>
+              <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab'></Tab> />
+              <Tab label='社内情報' style={{ minHeight: '35px' }} className='app-tab' />
+              <Tab label='設定' style={{ minHeight: '35px' }} className='app-tab' />
+            </Tabs>
           </div>
         )}
         <div className='contents'>

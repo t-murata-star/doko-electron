@@ -1,7 +1,3 @@
-.modal-button {
-  width: 10rem !important;
-  margin-left: 8px !important;
-}
 .userEditModal > .modal-content {
   width: 680px;
   margin: auto;
@@ -22,4 +18,15 @@
 }
 .__react_component_tooltip.type-dark {
   background-color: #666;
+}
+.user-edit-modal-base-button {
+  width: 10rem;
+  margin-left: 8px;
+}
+.user-edit-modal-presence-button {
+  bottom: 4px;
+}
+.user-edit-modal-delete-button {
+  color: #a6adb5;
+  border-color: #d4d9dd;
 }

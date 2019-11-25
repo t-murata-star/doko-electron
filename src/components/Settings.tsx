@@ -1,8 +1,8 @@
 import React from 'react';
 import { Col, Row, Form, ListGroup } from 'react-bootstrap';
-import Switch from '@material/react-switch';
-import MaterialButton from '@material/react-button';
-import { Snackbar } from '@material/react-snackbar';
+import Switch from '@material-ui/core/Switch';
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
 import './Settings.css';
 import store from '../store/configureStore';
 import { UserInfo } from '../define/model';
@@ -18,6 +18,7 @@ import {
 } from '../actions/settings';
 import { APP_NAME, EMAIL_DOMAIN } from '../define';
 import { getUserInfo, sendHeartbeat } from './common/functions';
+
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -147,8 +148,11 @@ class Settings extends React.Component<any, any> {
     dispatch(changeEnabledSnackbarActionCreator(true, '設定を保存しました。'));
   };
 
-  onSnackBarClose = () => {
+  onSnackBarClose = (event: any | MouseEvent, reason?: string) => {
     const { dispatch } = this.props;
+    if (reason === 'clickaway') {
+      return;
+    }
     dispatch(changeEnabledSnackbarActionCreator(false));
   };
 
@@ -161,13 +165,13 @@ class Settings extends React.Component<any, any> {
     return (
       <div className='settings'>
         <Snackbar
-          className='settings-snackbar'
-          message={settingState.snackbar.message}
-          onClose={this.onSnackBarClose}
-          timeoutMs={settingState.snackbar.timeoutMs}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          autoHideDuration={settingState.snackbar.timeoutMs}
           open={settingState.snackbar.enabled}
+          onClose={this.onSnackBarClose}
+          message={settingState.snackbar.message}
         />
-        <Row className='setting_user'>
+        <Row className='settings_user'>
           <Col md='2' />
           <Col md='8'>
             <h4>ユーザ</h4>
@@ -196,14 +200,15 @@ class Settings extends React.Component<any, any> {
                   </Form.Group>
                   <Form.Group as={Col} />
                 </Form.Row>
-                <MaterialButton
-                  outlined
-                  type='submit'
-                  className='modal-button button-submit button-save'
+                <Button
+                  variant='contained'
+                  color='primary'
                   onClick={this.onSaveSettingsForUserChange}
-                  disabled={settingState.submitButtonsDisable.user.userChange}>
+                  disabled={settingState.submitButtonsDisable.user.userChange}
+                  style={{ boxShadow: 'none' }}
+                  className='settings-save-button'>
                   保存
-                </MaterialButton>
+                </Button>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Form.Row>
@@ -225,20 +230,21 @@ class Settings extends React.Component<any, any> {
                     </div>
                   </Form.Group>
                 </Form.Row>
-                <MaterialButton
-                  outlined
-                  type='submit'
-                  className='modal-button button-submit button-save'
+                <Button
+                  variant='contained'
+                  color='primary'
                   onClick={this.onSaveSettingsForEmail}
-                  disabled={settingState.submitButtonsDisable.user.email}>
+                  disabled={settingState.submitButtonsDisable.user.email}
+                  style={{ boxShadow: 'none' }}
+                  className='settings-save-button'>
                   保存
-                </MaterialButton>
+                </Button>
               </ListGroup.Item>
             </ListGroup>
           </Col>
           <Col md='2' />
         </Row>
-        <Row className='setting_system'>
+        <Row className='settings_system'>
           <Col md='2' />
           <Col md='8'>
             <h4>システム</h4>
@@ -251,9 +257,10 @@ class Settings extends React.Component<any, any> {
                       <small className='text-muted'>有効にすると、PCを起動した際に自動的に{APP_NAME}が起動します。</small>
                     </p>
                     <Switch
-                      className='switch-base'
                       checked={settingState.system.startupEnabled}
                       onChange={this.changeAndSaveStartup}
+                      color='primary'
+                      className='settings-switch'
                     />
                   </Form.Group>
                 </Form.Row>

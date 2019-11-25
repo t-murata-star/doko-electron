@@ -8,7 +8,7 @@ import './UserEditModal.css';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Container, Col, Form, Modal } from 'react-bootstrap';
-import MaterialButton from '@material/react-button';
+import Button from '@material-ui/core/Button';
 import {
   closeUserEditModalActionCreator,
   enableSubmitButtonActionCreator,
@@ -157,13 +157,15 @@ class UserEditModal extends React.Component<any, any> {
                     <span className='status'>状態</span>
                   </Form.Label>
                   <span data-tip='状態を在席に変更し、行き先と戻りを削除します'>
-                    <MaterialButton
-                      outlined
-                      type='button'
-                      className='modal-button-clear button-primary '
-                      onClick={this.inputClear}>
+                    <Button
+                      variant='outlined'
+                      color='default'
+                      size='small'
+                      onClick={this.inputClear}
+                      style={{ maxHeight: '28px', boxShadow: 'none' }}
+                      className='user-edit-modal-presence-button'>
                       在席
-                    </MaterialButton>
+                    </Button>
                     <ReactTooltip effect='solid' place='top' />
                   </span>
                   <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
@@ -210,20 +212,32 @@ class UserEditModal extends React.Component<any, any> {
           </Modal.Body>
           <Modal.Footer>
             {!this.props.isChangeUser && (
-              <MaterialButton outlined type='button' className='button-user-delete' onClick={this.deleteUser}>
+              <Button
+                variant='outlined'
+                color='default'
+                onClick={this.deleteUser}
+                style={{ marginRight: 'auto', boxShadow: 'none' }}
+                className='user-edit-modal-delete-button'>
                 削除
-              </MaterialButton>
+              </Button>
             )}
-            <MaterialButton
-              outlined
+            <Button
+              variant='contained'
+              color='primary'
               type='submit'
-              className='modal-button button-submit'
-              disabled={this.props.submitButtonStatus}>
+              disabled={this.props.submitButtonStatus}
+              style={{ boxShadow: 'none' }}
+              className='user-edit-modal-base-button'>
               登録
-            </MaterialButton>
-            <MaterialButton outlined type='button' className='modal-button button-primary' onClick={this.closeModal}>
+            </Button>
+            <Button
+              variant='outlined'
+              color='default'
+              onClick={this.closeModal}
+              className='user-edit-modal-base-button'
+              style={{ boxShadow: 'none' }}>
               キャンセル
-            </MaterialButton>
+            </Button>
           </Modal.Footer>
         </Form>
       </Modal>

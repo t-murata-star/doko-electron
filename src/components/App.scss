@@ -1,13 +1,3 @@
-@import '@material/react-button/index.scss';
-@import '@material/button/mixins';
-@import '@material/tab/mixins';
-@import '@material/react-tab-bar/index.scss';
-@import '@material/react-tab-scroller/index.scss';
-@import '@material/react-tab/index.scss';
-@import '@material/react-tab-indicator/index.scss';
-@import '@material/react-switch/index.scss';
-@import '@material/react-snackbar/index.scss';
-
 .row {
   margin-right: 0px;
 }
@@ -15,51 +5,8 @@ button:focus {
   outline: none;
   outline: none;
 }
-.mdc-button__label {
-  font-size: 16px;
-}
-.button-primary {
-  @include mdc-button-filled-accessible(#f3f3f3);
-  @include mdc-button-ink-color(#212529);
-  @include mdc-button-outline-color(#bdbdbd);
-  @include mdc-button-outline-width(1px);
-}
-.button-submit {
-  @include mdc-button-filled-accessible(#2a91ff);
-  @include mdc-button-ink-color(#fff);
-  @include mdc-button-outline-color(#2a91ff);
-  @include mdc-button-outline-width(1px);
-}
-.button-submit.mdc-button:disabled.mdc-button--outlined:disabled {
-  background-color: #88c1ff;
-  color: #fff;
-  border-color: #5cabff;
-}
-.modal-button-clear {
-  @include mdc-button-outline-width(1px, 0px);
-  height: 23px;
-  margin-bottom: 4px;
-}
-.modal-button-clear > .mdc-button__label {
-  font-size: 13px;
-}
-.button-user-delete {
-  @include mdc-button-filled-accessible(#fff);
-  @include mdc-button-ink-color(#a6adb5);
-  @include mdc-button-outline-color(#d4d9dd);
-  @include mdc-button-outline-width(1px);
-  margin-right: auto !important;
-}
-.header {
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  background-color: #ffffff;
-  border-bottom: solid 1px #dee2e6;
-}
 .contents {
   z-index: 0;
-  padding-top: 35px;
   overflow-y: auto;
   height: 100vh;
 }
@@ -74,10 +21,12 @@ body {
   overflow-x: auto;
   margin: 0;
 }
-.settings-snackbar {
-  @include mdc-snackbar-min-width(170px);
-  @include mdc-snackbar-viewport-margin(20px);
+.app-tabs {
+  background-color: #ffffff;
+  border-bottom: solid 1px #dee2e6;
 }
-.switch-base {
-  @include mdc-switch-toggled-on-color(#2a91ff);
+.app-tab {
+  &:hover {
+    background-color: #f1f7fc;
+  }
 }
