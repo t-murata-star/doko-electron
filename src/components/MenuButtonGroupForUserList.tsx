@@ -34,6 +34,8 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
 
     dispatch(disableSubmitButtonActionCreator());
     dispatch(showUserEditModalActionCreator(myUserID, userInfo));
+    // 自分編集ボタンのフォーカスを外す
+    $('.menu-button-group-for-user-list-base-button').blur();
   };
 
   render() {
