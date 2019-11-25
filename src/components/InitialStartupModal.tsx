@@ -2,7 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
 import './InitialStartupModal.css';
-import MaterialButton from '@material/react-button';
+import MaterialUiButton from '@material-ui/core/Button';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import store from '../store/configureStore';
 import {
@@ -227,13 +227,15 @@ class InitialStartupModal extends React.Component<any, any> {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <MaterialButton
-              outlined
+            <MaterialUiButton
               type='submit'
-              className='modal-button button-submit'
-              disabled={this.state.submitButtonStatus}>
+              variant='contained'
+              color='primary'
+              disabled={this.state.submitButtonStatus}
+              style={{ boxShadow: 'none' }}
+              className='initial-startup-modal-base-button'>
               登録
-            </MaterialButton>
+            </MaterialUiButton>
           </Modal.Footer>
         </Form>
       </Modal>

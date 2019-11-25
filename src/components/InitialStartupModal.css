@@ -1,7 +1,3 @@
-.modal-button {
-  width: 10rem !important;
-  margin-left: 8px !important;
-}
 .initialStartupModal > .modal-content {
   width: 400px;
   margin: auto;
@@ -18,4 +14,8 @@
   padding-bottom: 4px;
   position: relative;
   padding-right: 0px;
+}
+.initial-startup-modal-base-button {
+  width: 10rem;
+  margin-left: 8px;
 }

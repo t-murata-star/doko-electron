@@ -2,7 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import { Row, Container, Col, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import MaterialButton from '@material/react-button';
+import Button from '@material-ui/core/Button';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSync, faEdit } from '@fortawesome/free-solid-svg-icons';
 import './MenuButtonGroupForUserList.css';
@@ -46,24 +46,28 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
         <Container>
           <Form.Row>
             <Form.Group as={Col} controlId='reload'>
-              <MaterialButton
-                outlined
-                type='button'
-                className='w-100 button-primary'
+              <Button
+                variant='outlined'
+                color='default'
                 onClick={this.reload}
-                disabled={userList.isFetching === true}>
-                <FontAwesomeIcon icon='sync' /> 再読込
-              </MaterialButton>
+                disabled={userList.isFetching === true}
+                className='menu-button-group-for-user-list-base-button'
+                style={{ boxShadow: 'none' }}>
+                <FontAwesomeIcon icon='sync' />
+                &nbsp;再読込
+              </Button>
             </Form.Group>
             <Form.Group as={Col} controlId='showUserEditModal'>
-              <MaterialButton
-                outlined
-                type='button'
-                className='w-100 button-primary'
+              <Button
+                variant='outlined'
+                color='default'
                 onClick={this.showUserEditModal}
-                disabled={userInfo === null || userList.isAuthenticated === false}>
-                <FontAwesomeIcon icon='edit' /> 自分編集
-              </MaterialButton>
+                disabled={userInfo === null || userList.isAuthenticated === false}
+                className='menu-button-group-for-user-list-base-button'
+                style={{ boxShadow: 'none' }}>
+                <FontAwesomeIcon icon='edit' />
+                &nbsp;自分編集
+              </Button>
             </Form.Group>
           </Form.Row>
         </Container>

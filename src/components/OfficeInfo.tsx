@@ -15,7 +15,7 @@ class OfficeInfo extends React.Component<any, any> {
     return (
       <div className='office_info'>
         <h4 style={{ textAlign: 'center' }}>トイレ空席状況</h4>
-        <Row className='setting_system'>
+        <Row>
           <Col md='2' />
           <Col md='4'>
             <ListGroup>
