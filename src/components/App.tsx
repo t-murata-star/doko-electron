@@ -39,44 +39,6 @@ class App extends React.Component<any, any> {
     const { dispatch } = this.props;
     const userID: number = (electronStore.get('userID') as number | undefined) || -1;
 
-    /**
-     * スタートアップ登録処理。
-     * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
-     */
-    if (!electronStore.get('startup.notified') && !electronStore.get('notified_startup')) {
-      const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-        title: APP_NAME,
-        type: 'info',
-        buttons: ['YES', 'NO'],
-        message: `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
-      });
-
-      let openAtLogin;
-
-      switch (index) {
-        // ダイアログで「OK」を選択した場合
-        case 0:
-          openAtLogin = true;
-          break;
-
-        // ダイアログで「OK」以外を選択した場合
-        default:
-          openAtLogin = false;
-          break;
-      }
-
-      electronStore.set('startup.notified', 1);
-
-      remote.app.setLoginItemSettings({
-        openAtLogin,
-        path: remote.app.getPath('exe')
-      });
-    } else {
-      electronStore.set('startup.notified', 1);
-    }
-    // TODO: notified_startup は廃止予定のため、次回アプリケーションのアップデートの際に該当処理を削除する
-    electronStore.delete('notified_startup');
-
     // WEBアプリケーション接続確認用のため、Cookieにパラメータを設定する
     document.cookie = 'isConnected=true';
 
@@ -122,6 +84,44 @@ class App extends React.Component<any, any> {
       remote.getCurrentWindow().destroy();
       return;
     }
+
+    /**
+     * スタートアップ登録処理。
+     * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
+     */
+    if (!electronStore.get('startup.notified') && !electronStore.get('notified_startup')) {
+      const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+        title: APP_NAME,
+        type: 'info',
+        buttons: ['YES', 'NO'],
+        message: `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
+      });
+
+      let openAtLogin;
+
+      switch (index) {
+        // ダイアログで「OK」を選択した場合
+        case 0:
+          openAtLogin = true;
+          break;
+
+        // ダイアログで「OK」以外を選択した場合
+        default:
+          openAtLogin = false;
+          break;
+      }
+
+      electronStore.set('startup.notified', 1);
+
+      remote.app.setLoginItemSettings({
+        openAtLogin,
+        path: remote.app.getPath('exe')
+      });
+    } else {
+      electronStore.set('startup.notified', 1);
+    }
+    // TODO: notified_startup は廃止予定のため、次回アプリケーションのアップデートの際に該当処理を削除する
+    electronStore.delete('notified_startup');
 
     /**
      * お知らせチェック
