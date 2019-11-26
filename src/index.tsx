@@ -6,11 +6,11 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './store/configureStore';
 import { ThemeProvider as MaterialThemeProvider, StylesProvider } from '@material-ui/styles';
-import { theme } from './components/materialui/theme';
+import { baseTheme } from './components/materialui/theme';
 
 render(
   <StylesProvider injectFirst>
-    <MaterialThemeProvider theme={theme}>
+    <MaterialThemeProvider theme={baseTheme}>
       <Provider store={store}>
         <AppPanel />
       </Provider>

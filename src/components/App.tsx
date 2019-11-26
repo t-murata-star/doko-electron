@@ -1,6 +1,8 @@
 import React from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
+import { tabTheme } from './materialui/theme';
 import './App.scss';
 import UserList from '../containers/UserListPanel';
 import OfficeInfo from '../containers/OfficeInfoPanel';
@@ -299,18 +301,20 @@ class App extends React.Component<any, any> {
         <Loading state={store.getState()} />
         {myUserID !== -1 && (
           <div>
-            <Tabs
-              value={this.state.activeIndex}
-              variant='fullWidth'
-              onChange={this.handleActiveIndexUpdate}
-              style={{ minHeight: '35px' }}
-              indicatorColor='primary'
-              textColor='primary'
-              className='app-tabs'>
-              <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab'></Tab> />
-              <Tab label='社内情報' style={{ minHeight: '35px' }} className='app-tab' />
-              <Tab label='設定' style={{ minHeight: '35px' }} className='app-tab' />
-            </Tabs>
+            <MaterialThemeProvider theme={tabTheme}>
+              <Tabs
+                value={this.state.activeIndex}
+                variant='fullWidth'
+                onChange={this.handleActiveIndexUpdate}
+                style={{ minHeight: '35px' }}
+                indicatorColor='primary'
+                textColor='primary'
+                className='app-tabs'>
+                <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab'></Tab> />
+                <Tab label='社内情報' style={{ minHeight: '35px' }} className='app-tab' />
+                <Tab label='設定' style={{ minHeight: '35px' }} className='app-tab' />
+              </Tabs>
+            </MaterialThemeProvider>
           </div>
         )}
         <div className='contents'>
