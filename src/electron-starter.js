@@ -7,7 +7,7 @@ let mainWindow;
 // アプリケーション名
 const APP_NAME = '行き先掲示板';
 // アプリケーションのバージョンを定義
-const VERSION = '2.0.0';
+const VERSION = '2.0.1';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = 'http://********/';
 
