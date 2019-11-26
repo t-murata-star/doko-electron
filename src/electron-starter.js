@@ -47,7 +47,7 @@ function createWindow() {
   electron.session.defaultSession.cookies.set({ url: webAppURL, name: 'version', value: VERSION });
 
   // WEBアプリケーションに接続する
-  mainWindow.loadURL(webAppURL).catch(() => {
+  mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     mainWindow.reload();
   });
 
