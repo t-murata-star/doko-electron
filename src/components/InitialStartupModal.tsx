@@ -34,9 +34,6 @@ class InitialStartupModal extends React.Component<any, any> {
       submitButtonStatus: true,
       isChangeUser: false
     };
-    this.userID = -1;
-    this.userInfo['status'] = '在席';
-    delete this.userInfo['id'];
   }
 
   closeModal = () => {
@@ -47,6 +44,15 @@ class InitialStartupModal extends React.Component<any, any> {
   _addUser = async () => {
     const { dispatch } = this.props;
 
+    const session = remote.session.defaultSession as Electron.Session;
+    const cookies: any = await session.cookies.get({
+      name: 'version'
+    });
+    if (cookies[0]) {
+      this.userInfo['version'] = cookies[0].value;
+    }
+    this.userInfo['status'] = '在席';
+
     // addUserAction で userListState の myUserID に新規ユーザIDが設定される
     await dispatch(addUserAction(this.userInfo));
     const userList = store.getState().userListState;
@@ -55,23 +61,16 @@ class InitialStartupModal extends React.Component<any, any> {
       return;
     }
 
+    const myUserID = userList.myUserID;
+
     // userIDを設定ファイルに登録（既に存在する場合は上書き）
-    electronStore.set('userID', userList.myUserID);
+    electronStore.set('userID', myUserID);
 
     // orderパラメータをidと同じ値に更新する
     const addedUserInfo: any = {};
-    addedUserInfo['order'] = userList.myUserID;
+    addedUserInfo['order'] = myUserID;
 
-    const session = remote.session.defaultSession as Electron.Session;
-    const cookies: any = await session.cookies.get({
-      name: 'version'
-    });
-
-    if (cookies[0]) {
-      addedUserInfo['version'] = cookies[0].value;
-    }
-
-    await dispatch(updateForAddedUserInfoAction(addedUserInfo, userList.myUserID));
+    await dispatch(updateForAddedUserInfoAction(addedUserInfo, myUserID));
     dispatch(getUserListAction(250));
 
     sendHeartbeat(dispatch);

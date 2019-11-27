@@ -177,11 +177,13 @@ export const deleteUserAction = (userID: number) => {
 export const addUserAction = (userInfo: UserInfo) => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(addUserActionCreator());
+    const body = Object.assign({}, userInfo);
+    delete body['id'];
     try {
       const res = await fetch(API_URL + 'userList', {
         method: 'POST',
         headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(userInfo)
+        body: JSON.stringify(body)
       });
 
       responseStatusCheck(dispatch, res.status);
