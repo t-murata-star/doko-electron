@@ -23,7 +23,7 @@ class OfficeInfo extends React.Component<any, any> {
                 <Form.Label>
                   <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
                 </Form.Label>
-                <p>Coming soon!</p>
+                <p>Coming never!</p>
               </ListGroup.Item>
             </ListGroup>
           </Col>
