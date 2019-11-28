@@ -5,9 +5,9 @@ const { app } = electron;
 let mainWindow;
 
 // アプリケーション名
-const APP_NAME = '行き先掲示板';
+const APP_NAME = process.env.npm_package_description || '';
 // アプリケーションのバージョンを定義
-const VERSION = '2.0.1';
+const VERSION = process.env.npm_package_version || '';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = 'http://********/';
 
@@ -42,9 +42,6 @@ function createWindow() {
   } else {
     webAppURL = DEFAULT_LOAD_URL;
   }
-
-  // Cookieにアプリケーションのバージョンを追加
-  electron.session.defaultSession.cookies.set({ url: webAppURL, name: 'version', value: VERSION });
 
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {

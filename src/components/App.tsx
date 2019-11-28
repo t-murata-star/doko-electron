@@ -23,7 +23,7 @@ import {
   setMyUserIDActionCreator
 } from '../actions/userList';
 import { getRestroomUsageAction } from '../actions/officeInfo';
-import { APP_NAME, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
+import { APP_NAME, APP_VERSION, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
 import { UserInfo, Notification } from '../define/model';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 
@@ -69,18 +69,7 @@ class App extends React.Component<any, any> {
      * 実行しているアプリケーションのバージョンが最新ではない場合、
      * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
      */
-    try {
-      const session = remote.session.defaultSession as Electron.Session;
-      const cookies: any = await session.cookies.get({
-        name: 'version'
-      });
-      if (notification.latestAppVersion !== cookies[0].value) {
-        this._showMessageBox(updateNotificationMessage);
-        remote.shell.openExternal(APP_DOWNLOAD_URL);
-        remote.getCurrentWindow().destroy();
-        return;
-      }
-    } catch (error) {
+    if (notification.latestAppVersion !== APP_VERSION) {
       this._showMessageBox(updateNotificationMessage);
       remote.shell.openExternal(APP_DOWNLOAD_URL);
       remote.getCurrentWindow().destroy();

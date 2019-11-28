@@ -1,4 +1,7 @@
-export const APP_NAME: string = process.env.REACT_APP_NAME || '';
+import packageJson from '../../package.json';
+
+export const APP_NAME: string = packageJson.description || '';
+export const APP_VERSION: string = packageJson.version || '';
 export const API_URL: string = process.env.REACT_APP_API_URL || '';
 export const LOGIN_USER: any = {
   username: process.env.REACT_APP_USERNAME || '',
