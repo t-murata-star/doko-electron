@@ -9,6 +9,7 @@ const APP_NAME = process.env.npm_package_description || '';
 // アプリケーションのバージョンを定義
 const VERSION = process.env.npm_package_version || '';
 // 本番接続先URL
+const DEFAULT_LOAD_URL = 'http://********/';
 // 通信エラーによりWEBアプリケーションの読み込みに失敗した場合に表示されるエラー画面のファイルパス
 const ERROR_PAGE_FILEPATH = '../public/error.html';
 /**
