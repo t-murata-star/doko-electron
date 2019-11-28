@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.4.3.1.css" />
+  </head>
+  <body>
+    <div class="reload">
+      <p>通信エラーが発生しました。</p>
+      <input type="button" class="btn btn-primary reload-btn" onclick="reload()" value="再読み込み" />
+    </div>
+    <script src="./error.js"></script>
+  </body>
+</html>
+
+<style>
+  .reload {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 30px;
+    text-align: center;
+    width: 300px;
+  }
+</style>

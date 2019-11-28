@@ -9,7 +9,19 @@ const APP_NAME = process.env.npm_package_description || '';
 // アプリケーションのバージョンを定義
 const VERSION = process.env.npm_package_version || '';
 // 本番接続先URL
-const DEFAULT_LOAD_URL = 'http://********/';
+// 通信エラーによりWEBアプリケーションの読み込みに失敗した場合に表示されるエラー画面のファイルパス
+const ERROR_PAGE_FILEPATH = '../public/error.html';
+/**
+ * 環境変数が設定されていればその設定値を接続先を使用する
+ * 設定されていなければ、当プログラムにて定義した接続先を使用する
+ */
+let webAppURL;
+
+if (process.env.LOAD_URL) {
+  webAppURL = process.env.LOAD_URL;
+} else {
+  webAppURL = DEFAULT_LOAD_URL;
+}
 
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
@@ -31,21 +43,11 @@ function createWindow() {
 
   // const loadURL = process.env.LOAD_URL || `file://${path.join(__dirname, "../build/index.html")}`;
 
-  /**
-   * 環境変数が設定されていればその設定値を接続先を使用する
-   * 設定されていなければ、当プログラムにて定義した接続先を使用する
-   */
-  let webAppURL;
-
-  if (process.env.LOAD_URL) {
-    webAppURL = process.env.LOAD_URL;
-  } else {
-    webAppURL = DEFAULT_LOAD_URL;
-  }
-
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
-    mainWindow.reload();
+    // 通信に失敗した場合は再読み込み用ページへ遷移
+    const loadURL = `file://${path.join(__dirname, ERROR_PAGE_FILEPATH)}`;
+    mainWindow.loadURL(loadURL, { extraHeaders: 'pragma: no-cache\n' });
   });
 
   // デベロッパーツールを開く
@@ -184,4 +186,12 @@ if (!gotTheLock) {
 // レンダラープロセスからメインプロセスへのデータ送信（非同期通信）
 electron.ipcMain.on('close', (event, arg) => {
   mainWindow.destroy();
+});
+
+electron.ipcMain.on('reload', (event, arg) => {
+  // WEBアプリケーションに接続する
+  mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
+    const loadURL = `file://${path.join(__dirname, ERROR_PAGE_FILEPATH)}`;
+    mainWindow.loadURL(loadURL, { extraHeaders: 'pragma: no-cache\n' });
+  });
 });
