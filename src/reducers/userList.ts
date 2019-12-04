@@ -36,12 +36,19 @@ function userListIsFetching(state = false, action: any) {
 
 function userListIsError(state = new RequestError(), action: any) {
   switch (action.type) {
+    case UserListActions.REQUEST_ERROR:
+      return {
+        ...state,
+        status: true,
+        code: action.payload.statusCode,
+        text: action.payload.statusText
+      };
     case UserListActions.FAIL_REQUEST:
       return {
         ...state,
         status: true,
-        code: action.payload.error.status,
-        text: action.payload.error.statusText
+        code: null,
+        text: action.payload.message
       };
     default:
       return {
@@ -70,6 +77,12 @@ export default function userListState(state = new _UserListState(), action: any)
         isAuthenticated: true,
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
+      };
+    case UserListActions.REQUEST_ERROR:
+      return {
+        ...state,
+        isError: userListIsError(state.isError, action),
+        isFetching: userListIsFetching(state.isFetching, action)
       };
     case UserListActions.GET_USER_LIST:
       return {

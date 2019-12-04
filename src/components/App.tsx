@@ -41,13 +41,14 @@ class App extends React.Component<any, any> {
     const { dispatch } = this.props;
     const userID: number = (electronStore.get('userID') as number | undefined) || -1;
 
-    // WEBアプリケーション接続確認用のため、Cookieにパラメータを設定する
-    document.cookie = 'isConnected=true';
+    // メインプロセスに、WEBアプリケーションに接続できたことを伝える
+    ipcRenderer.send('connected', true);
 
     await dispatch(loginAction());
 
-    if (store.getState().userListState.isError.code === 401) {
-      this._showMessageBox('認証に失敗しました。');
+    if (store.getState().userListState.isError.status) {
+      ipcRenderer.send('connected', false);
+      remote.getCurrentWindow().loadFile(remote.getGlobal('ERROR_PAGE_FILEPATH'));
       return;
     }
 

@@ -10,8 +10,12 @@ const APP_NAME = process.env.npm_package_description || '';
 const VERSION = process.env.npm_package_version || '';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = 'http://********/';
+
+// 【メイン・レンダラープロセス共通で使用するグローバル変数】
 // 通信エラーによりWEBアプリケーションの読み込みに失敗した場合に表示されるエラー画面のファイルパス
-const ERROR_PAGE_FILEPATH = '../public/error.html';
+global.ERROR_PAGE_FILEPATH = './public/error.html';
+// WEBアプリケーションに接続できたかどうか
+global.isConnectedForWebApp = false;
 /**
  * 環境変数が設定されていればその設定値を接続先を使用する
  * 設定されていなければ、当プログラムにて定義した接続先を使用する
@@ -47,8 +51,7 @@ function createWindow() {
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     // 通信に失敗した場合は再読み込み用ページへ遷移
-    const loadURL = `file://${path.join(__dirname, ERROR_PAGE_FILEPATH)}`;
-    mainWindow.loadURL(loadURL, { extraHeaders: 'pragma: no-cache\n' });
+    mainWindow.loadFile(global.ERROR_PAGE_FILEPATH);
   });
 
   // デベロッパーツールを開く
@@ -71,13 +74,11 @@ function createWindow() {
          * ElectronがWEBアプリケーションを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
          */
-        electron.session.defaultSession.cookies.get({ name: 'isConnected' }).then(cookies => {
-          if (cookies[0]) {
-            mainWindow.webContents.send('closeApp');
-          } else {
-            mainWindow.destroy();
-          }
-        });
+        if (global.isConnectedForWebApp === true) {
+          mainWindow.webContents.send('closeApp');
+        } else {
+          mainWindow.destroy();
+        }
         break;
 
       // ダイアログで「OK」以外を選択した場合
@@ -192,7 +193,10 @@ electron.ipcMain.on('close', (event, arg) => {
 electron.ipcMain.on('reload', (event, arg) => {
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
-    const loadURL = `file://${path.join(__dirname, ERROR_PAGE_FILEPATH)}`;
-    mainWindow.loadURL(loadURL, { extraHeaders: 'pragma: no-cache\n' });
+    mainWindow.loadFile(global.ERROR_PAGE_FILEPATH);
   });
+});
+
+electron.ipcMain.on('connected', (event, arg) => {
+  global.isConnectedForWebApp = arg;
 });

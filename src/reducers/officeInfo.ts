@@ -1,5 +1,4 @@
 import * as OfficeInfoActions from '../actions/officeInfo';
-import * as UserListActions from '../actions/userList';
 import { Restroom, RequestError } from '../define/model';
 
 export class _OfficeInfoState {
@@ -14,7 +13,7 @@ export class _OfficeInfoState {
   }
 }
 
-export function officeInfoIsFetching(state = false, action: any) {
+export function officeInfoIsFetching(action: any) {
   switch (action.type) {
     case OfficeInfoActions.GET_RESTROOM_USAGE:
       return true;
@@ -28,12 +27,19 @@ export function officrInfoIsError(
   action: any
 ) {
   switch (action.type) {
-    case UserListActions.FAIL_REQUEST:
+    case OfficeInfoActions.REQUEST_ERROR:
       return {
         ...state,
         status: true,
-        code: action.payload.error.status,
-        text: action.payload.error.statusText
+        code: action.payload.statusCode,
+        text: action.payload.statusText
+      };
+    case OfficeInfoActions.FAIL_REQUEST:
+      return {
+        ...state,
+        status: true,
+        code: null,
+        text: action.payload.statusText
       };
     default:
       return {
@@ -56,7 +62,7 @@ export default function officeInfoState(
     case OfficeInfoActions.GET_RESTROOM_USAGE:
       return {
         ...state,
-        isFetching: officeInfoIsFetching(state.isFetching, action)
+        isFetching: officeInfoIsFetching(action)
       };
     case OfficeInfoActions.GET_RESTROOM_USAGE_SUCCESS:
       return {
@@ -69,7 +75,7 @@ export default function officeInfoState(
           vacancyForMen: getVacantCountForRestroom(action.payload.response, 'men'),
           vacancyForWomen: getVacantCountForRestroom(action.payload.response, 'women')
         },
-        isFetching: officeInfoIsFetching(state.isFetching, action),
+        isFetching: officeInfoIsFetching(action),
         isError: officrInfoIsError(state.isError, action)
       };
     case OfficeInfoActions.UNAUTHORIZED:
@@ -85,7 +91,13 @@ export default function officeInfoState(
       return {
         ...state,
         isError: officrInfoIsError(state.isError, action),
-        isFetching: officeInfoIsFetching(state.isFetching, action)
+        isFetching: officeInfoIsFetching(action)
+      };
+    case OfficeInfoActions.REQUEST_ERROR:
+      return {
+        ...state,
+        isError: officrInfoIsError(state.isError, action),
+        isFetching: officeInfoIsFetching(action)
       };
     case OfficeInfoActions.RETURN_EMPTY_RESTROOM_USAGE:
       return {

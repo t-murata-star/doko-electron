@@ -8,6 +8,7 @@ import { Action } from 'redux';
  */
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const REQUEST_ERROR = 'REQUEST_ERROR';
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
 export const ADD_USER = 'ADD_USER';
@@ -43,6 +44,13 @@ export const loginSuccessActionCreator = (json: Object) => ({
   type: LOGIN_SUCCESS,
   payload: {
     response: json
+  }
+});
+export const requestErrorActionCreator = (statusCode: number, statusText: string) => ({
+  type: REQUEST_ERROR,
+  payload: {
+    statusCode,
+    statusText
   }
 });
 export const getUserListActionCreator = () => ({
@@ -92,11 +100,10 @@ export const updateForAddedUserInfoActionCreator = () => ({
 export const updateForAddedUserInfoSuccessActionCreator = () => ({
   type: UPDATE_FOR_ADDED_USER_INFO_SUCCESS
 });
-export const failRequestActionCreator = (error: Error) => ({
+export const failRequestActionCreator = (message: string) => ({
   type: FAIL_REQUEST,
-  error: true,
   payload: {
-    error
+    message
   }
 });
 export const selectUserActionCreator = (selectedUserId: number) => ({
@@ -142,13 +149,14 @@ export const loginAction = () => {
         headers: LOGIN_REQUEST_HEADERS,
         body: JSON.stringify(LOGIN_USER)
       });
-      if (!res.ok) {
-        return Promise.reject(res);
+
+      if (res.ok === false) {
+        return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       const json = await res.json();
       return dispatch(loginSuccessActionCreator(json));
     } catch (error) {
-      return dispatch(failRequestActionCreator(error));
+      return dispatch(failRequestActionCreator(error.message));
     }
   };
 };
@@ -164,12 +172,12 @@ export const deleteUserAction = (userID: number) => {
 
       responseStatusCheck(dispatch, res.status);
 
-      if (!res.ok) {
-        return Promise.reject(res);
+      if (res.ok === false) {
+        return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       return dispatch(deleteUserSuccessActionCreator());
     } catch (error) {
-      return dispatch(failRequestActionCreator(error));
+      return dispatch(failRequestActionCreator(error.message));
     }
   };
 };
@@ -188,13 +196,13 @@ export const addUserAction = (userInfo: UserInfo) => {
 
       responseStatusCheck(dispatch, res.status);
 
-      if (!res.ok) {
-        return Promise.reject(res);
+      if (res.ok === false) {
+        return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       const json = await res.json();
       return dispatch(addUserSuccessActionCreator(json));
     } catch (error) {
-      return dispatch(failRequestActionCreator(error));
+      return dispatch(failRequestActionCreator(error.message));
     }
   };
 };
@@ -210,13 +218,13 @@ export const getUserListAction = (sleepMs: number = 0) => {
 
       responseStatusCheck(dispatch, res.status);
 
-      if (!res.ok) {
-        return Promise.reject(res);
+      if (res.ok === false) {
+        return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       const json = await res.json();
       return dispatch(getUserListSccessActionCreator(json));
     } catch (error) {
-      dispatch(failRequestActionCreator(error));
+      dispatch(failRequestActionCreator(error.message));
       dispatch(returnEmptyUserListActionCreator());
     }
   };
@@ -234,12 +242,12 @@ export const changeOrderAction = (userInfo: { order: number }, userID: number) =
 
       responseStatusCheck(dispatch, res.status);
 
-      if (!res.ok) {
-        return Promise.reject(res);
+      if (res.ok === false) {
+        return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       return dispatch(changeOrderSuccessActionCreator());
     } catch (error) {
-      dispatch(failRequestActionCreator(error));
+      dispatch(failRequestActionCreator(error.message));
       dispatch(returnEmptyUserListActionCreator());
     }
   };
@@ -261,13 +269,13 @@ export const updateUserInfoAction = (userInfo: UserInfo, userID: number) => {
 
       responseStatusCheck(dispatch, res.status);
 
-      if (!res.ok) {
-        return Promise.reject(res);
+      if (res.ok === false) {
+        return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       const json = await res.json();
       return dispatch(updateUserInfoSuccessActionCreator(json));
     } catch (error) {
-      dispatch(failRequestActionCreator(error));
+      dispatch(failRequestActionCreator(error.message));
     }
   };
 };
@@ -286,12 +294,12 @@ export const updateForAddedUserInfoAction = (userInfo: UserInfo, userID: number)
 
       responseStatusCheck(dispatch, res.status);
 
-      if (!res.ok) {
-        return Promise.reject(res);
+      if (res.ok === false) {
+        return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       return dispatch(updateForAddedUserInfoSuccessActionCreator());
     } catch (error) {
-      dispatch(failRequestActionCreator(error));
+      dispatch(failRequestActionCreator(error.message));
     }
   };
 };
@@ -307,13 +315,13 @@ export const getNotificationAction = () => {
 
       responseStatusCheck(dispatch, res.status);
 
-      if (!res.ok) {
-        return Promise.reject(res);
+      if (res.ok === false) {
+        return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       const json = await res.json();
       return dispatch(checkNotificationSuccessActionCreator(json));
     } catch (error) {
-      return dispatch(failRequestActionCreator(error));
+      dispatch(failRequestActionCreator(error.message));
     }
   };
 };
@@ -332,8 +340,8 @@ export const sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
 
     responseStatusCheck(dispatch, res.status);
 
-    if (!res.ok) {
-      return Promise.reject(res);
+    if (res.ok === false) {
+      return dispatch(requestErrorActionCreator(res.status, res.statusText));
     }
     return dispatch(sendHeartbeatSuccessActionCreator());
   };
