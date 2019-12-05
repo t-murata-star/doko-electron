@@ -13,7 +13,7 @@ import { getUserInfo } from './common/functions';
 import './MenuButtonGroupForUserList.css';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
-const { remote } = window.require('electron');
+const { ipcRenderer } = window.require('electron');
 
 class MenuButtonGroupForUserList extends React.Component<any, any> {
   reload = async () => {
@@ -24,8 +24,16 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
 
     // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
-    const WebContents = remote.getCurrentWebContents();
-    WebContents.downloadURL('http://localhost:3001/');
+    let downloadInstallerExtension = '';
+    let installerURL = '';
+    if (process.platform !== 'darwin') {
+      downloadInstallerExtension = '.exe';
+      installerURL = '';
+    } else {
+      downloadInstallerExtension = '.dmg';
+      installerURL = '';
+    }
+    ipcRenderer.send('updateApp', downloadInstallerExtension, installerURL);
   };
 
   showUserEditModal = () => {
