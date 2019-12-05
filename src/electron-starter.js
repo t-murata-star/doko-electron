@@ -1,6 +1,7 @@
 const path = require('path');
 const electron = require('electron');
 const { app } = electron;
+const execFile = require('child_process').execFile;
 
 let mainWindow;
 
@@ -10,6 +11,8 @@ const APP_NAME = process.env.npm_package_description || '';
 const VERSION = process.env.npm_package_version || '';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = 'http://********/';
+// アップデートのためのアプリケーションインストーラのダウンロード先ファイルパス
+const UPDATE_INSTALLER_FILEPATH = path.join(app.getPath('temp'), 'doco_electron_update_installer.exe');
 
 // 【メイン・レンダラープロセス共通で使用するグローバル変数】
 // 通信エラーによりWEBアプリケーションの読み込みに失敗した場合に表示されるエラー画面のファイルパス
@@ -125,6 +128,36 @@ function createWindow() {
   // シャットダウンのイベントキャッチ（Electron ver5時点ではLinuxとMacOSのみ対応）
   electron.powerMonitor.on('shutdown', () => {
     mainWindow.webContents.send('electronShutdownEvent');
+  });
+
+  mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
+    // TODO:ファイル名に、アプリケーションのバージョン(latestAppVersion)を付与する。
+    item.setSavePath(UPDATE_INSTALLER_FILEPATH);
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed');
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused');
+        } else {
+          console.log(`Received bytes: ${item.getReceivedBytes()}`);
+        }
+      }
+    });
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        console.log('Download successfully');
+        execFile(path.join(''), (err, stdout, stderr) => {
+          if (err) {
+            console.log('Failed to run installer');
+            throw err;
+          }
+          console.log('Failed to run installer');
+        });
+      } else {
+        console.log(`Download failed: ${state}`);
+      }
+    });
   });
 
   createTray();
