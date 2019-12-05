@@ -61,7 +61,7 @@ class UserList extends React.Component<any, any> {
   };
 
   COLUMNS_CONFIG_FOR_TABULATOR: any = [
-    { rowHandle: true, formatter: 'handle', headerSort: false, frozen: true, width: 25, minWidth: 25, resizable: false },
+    { rowHandle: true, formatter: 'handle', headerSort: false, frozen: true, width: 25, minWidth: 25 },
     { title: '順序', field: 'order', visible: false, headerSort: false, sorter: 'number' },
     { title: '氏名', field: 'name', width: 150, headerSort: false },
     { title: '状態', field: 'status', width: 100, headerSort: false },
@@ -191,7 +191,7 @@ class UserList extends React.Component<any, any> {
           layout={'fitData'}
           height={window.innerHeight - 87}
           rowDblClick={this.showUserEditModal}
-          resizableColumns={true}
+          resizableColumns={false}
           // @ts-ignore
           rowFormatter={this._rowFormatter}
           placeholder={'通信に失敗しました。'}
