@@ -1,23 +1,23 @@
-import React from 'react';
-import { Col, Row, Form, ListGroup } from 'react-bootstrap';
-import Switch from '@material-ui/core/Switch';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
-import './Settings.css';
-import store from '../store/configureStore';
-import { UserInfo } from '../define/model';
-import { setMyUserIDActionCreator, updateUserInfoAction } from '../actions/userList';
+import Switch from '@material-ui/core/Switch';
+import React from 'react';
+import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import {
-  setUserIDActionCreator,
-  changeDisabledSubmitButtonUserChangeActionCreator,
   changeDisabledSubmitButtonEmailActionCreator,
-  changeEnabledStartupActionCreator,
-  setEmailActionCreator,
+  changeDisabledSubmitButtonUserChangeActionCreator,
   changeEnabledSnackbarActionCreator,
-  initializeSettingStateActionCreator
+  changeEnabledStartupActionCreator,
+  initializeSettingStateActionCreator,
+  setEmailActionCreator,
+  setUserIDActionCreator
 } from '../actions/settings';
+import { setMyUserIDActionCreator, updateUserInfoAction } from '../actions/userList';
 import { APP_NAME, EMAIL_DOMAIN } from '../define';
+import { UserInfo } from '../define/model';
+import store from '../store/configureStore';
 import { getUserInfo, sendHeartbeat } from './common/functions';
+import './Settings.css';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');

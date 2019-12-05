@@ -1,20 +1,20 @@
-import React from 'react';
-import $ from 'jquery';
-import { Container, Col, Form, Modal, Button } from 'react-bootstrap';
-import './InitialStartupModal.css';
 import MaterialUiButton from '@material-ui/core/Button';
+import $ from 'jquery';
+import React from 'react';
+import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
 import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
-import store from '../store/configureStore';
 import {
   addUserAction,
   getUserListAction,
+  setMyUserIDActionCreator,
   updateForAddedUserInfoAction,
-  updateUserInfoAction,
   updateStateUserListActionCreator,
-  setMyUserIDActionCreator
+  updateUserInfoAction
 } from '../actions/userList';
 import { UserInfo } from '../define/model';
+import store from '../store/configureStore';
 import { getUserInfo, sendHeartbeat } from './common/functions';
+import './InitialStartupModal.css';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');

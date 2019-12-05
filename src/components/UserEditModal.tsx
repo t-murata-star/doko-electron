@@ -4,23 +4,23 @@
  * できるだけステートレスで作る。（可能な限りステートレス）
  */
 
-import './UserEditModal.css';
-import React from 'react';
-import ReactTooltip from 'react-tooltip';
-import { Container, Col, Form, Modal } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
+import React from 'react';
+import { Col, Container, Form, Modal } from 'react-bootstrap';
+import ReactTooltip from 'react-tooltip';
 import {
+  changeUserInfoActionCreator,
   closeUserEditModalActionCreator,
-  enableSubmitButtonActionCreator,
   disableSubmitButtonActionCreator,
+  enableSubmitButtonActionCreator,
   handleEditUserActionCreator,
-  inputClearActionCreator,
-  changeUserInfoActionCreator
+  inputClearActionCreator
 } from '../actions/userEditModal';
-import store from '../store/configureStore';
-import { updateUserInfoAction, getUserListAction, deleteUserAction, setMyUserIDActionCreator } from '../actions/userList';
+import { deleteUserAction, getUserListAction, setMyUserIDActionCreator, updateUserInfoAction } from '../actions/userList';
 import { APP_NAME, STATUS_LIST } from '../define';
 import { UserInfo } from '../define/model';
+import store from '../store/configureStore';
+import './UserEditModal.css';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');

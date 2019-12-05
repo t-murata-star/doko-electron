@@ -1,15 +1,14 @@
 import React from 'react';
 import { ReactTabulator } from 'react-tabulator';
-import './UserList.css';
-import 'react-tabulator/lib/styles.css';
 import 'react-tabulator/lib/css/tabulator.min.css';
-import { showUserEditModalActionCreator } from '../actions/userEditModal';
-import store from '../store/configureStore';
-import { getUserListAction, changeOrderAction } from '../actions/userList';
-import { disableSubmitButtonActionCreator } from '../actions/userEditModal';
-import Inoperable from './Inoperable';
+import 'react-tabulator/lib/styles.css';
+import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../actions/userEditModal';
+import { changeOrderAction, getUserListAction } from '../actions/userList';
 import { CALENDAR_URL, EMAIL_DOMAIN } from '../define';
+import store from '../store/configureStore';
 import { getUserInfo } from './common/functions';
+import Inoperable from './Inoperable';
+import './UserList.css';
 
 const { remote } = window.require('electron');
 

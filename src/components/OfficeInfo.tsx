@@ -1,10 +1,10 @@
-import React from 'react';
-import { Col, Row, ListGroup, Form } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faDoorOpen, faDoorClosed, faMale, faFemale } from '@fortawesome/free-solid-svg-icons';
-import './OfficeInfo.css';
+import { faDoorClosed, faDoorOpen, faFemale, faMale } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import store from '../store/configureStore';
+import './OfficeInfo.css';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
 

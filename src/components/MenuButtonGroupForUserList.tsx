@@ -1,16 +1,16 @@
-import React from 'react';
-import $ from 'jquery';
-import { Row, Container, Col, Form } from 'react-bootstrap';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faEdit, faSync } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSync, faEdit } from '@fortawesome/free-solid-svg-icons';
-import './MenuButtonGroupForUserList.css';
+import $ from 'jquery';
+import React from 'react';
+import { Col, Container, Form, Row } from 'react-bootstrap';
+import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../actions/userEditModal';
 import { getUserListAction } from '../actions/userList';
-import { showUserEditModalActionCreator, disableSubmitButtonActionCreator } from '../actions/userEditModal';
 import UserEditModal from '../containers/UserEditModalPanel';
 import store from '../store/configureStore';
 import { getUserInfo } from './common/functions';
+import './MenuButtonGroupForUserList.css';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForUserList extends React.Component<any, any> {

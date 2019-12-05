@@ -13,7 +13,7 @@ export const LOGIN_REQUEST_HEADERS: any = {
 };
 export const AUTH_REQUEST_HEADERS: any = {
   'Content-type': 'application/json; charset=UTF-8',
-  'Authorization': ''
+  Authorization: ''
 };
 export const STATUS_LIST: string[] = [
   '在席',

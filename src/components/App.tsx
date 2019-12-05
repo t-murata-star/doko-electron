@@ -1,31 +1,31 @@
-import React from 'react';
-import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
-import { tabTheme } from './materialui/theme';
-import './App.scss';
-import UserList from '../containers/UserListPanel';
+import React from 'react';
+import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
+import { getRestroomUsageAction } from '../actions/officeInfo';
+import {
+  getNotificationAction,
+  getUserListAction,
+  loginAction,
+  returnEmptyUserListActionCreator,
+  setMyUserIDActionCreator,
+  updateStateUserListActionCreator,
+  updateUserInfoAction
+} from '../actions/userList';
+import InitialStartupModal from '../containers/InitialStartupModalPanel';
+import MenuButtonGroupForOfficeInfo from '../containers/MenuButtonGroupPanelForOfficeInfo';
+import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUserList';
 import OfficeInfo from '../containers/OfficeInfoPanel';
 import Settings from '../containers/SettingsPanel';
-import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUserList';
-import MenuButtonGroupForOfficeInfo from '../containers/MenuButtonGroupPanelForOfficeInfo';
-import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
-import InitialStartupModal from '../containers/InitialStartupModalPanel';
-import Loading from './Loading';
+import UserList from '../containers/UserListPanel';
+import { APP_DOWNLOAD_URL, APP_NAME, APP_VERSION, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS } from '../define';
+import { Notification, UserInfo } from '../define/model';
 import store from '../store/configureStore';
-import {
-  loginAction,
-  getUserListAction,
-  updateUserInfoAction,
-  getNotificationAction,
-  returnEmptyUserListActionCreator,
-  updateStateUserListActionCreator,
-  setMyUserIDActionCreator
-} from '../actions/userList';
-import { getRestroomUsageAction } from '../actions/officeInfo';
-import { APP_NAME, APP_VERSION, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, APP_DOWNLOAD_URL } from '../define';
-import { UserInfo, Notification } from '../define/model';
+import './App.scss';
 import { getUserInfo, sendHeartbeat } from './common/functions';
+import Loading from './Loading';
+import { tabTheme } from './materialui/theme';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
