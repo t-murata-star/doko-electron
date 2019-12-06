@@ -12,7 +12,6 @@ const APP_NAME = process.env.npm_package_description || '';
 const VERSION = process.env.npm_package_version || '';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = 'http://********/';
-const DEFAULT_LOAD_URL = 'http://18.182.170.92:3000/';
 
 // 【メイン・レンダラープロセス共通で使用するグローバル変数】
 // 通信エラーによりWEBアプリケーションの読み込みに失敗した場合に表示されるエラー画面のファイルパス
