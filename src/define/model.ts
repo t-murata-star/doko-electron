@@ -26,6 +26,10 @@ export class Notification {
   enabled: boolean = false;
   content: string = '';
   latestAppVersion: string = '';
+  updateInstallerURLs = {
+    windows: '',
+    mac: ''
+  };
 }
 
 export class Restroom {

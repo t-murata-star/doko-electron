@@ -35,3 +35,5 @@ export const HEARTBEAT_INTERVAL_MS: number = parseInt(process.env.REACT_APP_HEAR
 export const LEAVING_TIME_THRESHOLD_M: number = parseInt(process.env.REACT_APP_LEAVING_TIME_THRESHOLD_M || '10');
 export const CALENDAR_URL: string = process.env.REACT_APP_CALENDAR_URL || '';
 export const EMAIL_DOMAIN: string = process.env.REACT_APP_EMAIL_DOMAIN || '';
+
+export const UPDATE_INSTALLER_FILENAME: string = 'doco_electron_update_installer';

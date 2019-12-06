@@ -19,7 +19,14 @@ import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUse
 import OfficeInfo from '../containers/OfficeInfoPanel';
 import Settings from '../containers/SettingsPanel';
 import UserList from '../containers/UserListPanel';
-import { APP_DOWNLOAD_URL, APP_NAME, APP_VERSION, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS } from '../define';
+import {
+  APP_DOWNLOAD_URL,
+  APP_NAME,
+  APP_VERSION,
+  AUTH_REQUEST_HEADERS,
+  HEARTBEAT_INTERVAL_MS,
+  UPDATE_INSTALLER_FILENAME
+} from '../define';
 import { Notification, UserInfo } from '../define/model';
 import store from '../store/configureStore';
 import './App.scss';
@@ -30,6 +37,7 @@ import { tabTheme } from './materialui/theme';
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
+const execFileSync = window.require('child_process').execFileSync;
 
 class App extends React.Component<any, any> {
   constructor(props: any) {
@@ -63,17 +71,46 @@ class App extends React.Component<any, any> {
     await dispatch(getNotificationAction());
 
     const notification: Notification = store.getState().userListState.notification;
-    const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
+    const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nアップデートを開始します。`;
 
     /**
      * バージョンチェック
      * 実行しているアプリケーションのバージョンが最新ではない場合、
      * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
      */
-    if (notification.latestAppVersion !== APP_VERSION) {
-      this._showMessageBox(updateNotificationMessage);
-      remote.shell.openExternal(APP_DOWNLOAD_URL);
-      remote.getCurrentWindow().destroy();
+    // if (notification.latestAppVersion !== APP_VERSION) {
+    if (1) {
+      const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+        title: APP_NAME,
+        type: 'info',
+        buttons: ['開始', '終了'],
+        message: updateNotificationMessage
+      });
+
+      switch (index) {
+        case 0:
+          // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
+          switch (remote.process.platform) {
+            case 'win32':
+              ipcRenderer.send('updateApp', `${UPDATE_INSTALLER_FILENAME}.exe`, notification.updateInstallerURLs.windows);
+              break;
+
+            case 'darwin':
+              ipcRenderer.send('updateApp', `${UPDATE_INSTALLER_FILENAME}.dmg`, notification.updateInstallerURLs.mac);
+              break;
+
+            default:
+              break;
+          }
+          // remote.shell.openExternal(APP_DOWNLOAD_URL);
+          // remote.getCurrentWindow().destroy();
+          break;
+
+        default:
+          remote.getCurrentWindow().destroy();
+          break;
+      }
+
       return;
     }
 
@@ -86,7 +123,8 @@ class App extends React.Component<any, any> {
         title: APP_NAME,
         type: 'info',
         buttons: ['YES', 'NO'],
-        message: `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
+        message: `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。
+        `
       });
 
       let openAtLogin;
@@ -248,6 +286,36 @@ class App extends React.Component<any, any> {
     await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
     ipcRenderer.send('close');
   });
+
+  updateOnStarted = ipcRenderer.on('updateOnStarted', (event: any) => {
+    alert('updateOnStarted');
+  });
+
+  updateOnCancel = ipcRenderer.on('updateOnCancel', (event: any) => {
+    alert('updateOnCancel');
+  });
+
+  updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any) => {
+    alert('updateOnProgress');
+  });
+
+  updateInstallerDownloadOnSccess = ipcRenderer.on('updateInstallerDownloadOnSccess', (event: any, savePath: string) => {
+    try {
+      execFileSync(savePath);
+      remote.getCurrentWindow().destroy();
+    } catch (error) {
+      alert(`${APP_NAME}のアップデートに失敗しました。`);
+      remote.getCurrentWindow().destroy();
+      return;
+    }
+  });
+
+  updateInstallerDownloadOnFailed = ipcRenderer.on(
+    'updateInstallerDownloadOnFailed',
+    async (event: any, errorMessage: string) => {
+      alert(errorMessage);
+    }
+  );
 
   _showMessageBox = (message: any) => {
     remote.dialog.showMessageBox(remote.getCurrentWindow(), {

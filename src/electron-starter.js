@@ -18,6 +18,7 @@ const DEFAULT_LOAD_URL = 'http://********/';
 global.ERROR_PAGE_FILEPATH = './public/error.html';
 // WEBアプリケーションに接続できたかどうか
 global.isConnectedForWebApp = false;
+
 /**
  * 環境変数が設定されていればその設定値を接続先を使用する
  * 設定されていなければ、当プログラムにて定義した接続先を使用する
@@ -203,24 +204,34 @@ electron.ipcMain.on('connected', (event, arg) => {
   global.isConnectedForWebApp = arg;
 });
 
-electron.ipcMain.on('updateApp', (event, arg) => {
+electron.ipcMain.on('updateApp', (event, filename, downloadURL) => {
   const downloadOptions = {
     directory: app.getPath('temp'),
-    filename: arg[0]
+    filename,
+    errorTitle: APP_NAME,
+    errorMessage: 'アップデートに失敗しました。',
+    onStarted: updateOnStarted,
+    onCancel: updateOnCancel,
+    onProgress: updateOnProgress
   };
 
-  download(mainWindow, arg[1], downloadOptions)
+  download(mainWindow, downloadURL, downloadOptions)
     .then(dl => {
-      console.log('Download successfully completed', dl.getSavePath());
-      // execFile(path.join(''), (err, stdout, stderr) => {
-      //   if (err) {
-      //     console.log('Failed to run installer');
-      //     throw err;
-      //   }
-      //   console.log('Failed to run installer');
-      // });
+      mainWindow.webContents.send('updateInstallerDownloadOnSccess', dl.getSavePath());
     })
     .catch(err => {
-      console.error('Download failed', err.message);
+      mainWindow.webContents.send('updateInstallerDownloadOnFailed', err.message);
     });
 });
+
+function updateOnStarted() {
+  mainWindow.webContents.send('updateOnStarted');
+}
+
+function updateOnCancel() {
+  mainWindow.webContents.send('updateOnCancel');
+}
+
+function updateOnProgress() {
+  mainWindow.webContents.send('updateOnProgress');
+}
