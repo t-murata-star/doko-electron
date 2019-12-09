@@ -291,10 +291,6 @@ class App extends React.Component<any, any> {
     alert('updateOnStarted');
   });
 
-  updateOnCancel = ipcRenderer.on('updateOnCancel', (event: any) => {
-    alert('updateOnCancel');
-  });
-
   updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any) => {
     alert('updateOnProgress');
   });
