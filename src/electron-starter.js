@@ -135,19 +135,18 @@ function createWindow() {
     item.setSavePath(updateInstallerFilepath);
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
-        console.log('Download is interrupted but can be resumed');
+        showUpdateResumeMessage(item);
       } else if (state === 'progressing') {
         if (item.isPaused()) {
-          console.log('Download is paused');
+          showUpdateResumeMessage(item);
         } else {
-          mainWindow.webContents.send('updateOnProgress', item);
+          mainWindow.webContents.send('updateOnProgress');
         }
       }
     });
     item.once('done', (event, state) => {
       if (state === 'completed') {
-        console.log('Download successfully');
-        mainWindow.webContents.send('updateInstallerDownloadOnSccess', item.getSavePath());
+        mainWindow.webContents.send('updateInstallerDownloadOnSccess');
       } else {
         mainWindow.webContents.send('updateInstallerDownloadOnFailed');
       }
@@ -155,6 +154,27 @@ function createWindow() {
   });
 
   createTray();
+}
+
+function showUpdateResumeMessage(item) {
+  const index = electron.dialog.showMessageBox(mainWindow, {
+    title: APP_NAME,
+    type: 'info',
+    buttons: ['OK', 'Cancel'],
+    message: '通信に失敗したため、アップデートを中止しました。\n再開しますか？'
+  });
+
+  switch (index) {
+    // ダイアログで「OK」を選択した場合
+    case 0:
+      item.resume();
+      break;
+
+    // ダイアログで「OK」以外を選択した場合
+    default:
+      mainWindow.destroy();
+      break;
+  }
 }
 
 // タスクトレイを作成
@@ -228,8 +248,8 @@ electron.ipcMain.on('connected', (event, arg) => {
   global.isConnectedForWebApp = arg;
 });
 
-electron.ipcMain.on('updateApp', (event, filename, downloadURL) => {
-  updateInstallerFilepath = path.join(app.getPath('temp'), filename);
+electron.ipcMain.on('updateApp', (event, filepath, downloadURL) => {
+  updateInstallerFilepath = filepath;
   const webContents = mainWindow.webContents;
-  webContents.downloadURL('http://localhost:3001/');
+  webContents.downloadURL('http://localhost:3001');
 });

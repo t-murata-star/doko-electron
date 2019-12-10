@@ -19,14 +19,7 @@ import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUse
 import OfficeInfo from '../containers/OfficeInfoPanel';
 import Settings from '../containers/SettingsPanel';
 import UserList from '../containers/UserListPanel';
-import {
-  APP_DOWNLOAD_URL,
-  APP_NAME,
-  APP_VERSION,
-  AUTH_REQUEST_HEADERS,
-  HEARTBEAT_INTERVAL_MS,
-  UPDATE_INSTALLER_FILENAME
-} from '../define';
+import { APP_NAME, APP_VERSION, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, UPDATE_INSTALLER_FILENAME } from '../define';
 import { Notification, UserInfo } from '../define/model';
 import store from '../store/configureStore';
 import './App.scss';
@@ -38,8 +31,14 @@ const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 const execFileSync = window.require('child_process').execFileSync;
+const path = require('path');
 
 class App extends React.Component<any, any> {
+  updateInstallerURLs = {
+    windows: '',
+    mac: ''
+  };
+
   constructor(props: any) {
     super(props);
     this.state = { activeIndex: 0 };
@@ -71,6 +70,8 @@ class App extends React.Component<any, any> {
     await dispatch(getNotificationAction());
 
     const notification: Notification = store.getState().userListState.notification;
+    this.updateInstallerURLs.windows = notification.updateInstallerURLs.windows;
+    this.updateInstallerURLs.mac = notification.updateInstallerURLs.mac;
     const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nアップデートを開始します。`;
 
     /**
@@ -80,37 +81,8 @@ class App extends React.Component<any, any> {
      */
     // if (notification.latestAppVersion !== APP_VERSION) {
     if (1) {
-      const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-        title: APP_NAME,
-        type: 'info',
-        buttons: ['開始', '終了'],
-        message: updateNotificationMessage
-      });
-
-      switch (index) {
-        case 0:
-          // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
-          switch (remote.process.platform) {
-            case 'win32':
-              ipcRenderer.send('updateApp', `${UPDATE_INSTALLER_FILENAME}.exe`, notification.updateInstallerURLs.windows);
-              break;
-
-            case 'darwin':
-              ipcRenderer.send('updateApp', `${UPDATE_INSTALLER_FILENAME}.dmg`, notification.updateInstallerURLs.mac);
-              break;
-
-            default:
-              break;
-          }
-          // remote.shell.openExternal(APP_DOWNLOAD_URL);
-          // remote.getCurrentWindow().destroy();
-          break;
-
-        default:
-          remote.getCurrentWindow().destroy();
-          break;
-      }
-
+      const index = this._showMessageBoxWithReturnValue('開始', '終了', updateNotificationMessage);
+      this._updateApp(index);
       return;
     }
 
@@ -119,13 +91,11 @@ class App extends React.Component<any, any> {
      * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
      */
     if (!electronStore.get('startup.notified') && !electronStore.get('notified_startup')) {
-      const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-        title: APP_NAME,
-        type: 'info',
-        buttons: ['YES', 'NO'],
-        message: `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。
-        `
-      });
+      const index = this._showMessageBoxWithReturnValue(
+        'YES',
+        'NO',
+        `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
+      );
 
       let openAtLogin;
 
@@ -306,18 +276,52 @@ class App extends React.Component<any, any> {
     }
   });
 
-  updateInstallerDownloadOnFailed = ipcRenderer.on(
-    'updateInstallerDownloadOnFailed',
-    async (event: any, errorMessage: string) => {
-      alert(errorMessage);
+  updateInstallerDownloadOnFailed = ipcRenderer.on('updateInstallerDownloadOnFailed', (event: any, errorMessage: string) => {
+    const index = this._showMessageBoxWithReturnValue('OK', 'Cancel', `アップデートに失敗しました。\n再開しますか？`);
+    this._updateApp(index);
+  });
+
+  _updateApp(index: number) {
+    let updateInstallerFilepath = '';
+    switch (index) {
+      case 0:
+        // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
+        switch (remote.process.platform) {
+          case 'win32':
+            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), UPDATE_INSTALLER_FILENAME)}_${APP_VERSION}.exe`;
+            ipcRenderer.send('updateApp', updateInstallerFilepath, this.updateInstallerURLs.windows);
+            break;
+
+          case 'darwin':
+            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), UPDATE_INSTALLER_FILENAME)}_${APP_VERSION}.dmg`;
+            ipcRenderer.send('updateApp', updateInstallerFilepath, this.updateInstallerURLs.mac);
+            break;
+
+          default:
+            break;
+        }
+        break;
+
+      default:
+        remote.getCurrentWindow().destroy();
+        break;
     }
-  );
+  }
 
   _showMessageBox = (message: any) => {
     remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: APP_NAME,
       type: 'info',
       buttons: ['OK'],
+      message
+    });
+  };
+
+  _showMessageBoxWithReturnValue = (OKButtonText: string, cancelButtonText: string, message: any): number => {
+    return remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+      title: APP_NAME,
+      type: 'info',
+      buttons: [OKButtonText, cancelButtonText],
       message
     });
   };
