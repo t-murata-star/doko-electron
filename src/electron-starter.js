@@ -12,6 +12,8 @@ const VERSION = process.env.npm_package_version || '';
 const DEFAULT_LOAD_URL = 'http://********/';
 // アップデートのためのアプリケーションインストーラのダウンロード先ファイルパス
 let updateInstallerFilepath = '';
+// ElectronAPIのDownloadItemクラスをグローバル変数として格納するための変数
+let electronDownloadItem;
 
 // 【メイン・レンダラープロセス共通で使用するグローバル変数】
 // 通信エラーによりWEBアプリケーションの読み込みに失敗した場合に表示されるエラー画面のファイルパス
@@ -80,6 +82,9 @@ function createWindow() {
         if (global.isConnectedForWebApp === true) {
           mainWindow.webContents.send('closeApp');
         } else {
+          if (electronDownloadItem) {
+            electronDownloadItem.cancel();
+          }
           mainWindow.destroy();
         }
         break;
@@ -131,7 +136,7 @@ function createWindow() {
   });
 
   mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
-    // TODO:ファイル名に、アプリケーションのバージョン(latestAppVersion)を付与する。
+    electronDownloadItem = item;
     item.setSavePath(updateInstallerFilepath);
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
@@ -140,7 +145,7 @@ function createWindow() {
         if (item.isPaused()) {
           showUpdateResumeMessage(item);
         } else {
-          mainWindow.webContents.send('updateOnProgress');
+          mainWindow.webContents.send('updateOnProgress', item.getReceivedBytes());
         }
       }
     });
@@ -161,17 +166,29 @@ function showUpdateResumeMessage(item) {
     title: APP_NAME,
     type: 'info',
     buttons: ['OK', 'Cancel'],
-    message: '通信に失敗したため、アップデートを中止しました。\n再開しますか？'
+    message: '通信に失敗したため、ダウンロードを中止しました。\n再開しますか？'
   });
 
   switch (index) {
     // ダイアログで「OK」を選択した場合
     case 0:
-      item.resume();
+      if (item.canResume()) {
+        item.resume();
+      } else {
+        electron.dialog.showMessageBox(mainWindow, {
+          title: APP_NAME,
+          type: 'warning',
+          buttons: ['OK'],
+          message: 'ダウンロードの再開に失敗しました。'
+        });
+        item.cancel();
+        mainWindow.destroy();
+      }
       break;
 
     // ダイアログで「OK」以外を選択した場合
     default:
+      item.cancel();
       mainWindow.destroy();
       break;
   }
@@ -233,23 +250,26 @@ if (!gotTheLock) {
 }
 
 // レンダラープロセスからメインプロセスへのデータ送信（非同期通信）
-electron.ipcMain.on('close', (event, arg) => {
+electron.ipcMain.on('close', event => {
+  if (electronDownloadItem) {
+    electronDownloadItem.cancel();
+  }
   mainWindow.destroy();
 });
 
-electron.ipcMain.on('reload', (event, arg) => {
+electron.ipcMain.on('reload', event => {
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     mainWindow.loadFile(global.ERROR_PAGE_FILEPATH);
   });
 });
 
-electron.ipcMain.on('connected', (event, arg) => {
-  global.isConnectedForWebApp = arg;
+electron.ipcMain.on('connected', (event, isConnected) => {
+  global.isConnectedForWebApp = isConnected;
 });
 
 electron.ipcMain.on('updateApp', (event, filepath, downloadURL) => {
   updateInstallerFilepath = filepath;
   const webContents = mainWindow.webContents;
-  webContents.downloadURL('http://localhost:3001');
+  webContents.downloadURL(downloadURL);
 });

@@ -26,9 +26,15 @@ export class Notification {
   enabled: boolean = false;
   content: string = '';
   latestAppVersion: string = '';
-  updateInstallerURLs = {
-    windows: '',
-    mac: ''
+  updateInstaller = {
+    windows: {
+      url: '',
+      fileByteSize: 0
+    },
+    mac: {
+      url: '',
+      fileByteSize: 0
+    }
   };
 }
 

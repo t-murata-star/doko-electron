@@ -26,6 +26,7 @@ import './App.scss';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
+import Progress from './Progress';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -34,14 +35,15 @@ const execFileSync = window.require('child_process').execFileSync;
 const path = require('path');
 
 class App extends React.Component<any, any> {
-  updateInstallerURLs = {
-    windows: '',
-    mac: ''
-  };
-
   constructor(props: any) {
     super(props);
-    this.state = { activeIndex: 0 };
+    this.state = {
+      activeIndex: 0,
+      isUpdating: false,
+      fileByteSize: 0,
+      receivedBytes: 0,
+      progress: 0
+    };
   }
 
   async componentDidMount() {
@@ -70,8 +72,6 @@ class App extends React.Component<any, any> {
     await dispatch(getNotificationAction());
 
     const notification: Notification = store.getState().userListState.notification;
-    this.updateInstallerURLs.windows = notification.updateInstallerURLs.windows;
-    this.updateInstallerURLs.mac = notification.updateInstallerURLs.mac;
     const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nアップデートを開始します。`;
 
     /**
@@ -80,8 +80,9 @@ class App extends React.Component<any, any> {
      * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
      */
     // if (notification.latestAppVersion !== APP_VERSION) {
+    this.setState({ isUpdating: true });
     if (1) {
-      const index = this._showMessageBoxWithReturnValue('開始', '終了', updateNotificationMessage);
+      const index = this._showMessageBoxWithReturnValue('OK', 'Cancel', updateNotificationMessage);
       this._updateApp(index);
       return;
     }
@@ -96,7 +97,6 @@ class App extends React.Component<any, any> {
         'NO',
         `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
       );
-
       let openAtLogin;
 
       switch (index) {
@@ -257,12 +257,24 @@ class App extends React.Component<any, any> {
     ipcRenderer.send('close');
   });
 
-  updateOnStarted = ipcRenderer.on('updateOnStarted', (event: any) => {
-    alert('updateOnStarted');
-  });
+  updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
+    const notification: Notification = store.getState().userListState.notification;
+    switch (remote.process.platform) {
+      case 'win32':
+        this.setState({ fileByteSize: notification.updateInstaller.windows.fileByteSize });
+        this.setState({ progress: Math.round((receivedBytes / this.state.fileByteSize) * 1000) / 10 });
+        this.setState({ receivedBytes: receivedBytes });
+        break;
 
-  updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any) => {
-    alert('updateOnProgress');
+      case 'darwin':
+        this.setState({ fileByteSize: notification.updateInstaller.mac.fileByteSize });
+        this.setState({ progress: Math.round((receivedBytes / this.state.fileByteSize) * 1000) / 10 });
+        this.setState({ receivedBytes: receivedBytes });
+        break;
+
+      default:
+        break;
+    }
   });
 
   updateInstallerDownloadOnSccess = ipcRenderer.on('updateInstallerDownloadOnSccess', (event: any, savePath: string) => {
@@ -270,18 +282,19 @@ class App extends React.Component<any, any> {
       execFileSync(savePath);
       remote.getCurrentWindow().destroy();
     } catch (error) {
-      alert(`${APP_NAME}のアップデートに失敗しました。`);
+      this._showMessageBox(`${APP_NAME}インストーラの実行に失敗しました。`, 'warning');
       remote.getCurrentWindow().destroy();
       return;
     }
   });
 
   updateInstallerDownloadOnFailed = ipcRenderer.on('updateInstallerDownloadOnFailed', (event: any, errorMessage: string) => {
-    const index = this._showMessageBoxWithReturnValue('OK', 'Cancel', `アップデートに失敗しました。\n再開しますか？`);
+    const index = this._showMessageBoxWithReturnValue('OK', 'Cancel', `アップデートに失敗しました。\n再開しますか？`, 'warning');
     this._updateApp(index);
   });
 
   _updateApp(index: number) {
+    const notification: Notification = store.getState().userListState.notification;
     let updateInstallerFilepath = '';
     switch (index) {
       case 0:
@@ -289,12 +302,12 @@ class App extends React.Component<any, any> {
         switch (remote.process.platform) {
           case 'win32':
             updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), UPDATE_INSTALLER_FILENAME)}_${APP_VERSION}.exe`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, this.updateInstallerURLs.windows);
+            ipcRenderer.send('updateApp', updateInstallerFilepath, notification.updateInstaller.windows.url);
             break;
 
           case 'darwin':
             updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), UPDATE_INSTALLER_FILENAME)}_${APP_VERSION}.dmg`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, this.updateInstallerURLs.mac);
+            ipcRenderer.send('updateApp', updateInstallerFilepath, notification.updateInstaller.mac.url);
             break;
 
           default:
@@ -308,16 +321,21 @@ class App extends React.Component<any, any> {
     }
   }
 
-  _showMessageBox = (message: any) => {
+  _showMessageBox = (message: any, type: 'info' | 'warning' = 'info') => {
     remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: APP_NAME,
-      type: 'info',
+      type,
       buttons: ['OK'],
       message
     });
   };
 
-  _showMessageBoxWithReturnValue = (OKButtonText: string, cancelButtonText: string, message: any): number => {
+  _showMessageBoxWithReturnValue = (
+    OKButtonText: string,
+    cancelButtonText: string,
+    message: any,
+    type: 'info' | 'warning' = 'info'
+  ): number => {
     return remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: APP_NAME,
       type: 'info',
@@ -357,6 +375,12 @@ class App extends React.Component<any, any> {
     return (
       <div>
         <Loading state={store.getState()} />
+        <Progress
+          isUpdating={this.state.isUpdating}
+          fileByteSize={this.state.fileByteSize}
+          receivedBytes={this.state.receivedBytes}
+          progress={this.state.progress}
+        />
         {myUserID !== -1 && (
           <div>
             <MaterialThemeProvider theme={tabTheme}>
