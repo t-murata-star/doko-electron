@@ -19,7 +19,14 @@ import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUse
 import OfficeInfo from '../containers/OfficeInfoPanel';
 import Settings from '../containers/SettingsPanel';
 import UserList from '../containers/UserListPanel';
-import { APP_NAME, APP_VERSION, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS, UPDATE_INSTALLER_FILENAME } from '../define';
+import {
+  APP_DOWNLOAD_URL,
+  APP_NAME,
+  APP_VERSION,
+  AUTH_REQUEST_HEADERS,
+  HEARTBEAT_INTERVAL_MS,
+  UPDATE_INSTALLER_FILENAME
+} from '../define';
 import { Notification, UserInfo } from '../define/model';
 import store from '../store/configureStore';
 import './App.scss';
@@ -79,13 +86,19 @@ class App extends React.Component<any, any> {
      * 実行しているアプリケーションのバージョンが最新ではない場合、
      * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
      */
-    // if (notification.latestAppVersion !== APP_VERSION) {
-    this.setState({ isUpdating: true });
-    if (1) {
-      const index = this._showMessageBoxWithReturnValue('OK', 'Cancel', updateNotificationMessage);
-      this._updateApp(index);
+    if (notification.latestAppVersion !== APP_VERSION) {
+      this._showMessageBox(updateNotificationMessage);
+      remote.shell.openExternal(APP_DOWNLOAD_URL);
+      remote.getCurrentWindow().destroy();
       return;
     }
+
+    // if (notification.latestAppVersion !== APP_VERSION) {
+    //   this.setState({ isUpdating: true });
+    //   const index = this._showMessageBoxWithReturnValue('OK', 'Cancel', updateNotificationMessage);
+    //   this._updateApp(index);
+    //   return;
+    // }
 
     /**
      * スタートアップ登録処理。
