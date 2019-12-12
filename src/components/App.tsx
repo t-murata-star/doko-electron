@@ -11,7 +11,8 @@ import {
   returnEmptyUserListActionCreator,
   setMyUserIDActionCreator,
   updateStateUserListActionCreator,
-  updateUserInfoAction
+  updateUserInfoAction,
+  getS3SignedUrlAction
 } from '../actions/userList';
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import MenuButtonGroupForOfficeInfo from '../containers/MenuButtonGroupPanelForOfficeInfo';
@@ -25,7 +26,7 @@ import {
   APP_VERSION,
   AUTH_REQUEST_HEADERS,
   HEARTBEAT_INTERVAL_MS,
-  UPDATE_INSTALLER_FILENAME
+  SAVE_INSTALLER_FILENAME
 } from '../define';
 import { Notification, UserInfo } from '../define/model';
 import store from '../store/configureStore';
@@ -287,6 +288,8 @@ class App extends React.Component<any, any> {
         break;
 
       default:
+        this._showMessageBox(`使用しているPCはアップデートに対応していません。`, 'warning');
+        remote.getCurrentWindow().destroy();
         break;
     }
   });
@@ -307,21 +310,35 @@ class App extends React.Component<any, any> {
     this._updateApp(index);
   });
 
-  _updateApp(index: number) {
+  async _updateApp(index: number) {
+    const { dispatch } = this.props;
     const notification: Notification = store.getState().userListState.notification;
+
     let updateInstallerFilepath = '';
     switch (index) {
       case 0:
         // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
         switch (remote.process.platform) {
           case 'win32':
-            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), UPDATE_INSTALLER_FILENAME)}_${APP_VERSION}.exe`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, notification.updateInstaller.windows.url);
+            await dispatch(getS3SignedUrlAction(notification.updateInstaller.windows.fileName));
+            if (store.getState().userListState.isError.status) {
+              this._showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+              remote.getCurrentWindow().destroy();
+              return;
+            }
+            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.exe`;
+            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().userListState.updateInstallerUrl);
             break;
 
           case 'darwin':
-            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), UPDATE_INSTALLER_FILENAME)}_${APP_VERSION}.dmg`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, notification.updateInstaller.mac.url);
+            await dispatch(getS3SignedUrlAction(notification.updateInstaller.mac.fileName));
+            if (store.getState().userListState.isError.status) {
+              this._showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+              remote.getCurrentWindow().destroy();
+              return;
+            }
+            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.dmg`;
+            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().userListState.updateInstallerUrl);
             break;
 
           default:

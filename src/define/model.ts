@@ -28,11 +28,11 @@ export class Notification {
   latestAppVersion: string = '';
   updateInstaller = {
     windows: {
-      url: '',
+      fileName: '',
       fileByteSize: 0
     },
     mac: {
-      url: '',
+      fileName: '',
       fileByteSize: 0
     }
   };

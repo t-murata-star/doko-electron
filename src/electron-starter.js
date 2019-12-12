@@ -151,7 +151,7 @@ function createWindow() {
     });
     item.once('done', (event, state) => {
       if (state === 'completed') {
-        mainWindow.webContents.send('updateInstallerDownloadOnSccess');
+        mainWindow.webContents.send('updateInstallerDownloadOnSccess', item.getSavePath());
       } else {
         mainWindow.webContents.send('updateInstallerDownloadOnFailed');
       }
