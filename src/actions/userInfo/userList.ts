@@ -1,5 +1,5 @@
-import { API_URL, LOGIN_REQUEST_HEADERS, AUTH_REQUEST_HEADERS, LOGIN_USER } from '../define';
-import { UserInfo, Notification } from '../define/model';
+import { API_URL, LOGIN_REQUEST_HEADERS, AUTH_REQUEST_HEADERS, LOGIN_USER } from '../../define';
+import { UserInfo, Notification } from '../../define/model';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
 

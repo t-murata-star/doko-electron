@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import MenuButtonGroupForOfficeInfo from '../components/MenuButtonGroupForOfficeInfo';
+import MenuButtonGroupForOfficeInfo from '../../components/officeInfo/MenuButtonGroupForOfficeInfo';
 
 function mapStateToProps(state: any) {
   return {

@@ -11,12 +11,12 @@ import {
   initializeSettingStateActionCreator,
   setEmailActionCreator,
   setUserIDActionCreator
-} from '../actions/settings';
-import { setMyUserIDActionCreator, updateUserInfoAction } from '../actions/userList';
-import { APP_NAME, EMAIL_DOMAIN } from '../define';
-import { UserInfo } from '../define/model';
-import store from '../store/configureStore';
-import { getUserInfo, sendHeartbeat } from './common/functions';
+} from '../../actions/settings/settings';
+import { setMyUserIDActionCreator, updateUserInfoAction } from '../../actions/userInfo/userList';
+import { APP_NAME, EMAIL_DOMAIN } from '../../define';
+import { UserInfo } from '../../define/model';
+import store from '../../store/configureStore';
+import { getUserInfo, sendHeartbeat } from '../common/functions';
 import './Settings.css';
 
 const { remote } = window.require('electron');

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import OfficeInfo from '../components/OfficeInfo';
+import OfficeInfo from '../../components/officeInfo/OfficeInfo';
 
 function mapStateToProps(state: any) {
   return {

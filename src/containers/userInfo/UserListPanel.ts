@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import UserList from '../components/UserList';
+import UserList from '../../components/userInfo/UserList';
 
 function mapStateToProps(state: any) {
   const { userList, isFetching, isError } = state.userListState;

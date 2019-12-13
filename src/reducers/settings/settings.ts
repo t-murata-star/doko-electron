@@ -1,4 +1,4 @@
-import * as SettingsActions from '../actions/settings';
+import * as SettingsActions from '../../actions/settings/settings';
 
 export class _SettingsState {
   submitButtonsDisable = {
@@ -6,7 +6,7 @@ export class _SettingsState {
       userChange: true,
       email: true
     }
-  }
+  };
   snackbar = {
     enabled: false,
     message: '',
@@ -17,17 +17,14 @@ export class _SettingsState {
     email: ''
   };
   system = {
-    startupEnabled: false,
+    startupEnabled: false
   };
 }
 
 /**
  * 設定情報のstateを管理するReducer
  */
-export default function settingState(
-  state = new _SettingsState(),
-  action: any
-) {
+export default function settingState(state = new _SettingsState(), action: any) {
   switch (action.type) {
     case SettingsActions.SET_USER_ID:
       return {
@@ -35,7 +32,7 @@ export default function settingState(
         user: {
           ...state.user,
           userID: action.userID
-        },
+        }
       };
     case SettingsActions.SET_EMAIL:
       return {
@@ -43,7 +40,7 @@ export default function settingState(
         user: {
           ...state.user,
           email: action.email
-        },
+        }
       };
     case SettingsActions.CHANGE_DISABLED_SUBMIT_BUTTON_USER_CHANGE:
       return {
@@ -53,8 +50,8 @@ export default function settingState(
           user: {
             ...state.submitButtonsDisable.user,
             userChange: action.disabled
-          },
-        },
+          }
+        }
       };
     case SettingsActions.CHANGE_DISABLED_SUBMIT_BUTTON_EMAIL:
       return {
@@ -64,8 +61,8 @@ export default function settingState(
           user: {
             ...state.submitButtonsDisable.user,
             email: action.disabled
-          },
-        },
+          }
+        }
       };
     case SettingsActions.CHANGE_ENABLED_STARTUP:
       return {
@@ -73,7 +70,7 @@ export default function settingState(
         system: {
           ...state.system,
           startupEnabled: action.enabled
-        },
+        }
       };
     case SettingsActions.CHANGE_ENABLED_SNACKBAR:
       return {
@@ -83,7 +80,7 @@ export default function settingState(
           enabled: action.enabled,
           message: action.message,
           timeoutMs: action.timeoutMs
-        },
+        }
       };
     case SettingsActions.INITIALIZE_SETTING_STATE:
       return new _SettingsState();

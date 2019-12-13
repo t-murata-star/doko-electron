@@ -1,5 +1,5 @@
-import * as Actions from '../actions/userEditModal';
-import { UserInfo } from '../define/model';
+import * as Actions from '../../actions/userInfo/userEditModal';
+import { UserInfo } from '../../define/model';
 
 export class _userEditModal {
   onHide: boolean = false;
@@ -9,10 +9,7 @@ export class _userEditModal {
   userInfo: UserInfo = new UserInfo();
 }
 
-export default function userEditModal(
-  state = new _userEditModal(),
-  action: any
-) {
+export default function userEditModal(state = new _userEditModal(), action: any) {
   switch (action.type) {
     case Actions.SHOW_USER_EDIT_MODAL:
       return {

@@ -1,6 +1,6 @@
-import * as UserListActions from '../actions/userList';
-import { LEAVING_TIME_THRESHOLD_M } from '../define';
-import { UserInfo, RequestError, Notification } from '../define/model';
+import * as UserListActions from '../../actions/userInfo/userList';
+import { LEAVING_TIME_THRESHOLD_M } from '../../define';
+import { UserInfo, RequestError, Notification } from '../../define/model';
 
 export class _UserListState {
   token: string = ''; // 認証トークン。このトークンを用いてAPIサーバにリクエストを行う

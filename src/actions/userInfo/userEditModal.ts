@@ -1,4 +1,4 @@
-import { UserInfo } from '../define/model';
+import { UserInfo } from '../../define/model';
 
 /**
  * Action type

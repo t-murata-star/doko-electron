@@ -1,6 +1,6 @@
 import { UserInfo } from "../../define/model";
 import store from '../../store/configureStore';
-import { sendHeartbeatAction } from '../../actions/userList';
+import { sendHeartbeatAction } from '../../actions/userInfo/userList';
 
 // ※戻り値の userInfo は userList の参照である事に注意
 export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {

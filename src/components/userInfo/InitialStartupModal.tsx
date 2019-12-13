@@ -2,7 +2,7 @@ import MaterialUiButton from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
-import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
+import { closeInitialStartupModalActionCreator } from '../../actions/initialStartupModal';
 import {
   addUserAction,
   getUserListAction,
@@ -10,10 +10,10 @@ import {
   updateForAddedUserInfoAction,
   updateStateUserListActionCreator,
   updateUserInfoAction
-} from '../actions/userList';
-import { UserInfo } from '../define/model';
-import store from '../store/configureStore';
-import { getUserInfo, sendHeartbeat } from './common/functions';
+} from '../../actions/userInfo/userList';
+import { UserInfo } from '../../define/model';
+import store from '../../store/configureStore';
+import { getUserInfo, sendHeartbeat } from '../common/functions';
 import './InitialStartupModal.css';
 
 const { remote } = window.require('electron');

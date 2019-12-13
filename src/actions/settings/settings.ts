@@ -7,7 +7,7 @@ export const CHANGE_DISABLED_SUBMIT_BUTTON_USER_CHANGE = 'CHANGE_DISABLED_SUBMIT
 export const CHANGE_DISABLED_SUBMIT_BUTTON_EMAIL = 'CHANGE_DISABLED_SUBMIT_BUTTON_EMAIL';
 export const CHANGE_ENABLED_STARTUP = 'CHANGE_ENABLED_STARTUP';
 export const CHANGE_ENABLED_SNACKBAR = 'CHANGE_ENABLED_SNACKBAR';
-export const INITIALIZE_SETTING_STATE = 'INITIALIZE_SETTING_STATE'
+export const INITIALIZE_SETTING_STATE = 'INITIALIZE_SETTING_STATE';
 
 /**
  * Action Creator
@@ -39,5 +39,5 @@ export const changeEnabledSnackbarActionCreator = (enabled: boolean, message: st
   timeoutMs
 });
 export const initializeSettingStateActionCreator = () => ({
-  type: INITIALIZE_SETTING_STATE,
+  type: INITIALIZE_SETTING_STATE
 });

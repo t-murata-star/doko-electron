@@ -5,11 +5,11 @@ import Button from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
-import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../actions/userEditModal';
-import { getUserListAction } from '../actions/userList';
-import UserEditModal from '../containers/UserEditModalPanel';
-import store from '../store/configureStore';
-import { getUserInfo } from './common/functions';
+import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../../actions/userInfo/userEditModal';
+import { getUserListAction } from '../../actions/userInfo/userList';
+import UserEditModal from '../../containers/userInfo/UserEditModalPanel';
+import store from '../../store/configureStore';
+import { getUserInfo } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 

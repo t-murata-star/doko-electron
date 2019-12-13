@@ -2,8 +2,8 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
-import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
-import { getRestroomUsageAction } from '../actions/officeInfo';
+import { showInitialStartupModalActionCreator } from '../../actions/initialStartupModal';
+import { getRestroomUsageAction } from '../../actions/officeInfo/officeInfo';
 import {
   getNotificationAction,
   getUserListAction,
@@ -13,13 +13,13 @@ import {
   updateStateUserListActionCreator,
   updateUserInfoAction,
   getS3SignedUrlAction
-} from '../actions/userList';
-import InitialStartupModal from '../containers/InitialStartupModalPanel';
-import MenuButtonGroupForOfficeInfo from '../containers/MenuButtonGroupPanelForOfficeInfo';
-import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUserList';
-import OfficeInfo from '../containers/OfficeInfoPanel';
-import Settings from '../containers/SettingsPanel';
-import UserList from '../containers/UserListPanel';
+} from '../../actions/userInfo/userList';
+import InitialStartupModal from '../../containers/InitialStartupModalPanel';
+import MenuButtonGroupForOfficeInfo from '../../containers/officeInfo/MenuButtonGroupPanelForOfficeInfo';
+import MenuButtonGroupForUserList from '../../containers/userInfo/MenuButtonGroupPanelForUserList';
+import OfficeInfo from '../../containers/officeInfo/OfficeInfoPanel';
+import Settings from '../../containers/settings/SettingsPanel';
+import UserList from '../../containers/userInfo/UserListPanel';
 import {
   APP_DOWNLOAD_URL,
   APP_NAME,
@@ -27,14 +27,14 @@ import {
   AUTH_REQUEST_HEADERS,
   HEARTBEAT_INTERVAL_MS,
   SAVE_INSTALLER_FILENAME
-} from '../define';
-import { Notification, UserInfo } from '../define/model';
-import store from '../store/configureStore';
+} from '../../define';
+import { Notification, UserInfo } from '../../define/model';
+import store from '../../store/configureStore';
 import './App.scss';
-import { getUserInfo, sendHeartbeat } from './common/functions';
-import Loading from './Loading';
-import { tabTheme } from './materialui/theme';
-import Progress from './Progress';
+import { getUserInfo, sendHeartbeat } from '../common/functions';
+import Loading from '../Loading';
+import { tabTheme } from '../materialui/theme';
+import Progress from '../Progress';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');

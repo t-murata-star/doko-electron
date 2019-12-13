@@ -1,5 +1,5 @@
-import * as OfficeInfoActions from '../actions/officeInfo';
-import { Restroom, RequestError } from '../define/model';
+import * as OfficeInfoActions from '../../actions/officeInfo/officeInfo';
+import { Restroom, RequestError } from '../../define/model';
 
 export class _OfficeInfoState {
   isFetching: boolean = false;
@@ -10,7 +10,7 @@ export class _OfficeInfoState {
     isNoVacancyForWomen: false,
     vacancyForMen: -1,
     vacancyForWomen: -1
-  }
+  };
 }
 
 export function officeInfoIsFetching(action: any) {
@@ -22,10 +22,7 @@ export function officeInfoIsFetching(action: any) {
   }
 }
 
-export function officrInfoIsError(
-  state = new RequestError(),
-  action: any
-) {
+export function officrInfoIsError(state = new RequestError(), action: any) {
   switch (action.type) {
     case OfficeInfoActions.REQUEST_ERROR:
       return {
@@ -54,10 +51,7 @@ export function officrInfoIsError(
 /**
  * 登録者情報一覧のstateを管理するReducer
  */
-export default function officeInfoState(
-  state = new _OfficeInfoState(),
-  action: any
-) {
+export default function officeInfoState(state = new _OfficeInfoState(), action: any) {
   switch (action.type) {
     case OfficeInfoActions.GET_RESTROOM_USAGE:
       return {

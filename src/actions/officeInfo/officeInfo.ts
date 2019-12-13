@@ -1,4 +1,4 @@
-import { API_URL, AUTH_REQUEST_HEADERS } from '../define';
+import { API_URL, AUTH_REQUEST_HEADERS } from '../../define';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
 

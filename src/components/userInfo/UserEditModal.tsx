@@ -15,11 +15,16 @@ import {
   enableSubmitButtonActionCreator,
   handleEditUserActionCreator,
   inputClearActionCreator
-} from '../actions/userEditModal';
-import { deleteUserAction, getUserListAction, setMyUserIDActionCreator, updateUserInfoAction } from '../actions/userList';
-import { APP_NAME, STATUS_LIST } from '../define';
-import { UserInfo } from '../define/model';
-import store from '../store/configureStore';
+} from '../../actions/userInfo/userEditModal';
+import {
+  deleteUserAction,
+  getUserListAction,
+  setMyUserIDActionCreator,
+  updateUserInfoAction
+} from '../../actions/userInfo/userList';
+import { APP_NAME, STATUS_LIST } from '../../define';
+import { UserInfo } from '../../define/model';
+import store from '../../store/configureStore';
 import './UserEditModal.css';
 
 const { remote } = window.require('electron');
