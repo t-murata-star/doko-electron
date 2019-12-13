@@ -288,7 +288,7 @@ class App extends React.Component<any, any> {
         break;
 
       default:
-        this._showMessageBox(`使用しているPCはアップデートに対応していません。`, 'warning');
+        this._showMessageBox(`使用中のPCはアップデートに対応していません。`, 'warning');
         remote.getCurrentWindow().destroy();
         break;
     }
