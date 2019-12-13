@@ -58,10 +58,10 @@ export const requestErrorActionCreator = (statusCode: number, statusText: string
 export const getUserListActionCreator = () => ({
   type: GET_USER_LIST
 });
-export const getUserListSccessActionCreator = (json: Object) => ({
+export const getUserListSccessActionCreator = (userList: UserInfo[]) => ({
   type: GET_USER_LIST_SUCCESS,
   payload: {
-    response: json
+    response: userList
   }
 });
 export const addUserActionCreator = () => ({
@@ -80,10 +80,10 @@ export const deleteUserSuccessActionCreator = () => ({
 export const updateUserInfoActionCreator = () => ({
   type: UPDATE_USER_INFO
 });
-export const updateUserInfoSuccessActionCreator = (json: Object) => ({
+export const updateUserInfoSuccessActionCreator = (userList: UserInfo) => ({
   type: UPDATE_USER_INFO_SUCCESS,
   payload: {
-    response: json
+    response: userList
   }
 });
 export const updateStateUserListActionCreator = (userList: UserInfo[]) => ({
@@ -153,7 +153,7 @@ export const loginAction = () => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(loginActionCreator());
     try {
-      const res = await fetch(API_URL + 'auth/login', {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: LOGIN_REQUEST_HEADERS,
         body: JSON.stringify(LOGIN_USER)
@@ -174,7 +174,7 @@ export const deleteUserAction = (userID: number) => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(deleteUserActionCreator());
     try {
-      const res = await fetch(API_URL + 'userList/' + userID, {
+      const res = await fetch(`${API_URL}/userList/${userID}`, {
         method: 'DELETE',
         headers: AUTH_REQUEST_HEADERS
       });
@@ -197,7 +197,7 @@ export const addUserAction = (userInfo: UserInfo) => {
     const body = Object.assign({}, userInfo);
     delete body['id'];
     try {
-      const res = await fetch(API_URL + 'userList', {
+      const res = await fetch(`${API_URL}/userList`, {
         method: 'POST',
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(body)
@@ -220,7 +220,7 @@ export const getUserListAction = (sleepMs: number = 0) => {
     dispatch(getUserListActionCreator());
     try {
       await sleep(sleepMs);
-      const res = await fetch(API_URL + 'userList', {
+      const res = await fetch(`${API_URL}/userList`, {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
       });
@@ -243,7 +243,7 @@ export const changeOrderAction = (userInfo: { order: number }, userID: number) =
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(changeOrderActionCreator());
     try {
-      const res = await fetch(API_URL + 'userList/' + userID, {
+      const res = await fetch(`${API_URL}/userList/${userID}`, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(userInfo)
@@ -270,7 +270,7 @@ export const updateUserInfoAction = (userInfo: UserInfo, userID: number) => {
     delete body['order'];
     delete body['heartbeat'];
     try {
-      const res = await fetch(API_URL + 'userList/' + userID, {
+      const res = await fetch(`${API_URL}/userList/${userID}`, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(body)
@@ -295,7 +295,7 @@ export const updateForAddedUserInfoAction = (userInfo: UserInfo, userID: number)
     const body = Object.assign({}, userInfo);
     delete body['id'];
     try {
-      const res = await fetch(API_URL + 'userList/' + userID, {
+      const res = await fetch(`${API_URL}/userList/${userID}`, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
         body: JSON.stringify(body)
@@ -317,7 +317,7 @@ export const getNotificationAction = () => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getNotificationActionCreator());
     try {
-      const res = await fetch(API_URL + 'notification', {
+      const res = await fetch(`${API_URL}/notification`, {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
       });
@@ -341,7 +341,7 @@ export const sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
     const body = Object.assign({}, userInfo);
     delete body['id'];
     delete body['order'];
-    const res = await fetch(API_URL + 'userList/' + userID, {
+    const res = await fetch(`${API_URL}/userList/${userID}`, {
       method: 'PATCH',
       headers: AUTH_REQUEST_HEADERS,
       body: JSON.stringify(body)
@@ -360,7 +360,7 @@ export const getS3SignedUrlAction = (fileName: string) => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getS3SignedUrlActionCreator());
     try {
-      const res = await fetch(API_URL + 'getS3SignedUrl?fileName=' + fileName, {
+      const res = await fetch(`${API_URL}/getS3SignedUrl?fileName=${fileName}`, {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
       });

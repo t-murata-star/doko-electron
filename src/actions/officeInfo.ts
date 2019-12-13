@@ -51,7 +51,7 @@ export const getRestroomUsageAction = (sleepMs: number = 0) => {
     dispatch(getRestroomUsageActionCreator());
     try {
       await sleep(sleepMs);
-      const res = await fetch(API_URL + `restrooms`, {
+      const res = await fetch(`${API_URL}/restrooms`, {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
       });
@@ -82,4 +82,4 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
     default:
       break;
   }
-}
+};

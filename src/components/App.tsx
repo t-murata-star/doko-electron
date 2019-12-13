@@ -135,8 +135,6 @@ class App extends React.Component<any, any> {
     } else {
       electronStore.set('startup.notified', 1);
     }
-    // TODO: notified_startup は廃止予定のため、次回アプリケーションのアップデートの際に該当処理を削除する
-    electronStore.delete('notified_startup');
 
     /**
      * お知らせチェック
