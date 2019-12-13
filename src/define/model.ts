@@ -26,6 +26,16 @@ export class Notification {
   enabled: boolean = false;
   content: string = '';
   latestAppVersion: string = '';
+  updateInstaller = {
+    windows: {
+      fileName: '',
+      fileByteSize: 0
+    },
+    mac: {
+      fileName: '',
+      fileByteSize: 0
+    }
+  };
 }
 
 export class Restroom {

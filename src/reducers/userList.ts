@@ -13,6 +13,7 @@ export class _UserListState {
   myUserID: number = -1;
   selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
   notification: Notification = new Notification();
+  updateInstallerUrl: string = '';
 }
 
 function userListIsFetching(state = false, action: any) {
@@ -28,6 +29,8 @@ function userListIsFetching(state = false, action: any) {
     case UserListActions.DELETE_USER:
       return true;
     case UserListActions.CHECK_NOTIFICATION:
+      return true;
+    case UserListActions.GET_S3_SIGNED_URL:
       return true;
     default:
       return false;
@@ -190,6 +193,11 @@ export default function userListState(state = new _UserListState(), action: any)
       return {
         ...state,
         myUserID: action.userID
+      };
+    case UserListActions.GET_S3_SIGNED_URL_SUCCESS:
+      return {
+        ...state,
+        updateInstallerUrl: action.updateInstallerUrl
       };
     default:
       return state;

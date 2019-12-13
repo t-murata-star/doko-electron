@@ -11,7 +11,8 @@ import {
   returnEmptyUserListActionCreator,
   setMyUserIDActionCreator,
   updateStateUserListActionCreator,
-  updateUserInfoAction
+  updateUserInfoAction,
+  getS3SignedUrlAction
 } from '../actions/userList';
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
 import MenuButtonGroupForOfficeInfo from '../containers/MenuButtonGroupPanelForOfficeInfo';
@@ -19,22 +20,38 @@ import MenuButtonGroupForUserList from '../containers/MenuButtonGroupPanelForUse
 import OfficeInfo from '../containers/OfficeInfoPanel';
 import Settings from '../containers/SettingsPanel';
 import UserList from '../containers/UserListPanel';
-import { APP_DOWNLOAD_URL, APP_NAME, APP_VERSION, AUTH_REQUEST_HEADERS, HEARTBEAT_INTERVAL_MS } from '../define';
+import {
+  APP_DOWNLOAD_URL,
+  APP_NAME,
+  APP_VERSION,
+  AUTH_REQUEST_HEADERS,
+  HEARTBEAT_INTERVAL_MS,
+  SAVE_INSTALLER_FILENAME
+} from '../define';
 import { Notification, UserInfo } from '../define/model';
 import store from '../store/configureStore';
 import './App.scss';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
+import Progress from './Progress';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
+const execFileSync = window.require('child_process').execFileSync;
+const path = require('path');
 
 class App extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = { activeIndex: 0 };
+    this.state = {
+      activeIndex: 0,
+      isUpdating: false,
+      fileByteSize: 0,
+      receivedBytes: 0,
+      progress: 0
+    };
   }
 
   async componentDidMount() {
@@ -64,6 +81,7 @@ class App extends React.Component<any, any> {
 
     const notification: Notification = store.getState().userListState.notification;
     const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
+    // const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nアップデートを開始します。`;
 
     /**
      * バージョンチェック
@@ -77,18 +95,23 @@ class App extends React.Component<any, any> {
       return;
     }
 
+    // if (notification.latestAppVersion !== APP_VERSION) {
+    //   this.setState({ isUpdating: true });
+    //   const index = this._showMessageBoxWithReturnValue('OK', 'Cancel', updateNotificationMessage);
+    //   this._updateApp(index);
+    //   return;
+    // }
+
     /**
      * スタートアップ登録処理。
      * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
      */
     if (!electronStore.get('startup.notified') && !electronStore.get('notified_startup')) {
-      const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-        title: APP_NAME,
-        type: 'info',
-        buttons: ['YES', 'NO'],
-        message: `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
-      });
-
+      const index = this._showMessageBoxWithReturnValue(
+        'YES',
+        'NO',
+        `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
+      );
       let openAtLogin;
 
       switch (index) {
@@ -249,11 +272,105 @@ class App extends React.Component<any, any> {
     ipcRenderer.send('close');
   });
 
-  _showMessageBox = (message: any) => {
+  updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
+    const notification: Notification = store.getState().userListState.notification;
+    switch (remote.process.platform) {
+      case 'win32':
+        this.setState({ fileByteSize: notification.updateInstaller.windows.fileByteSize });
+        this.setState({ progress: Math.round((receivedBytes / this.state.fileByteSize) * 1000) / 10 });
+        this.setState({ receivedBytes: receivedBytes });
+        break;
+
+      case 'darwin':
+        this.setState({ fileByteSize: notification.updateInstaller.mac.fileByteSize });
+        this.setState({ progress: Math.round((receivedBytes / this.state.fileByteSize) * 1000) / 10 });
+        this.setState({ receivedBytes: receivedBytes });
+        break;
+
+      default:
+        this._showMessageBox(`使用中のPCはアップデートに対応していません。`, 'warning');
+        remote.getCurrentWindow().destroy();
+        break;
+    }
+  });
+
+  updateInstallerDownloadOnSccess = ipcRenderer.on('updateInstallerDownloadOnSccess', (event: any, savePath: string) => {
+    try {
+      execFileSync(savePath);
+      remote.getCurrentWindow().destroy();
+    } catch (error) {
+      this._showMessageBox(`${APP_NAME}インストーラの実行に失敗しました。`, 'warning');
+      remote.getCurrentWindow().destroy();
+      return;
+    }
+  });
+
+  updateInstallerDownloadOnFailed = ipcRenderer.on('updateInstallerDownloadOnFailed', (event: any, errorMessage: string) => {
+    const index = this._showMessageBoxWithReturnValue('OK', 'Cancel', `アップデートに失敗しました。\n再開しますか？`, 'warning');
+    this._updateApp(index);
+  });
+
+  async _updateApp(index: number) {
+    const { dispatch } = this.props;
+    const notification: Notification = store.getState().userListState.notification;
+
+    let updateInstallerFilepath = '';
+    switch (index) {
+      case 0:
+        // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
+        switch (remote.process.platform) {
+          case 'win32':
+            await dispatch(getS3SignedUrlAction(notification.updateInstaller.windows.fileName));
+            if (store.getState().userListState.isError.status) {
+              this._showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+              remote.getCurrentWindow().destroy();
+              return;
+            }
+            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.exe`;
+            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().userListState.updateInstallerUrl);
+            break;
+
+          case 'darwin':
+            await dispatch(getS3SignedUrlAction(notification.updateInstaller.mac.fileName));
+            if (store.getState().userListState.isError.status) {
+              this._showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+              remote.getCurrentWindow().destroy();
+              return;
+            }
+            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.dmg`;
+            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().userListState.updateInstallerUrl);
+            break;
+
+          default:
+            break;
+        }
+        break;
+
+      default:
+        remote.getCurrentWindow().destroy();
+        break;
+    }
+  }
+
+  _showMessageBox = (message: any, type: 'info' | 'warning' = 'info') => {
     remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: APP_NAME,
-      type: 'info',
+      type,
       buttons: ['OK'],
+      message
+    });
+  };
+
+  _showMessageBoxWithReturnValue = (
+    OKButtonText: string,
+    cancelButtonText: string,
+    message: any,
+    type: 'info' | 'warning' = 'info'
+  ): number => {
+    return remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+      title: APP_NAME,
+      type: 'info',
+      buttons: [OKButtonText, cancelButtonText],
       message
     });
   };
@@ -289,6 +406,12 @@ class App extends React.Component<any, any> {
     return (
       <div>
         <Loading state={store.getState()} />
+        <Progress
+          isUpdating={this.state.isUpdating}
+          fileByteSize={this.state.fileByteSize}
+          receivedBytes={this.state.receivedBytes}
+          progress={this.state.progress}
+        />
         {myUserID !== -1 && (
           <div>
             <MaterialThemeProvider theme={tabTheme}>
