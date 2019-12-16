@@ -2,24 +2,21 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
-import { showInitialStartupModalActionCreator } from '../../actions/initialStartupModal';
-import { getRestroomUsageAction } from '../../actions/officeInfo/officeInfo';
+import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
+import { loginAction, getNotificationAction, setMyUserIDActionCreator, getS3SignedUrlAction } from '../actions/app';
+import { getRestroomUsageAction } from '../actions/officeInfo/officeInfo';
 import {
-  getNotificationAction,
   getUserListAction,
-  loginAction,
   returnEmptyUserListActionCreator,
-  setMyUserIDActionCreator,
   updateStateUserListActionCreator,
-  updateUserInfoAction,
-  getS3SignedUrlAction
-} from '../../actions/userInfo/userList';
-import InitialStartupModal from '../../containers/InitialStartupModalPanel';
-import MenuButtonGroupForOfficeInfo from '../../containers/officeInfo/MenuButtonGroupPanelForOfficeInfo';
-import MenuButtonGroupForUserList from '../../containers/userInfo/MenuButtonGroupPanelForUserList';
-import OfficeInfo from '../../containers/officeInfo/OfficeInfoPanel';
-import Settings from '../../containers/settings/SettingsPanel';
-import UserList from '../../containers/userInfo/UserListPanel';
+  updateUserInfoAction
+} from '../actions/userInfo/userList';
+import InitialStartupModal from '../containers/InitialStartupModalPanel';
+import MenuButtonGroupForOfficeInfo from '../containers/officeInfo/MenuButtonGroupPanelForOfficeInfo';
+import MenuButtonGroupForUserList from '../containers/userInfo/MenuButtonGroupPanelForUserList';
+import OfficeInfo from '../containers/officeInfo/OfficeInfoPanel';
+import Settings from '../containers/settings/SettingsPanel';
+import UserList from '../containers/userInfo/UserListPanel';
 import {
   APP_DOWNLOAD_URL,
   APP_NAME,
@@ -27,14 +24,14 @@ import {
   AUTH_REQUEST_HEADERS,
   HEARTBEAT_INTERVAL_MS,
   SAVE_INSTALLER_FILENAME
-} from '../../define';
-import { Notification, UserInfo } from '../../define/model';
-import store from '../../store/configureStore';
+} from '../define';
+import { Notification, UserInfo } from '../define/model';
+import store from '../store/configureStore';
 import './App.scss';
-import { getUserInfo, sendHeartbeat } from '../common/functions';
-import Loading from '../Loading';
-import { tabTheme } from '../materialui/theme';
-import Progress from '../Progress';
+import { getUserInfo, sendHeartbeat } from './common/functions';
+import Loading from './Loading';
+import { tabTheme } from './materialui/theme';
+import Progress from './Progress';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -63,23 +60,19 @@ class App extends React.Component<any, any> {
 
     await dispatch(loginAction());
 
-    if (store.getState().userListState.isError.status) {
+    if (store.getState().appState.isError.status) {
       ipcRenderer.send('connected', false);
       remote.getCurrentWindow().loadFile(remote.getGlobal('ERROR_PAGE_FILEPATH'));
       return;
     }
 
     // APIリクエストヘッダに認証トークンを設定する
-    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().userListState.token;
-
-    if (store.getState().userListState.isError.status) {
-      return;
-    }
+    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().appState.token;
 
     // お知らせチェック
     await dispatch(getNotificationAction());
 
-    const notification: Notification = store.getState().userListState.notification;
+    const notification: Notification = store.getState().appState.notification;
     const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
     // const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nアップデートを開始します。`;
 
@@ -159,7 +152,7 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    await dispatch(getUserListAction());
+    await dispatch(getUserListAction(userID));
     if (store.getState().userListState.isError.status === true) {
       return;
     }
@@ -215,7 +208,7 @@ class App extends React.Component<any, any> {
   // 状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().userListState['myUserID'];
+    const myUserID = store.getState().appState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
@@ -233,7 +226,7 @@ class App extends React.Component<any, any> {
   // 状態を「在席」に更新する
   electronUnlockScreenEvent = ipcRenderer.on('electronUnlockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().userListState['myUserID'];
+    const myUserID = store.getState().appState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
@@ -253,7 +246,7 @@ class App extends React.Component<any, any> {
   closeApp = ipcRenderer.on('closeApp', async (event: any) => {
     const { dispatch } = this.props;
 
-    const myUserID = store.getState().userListState['myUserID'];
+    const myUserID = store.getState().appState['myUserID'];
     const userList = store.getState().userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
@@ -271,7 +264,7 @@ class App extends React.Component<any, any> {
   });
 
   updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
-    const notification: Notification = store.getState().userListState.notification;
+    const notification: Notification = store.getState().appState.notification;
     switch (remote.process.platform) {
       case 'win32':
         this.setState({ fileByteSize: notification.updateInstaller.windows.fileByteSize });
@@ -310,7 +303,7 @@ class App extends React.Component<any, any> {
 
   async _updateApp(index: number) {
     const { dispatch } = this.props;
-    const notification: Notification = store.getState().userListState.notification;
+    const notification: Notification = store.getState().appState.notification;
 
     let updateInstallerFilepath = '';
     switch (index) {
@@ -319,24 +312,24 @@ class App extends React.Component<any, any> {
         switch (remote.process.platform) {
           case 'win32':
             await dispatch(getS3SignedUrlAction(notification.updateInstaller.windows.fileName));
-            if (store.getState().userListState.isError.status) {
+            if (store.getState().appState.isError.status) {
               this._showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
               return;
             }
             updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.exe`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().userListState.updateInstallerUrl);
+            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().appState.updateInstallerUrl);
             break;
 
           case 'darwin':
             await dispatch(getS3SignedUrlAction(notification.updateInstaller.mac.fileName));
-            if (store.getState().userListState.isError.status) {
+            if (store.getState().appState.isError.status) {
               this._showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
               return;
             }
             updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.dmg`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().userListState.updateInstallerUrl);
+            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().appState.updateInstallerUrl);
             break;
 
           default:
@@ -375,8 +368,8 @@ class App extends React.Component<any, any> {
 
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
+    const myUserID = store.getState().appState.myUserID;
     this.setState({ activeIndex });
-
     // 同じタブを複数押下した場合
     if (this.state.activeIndex === activeIndex) {
       return;
@@ -385,7 +378,7 @@ class App extends React.Component<any, any> {
     switch (activeIndex) {
       // 社内情報タブを選択
       case 0:
-        await dispatch(getUserListAction(250));
+        await dispatch(getUserListAction(myUserID, 250));
         break;
 
       // 社員情報タブを選択
@@ -399,7 +392,7 @@ class App extends React.Component<any, any> {
   };
 
   render() {
-    const myUserID = store.getState().userListState['myUserID'];
+    const myUserID = store.getState().appState['myUserID'];
 
     return (
       <div>

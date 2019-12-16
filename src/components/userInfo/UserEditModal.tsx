@@ -16,12 +16,8 @@ import {
   handleEditUserActionCreator,
   inputClearActionCreator
 } from '../../actions/userInfo/userEditModal';
-import {
-  deleteUserAction,
-  getUserListAction,
-  setMyUserIDActionCreator,
-  updateUserInfoAction
-} from '../../actions/userInfo/userList';
+import { setMyUserIDActionCreator } from '../../actions/app';
+import { deleteUserAction, getUserListAction, updateUserInfoAction } from '../../actions/userInfo/userList';
 import { APP_NAME, STATUS_LIST } from '../../define';
 import { UserInfo } from '../../define/model';
 import store from '../../store/configureStore';
@@ -62,7 +58,8 @@ class UserEditModal extends React.Component<any, any> {
       return;
     }
     this.closeModal();
-    dispatch(getUserListAction(250));
+    const myUserID = store.getState().appState.myUserID;
+    dispatch(getUserListAction(myUserID, 250));
   };
 
   _changeUser = async () => {
@@ -70,7 +67,8 @@ class UserEditModal extends React.Component<any, any> {
     electronStore.set('userID', this.userID);
     await dispatch(setMyUserIDActionCreator(this.userID));
     this.closeModal();
-    dispatch(getUserListAction(250));
+    const myUserID = store.getState().appState.myUserID;
+    dispatch(getUserListAction(myUserID, 250));
   };
 
   onUserInfoChange = (event: any) => {
@@ -93,7 +91,7 @@ class UserEditModal extends React.Component<any, any> {
     dispatch(handleEditUserActionCreator());
   };
 
-  deleteUser = (event: any) => {
+  deleteUser = async (event: any) => {
     const { dispatch } = this.props;
     const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: APP_NAME,
@@ -105,14 +103,15 @@ class UserEditModal extends React.Component<any, any> {
     if (index !== 0) {
       return;
     }
-    dispatch(deleteUserAction(this.props.userInfo['id'])).then(() => {
+    await dispatch(deleteUserAction(this.props.userInfo['id'])).then(() => {
       const userList = store.getState().userListState;
       if (userList.isError.status) {
         this.setState({ isError: true });
         return;
       }
       this.closeModal();
-      dispatch(getUserListAction(250));
+      const myUserID = store.getState().appState.myUserID;
+      dispatch(getUserListAction(myUserID, 250));
     });
   };
 

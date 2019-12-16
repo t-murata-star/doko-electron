@@ -72,15 +72,6 @@ export default function officeInfoState(state = new _OfficeInfoState(), action: 
         isFetching: officeInfoIsFetching(action),
         isError: officrInfoIsError(state.isError, action)
       };
-    case OfficeInfoActions.UNAUTHORIZED:
-      /**
-       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
-       * 画面をリロードして認証トークンを再取得する
-       */
-      window.location.reload();
-      return {
-        ...state
-      };
     case OfficeInfoActions.FAIL_REQUEST:
       return {
         ...state,

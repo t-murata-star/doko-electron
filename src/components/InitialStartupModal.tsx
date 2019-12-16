@@ -2,18 +2,18 @@ import MaterialUiButton from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
-import { closeInitialStartupModalActionCreator } from '../../actions/initialStartupModal';
+import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
+import { setMyUserIDActionCreator } from '../actions/app';
 import {
   addUserAction,
   getUserListAction,
-  setMyUserIDActionCreator,
   updateForAddedUserInfoAction,
   updateStateUserListActionCreator,
   updateUserInfoAction
-} from '../../actions/userInfo/userList';
-import { UserInfo } from '../../define/model';
-import store from '../../store/configureStore';
-import { getUserInfo, sendHeartbeat } from '../common/functions';
+} from '../actions/userInfo/userList';
+import { UserInfo } from '../define/model';
+import store from '../store/configureStore';
+import { getUserInfo, sendHeartbeat } from './common/functions';
 import './InitialStartupModal.css';
 
 const { remote } = window.require('electron');
@@ -61,7 +61,8 @@ class InitialStartupModal extends React.Component<any, any> {
       return;
     }
 
-    const myUserID = userList.myUserID;
+    const myUserID = store.getState().userListState.addedUserInfo.id;
+    dispatch(setMyUserIDActionCreator(myUserID));
 
     // userIDを設定ファイルに登録（既に存在する場合は上書き）
     electronStore.set('userID', myUserID);
@@ -71,7 +72,7 @@ class InitialStartupModal extends React.Component<any, any> {
     addedUserInfo['order'] = myUserID;
 
     await dispatch(updateForAddedUserInfoAction(addedUserInfo, myUserID));
-    dispatch(getUserListAction(250));
+    dispatch(getUserListAction(myUserID));
 
     sendHeartbeat(dispatch);
 
@@ -115,7 +116,7 @@ class InitialStartupModal extends React.Component<any, any> {
     dispatch(updateStateUserListActionCreator(userList));
     this.closeModal();
 
-    dispatch(getUserListAction(250));
+    dispatch(getUserListAction(myUserID, 250));
     sendHeartbeat(dispatch);
   };
 
@@ -144,7 +145,8 @@ class InitialStartupModal extends React.Component<any, any> {
     const { dispatch } = this.props;
     this.setState({ submitButtonStatus: true });
     this.setState({ isChangeUser: true });
-    dispatch(getUserListAction(250));
+    // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
+    dispatch(getUserListAction(-1, 250));
   };
 
   registUserInput = (event: any) => {

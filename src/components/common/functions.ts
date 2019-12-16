@@ -1,6 +1,6 @@
-import { UserInfo } from "../../define/model";
+import { UserInfo } from '../../define/model';
 import store from '../../store/configureStore';
-import { sendHeartbeatAction } from '../../actions/userInfo/userList';
+import { sendHeartbeatAction } from '../../actions/app';
 
 // ※戻り値の userInfo は userList の参照である事に注意
 export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
@@ -14,7 +14,7 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
 };
 
 export const sendHeartbeat = (dispatch: any) => {
-  const myUserID = store.getState().userListState['myUserID'];
+  const myUserID = store.getState().appState['myUserID'];
   const userList = store.getState().userListState['userList'];
   const userInfo = getUserInfo(userList, myUserID);
 

@@ -18,14 +18,15 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
     const { dispatch } = this.props;
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
-    await dispatch(getUserListAction(250));
+    const myUserID = store.getState().appState.myUserID;
+    await dispatch(getUserListAction(myUserID, 250));
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
   showUserEditModal = () => {
     const { dispatch } = this.props;
     const userList = store.getState().userListState['userList'];
-    const myUserID = store.getState().userListState['myUserID'];
+    const myUserID = store.getState().appState['myUserID'];
     const userInfo = getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
@@ -40,7 +41,8 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
 
   render() {
     const userList = store.getState().userListState;
-    const myUserID = store.getState().userListState['myUserID'];
+    const appState = store.getState().appState;
+    const myUserID = appState['myUserID'];
     const userInfo = getUserInfo(userList['userList'], myUserID);
 
     return (
@@ -64,7 +66,7 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
                 variant='outlined'
                 color='default'
                 onClick={this.showUserEditModal}
-                disabled={userInfo === null || userList.isAuthenticated === false}
+                disabled={userInfo === null || appState.isAuthenticated === false}
                 className='menu-button-group-for-user-list-base-button'
                 style={{ boxShadow: 'none' }}>
                 <FontAwesomeIcon icon='edit' />

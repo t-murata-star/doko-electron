@@ -12,7 +12,8 @@ import {
   setEmailActionCreator,
   setUserIDActionCreator
 } from '../../actions/settings/settings';
-import { setMyUserIDActionCreator, updateUserInfoAction } from '../../actions/userInfo/userList';
+import { setMyUserIDActionCreator } from '../../actions/app';
+import { updateUserInfoAction } from '../../actions/userInfo/userList';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { UserInfo } from '../../define/model';
 import store from '../../store/configureStore';
@@ -30,7 +31,7 @@ class Settings extends React.Component<any, any> {
     // state を初期化
     dispatch(initializeSettingStateActionCreator());
 
-    const myUserID = store.getState().userListState.myUserID;
+    const myUserID = store.getState().appState.myUserID;
 
     // ユーザ変更(プルダウンの初期選択で自分を選択する)
     dispatch(setUserIDActionCreator(myUserID));
@@ -54,7 +55,7 @@ class Settings extends React.Component<any, any> {
   // ユーザ変更
   onUserChange = (event: any) => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().userListState.myUserID;
+    const myUserID = store.getState().appState.myUserID;
     const changedUserID = parseInt(event.target.value);
     const userList = store.getState().userListState.userList;
 
@@ -75,7 +76,7 @@ class Settings extends React.Component<any, any> {
     event.preventDefault();
     const { dispatch } = this.props;
     const settingState = store.getState().settingsState;
-    const oldMyUserID = store.getState().userListState.myUserID;
+    const oldMyUserID = store.getState().appState.myUserID;
     let changedUserID = settingState.user.userID;
 
     if (changedUserID === -1 || changedUserID === oldMyUserID) {
@@ -115,7 +116,7 @@ class Settings extends React.Component<any, any> {
     event.preventDefault();
     const { dispatch } = this.props;
     const settingState = store.getState().settingsState;
-    const myUserID = store.getState().userListState.myUserID;
+    const myUserID = store.getState().appState.myUserID;
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
@@ -157,7 +158,7 @@ class Settings extends React.Component<any, any> {
   };
 
   render() {
-    const myUserID = store.getState().userListState.myUserID;
+    const myUserID = store.getState().appState.myUserID;
     const userList = store.getState().userListState.userList;
     const userInfo = getUserInfo(userList, myUserID) || new UserInfo();
     const settingState = store.getState().settingsState;

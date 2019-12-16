@@ -1,25 +1,19 @@
 import * as UserListActions from '../../actions/userInfo/userList';
 import { LEAVING_TIME_THRESHOLD_M } from '../../define';
-import { UserInfo, RequestError, Notification } from '../../define/model';
+import { UserInfo, RequestError } from '../../define/model';
 
 export class _UserListState {
-  token: string = ''; // 認証トークン。このトークンを用いてAPIサーバにリクエストを行う
-  isAuthenticated: boolean = false;
   userList: UserInfo[] = [];
   changeUserList: UserInfo[] = []; // サーバ上に登録されているユーザの中から自分のユーザを選択するために格納するユーザ一覧（userListと同じデータ）
   updatedAt: string = '';
   isFetching: boolean = false;
   isError: RequestError = new RequestError();
-  myUserID: number = -1;
   selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
-  notification: Notification = new Notification();
-  updateInstallerUrl: string = '';
+  addedUserInfo: UserInfo = new UserInfo();
 }
 
 function userListIsFetching(state = false, action: any) {
   switch (action.type) {
-    case UserListActions.LOGIN:
-      return true;
     case UserListActions.GET_USER_LIST:
       return true;
     case UserListActions.UPDATE_USER_INFO:
@@ -27,10 +21,6 @@ function userListIsFetching(state = false, action: any) {
     case UserListActions.ADD_USER:
       return true;
     case UserListActions.DELETE_USER:
-      return true;
-    case UserListActions.CHECK_NOTIFICATION:
-      return true;
-    case UserListActions.GET_S3_SIGNED_URL:
       return true;
     default:
       return false;
@@ -68,19 +58,6 @@ function userListIsError(state = new RequestError(), action: any) {
  */
 export default function userListState(state = new _UserListState(), action: any) {
   switch (action.type) {
-    case UserListActions.LOGIN:
-      return {
-        ...state,
-        isFetching: userListIsFetching(state.isFetching, action)
-      };
-    case UserListActions.LOGIN_SUCCESS:
-      return {
-        ...state,
-        token: action.payload.response.token,
-        isAuthenticated: true,
-        isFetching: userListIsFetching(state.isFetching, action),
-        isError: userListIsError(state.isError, action)
-      };
     case UserListActions.REQUEST_ERROR:
       return {
         ...state,
@@ -95,7 +72,7 @@ export default function userListState(state = new _UserListState(), action: any)
     case UserListActions.GET_USER_LIST_SUCCESS:
       return {
         ...state,
-        userList: updateLeavingTimeForUserList(action.payload.response, state.myUserID),
+        userList: updateLeavingTimeForUserList(action.payload.response, action.myUserID), // action.payload.myUserIDに変更する
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
@@ -141,7 +118,7 @@ export default function userListState(state = new _UserListState(), action: any)
     case UserListActions.ADD_USER_SUCCESS:
       return {
         ...state,
-        myUserID: action.userID,
+        addedUserInfo: action.userInfo,
         isFetching: userListIsFetching(state.isFetching, action),
         isError: userListIsError(state.isError, action)
       };
@@ -170,34 +147,6 @@ export default function userListState(state = new _UserListState(), action: any)
       return {
         ...state,
         changeUserList: action.changeUserList
-      };
-    case UserListActions.UNAUTHORIZED:
-      /**
-       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
-       * 画面をリロードして認証トークンを再取得する
-       */
-      window.location.reload();
-      return {
-        ...state
-      };
-    case UserListActions.CHECK_NOTIFICATION_SUCCESS:
-      return {
-        ...state,
-        notification: action.notification
-      };
-    case UserListActions.SEND_HEARTBEAT:
-      return {
-        ...state
-      };
-    case UserListActions.SET_MY_USER_ID:
-      return {
-        ...state,
-        myUserID: action.userID
-      };
-    case UserListActions.GET_S3_SIGNED_URL_SUCCESS:
-      return {
-        ...state,
-        updateInstallerUrl: action.updateInstallerUrl
       };
     default:
       return state;

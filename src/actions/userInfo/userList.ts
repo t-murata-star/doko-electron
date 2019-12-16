@@ -1,13 +1,12 @@
-import { API_URL, LOGIN_REQUEST_HEADERS, AUTH_REQUEST_HEADERS, LOGIN_USER } from '../../define';
-import { UserInfo, Notification } from '../../define/model';
+import { API_URL, AUTH_REQUEST_HEADERS } from '../../define';
+import { UserInfo } from '../../define/model';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
+import { unauthorizedActionCreator } from '../app';
 
 /**
  * Action type
  */
-export const LOGIN = 'LOGIN';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const REQUEST_ERROR = 'REQUEST_ERROR';
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
@@ -26,28 +25,11 @@ export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
 export const RETURN_EMPTY_CHANGE_USER_LIST = 'RETURN_EMPTY_CHANGE_USER_LIST';
-export const UNAUTHORIZED = 'UNAUTHORIZED';
-export const CHECK_NOTIFICATION = 'CHECK_NOTIFICATION';
-export const CHECK_NOTIFICATION_SUCCESS = 'CHECK_NOTIFICATION_SUCCESS';
-export const SEND_HEARTBEAT = 'SEND_HEARTBEAT';
-export const SEND_HEARTBEAT_SUCCESS = 'SEND_HEARTBEAT_SUCCESS';
-export const SET_MY_USER_ID = 'SET_MY_USER_ID';
-export const GET_S3_SIGNED_URL = 'GET_S3_SIGNED_URL';
-export const GET_S3_SIGNED_URL_SUCCESS = 'GET_S3_SIGNED_URL_SUCCESS';
 
 /**
  * Action Creator
  */
 
-export const loginActionCreator = () => ({
-  type: LOGIN
-});
-export const loginSuccessActionCreator = (json: Object) => ({
-  type: LOGIN_SUCCESS,
-  payload: {
-    response: json
-  }
-});
 export const requestErrorActionCreator = (statusCode: number, statusText: string) => ({
   type: REQUEST_ERROR,
   payload: {
@@ -58,8 +40,9 @@ export const requestErrorActionCreator = (statusCode: number, statusText: string
 export const getUserListActionCreator = () => ({
   type: GET_USER_LIST
 });
-export const getUserListSccessActionCreator = (userList: UserInfo[]) => ({
+export const getUserListSccessActionCreator = (myUserID: number, userList: UserInfo[]) => ({
   type: GET_USER_LIST_SUCCESS,
+  myUserID,
   payload: {
     response: userList
   }
@@ -69,7 +52,7 @@ export const addUserActionCreator = () => ({
 });
 export const addUserSuccessActionCreator = (userInfo: UserInfo) => ({
   type: ADD_USER_SUCCESS,
-  userID: userInfo.id
+  userInfo
 });
 export const deleteUserActionCreator = () => ({
   type: DELETE_USER
@@ -120,55 +103,6 @@ export const returnEmptyChangeUserListActionCreator = () => ({
   type: RETURN_EMPTY_CHANGE_USER_LIST,
   changeUserList: []
 });
-export const unauthorizedActionCreator = () => ({
-  type: UNAUTHORIZED,
-  unauthorized: true
-});
-export const getNotificationActionCreator = () => ({
-  type: CHECK_NOTIFICATION
-});
-export const checkNotificationSuccessActionCreator = (notification: Notification) => ({
-  type: CHECK_NOTIFICATION_SUCCESS,
-  notification
-});
-export const sendHeartbeatActionCreator = () => ({
-  type: SEND_HEARTBEAT
-});
-export const sendHeartbeatSuccessActionCreator = () => ({
-  type: SEND_HEARTBEAT_SUCCESS
-});
-export const setMyUserIDActionCreator = (userID: number) => ({
-  type: SET_MY_USER_ID,
-  userID
-});
-export const getS3SignedUrlActionCreator = () => ({
-  type: GET_S3_SIGNED_URL
-});
-export const getS3SignedUrlSuccessActionCreator = (json: any) => ({
-  type: GET_S3_SIGNED_URL_SUCCESS,
-  updateInstallerUrl: json.url
-});
-
-export const loginAction = () => {
-  return async (dispatch: Dispatch<Action<any>>) => {
-    dispatch(loginActionCreator());
-    try {
-      const res = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: LOGIN_REQUEST_HEADERS,
-        body: JSON.stringify(LOGIN_USER)
-      });
-
-      if (res.ok === false) {
-        return dispatch(requestErrorActionCreator(res.status, res.statusText));
-      }
-      const json = await res.json();
-      return dispatch(loginSuccessActionCreator(json));
-    } catch (error) {
-      return dispatch(failRequestActionCreator(error.message));
-    }
-  };
-};
 
 export const deleteUserAction = (userID: number) => {
   return async (dispatch: Dispatch<Action<any>>) => {
@@ -215,7 +149,7 @@ export const addUserAction = (userInfo: UserInfo) => {
     }
   };
 };
-export const getUserListAction = (sleepMs: number = 0) => {
+export const getUserListAction = (myUserID: number, sleepMs: number = 0) => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getUserListActionCreator());
     try {
@@ -231,7 +165,7 @@ export const getUserListAction = (sleepMs: number = 0) => {
         return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       const json = await res.json();
-      return dispatch(getUserListSccessActionCreator(json));
+      return dispatch(getUserListSccessActionCreator(myUserID, json));
     } catch (error) {
       dispatch(failRequestActionCreator(error.message));
       dispatch(returnEmptyUserListActionCreator());
@@ -307,71 +241,6 @@ export const updateForAddedUserInfoAction = (userInfo: UserInfo, userID: number)
         return dispatch(requestErrorActionCreator(res.status, res.statusText));
       }
       return dispatch(updateForAddedUserInfoSuccessActionCreator());
-    } catch (error) {
-      dispatch(failRequestActionCreator(error.message));
-    }
-  };
-};
-
-export const getNotificationAction = () => {
-  return async (dispatch: Dispatch<Action<any>>) => {
-    dispatch(getNotificationActionCreator());
-    try {
-      const res = await fetch(`${API_URL}/notification`, {
-        method: 'GET',
-        headers: AUTH_REQUEST_HEADERS
-      });
-
-      responseStatusCheck(dispatch, res.status);
-
-      if (res.ok === false) {
-        return dispatch(requestErrorActionCreator(res.status, res.statusText));
-      }
-      const json = await res.json();
-      return dispatch(checkNotificationSuccessActionCreator(json));
-    } catch (error) {
-      dispatch(failRequestActionCreator(error.message));
-    }
-  };
-};
-
-export const sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
-  return async (dispatch: Dispatch<Action<any>>) => {
-    dispatch(sendHeartbeatActionCreator());
-    const body = Object.assign({}, userInfo);
-    delete body['id'];
-    delete body['order'];
-    const res = await fetch(`${API_URL}/userList/${userID}`, {
-      method: 'PATCH',
-      headers: AUTH_REQUEST_HEADERS,
-      body: JSON.stringify(body)
-    });
-
-    responseStatusCheck(dispatch, res.status);
-
-    if (res.ok === false) {
-      return dispatch(requestErrorActionCreator(res.status, res.statusText));
-    }
-    return dispatch(sendHeartbeatSuccessActionCreator());
-  };
-};
-
-export const getS3SignedUrlAction = (fileName: string) => {
-  return async (dispatch: Dispatch<Action<any>>) => {
-    dispatch(getS3SignedUrlActionCreator());
-    try {
-      const res = await fetch(`${API_URL}/getS3SignedUrl?fileName=${fileName}`, {
-        method: 'GET',
-        headers: AUTH_REQUEST_HEADERS
-      });
-
-      responseStatusCheck(dispatch, res.status);
-
-      if (res.ok === false) {
-        return dispatch(requestErrorActionCreator(res.status, res.statusText));
-      }
-      const json = await res.json();
-      return dispatch(getS3SignedUrlSuccessActionCreator(json));
     } catch (error) {
       dispatch(failRequestActionCreator(error.message));
     }

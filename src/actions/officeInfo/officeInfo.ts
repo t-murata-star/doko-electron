@@ -1,6 +1,7 @@
 import { API_URL, AUTH_REQUEST_HEADERS } from '../../define';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
+import { unauthorizedActionCreator } from '../app';
 
 /**
  * Action type
@@ -9,7 +10,6 @@ export const GET_RESTROOM_USAGE = 'GET_RESTROOM_USAGE';
 export const GET_RESTROOM_USAGE_SUCCESS = 'GET_RESTROOM_USAGE_SUCCESS';
 export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const REQUEST_ERROR = 'REQUEST_ERROR';
-export const UNAUTHORIZED = 'UNAUTHORIZED';
 export const RETURN_EMPTY_RESTROOM_USAGE = 'RETURN_EMPTY_RESTROOM_USAGE';
 
 /**
@@ -36,10 +36,6 @@ export const requestErrorActionCreator = (statusCode: number, statusText: string
     statusCode,
     statusText
   }
-});
-export const unauthorizedActionCreator = () => ({
-  type: UNAUTHORIZED,
-  unauthorized: true
 });
 export const returnEmptyRestroomUsageActionCreator = () => ({
   type: RETURN_EMPTY_RESTROOM_USAGE,

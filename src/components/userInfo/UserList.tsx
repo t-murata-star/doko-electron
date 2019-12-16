@@ -147,7 +147,7 @@ class UserList extends React.Component<any, any> {
         break;
     }
     // 自分の名前を太字にする
-    if (rowData.id === store.getState().userListState['myUserID']) {
+    if (rowData.id === store.getState().appState['myUserID']) {
       row.getCell('name').getElement().style.fontWeight = 'bold';
     }
   };
@@ -169,9 +169,10 @@ class UserList extends React.Component<any, any> {
 
   _rowMovedCallback = async (row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
+    const myUserID = store.getState().appState.myUserID;
 
     await this._updateUserInfoOrder(row);
-    dispatch(getUserListAction());
+    dispatch(getUserListAction(myUserID));
   };
 
   _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
