@@ -219,7 +219,7 @@ export const getUserListAction = (sleepMs: number = 0) => {
   return async (dispatch: Dispatch<Action<any>>) => {
     dispatch(getUserListActionCreator());
     try {
-      await sleep(sleepMs);
+      await _sleep(sleepMs);
       const res = await fetch(`${API_URL}/userList`, {
         method: 'GET',
         headers: AUTH_REQUEST_HEADERS
@@ -379,7 +379,7 @@ export const getS3SignedUrlAction = (fileName: string) => {
 };
 
 // スリープ処理
-const sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+const _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
   switch (statusCode) {

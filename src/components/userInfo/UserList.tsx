@@ -153,18 +153,17 @@ class UserList extends React.Component<any, any> {
   };
 
   // 各ユーザの「order」パラメータをユーザ一覧の表示順序を元に更新する
-  _updateUserInfoOrder = (row: Tabulator.RowComponent) => {
+  _updateUserInfoOrder = (rowComponent: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
-    const rows = row.getTable().getRows();
+    const rows = rowComponent.getTable().getRows();
 
-    return new Promise(resolve => {
-      rows.forEach(async (row: Tabulator.RowComponent, index: number) => {
+    return new Promise(async resolve => {
+      for (const row of rows) {
         const patchInfoUser = { order: row.getPosition(true) + 1 };
         await dispatch(changeOrderAction(patchInfoUser, row.getData().id));
-        if (index + 1 === rows.length) {
-          resolve();
-        }
-      });
+        // await this._sleep(500);
+      }
+      resolve();
     });
   };
 
@@ -174,6 +173,8 @@ class UserList extends React.Component<any, any> {
     await this._updateUserInfoOrder(row);
     dispatch(getUserListAction());
   };
+
+  _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
   render() {
     const { userList } = this.props;
