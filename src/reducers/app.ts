@@ -9,6 +9,7 @@ export class _AppState {
   myUserID: number = -1;
   notification: Notification = new Notification();
   updateInstallerUrl: string = '';
+  isProcessing: boolean = false;
 }
 
 function appIsFetching(state = false, action: any) {
@@ -107,6 +108,11 @@ export default function userListState(state = new _AppState(), action: any) {
       return {
         ...state,
         updateInstallerUrl: action.updateInstallerUrl
+      };
+    case AppActions.SET_PROCESSING_STATUS:
+      return {
+        ...state,
+        isProcessing: action.status
       };
     default:
       return state;

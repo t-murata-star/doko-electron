@@ -18,6 +18,7 @@ export const SEND_HEARTBEAT_SUCCESS = 'SEND_HEARTBEAT_SUCCESS';
 export const SET_MY_USER_ID = 'SET_MY_USER_ID';
 export const GET_S3_SIGNED_URL = 'GET_S3_SIGNED_URL';
 export const GET_S3_SIGNED_URL_SUCCESS = 'GET_S3_SIGNED_URL_SUCCESS';
+export const SET_PROCESSING_STATUS = 'SET_PROCESSING_STATUS';
 
 /**
  * Action Creator
@@ -72,6 +73,10 @@ export const getS3SignedUrlActionCreator = () => ({
 export const getS3SignedUrlSuccessActionCreator = (json: any) => ({
   type: GET_S3_SIGNED_URL_SUCCESS,
   updateInstallerUrl: json.url
+});
+export const setProcessingStatusActionCreator = (status: boolean) => ({
+  type: SET_PROCESSING_STATUS,
+  status
 });
 
 export const loginAction = () => {

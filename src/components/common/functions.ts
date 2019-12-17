@@ -1,6 +1,8 @@
 import { UserInfo } from '../../define/model';
 import store from '../../store/configureStore';
 import { sendHeartbeatAction } from '../../actions/app';
+import { APP_NAME } from '../../define';
+const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意
 export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
@@ -26,4 +28,27 @@ export const sendHeartbeat = (dispatch: any) => {
   updatedUserInfo['id'] = myUserID;
   updatedUserInfo['heartbeat'] = '';
   dispatch(sendHeartbeatAction(updatedUserInfo, myUserID));
+};
+
+export const showMessageBox = (message: any, type: 'info' | 'warning' = 'info') => {
+  remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+    title: APP_NAME,
+    type,
+    buttons: ['OK'],
+    message
+  });
+};
+
+export const showMessageBoxWithReturnValue = (
+  OKButtonText: string,
+  cancelButtonText: string,
+  message: any,
+  type: 'info' | 'warning' = 'info'
+): number => {
+  return remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+    title: APP_NAME,
+    type: 'info',
+    buttons: [OKButtonText, cancelButtonText],
+    message
+  });
 };

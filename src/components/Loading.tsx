@@ -9,7 +9,11 @@ library.add(faSpinner); //あらかじめ使用するアイコンを追加して
 // ローディングインジケータ
 class Loading extends React.Component<any, any> {
   render() {
-    if (this.props.state.userListState.isFetching || this.props.state.officeInfoState.isFetching) {
+    if (
+      this.props.state.appState.isProcessing ||
+      this.props.state.userListState.isFetching ||
+      this.props.state.officeInfoState.isFetching
+    ) {
       return (
         <div className='mx-auto'>
           <div className='loading-background'></div>

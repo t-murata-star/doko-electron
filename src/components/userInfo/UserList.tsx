@@ -2,11 +2,12 @@ import React from 'react';
 import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
+import { setProcessingStatusActionCreator } from '../../actions/app';
 import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../../actions/userInfo/userEditModal';
 import { changeOrderAction, getUserListAction } from '../../actions/userInfo/userList';
 import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
 import store from '../../store/configureStore';
-import { getUserInfo } from '../common/functions';
+import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
 
@@ -156,14 +157,21 @@ class UserList extends React.Component<any, any> {
   _updateUserInfoOrder = (rowComponent: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
     const rows = rowComponent.getTable().getRows();
+    const index = showMessageBoxWithReturnValue('YES', 'NO', `並べ替えてよろしいですか？\n表示順序はサーバに保存されます。`);
 
+    if (index !== 0) {
+      return;
+    }
+
+    dispatch(setProcessingStatusActionCreator(true));
     return new Promise(async resolve => {
       for (const row of rows) {
         const patchInfoUser = { order: row.getPosition(true) + 1 };
         await dispatch(changeOrderAction(patchInfoUser, row.getData().id));
-        // await this._sleep(500);
+        await this._sleep(50);
       }
       resolve();
+      dispatch(setProcessingStatusActionCreator(false));
     });
   };
 
