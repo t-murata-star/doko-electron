@@ -157,7 +157,11 @@ class UserList extends React.Component<any, any> {
   _updateUserInfoOrder = (rowComponent: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
     const rows = rowComponent.getTable().getRows();
-    const index = showMessageBoxWithReturnValue('YES', 'NO', `並べ替えてよろしいですか？\n表示順序はサーバに保存されます。`);
+    const index = showMessageBoxWithReturnValue(
+      'OK',
+      'Cancel',
+      `並べ替えてよろしいですか？\n※表示順序は全てのユーザで共通です。`
+    );
 
     if (index !== 0) {
       return;
