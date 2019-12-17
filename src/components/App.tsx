@@ -36,7 +36,7 @@ import Progress from './Progress';
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
-const execFileSync = window.require('child_process').execFileSync;
+const childProcess = window.require('child_process');
 const path = require('path');
 
 class App extends React.Component<any, any> {
@@ -287,7 +287,19 @@ class App extends React.Component<any, any> {
 
   updateInstallerDownloadOnSccess = ipcRenderer.on('updateInstallerDownloadOnSccess', (event: any, savePath: string) => {
     try {
-      execFileSync(savePath);
+      switch (remote.process.platform) {
+        case 'win32':
+          childProcess.execFileSync(savePath);
+          break;
+
+        case 'darwin':
+          childProcess.execSync(`open ${savePath}`);
+          break;
+
+        default:
+          break;
+      }
+
       remote.getCurrentWindow().destroy();
     } catch (error) {
       showMessageBox(`${APP_NAME}インストーラの実行に失敗しました。`, 'warning');
