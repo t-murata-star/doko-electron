@@ -2,13 +2,14 @@ const path = require('path');
 const electron = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const { app } = electron;
+const packageJson = require('../package.json');
 
 let mainWindow;
 
 // アプリケーション名
-const APP_NAME = process.env.npm_package_description || '';
+const APP_NAME = packageJson.description || '';
 // アプリケーションのバージョンを定義
-const VERSION = process.env.npm_package_version || '';
+const VERSION = packageJson.version || '';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = 'http://********/';
 // アップデートのためのアプリケーションインストーラのダウンロード先ファイルパス
