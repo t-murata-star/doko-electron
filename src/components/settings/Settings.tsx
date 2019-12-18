@@ -3,6 +3,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Switch from '@material-ui/core/Switch';
 import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
+import { setMyUserIDActionCreator } from '../../actions/app';
 import {
   changeDisabledSubmitButtonEmailActionCreator,
   changeDisabledSubmitButtonUserChangeActionCreator,
@@ -12,7 +13,6 @@ import {
   setEmailActionCreator,
   setUserIDActionCreator
 } from '../../actions/settings/settings';
-import { setMyUserIDActionCreator } from '../../actions/app';
 import { updateUserInfoAction } from '../../actions/userInfo/userList';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { UserInfo } from '../../define/model';
@@ -157,6 +157,10 @@ class Settings extends React.Component<any, any> {
     dispatch(changeEnabledSnackbarActionCreator(false));
   };
 
+  resizeWindow = () => {
+    remote.getCurrentWindow().setSize(1200, 750);
+  };
+
   render() {
     const myUserID = store.getState().appState.myUserID;
     const userList = store.getState().userListState.userList;
@@ -265,6 +269,21 @@ class Settings extends React.Component<any, any> {
                     />
                   </Form.Group>
                 </Form.Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Form.Row>
+                  <Form.Group as={Col}>
+                    <Form.Label>ウインドウの大きさをデフォルトに戻す</Form.Label>
+                  </Form.Group>
+                </Form.Row>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={this.resizeWindow}
+                  style={{ boxShadow: 'none' }}
+                  className='settings-save-button'>
+                  設定
+                </Button>
               </ListGroup.Item>
             </ListGroup>
           </Col>

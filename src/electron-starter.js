@@ -1,5 +1,6 @@
 const path = require('path');
 const electron = require('electron');
+const windowStateKeeper = require('electron-window-state');
 const { app } = electron;
 
 let mainWindow;
@@ -34,10 +35,15 @@ if (process.env.LOAD_URL) {
 }
 
 function createWindow() {
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 1200,
+    defaultHeight: 750
+  });
+
   mainWindow = new electron.BrowserWindow({
     title: `${APP_NAME} Version ${VERSION}`,
-    width: 1200,
-    height: 750,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     minWidth: 850,
     minHeight: 531,
     resizable: true,
@@ -49,6 +55,8 @@ function createWindow() {
       nodeIntegration: true
     }
   });
+
+  mainWindowState.manage(mainWindow);
 
   // メニューバーを非表示にする
   mainWindow.setMenuBarVisibility(false);
