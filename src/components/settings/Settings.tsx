@@ -173,8 +173,8 @@ class Settings extends React.Component<any, any> {
           message={settingState.snackbar.message}
         />
         <Row className='settings_user'>
-          <Col md='2' />
-          <Col md='8'>
+          <Col md='1' />
+          <Col md='10'>
             <h4>ユーザ</h4>
             <ListGroup>
               <ListGroup.Item>
@@ -243,11 +243,11 @@ class Settings extends React.Component<any, any> {
               </ListGroup.Item>
             </ListGroup>
           </Col>
-          <Col md='2' />
+          <Col md='1' />
         </Row>
         <Row className='settings_system'>
-          <Col md='2' />
-          <Col md='8'>
+          <Col md='1' />
+          <Col md='10'>
             <h4>システム</h4>
             <ListGroup>
               <ListGroup.Item>
@@ -268,7 +268,7 @@ class Settings extends React.Component<any, any> {
               </ListGroup.Item>
             </ListGroup>
           </Col>
-          <Col md='2' />
+          <Col md='1' />
         </Row>
       </div>
     );
