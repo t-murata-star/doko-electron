@@ -30,3 +30,14 @@ body {
     background-color: #f1f7fc;
   }
 }
+.modal-header {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+.modal-content {
+  width: 680px;
+  margin: auto;
+}
+.modal-xl {
+  min-width: 680px;
+}

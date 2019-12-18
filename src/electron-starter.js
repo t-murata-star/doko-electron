@@ -38,12 +38,14 @@ function createWindow() {
     title: `${APP_NAME} Version ${VERSION}`,
     width: 1200,
     height: 750,
-    resizable: false,
+    minWidth: 850,
+    minHeight: 531,
+    resizable: true,
     fullscreen: false,
     fullscreenable: false,
-    maximizable: false,
+    maximizable: true,
     webPreferences: {
-      devTools: false,
+      devTools: true,
       nodeIntegration: true
     }
   });
@@ -118,6 +120,11 @@ function createWindow() {
   // ウインドウが表示されるときに発生するイベント
   mainWindow.on('show', () => {
     mainWindow.webContents.send('electronShowEvent');
+  });
+
+  // ウインドウがリサイズされたときに発生するイベント
+  mainWindow.on('resize', () => {
+    mainWindow.webContents.send('electronResizeEvent');
   });
 
   // スクリーンロックのイベントキャッチ

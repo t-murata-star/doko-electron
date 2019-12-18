@@ -1,5 +1,5 @@
 .user-list {
-  margin-bottom: 0.7%;
+  margin-bottom: 9px;
   user-select: none; /* 選択を禁止する */
 }
 .tabulator-row.tabulator-selectable:hover {

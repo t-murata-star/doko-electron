@@ -65,8 +65,8 @@ class UserList extends React.Component<any, any> {
     { title: '順序', field: 'order', visible: false, headerSort: false, sorter: 'number' },
     { title: '氏名', field: 'name', width: 150, headerSort: false },
     { title: '状態', field: 'status', width: 100, headerSort: false },
-    { title: '行き先', field: 'destination', width: 300, headerSort: false },
-    { title: '戻り', field: 'return', width: 150, headerSort: false },
+    { title: '行き先', field: 'destination', widthGrow: 1.1, minWidth: 100, headerSort: false },
+    { title: '戻り', field: 'return', widthGrow: 0.6, headerSort: false },
     {
       title: '更新日時',
       field: 'updatedAt',
@@ -90,7 +90,7 @@ class UserList extends React.Component<any, any> {
       formatter: this.formatter,
       cellClick: this.openCalendar
     },
-    { title: 'メッセージ', field: 'message', headerSort: false }
+    { title: 'メッセージ', field: 'message', headerSort: false, minWidth: 80 }
   ];
 
   showUserEditModal = (e: any, row: Tabulator.RowComponent) => {
@@ -194,18 +194,17 @@ class UserList extends React.Component<any, any> {
     return (
       <div>
         <Inoperable enabled={this.state.inoperable} />
-        {/*
-        // @ts-ignore */}
         <ReactTabulator
           className='user-list'
           data={userList}
           columns={this.COLUMNS_CONFIG_FOR_TABULATOR}
           tooltips={true}
           layout={'fitData'}
-          height={window.innerHeight - 87}
+          height={window.innerHeight - 91}
+          columnMinWidth={80}
           rowDblClick={this.showUserEditModal}
-          resizableColumns={false}
-          // @ts-ignore
+          // @ts-ignore (TypeScriptの型定義が未対応のため、エラーを抑制)
+          resizableColumns={'header'}
           rowFormatter={this._rowFormatter}
           placeholder={'通信に失敗しました。'}
           options={{

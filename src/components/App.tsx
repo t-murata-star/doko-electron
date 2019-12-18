@@ -205,6 +205,13 @@ class App extends React.Component<any, any> {
     remote.getCurrentWindow().hide();
   });
 
+  electronResizeEvent = ipcRenderer.on('electronResizeEvent', () => {
+    const { dispatch } = this.props;
+    const myUserID = store.getState().appState.myUserID;
+    dispatch(setMyUserIDActionCreator(-1));
+    dispatch(setMyUserIDActionCreator(myUserID));
+  });
+
   // 状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
