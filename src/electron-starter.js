@@ -45,7 +45,7 @@ function createWindow() {
     fullscreenable: false,
     maximizable: true,
     webPreferences: {
-      devTools: true,
+      devTools: false,
       nodeIntegration: true
     }
   });
