@@ -35,6 +35,7 @@ if (process.env.LOAD_URL) {
 }
 
 function createWindow() {
+  // アプリケーションのウインドウサイズを保持
   const mainWindowState = windowStateKeeper({
     defaultWidth: 1200,
     defaultHeight: 750
