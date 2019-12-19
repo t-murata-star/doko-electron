@@ -1,7 +1,6 @@
-import packageJson from '../../package.json';
 const { remote } = window.require('electron');
 
-export const APP_NAME: string = packageJson.description || '';
+export const APP_NAME: string = remote.getGlobal('description') || '';
 export const APP_VERSION: string = remote.getGlobal('appVersion') || '';
 export const API_URL: string = process.env.REACT_APP_API_URL || '';
 export const LOGIN_USER: any = {

@@ -22,6 +22,7 @@ let electronDownloadItem;
 global.errorPageFilepath = './public/error.html';
 // WEBアプリケーションに接続できたかどうか
 global.isConnectedForWebApp = false;
+global.description = APP_NAME;
 global.appVersion = VERSION;
 
 /**
