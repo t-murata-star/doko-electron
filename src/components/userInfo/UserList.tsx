@@ -63,7 +63,7 @@ class UserList extends React.Component<any, any> {
   COLUMNS_CONFIG_FOR_TABULATOR: any = [
     { rowHandle: true, formatter: 'handle', headerSort: false, frozen: true, width: 25, minWidth: 25 },
     { title: '順序', field: 'order', visible: false, headerSort: false, sorter: 'number' },
-    { title: '氏名', field: 'name', width: 150, headerSort: false },
+    { title: '氏名', field: 'name', width: 120, headerSort: false },
     { title: '状態', field: 'status', width: 100, headerSort: false },
     { title: '行き先', field: 'destination', widthGrow: 1.1, minWidth: 100, headerSort: false },
     { title: '戻り', field: 'return', widthGrow: 0.6, headerSort: false },
