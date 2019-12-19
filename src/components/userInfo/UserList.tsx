@@ -192,8 +192,11 @@ class UserList extends React.Component<any, any> {
   render() {
     const { userList } = this.props;
     return (
+      // React-tabulatorのTypeScript型定義が未対応のため、@ts-ignoreでエラーを抑制
       <div>
         <Inoperable enabled={this.state.inoperable} />
+        {/*
+        // @ts-ignore */}
         <ReactTabulator
           className='user-list'
           data={userList}
@@ -203,8 +206,8 @@ class UserList extends React.Component<any, any> {
           height={window.innerHeight - 91}
           columnMinWidth={80}
           rowDblClick={this.showUserEditModal}
-          // @ts-ignore (TypeScriptの型定義が未対応のため、エラーを抑制)
-          resizableColumns={'header'}
+          resizableColumns={false}
+          // @ts-ignore
           rowFormatter={this._rowFormatter}
           placeholder={'通信に失敗しました。'}
           options={{
