@@ -62,7 +62,7 @@ class App extends React.Component<any, any> {
 
     if (store.getState().appState.isError.status) {
       ipcRenderer.send('connected', false);
-      remote.getCurrentWindow().loadFile(remote.getGlobal('ERROR_PAGE_FILEPATH'));
+      remote.getCurrentWindow().loadFile(remote.getGlobal('errorPageFilepath'));
       return;
     }
 

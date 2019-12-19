@@ -19,9 +19,10 @@ let electronDownloadItem;
 
 // 【メイン・レンダラープロセス共通で使用するグローバル変数】
 // 通信エラーによりWEBアプリケーションの読み込みに失敗した場合に表示されるエラー画面のファイルパス
-global.ERROR_PAGE_FILEPATH = './public/error.html';
+global.errorPageFilepath = './public/error.html';
 // WEBアプリケーションに接続できたかどうか
 global.isConnectedForWebApp = false;
+global.appVersion = VERSION;
 
 /**
  * 環境変数が設定されていればその設定値を接続先を使用する
@@ -68,7 +69,7 @@ function createWindow() {
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     // 通信に失敗した場合は再読み込み用ページへ遷移
-    mainWindow.loadFile(global.ERROR_PAGE_FILEPATH);
+    mainWindow.loadFile(global.errorPageFilepath);
   });
 
   // デベロッパーツールを開く
@@ -277,7 +278,7 @@ electron.ipcMain.on('close', event => {
 electron.ipcMain.on('reload', event => {
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
-    mainWindow.loadFile(global.ERROR_PAGE_FILEPATH);
+    mainWindow.loadFile(global.errorPageFilepath);
   });
 });
 
