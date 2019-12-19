@@ -162,9 +162,9 @@ function updateLeavingTimeForUserList(userList: UserInfo[], myUserID: number) {
   if (!userList) return [];
 
   const nowDate: Date = new Date();
-  userList.forEach(userInfo => {
+  for (const userInfo of userList) {
     if (userInfo.id === myUserID) {
-      return;
+      continue;
     }
     if (['在席', '在席 (離席中)'].includes(userInfo['status']) === true) {
       const heartbeat: Date = new Date(userInfo['heartbeat']);
@@ -175,7 +175,7 @@ function updateLeavingTimeForUserList(userList: UserInfo[], myUserID: number) {
         userInfo['updatedAt'] = userInfo['heartbeat'];
       }
     }
-  });
+  }
 
   return userList;
 }
