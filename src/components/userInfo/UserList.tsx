@@ -24,7 +24,7 @@ class UserList extends React.Component<any, any> {
   formatter = (cell: Tabulator.CellComponent) => {
     const email = cell.getValue();
     if (email !== '') {
-      return '<input type="button" value="　 表示 　" class="btn btn-link link_display_calendar" />';
+      return '<input type="button" value="　  表示  　" class="btn btn-link link_display_calendar" />';
     } else {
       return '-';
     }
