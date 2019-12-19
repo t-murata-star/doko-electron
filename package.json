@@ -3,6 +3,9 @@
   "version": "2.1.1",
   "author": "t-murata",
   "description": "行き先掲示板",
+  "config": {
+    "defaultLoadURL": ""
+  },
   "private": true,
   "main": "src/electron-starter.js",
   "dependencies": {
