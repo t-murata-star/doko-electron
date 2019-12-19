@@ -11,7 +11,7 @@ const APP_NAME = packageJson.description || '';
 // アプリケーションのバージョンを定義
 const VERSION = packageJson.version || '';
 // 本番接続先URL
-const DEFAULT_LOAD_URL = 'http://********/';
+const DEFAULT_LOAD_URL = packageJson.config.defaultLoadURL || '';
 // アップデートのためのアプリケーションインストーラのダウンロード先ファイルパス
 let updateInstallerFilepath = '';
 // ElectronAPIのDownloadItemクラスをグローバル変数として格納するための変数

@@ -4,7 +4,7 @@
   "author": "t-murata",
   "description": "行き先掲示板",
   "config": {
-    "defaultLoadURL": ""
+    "defaultLoadURL": "http://********/"
   },
   "private": true,
   "main": "src/electron-starter.js",
