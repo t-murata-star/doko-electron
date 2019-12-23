@@ -4,10 +4,11 @@
  * できるだけステートレスで作る。（可能な限りステートレス）
  */
 
+import { Tooltip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import React from 'react';
 import { Col, Container, Form, Modal } from 'react-bootstrap';
-import ReactTooltip from 'react-tooltip';
+import { setMyUserIDActionCreator } from '../../actions/app';
 import {
   changeUserInfoActionCreator,
   closeUserEditModalActionCreator,
@@ -16,7 +17,6 @@ import {
   handleEditUserActionCreator,
   inputClearActionCreator
 } from '../../actions/userInfo/userEditModal';
-import { setMyUserIDActionCreator } from '../../actions/app';
 import { deleteUserAction, getUserListAction, updateUserInfoAction } from '../../actions/userInfo/userList';
 import { APP_NAME, STATUS_LIST } from '../../define';
 import { UserInfo } from '../../define/model';
@@ -160,7 +160,7 @@ class UserEditModal extends React.Component<any, any> {
                   <Form.Label>
                     <span className='status'>状態</span>
                   </Form.Label>
-                  <span data-tip='状態を在席に変更し、行き先と戻りを削除します'>
+                    <Tooltip title={<span className="user-edit-modal-tooltip">状態を在席に変更し、行き先と戻りを削除します</span>} placement="top" arrow>
                     <Button
                       variant='outlined'
                       color='default'
@@ -170,8 +170,7 @@ class UserEditModal extends React.Component<any, any> {
                       className='user-edit-modal-presence-button'>
                       在席
                     </Button>
-                    <ReactTooltip effect='solid' place='top' />
-                  </span>
+                    </Tooltip>
                   <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
                     {STATUS_LIST.map((status: string, index: number) => (
                       <option key={index}>{status}</option>
