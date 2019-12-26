@@ -205,9 +205,13 @@ class App extends React.Component<any, any> {
     remote.getCurrentWindow().hide();
   });
 
-  electronResizeEvent = ipcRenderer.on('electronResizeEvent', () => {
+  electronResizeEvent = ipcRenderer.on('electronResizeEvent', async () => {
     const { dispatch } = this.props;
     const myUserID = store.getState().appState.myUserID;
+
+    // macOSでリサイズするとレイアウトが崩れてしまう問題の暫定対処
+    await this._sleep(250);
+
     dispatch(setMyUserIDActionCreator(-1));
     dispatch(setMyUserIDActionCreator(myUserID));
   });
@@ -386,6 +390,9 @@ class App extends React.Component<any, any> {
         break;
     }
   };
+
+// スリープ処理
+_sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
   render() {
     const myUserID = store.getState().appState['myUserID'];
