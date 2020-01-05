@@ -52,7 +52,7 @@ function createWindow() {
     minHeight: 531,
     resizable: true,
     fullscreen: false,
-    fullscreenable: false,
+    fullscreenable: true,
     maximizable: true,
     webPreferences: {
       devTools: false,
