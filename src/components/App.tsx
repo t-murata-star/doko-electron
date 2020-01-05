@@ -131,16 +131,14 @@ class App extends React.Component<any, any> {
 
     /**
      * お知らせチェック
+     * appVersion が latestAppVersion と異なる場合、アップデート後の初回起動と判断し、
+     * 一度だけお知らせを表示する。
      */
     if (electronStore.get('appVersion') !== APP_VERSION) {
       showMessageBox(notification.content);
+      electronStore.set('appVersion', APP_VERSION);
     }
 
-    /**
-     * お知らせの既読チェックのために用いる。
-     * appVersion が latestAppVersion と異なる場合、アップデート後の初回起動と判断する。
-     */
-    electronStore.set('appVersion', APP_VERSION);
 
     /**
      * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
