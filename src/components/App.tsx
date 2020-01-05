@@ -174,14 +174,7 @@ class App extends React.Component<any, any> {
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = userID;
-
-    const session = remote.session.defaultSession as Electron.Session;
-    const cookies: any = await session.cookies.get({
-      name: 'version'
-    });
-    if (cookies[0]) {
-      updatedUserInfo['version'] = cookies[0].value;
-    }
+    updatedUserInfo['version'] = APP_VERSION;
 
     // 状態が「退社」のユーザのみ、状態を「在席」に変更する
     if (userInfo['status'] === '退社') {
