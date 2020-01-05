@@ -74,7 +74,6 @@ class App extends React.Component<any, any> {
 
     const notification: Notification = store.getState().appState.notification;
     const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
-    // const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nアップデートを開始します。`;
 
     /**
      * バージョンチェック
@@ -99,7 +98,7 @@ class App extends React.Component<any, any> {
      * スタートアップ登録処理。
      * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
      */
-    if (!electronStore.get('startup.notified') && !electronStore.get('notified_startup')) {
+    if (!electronStore.get('startup.notified')) {
       const index = showMessageBoxWithReturnValue(
         'YES',
         'NO',
@@ -125,8 +124,6 @@ class App extends React.Component<any, any> {
         openAtLogin,
         path: remote.app.getPath('exe')
       });
-    } else {
-      electronStore.set('startup.notified', 1);
     }
 
     /**
