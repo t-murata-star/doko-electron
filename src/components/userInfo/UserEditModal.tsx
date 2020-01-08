@@ -39,7 +39,7 @@ class UserEditModal extends React.Component<any, any> {
   }
 
   componentDidUpdate() {
-    this.userInfo = Object.assign({}, this.props.userInfo);
+    this.userInfo = Object.assign({}, this.props.state.userEditModal.userInfo);
   }
 
   closeModal = () => {
@@ -49,7 +49,7 @@ class UserEditModal extends React.Component<any, any> {
 
   _updateUserInfo = async (userInfo: UserInfo) => {
     const { dispatch } = this.props;
-    const userID = this.props.userID;
+    const userID = this.props.state.userEditModal.userID;
 
     await dispatch(updateUserInfoAction(userInfo, userID));
     const userList = store.getState().userListState;
@@ -74,7 +74,7 @@ class UserEditModal extends React.Component<any, any> {
   onUserInfoChange = (event: any) => {
     const { dispatch } = this.props;
     dispatch(changeUserInfoActionCreator(this.userInfo, event.target.name, event.target.value));
-    if (this.props.submitButtonStatus) {
+    if (this.props.state.userEditModal.submitButtonStatus) {
       dispatch(enableSubmitButtonActionCreator());
     }
   };
@@ -103,7 +103,7 @@ class UserEditModal extends React.Component<any, any> {
     if (index !== 0) {
       return;
     }
-    await dispatch(deleteUserAction(this.props.userInfo['id'])).then(() => {
+    await dispatch(deleteUserAction(this.props.state.userEditModal.userInfo['id'])).then(() => {
       const userList = store.getState().userListState;
       if (userList.isError.status) {
         this.setState({ isError: true });
@@ -123,12 +123,12 @@ class UserEditModal extends React.Component<any, any> {
 
   render() {
     const userList = store.getState().userListState;
-    const userInfo = this.props.userInfo;
+    const userInfo = this.props.state.userEditModal.userInfo;
 
     return (
       <Modal
         dialogClassName='userEditModal'
-        show={this.props.onHide}
+        show={this.props.state.userEditModal.onHide}
         aria-labelledby='contained-modal-title-vcenter'
         centered
         backdrop='static'
@@ -160,7 +160,10 @@ class UserEditModal extends React.Component<any, any> {
                   <Form.Label>
                     <span className='status'>状態</span>
                   </Form.Label>
-                    <Tooltip title={<span className="user-edit-modal-tooltip">状態を在席に変更し、行き先と戻りを削除します</span>} placement="top" arrow>
+                  <Tooltip
+                    title={<span className='user-edit-modal-tooltip'>状態を在席に変更し、行き先と戻りを削除します</span>}
+                    placement='top'
+                    arrow>
                     <Button
                       variant='outlined'
                       color='default'
@@ -170,7 +173,7 @@ class UserEditModal extends React.Component<any, any> {
                       className='user-edit-modal-presence-button'>
                       在席
                     </Button>
-                    </Tooltip>
+                  </Tooltip>
                   <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
                     {STATUS_LIST.map((status: string, index: number) => (
                       <option key={index}>{status}</option>
@@ -214,7 +217,7 @@ class UserEditModal extends React.Component<any, any> {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            {!this.props.isChangeUser && (
+            {!this.props.state.userEditModal.isChangeUser && (
               <Button
                 variant='outlined'
                 color='default'
@@ -228,7 +231,7 @@ class UserEditModal extends React.Component<any, any> {
               variant='contained'
               color='primary'
               type='submit'
-              disabled={this.props.submitButtonStatus}
+              disabled={this.props.state.userEditModal.submitButtonStatus}
               style={{ boxShadow: 'none' }}
               className='user-edit-modal-base-button'>
               登録

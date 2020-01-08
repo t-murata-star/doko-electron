@@ -190,7 +190,7 @@ class UserList extends React.Component<any, any> {
   _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
   render() {
-    const { userList } = this.props;
+    const { userList } = this.props.state.userListState;
     return (
       // React-tabulatorのTypeScript型定義が未対応のため、@ts-ignoreでエラーを抑制
       <div>
