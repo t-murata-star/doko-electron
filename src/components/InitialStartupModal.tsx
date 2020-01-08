@@ -12,7 +12,6 @@ import {
   updateUserInfoAction
 } from '../actions/userInfo/userList';
 import { UserInfo } from '../define/model';
-import store from '../store/configureStore';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 import './InitialStartupModal.css';
 
@@ -55,13 +54,13 @@ class InitialStartupModal extends React.Component<any, any> {
 
     // addUserAction で userListState の myUserID に新規ユーザIDが設定される
     await dispatch(addUserAction(this.userInfo));
-    const userList = store.getState().userListState;
+    const userList = this.props.state.userListState;
     if (userList.isError.status) {
       this.setState({ submitButtonStatus: false });
       return;
     }
 
-    const myUserID = store.getState().userListState.addedUserInfo.id;
+    const myUserID = this.props.state.userListState.addedUserInfo.id;
     dispatch(setMyUserIDActionCreator(myUserID));
 
     // userIDを設定ファイルに登録（既に存在する場合は上書き）
@@ -82,7 +81,7 @@ class InitialStartupModal extends React.Component<any, any> {
   _changeUser = async () => {
     const { dispatch } = this.props;
     const myUserID = this.userID;
-    const userList = store.getState().userListState['userList'];
+    const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
@@ -109,7 +108,7 @@ class InitialStartupModal extends React.Component<any, any> {
     }
 
     await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
-    if (store.getState().userListState.isError.status === true) {
+    if (this.props.state.userListState.isError.status === true) {
       return;
     }
 
@@ -155,9 +154,9 @@ class InitialStartupModal extends React.Component<any, any> {
   };
 
   render() {
-    const onHide = store.getState().initialStartupModal.onHide;
-    const isError = store.getState().userListState.isError.status;
-    const userList = store.getState().userListState['userList'];
+    const onHide = this.props.state.initialStartupModal.onHide;
+    const isError = this.props.state.userListState.isError.status;
+    const userList = this.props.state.userListState['userList'];
 
     return (
       <Modal

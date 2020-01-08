@@ -26,7 +26,6 @@ import {
   SAVE_INSTALLER_FILENAME
 } from '../define';
 import { Notification, UserInfo } from '../define/model';
-import store from '../store/configureStore';
 import './App.scss';
 import { getUserInfo, sendHeartbeat, showMessageBox, showMessageBoxWithReturnValue } from './common/functions';
 import Loading from './Loading';
@@ -60,19 +59,19 @@ class App extends React.Component<any, any> {
 
     await dispatch(loginAction());
 
-    if (store.getState().appState.isError.status) {
+    if (this.props.state.appState.isError.status) {
       ipcRenderer.send('connected', false);
       remote.getCurrentWindow().loadFile(remote.getGlobal('errorPageFilepath'));
       return;
     }
 
     // APIリクエストヘッダに認証トークンを設定する
-    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + store.getState().appState.token;
+    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + this.props.state.appState.token;
 
     // お知らせチェック
     await dispatch(getNotificationAction());
 
-    const notification: Notification = store.getState().appState.notification;
+    const notification: Notification = this.props.state.appState.notification;
     const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
 
     /**
@@ -136,7 +135,6 @@ class App extends React.Component<any, any> {
       electronStore.set('appVersion', APP_VERSION);
     }
 
-
     /**
      * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
      */
@@ -154,11 +152,11 @@ class App extends React.Component<any, any> {
     }
 
     await dispatch(getUserListAction(userID));
-    if (store.getState().userListState.isError.status === true) {
+    if (this.props.state.userListState.isError.status === true) {
       return;
     }
 
-    const userList: UserInfo[] = store.getState().userListState['userList'];
+    const userList: UserInfo[] = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, userID);
 
     /**
@@ -201,7 +199,7 @@ class App extends React.Component<any, any> {
 
   electronResizeEvent = ipcRenderer.on('electronResizeEvent', async () => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().appState.myUserID;
+    const myUserID = this.props.state.appState.myUserID;
 
     // macOSでリサイズするとレイアウトが崩れてしまう問題の暫定対処
     await this._sleep(250);
@@ -213,8 +211,8 @@ class App extends React.Component<any, any> {
   // 状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().appState['myUserID'];
-    const userList = store.getState().userListState['userList'];
+    const myUserID = this.props.state.appState['myUserID'];
+    const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       return;
@@ -231,8 +229,8 @@ class App extends React.Component<any, any> {
   // 状態を「在席」に更新する
   electronUnlockScreenEvent = ipcRenderer.on('electronUnlockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().appState['myUserID'];
-    const userList = store.getState().userListState['userList'];
+    const myUserID = this.props.state.appState['myUserID'];
+    const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       return;
@@ -251,8 +249,8 @@ class App extends React.Component<any, any> {
   closeApp = ipcRenderer.on('closeApp', async (event: any) => {
     const { dispatch } = this.props;
 
-    const myUserID = store.getState().appState['myUserID'];
-    const userList = store.getState().userListState['userList'];
+    const myUserID = this.props.state.appState['myUserID'];
+    const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
       ipcRenderer.send('close');
@@ -269,7 +267,7 @@ class App extends React.Component<any, any> {
   });
 
   updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
-    const notification: Notification = store.getState().appState.notification;
+    const notification: Notification = this.props.state.appState.notification;
     switch (remote.process.platform) {
       case 'win32':
         this.setState({ fileByteSize: notification.updateInstaller.windows.fileByteSize });
@@ -320,7 +318,7 @@ class App extends React.Component<any, any> {
 
   async _updateApp(index: number) {
     const { dispatch } = this.props;
-    const notification: Notification = store.getState().appState.notification;
+    const notification: Notification = this.props.state.appState.notification;
 
     let updateInstallerFilepath = '';
     switch (index) {
@@ -329,24 +327,24 @@ class App extends React.Component<any, any> {
         switch (remote.process.platform) {
           case 'win32':
             await dispatch(getS3SignedUrlAction(notification.updateInstaller.windows.fileName));
-            if (store.getState().appState.isError.status) {
+            if (this.props.state.appState.isError.status) {
               showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
               return;
             }
             updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.exe`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().appState.updateInstallerUrl);
+            ipcRenderer.send('updateApp', updateInstallerFilepath, this.props.state.appState.updateInstallerUrl);
             break;
 
           case 'darwin':
             await dispatch(getS3SignedUrlAction(notification.updateInstaller.mac.fileName));
-            if (store.getState().appState.isError.status) {
+            if (this.props.state.appState.isError.status) {
               showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
               return;
             }
             updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.dmg`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, store.getState().appState.updateInstallerUrl);
+            ipcRenderer.send('updateApp', updateInstallerFilepath, this.props.state.appState.updateInstallerUrl);
             break;
 
           default:
@@ -362,7 +360,7 @@ class App extends React.Component<any, any> {
 
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().appState.myUserID;
+    const myUserID = this.props.state.appState.myUserID;
     this.setState({ activeIndex });
     // 同じタブを複数押下した場合
     if (this.state.activeIndex === activeIndex) {
@@ -385,15 +383,15 @@ class App extends React.Component<any, any> {
     }
   };
 
-// スリープ処理
-_sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+  // スリープ処理
+  _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
   render() {
-    const myUserID = store.getState().appState['myUserID'];
+    const myUserID = this.props.state.appState['myUserID'];
 
     return (
       <div>
-        <Loading state={store.getState()} />
+        <Loading state={this.props.state} />
         <Progress
           isUpdating={this.state.isUpdating}
           fileByteSize={this.state.fileByteSize}

@@ -20,7 +20,6 @@ import {
 import { deleteUserAction, getUserListAction, updateUserInfoAction } from '../../actions/userInfo/userList';
 import { APP_NAME, STATUS_LIST } from '../../define';
 import { UserInfo } from '../../define/model';
-import store from '../../store/configureStore';
 import './UserEditModal.css';
 
 const { remote } = window.require('electron');
@@ -52,13 +51,13 @@ class UserEditModal extends React.Component<any, any> {
     const userID = this.props.state.userEditModal.userID;
 
     await dispatch(updateUserInfoAction(userInfo, userID));
-    const userList = store.getState().userListState;
+    const userList = this.props.state.userListState;
     if (userList.isError.status) {
       dispatch(enableSubmitButtonActionCreator());
       return;
     }
     this.closeModal();
-    const myUserID = store.getState().appState.myUserID;
+    const myUserID = this.props.state.appState.myUserID;
     dispatch(getUserListAction(myUserID, 250));
   };
 
@@ -67,7 +66,7 @@ class UserEditModal extends React.Component<any, any> {
     electronStore.set('userID', this.userID);
     await dispatch(setMyUserIDActionCreator(this.userID));
     this.closeModal();
-    const myUserID = store.getState().appState.myUserID;
+    const myUserID = this.props.state.appState.myUserID;
     dispatch(getUserListAction(myUserID, 250));
   };
 
@@ -104,13 +103,13 @@ class UserEditModal extends React.Component<any, any> {
       return;
     }
     await dispatch(deleteUserAction(this.props.state.userEditModal.userInfo['id'])).then(() => {
-      const userList = store.getState().userListState;
+      const userList = this.props.state.userListState;
       if (userList.isError.status) {
         this.setState({ isError: true });
         return;
       }
       this.closeModal();
-      const myUserID = store.getState().appState.myUserID;
+      const myUserID = this.props.state.appState.myUserID;
       dispatch(getUserListAction(myUserID, 250));
     });
   };
@@ -122,7 +121,7 @@ class UserEditModal extends React.Component<any, any> {
   };
 
   render() {
-    const userList = store.getState().userListState;
+    const userList = this.props.state.userListState;
     const userInfo = this.props.state.userEditModal.userInfo;
 
     return (

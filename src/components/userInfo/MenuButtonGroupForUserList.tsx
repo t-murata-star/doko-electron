@@ -8,7 +8,6 @@ import { Col, Container, Form, Row } from 'react-bootstrap';
 import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../../actions/userInfo/userEditModal';
 import { getUserListAction } from '../../actions/userInfo/userList';
 import UserEditModal from '../../containers/userInfo/UserEditModalPanel';
-import store from '../../store/configureStore';
 import { getUserInfo } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
@@ -18,15 +17,15 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
     const { dispatch } = this.props;
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
-    const myUserID = store.getState().appState.myUserID;
+    const myUserID = this.props.state.appState.myUserID;
     await dispatch(getUserListAction(myUserID, 250));
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
   showUserEditModal = () => {
     const { dispatch } = this.props;
-    const userList = store.getState().userListState['userList'];
-    const myUserID = store.getState().appState['myUserID'];
+    const userList = this.props.state.userListState['userList'];
+    const myUserID = this.props.state.appState['myUserID'];
     const userInfo = getUserInfo(userList, myUserID);
 
     if (userInfo === null) {
@@ -40,8 +39,8 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
   };
 
   render() {
-    const userList = store.getState().userListState;
-    const appState = store.getState().appState;
+    const userList = this.props.state.userListState;
+    const appState = this.props.state.appState;
     const myUserID = appState['myUserID'];
     const userInfo = getUserInfo(userList['userList'], myUserID);
 

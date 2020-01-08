@@ -16,7 +16,6 @@ import {
 import { updateUserInfoAction } from '../../actions/userInfo/userList';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { UserInfo } from '../../define/model';
-import store from '../../store/configureStore';
 import { getUserInfo, sendHeartbeat } from '../common/functions';
 import './Settings.css';
 
@@ -31,13 +30,13 @@ class Settings extends React.Component<any, any> {
     // state を初期化
     dispatch(initializeSettingStateActionCreator());
 
-    const myUserID = store.getState().appState.myUserID;
+    const myUserID = this.props.state.appState.myUserID;
 
     // ユーザ変更(プルダウンの初期選択で自分を選択する)
     dispatch(setUserIDActionCreator(myUserID));
 
     // メールアドレス
-    const userList = store.getState().userListState.userList;
+    const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo !== null) {
       dispatch(setEmailActionCreator(userInfo.email));
@@ -55,9 +54,9 @@ class Settings extends React.Component<any, any> {
   // ユーザ変更
   onUserChange = (event: any) => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().appState.myUserID;
+    const myUserID = this.props.state.appState.myUserID;
     const changedUserID = parseInt(event.target.value);
-    const userList = store.getState().userListState.userList;
+    const userList = this.props.state.userListState.userList;
 
     const userInfo = getUserInfo(userList, changedUserID);
     if (userInfo === null) {
@@ -75,8 +74,8 @@ class Settings extends React.Component<any, any> {
   onSaveSettingsForUserChange = async (event: any) => {
     event.preventDefault();
     const { dispatch } = this.props;
-    const settingState = store.getState().settingsState;
-    const oldMyUserID = store.getState().appState.myUserID;
+    const settingState = this.props.state.settingsState;
+    const oldMyUserID = this.props.state.appState.myUserID;
     let changedUserID = settingState.user.userID;
 
     if (changedUserID === -1 || changedUserID === oldMyUserID) {
@@ -85,7 +84,7 @@ class Settings extends React.Component<any, any> {
 
     // メールアドレス
     const myUserID = changedUserID;
-    const userList = store.getState().userListState.userList;
+    const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null) {
       dispatch(changeEnabledSnackbarActionCreator(true, '設定の保存に失敗しました。'));
@@ -106,7 +105,7 @@ class Settings extends React.Component<any, any> {
     const { dispatch } = this.props;
     dispatch(setEmailActionCreator(event.currentTarget.value));
 
-    if (store.getState().settingsState.submitButtonsDisable.user.email) {
+    if (this.props.state.settingsState.submitButtonsDisable.user.email) {
       dispatch(changeDisabledSubmitButtonEmailActionCreator(false));
     }
   };
@@ -115,14 +114,14 @@ class Settings extends React.Component<any, any> {
   onSaveSettingsForEmail = async (event: any) => {
     event.preventDefault();
     const { dispatch } = this.props;
-    const settingState = store.getState().settingsState;
-    const myUserID = store.getState().appState.myUserID;
+    const settingState = this.props.state.settingsState;
+    const myUserID = this.props.state.appState.myUserID;
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['email'] = settingState.user.email;
     await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
-    if (store.getState().userListState.isError.status) {
+    if (this.props.state.userListState.isError.status) {
       dispatch(changeEnabledSnackbarActionCreator(true, '設定の保存に失敗しました。'));
     } else {
       dispatch(changeEnabledSnackbarActionCreator(true, '設定を保存しました。'));
@@ -135,7 +134,7 @@ class Settings extends React.Component<any, any> {
     const { dispatch } = this.props;
 
     await dispatch(changeEnabledStartupActionCreator(event.target.checked));
-    const settingState = store.getState().settingsState;
+    const settingState = this.props.state.settingsState;
     let openAtLogin: boolean;
     if (settingState.system.startupEnabled) {
       openAtLogin = true;
@@ -162,10 +161,10 @@ class Settings extends React.Component<any, any> {
   };
 
   render() {
-    const myUserID = store.getState().appState.myUserID;
-    const userList = store.getState().userListState.userList;
+    const myUserID = this.props.state.appState.myUserID;
+    const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID) || new UserInfo();
-    const settingState = store.getState().settingsState;
+    const settingState = this.props.state.settingsState;
 
     return (
       <div className='settings'>

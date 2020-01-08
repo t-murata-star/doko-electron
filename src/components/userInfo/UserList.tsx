@@ -6,7 +6,6 @@ import { setProcessingStatusActionCreator } from '../../actions/app';
 import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../../actions/userInfo/userEditModal';
 import { changeOrderAction, getUserListAction } from '../../actions/userInfo/userList';
 import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
-import store from '../../store/configureStore';
 import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
@@ -95,7 +94,7 @@ class UserList extends React.Component<any, any> {
 
   showUserEditModal = (e: any, row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
-    const userList = store.getState().userListState['userList'];
+    const userList = this.props.state.userListState['userList'];
     const selectedUserId = row.getData()['id'];
     const userInfo = getUserInfo(userList, selectedUserId);
 
@@ -148,7 +147,7 @@ class UserList extends React.Component<any, any> {
         break;
     }
     // 自分の名前を太字にする
-    if (rowData.id === store.getState().appState['myUserID']) {
+    if (rowData.id === this.props.state.appState['myUserID']) {
       row.getCell('name').getElement().style.fontWeight = 'bold';
     }
   };
@@ -181,7 +180,7 @@ class UserList extends React.Component<any, any> {
 
   _rowMovedCallback = async (row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
-    const myUserID = store.getState().appState.myUserID;
+    const myUserID = this.props.state.appState.myUserID;
 
     await this._updateUserInfoOrder(row);
     dispatch(getUserListAction(myUserID));

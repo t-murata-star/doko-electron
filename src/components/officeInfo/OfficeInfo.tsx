@@ -3,14 +3,13 @@ import { faDoorClosed, faDoorOpen, faFemale, faMale } from '@fortawesome/free-so
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
-import store from '../../store/configureStore';
 import './OfficeInfo.css';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
 
 class OfficeInfo extends React.Component<any, any> {
   render() {
-    const officeInfo = store.getState().officeInfoState;
+    const officeInfo = this.props.state.officeInfoState;
 
     return (
       <div className='office_info'>
