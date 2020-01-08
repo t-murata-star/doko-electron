@@ -10,6 +10,7 @@ export class _UserListState {
   isError: RequestError = new RequestError();
   selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
   addedUserInfo: UserInfo = new UserInfo();
+  inoperable: boolean = false;
 }
 
 function userListIsFetching(state = false, action: any) {
@@ -147,6 +148,11 @@ export default function userListState(state = new _UserListState(), action: any)
       return {
         ...state,
         changeUserList: action.changeUserList
+      };
+    case UserListActions.INOPERABLE:
+      return {
+        ...state,
+        inoperable: action.state
       };
     default:
       return state;

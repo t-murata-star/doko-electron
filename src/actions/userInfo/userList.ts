@@ -25,6 +25,7 @@ export const FAIL_REQUEST = 'FAIL_REQUEST';
 export const SELECT_USER = 'SELECT_USER';
 export const RETURN_EMPTY_USER_LIST = 'RETURN_EMPTY_USER_LIST';
 export const RETURN_EMPTY_CHANGE_USER_LIST = 'RETURN_EMPTY_CHANGE_USER_LIST';
+export const INOPERABLE = 'INOPERABLE';
 
 /**
  * Action Creator
@@ -102,6 +103,10 @@ export const returnEmptyUserListActionCreator = () => ({
 export const returnEmptyChangeUserListActionCreator = () => ({
   type: RETURN_EMPTY_CHANGE_USER_LIST,
   changeUserList: []
+});
+export const inoperableActionCreator = (state: boolean) => ({
+  type: INOPERABLE,
+  state
 });
 
 export const deleteUserAction = (userID: number) => {

@@ -4,7 +4,7 @@ import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
 import { setProcessingStatusActionCreator } from '../../actions/app';
 import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../../actions/userInfo/userEditModal';
-import { changeOrderAction, getUserListAction } from '../../actions/userInfo/userList';
+import { changeOrderAction, getUserListAction, inoperableActionCreator } from '../../actions/userInfo/userList';
 import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
 import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
@@ -13,13 +13,6 @@ import './UserList.css';
 const { remote } = window.require('electron');
 
 class UserList extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      inoperable: false
-    };
-  }
-
   formatter = (cell: Tabulator.CellComponent) => {
     const email = cell.getValue();
     if (email !== '') {
@@ -31,12 +24,14 @@ class UserList extends React.Component<any, any> {
 
   openCalendar = (e: any, cell: Tabulator.CellComponent) => {
     const email = cell.getValue();
+    const { dispatch } = this.props;
+
     if (email === '') {
       return;
     }
 
     // 親ウインドウを操作不可にする
-    this.setState({ inoperable: true });
+    dispatch(inoperableActionCreator(true));
 
     const encodedEmail = encodeURI(email);
     // カレンダー表示のための子ウインドウを表示
@@ -55,7 +50,7 @@ class UserList extends React.Component<any, any> {
 
     calendarWindow.on('closed', () => {
       calendarWindow = null;
-      this.setState({ inoperable: false });
+      dispatch(inoperableActionCreator(false));
     });
   };
 
@@ -193,7 +188,7 @@ class UserList extends React.Component<any, any> {
     return (
       // React-tabulatorのTypeScript型定義が未対応のため、@ts-ignoreでエラーを抑制
       <div>
-        <Inoperable enabled={this.state.inoperable} />
+        <Inoperable enabled={this.props.state.userListState.inoperable} />
         {/*
         // @ts-ignore */}
         <ReactTabulator

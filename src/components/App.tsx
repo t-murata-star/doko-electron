@@ -3,7 +3,17 @@ import Tabs from '@material-ui/core/Tabs';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
 import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
-import { loginAction, getNotificationAction, setMyUserIDActionCreator, getS3SignedUrlAction } from '../actions/app';
+import {
+  loginAction,
+  getNotificationAction,
+  setMyUserIDActionCreator,
+  getS3SignedUrlAction,
+  setActiveIndexActionCreator,
+  // setIsUpdatingActionCreator,
+  setFileByteSizeActionCreator,
+  setReceivedBytesActionCreator,
+  setDownloadProgressActionCreator
+} from '../actions/app';
 import { getRestroomUsageAction } from '../actions/officeInfo/officeInfo';
 import {
   getUserListAction,
@@ -39,17 +49,6 @@ const childProcess = window.require('child_process');
 const path = require('path');
 
 class App extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      activeIndex: 0,
-      isUpdating: false,
-      fileByteSize: 0,
-      receivedBytes: 0,
-      progress: 0
-    };
-  }
-
   async componentDidMount() {
     const { dispatch } = this.props;
     const userID: number = (electronStore.get('userID') as number | undefined) || -1;
@@ -87,7 +86,7 @@ class App extends React.Component<any, any> {
     }
 
     // if (notification.latestAppVersion !== APP_VERSION) {
-    //   this.setState({ isUpdating: true });
+    // dispatch(setIsUpdatingActionCreator(true));
     //   const index = showMessageBoxWithReturnValue('OK', 'Cancel', updateNotificationMessage);
     //   this._updateApp(index);
     //   return;
@@ -267,18 +266,23 @@ class App extends React.Component<any, any> {
   });
 
   updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
+    const { dispatch } = this.props;
     const notification: Notification = this.props.state.appState.notification;
     switch (remote.process.platform) {
       case 'win32':
-        this.setState({ fileByteSize: notification.updateInstaller.windows.fileByteSize });
-        this.setState({ progress: Math.round((receivedBytes / this.state.fileByteSize) * 1000) / 10 });
-        this.setState({ receivedBytes: receivedBytes });
+        dispatch(setFileByteSizeActionCreator(notification.updateInstaller.windows.fileByteSize));
+        dispatch(
+          setDownloadProgressActionCreator(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
+        );
+        dispatch(setReceivedBytesActionCreator(receivedBytes));
         break;
 
       case 'darwin':
-        this.setState({ fileByteSize: notification.updateInstaller.mac.fileByteSize });
-        this.setState({ progress: Math.round((receivedBytes / this.state.fileByteSize) * 1000) / 10 });
-        this.setState({ receivedBytes: receivedBytes });
+        dispatch(setFileByteSizeActionCreator(notification.updateInstaller.mac.fileByteSize));
+        dispatch(
+          setDownloadProgressActionCreator(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
+        );
+        dispatch(setReceivedBytesActionCreator(receivedBytes));
         break;
 
       default:
@@ -361,9 +365,10 @@ class App extends React.Component<any, any> {
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
-    this.setState({ activeIndex });
+    dispatch(setActiveIndexActionCreator(activeIndex));
+
     // 同じタブを複数押下した場合
-    if (this.state.activeIndex === activeIndex) {
+    if (this.props.state.appState.activeIndex === activeIndex) {
       return;
     }
 
@@ -393,16 +398,16 @@ class App extends React.Component<any, any> {
       <div>
         <Loading state={this.props.state} />
         <Progress
-          isUpdating={this.state.isUpdating}
-          fileByteSize={this.state.fileByteSize}
-          receivedBytes={this.state.receivedBytes}
-          progress={this.state.progress}
+          isUpdating={this.props.state.appState.isUpdating}
+          fileByteSize={this.props.state.appState.fileByteSize}
+          receivedBytes={this.props.state.appState.receivedBytes}
+          progress={this.props.state.appState.progress}
         />
         {myUserID !== -1 && (
           <div>
             <MaterialThemeProvider theme={tabTheme}>
               <Tabs
-                value={this.state.activeIndex}
+                value={this.props.state.appState.activeIndex}
                 variant='fullWidth'
                 onChange={this.handleActiveIndexUpdate}
                 style={{ minHeight: '35px' }}
@@ -417,19 +422,19 @@ class App extends React.Component<any, any> {
           </div>
         )}
         <div className='contents'>
-          {myUserID !== -1 && this.state.activeIndex === 0 && (
+          {myUserID !== -1 && this.props.state.appState.activeIndex === 0 && (
             <div>
               <UserList />
               <MenuButtonGroupForUserList />
             </div>
           )}
-          {myUserID !== -1 && this.state.activeIndex === 1 && (
+          {myUserID !== -1 && this.props.state.appState.activeIndex === 1 && (
             <div>
               <OfficeInfo />
               <MenuButtonGroupForOfficeInfo />
             </div>
           )}
-          {myUserID !== -1 && this.state.activeIndex === 2 && (
+          {myUserID !== -1 && this.props.state.appState.activeIndex === 2 && (
             <div>
               <Settings />
             </div>

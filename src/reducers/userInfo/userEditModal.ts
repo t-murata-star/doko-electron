@@ -4,7 +4,6 @@ import { UserInfo } from '../../define/model';
 export class _userEditModal {
   onHide: boolean = false;
   submitButtonStatus: boolean = true;
-  isChangeUser: boolean = false;
   userID: number = -1;
   userInfo: UserInfo = new UserInfo();
 }
@@ -15,7 +14,6 @@ export default function userEditModal(state = new _userEditModal(), action: any)
       return {
         ...state,
         onHide: true,
-        isChangeUser: false,
         userID: action.userID,
         userInfo: action.userInfo
       };
@@ -37,14 +35,12 @@ export default function userEditModal(state = new _userEditModal(), action: any)
     case Actions.HANDLE_CHANGE_USER:
       return {
         ...state,
-        submitButtonStatus: true,
-        isChangeUser: true
+        submitButtonStatus: true
       };
     case Actions.HANDLE_EDIT_USER:
       return {
         ...state,
-        submitButtonStatus: true,
-        isChangeUser: false
+        submitButtonStatus: true
       };
     case Actions.INPUT_CLEAR:
       action.userInfo['status'] = '在席';

@@ -2,7 +2,11 @@ import MaterialUiButton from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
-import { closeInitialStartupModalActionCreator } from '../actions/initialStartupModal';
+import {
+  closeInitialStartupModalActionCreator,
+  disableSubmitButtonActionCreator,
+  isChengeUserActionCreator
+} from '../actions/initialStartupModal';
 import { setMyUserIDActionCreator } from '../actions/app';
 import {
   addUserAction,
@@ -27,14 +31,6 @@ class InitialStartupModal extends React.Component<any, any> {
     $('.nameForInput').focus();
   }
 
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      submitButtonStatus: true,
-      isChangeUser: false
-    };
-  }
-
   closeModal = () => {
     const { dispatch } = this.props;
     dispatch(closeInitialStartupModalActionCreator());
@@ -56,7 +52,7 @@ class InitialStartupModal extends React.Component<any, any> {
     await dispatch(addUserAction(this.userInfo));
     const userList = this.props.state.userListState;
     if (userList.isError.status) {
-      this.setState({ submitButtonStatus: false });
+      dispatch(disableSubmitButtonActionCreator(false));
       return;
     }
 
@@ -120,20 +116,23 @@ class InitialStartupModal extends React.Component<any, any> {
   };
 
   onNameChange = (event: any) => {
+    const { dispatch } = this.props;
     this.userInfo[event.currentTarget.name] = event.currentTarget.value;
-    this.setState({ submitButtonStatus: event.currentTarget.value.length === 0 ? true : false });
+    dispatch(disableSubmitButtonActionCreator(event.currentTarget.value.length === 0 ? true : false));
   };
 
   onUserChange = (event: any) => {
+    const { dispatch } = this.props;
     this.userID = parseInt(event.currentTarget.value);
-    this.setState({ submitButtonStatus: false });
+    dispatch(disableSubmitButtonActionCreator(false));
   };
 
   handleSubmit = (event: any) => {
-    this.setState({ submitButtonStatus: true });
+    const { dispatch } = this.props;
+    dispatch(disableSubmitButtonActionCreator(true));
     event.preventDefault();
 
-    if (this.state.isChangeUser) {
+    if (this.props.state.initialStartupModal.isChangeUser) {
       this._changeUser();
     } else {
       this._addUser();
@@ -142,15 +141,16 @@ class InitialStartupModal extends React.Component<any, any> {
 
   changeUserInput = (event: any) => {
     const { dispatch } = this.props;
-    this.setState({ submitButtonStatus: true });
-    this.setState({ isChangeUser: true });
+    dispatch(disableSubmitButtonActionCreator(true));
+    dispatch(isChengeUserActionCreator(true));
     // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
     dispatch(getUserListAction(-1, 250));
   };
 
   registUserInput = (event: any) => {
-    this.setState({ submitButtonStatus: true });
-    this.setState({ isChangeUser: false });
+    const { dispatch } = this.props;
+    dispatch(disableSubmitButtonActionCreator(true));
+    dispatch(isChengeUserActionCreator(false));
   };
 
   render() {
@@ -181,7 +181,7 @@ class InitialStartupModal extends React.Component<any, any> {
                 <Col md='8'>
                   <Form.Group controlId='name'>
                     <Form.Label>氏名</Form.Label>
-                    {this.state.isChangeUser && (
+                    {this.props.state.initialStartupModal.isChangeUser && (
                       <div>
                         <Form.Control name='name' as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
@@ -203,7 +203,7 @@ class InitialStartupModal extends React.Component<any, any> {
                         </Form.Text>
                       </div>
                     )}
-                    {!this.state.isChangeUser && (
+                    {!this.props.state.initialStartupModal.isChangeUser && (
                       <div>
                         <Form.Control
                           className='nameForInput'
@@ -231,7 +231,7 @@ class InitialStartupModal extends React.Component<any, any> {
               type='submit'
               variant='contained'
               color='primary'
-              disabled={this.state.submitButtonStatus}
+              disabled={this.props.state.initialStartupModal.submitButtonDisabled}
               style={{ boxShadow: 'none' }}
               className='initial-startup-modal-base-button'>
               登録

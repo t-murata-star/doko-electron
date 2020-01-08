@@ -10,6 +10,11 @@ export class _AppState {
   notification: Notification = new Notification();
   updateInstallerUrl: string = '';
   isProcessing: boolean = false;
+  activeIndex: number = 0;
+  isUpdating: boolean = false;
+  fileByteSize: number = 0;
+  receivedBytes: number = 0;
+  downloadProgress: number = 0;
 }
 
 function appIsFetching(state = false, action: any) {
@@ -54,7 +59,7 @@ function appIsError(state = new RequestError(), action: any) {
 /**
  * 登録者情報一覧のstateを管理するReducer
  */
-export default function userListState(state = new _AppState(), action: any) {
+export default function appState(state = new _AppState(), action: any) {
   switch (action.type) {
     case AppActions.LOGIN:
       return {
@@ -113,6 +118,31 @@ export default function userListState(state = new _AppState(), action: any) {
       return {
         ...state,
         isProcessing: action.status
+      };
+    case AppActions.SET_ACTIVE_INDEX:
+      return {
+        ...state,
+        activeIndex: action.activeIndex
+      };
+    case AppActions.SET_IS_UPDATING:
+      return {
+        ...state,
+        isUpdating: action.isUpdating
+      };
+    case AppActions.SET_FILE_BYTE_SIZE:
+      return {
+        ...state,
+        fileByteSize: action.fileByteSize
+      };
+    case AppActions.SET_RECEIVED_BYTES:
+      return {
+        ...state,
+        receivedBytes: action.receivedBytes
+      };
+    case AppActions.SET_DOWNLOAD_PROGRESS:
+      return {
+        ...state,
+        downloadProgress: action.downloadProgress
       };
     default:
       return state;

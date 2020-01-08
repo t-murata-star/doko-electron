@@ -20,6 +20,12 @@ export const GET_S3_SIGNED_URL = 'GET_S3_SIGNED_URL';
 export const GET_S3_SIGNED_URL_SUCCESS = 'GET_S3_SIGNED_URL_SUCCESS';
 export const SET_PROCESSING_STATUS = 'SET_PROCESSING_STATUS';
 
+export const SET_ACTIVE_INDEX = 'SET_ACTIVE_INDEX';
+export const SET_IS_UPDATING = 'SET_IS_UPDATING';
+export const SET_FILE_BYTE_SIZE = 'SET_FILE_BYTE_SIZE';
+export const SET_RECEIVED_BYTES = 'SET_RECEIVED_BYTES';
+export const SET_DOWNLOAD_PROGRESS = 'SET_DOWNLOAD_PROGRESS';
+
 /**
  * Action Creator
  */
@@ -77,6 +83,26 @@ export const getS3SignedUrlSuccessActionCreator = (json: any) => ({
 export const setProcessingStatusActionCreator = (status: boolean) => ({
   type: SET_PROCESSING_STATUS,
   status
+});
+export const setActiveIndexActionCreator = (activeIndex: number) => ({
+  type: SET_ACTIVE_INDEX,
+  activeIndex
+});
+export const setIsUpdatingActionCreator = (isUpdating: boolean) => ({
+  type: SET_IS_UPDATING,
+  isUpdating
+});
+export const setFileByteSizeActionCreator = (fileByteSize: number) => ({
+  type: SET_FILE_BYTE_SIZE,
+  fileByteSize
+});
+export const setReceivedBytesActionCreator = (receivedBytes: number) => ({
+  type: SET_RECEIVED_BYTES,
+  receivedBytes
+});
+export const setDownloadProgressActionCreator = (downloadProgress: number) => ({
+  type: SET_DOWNLOAD_PROGRESS,
+  downloadProgress
 });
 
 export const loginAction = () => {

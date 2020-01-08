@@ -216,16 +216,14 @@ class UserEditModal extends React.Component<any, any> {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            {!this.props.state.userEditModal.isChangeUser && (
-              <Button
-                variant='outlined'
-                color='default'
-                onClick={this.deleteUser}
-                style={{ marginRight: 'auto', boxShadow: 'none' }}
-                className='user-edit-modal-delete-button'>
-                削除
-              </Button>
-            )}
+            <Button
+              variant='outlined'
+              color='default'
+              onClick={this.deleteUser}
+              style={{ marginRight: 'auto', boxShadow: 'none' }}
+              className='user-edit-modal-delete-button'>
+              削除
+            </Button>
             <Button
               variant='contained'
               color='primary'
