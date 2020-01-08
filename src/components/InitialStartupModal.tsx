@@ -132,7 +132,7 @@ class InitialStartupModal extends React.Component<any, any> {
     dispatch(disableSubmitButtonActionCreator(true));
     event.preventDefault();
 
-    if (this.props.state.initialStartupModal.isChangeUser) {
+    if (this.props.state.initialStartupModalState.isChangeUser) {
       this._changeUser();
     } else {
       this._addUser();
@@ -154,7 +154,7 @@ class InitialStartupModal extends React.Component<any, any> {
   };
 
   render() {
-    const onHide = this.props.state.initialStartupModal.onHide;
+    const onHide = this.props.state.initialStartupModalState.onHide;
     const isError = this.props.state.userListState.isError.status;
     const userList = this.props.state.userListState['userList'];
 
@@ -181,7 +181,7 @@ class InitialStartupModal extends React.Component<any, any> {
                 <Col md='8'>
                   <Form.Group controlId='name'>
                     <Form.Label>氏名</Form.Label>
-                    {this.props.state.initialStartupModal.isChangeUser && (
+                    {this.props.state.initialStartupModalState.isChangeUser && (
                       <div>
                         <Form.Control name='name' as='select' onChange={this.onUserChange}>
                           <option hidden>選択してください</option>
@@ -203,7 +203,7 @@ class InitialStartupModal extends React.Component<any, any> {
                         </Form.Text>
                       </div>
                     )}
-                    {!this.props.state.initialStartupModal.isChangeUser && (
+                    {!this.props.state.initialStartupModalState.isChangeUser && (
                       <div>
                         <Form.Control
                           className='nameForInput'
@@ -231,7 +231,7 @@ class InitialStartupModal extends React.Component<any, any> {
               type='submit'
               variant='contained'
               color='primary'
-              disabled={this.props.state.initialStartupModal.submitButtonDisabled}
+              disabled={this.props.state.initialStartupModalState.submitButtonDisabled}
               style={{ boxShadow: 'none' }}
               className='initial-startup-modal-base-button'>
               登録

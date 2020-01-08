@@ -8,7 +8,7 @@ class Progress extends React.Component<any, any> {
       return (
         <div className='mx-auto'>
           <div className='update-progress-background'></div>
-          <div className='update-progress'>ダウンロード中.. {this.props.progress}%</div>
+          <div className='update-progress'>ダウンロード中.. {this.props.downloadProgress}%</div>
         </div>
       );
     } else {

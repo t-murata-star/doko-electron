@@ -38,7 +38,7 @@ class UserEditModal extends React.Component<any, any> {
   }
 
   componentDidUpdate() {
-    this.userInfo = Object.assign({}, this.props.state.userEditModal.userInfo);
+    this.userInfo = Object.assign({}, this.props.state.userEditModalState.userInfo);
   }
 
   closeModal = () => {
@@ -48,7 +48,7 @@ class UserEditModal extends React.Component<any, any> {
 
   _updateUserInfo = async (userInfo: UserInfo) => {
     const { dispatch } = this.props;
-    const userID = this.props.state.userEditModal.userID;
+    const userID = this.props.state.userEditModalState.userID;
 
     await dispatch(updateUserInfoAction(userInfo, userID));
     const userList = this.props.state.userListState;
@@ -73,7 +73,7 @@ class UserEditModal extends React.Component<any, any> {
   onUserInfoChange = (event: any) => {
     const { dispatch } = this.props;
     dispatch(changeUserInfoActionCreator(this.userInfo, event.target.name, event.target.value));
-    if (this.props.state.userEditModal.submitButtonStatus) {
+    if (this.props.state.userEditModalState.submitButtonDisabled) {
       dispatch(enableSubmitButtonActionCreator());
     }
   };
@@ -102,7 +102,7 @@ class UserEditModal extends React.Component<any, any> {
     if (index !== 0) {
       return;
     }
-    await dispatch(deleteUserAction(this.props.state.userEditModal.userInfo['id'])).then(() => {
+    await dispatch(deleteUserAction(this.props.state.userEditModalState.userInfo['id'])).then(() => {
       const userList = this.props.state.userListState;
       if (userList.isError.status) {
         this.setState({ isError: true });
@@ -122,12 +122,12 @@ class UserEditModal extends React.Component<any, any> {
 
   render() {
     const userList = this.props.state.userListState;
-    const userInfo = this.props.state.userEditModal.userInfo;
+    const userInfo = this.props.state.userEditModalState.userInfo;
 
     return (
       <Modal
         dialogClassName='userEditModal'
-        show={this.props.state.userEditModal.onHide}
+        show={this.props.state.userEditModalState.onHide}
         aria-labelledby='contained-modal-title-vcenter'
         centered
         backdrop='static'
@@ -228,7 +228,7 @@ class UserEditModal extends React.Component<any, any> {
               variant='contained'
               color='primary'
               type='submit'
-              disabled={this.props.state.userEditModal.submitButtonStatus}
+              disabled={this.props.state.userEditModalState.submitButtonDisabled}
               style={{ boxShadow: 'none' }}
               className='user-edit-modal-base-button'>
               登録

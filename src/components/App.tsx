@@ -86,7 +86,7 @@ class App extends React.Component<any, any> {
     }
 
     // if (notification.latestAppVersion !== APP_VERSION) {
-    // dispatch(setIsUpdatingActionCreator(true));
+    //   dispatch(setIsUpdatingActionCreator(true));
     //   const index = showMessageBoxWithReturnValue('OK', 'Cancel', updateNotificationMessage);
     //   this._updateApp(index);
     //   return;
@@ -393,7 +393,6 @@ class App extends React.Component<any, any> {
 
   render() {
     const myUserID = this.props.state.appState['myUserID'];
-
     return (
       <div>
         <Loading state={this.props.state} />
@@ -401,7 +400,7 @@ class App extends React.Component<any, any> {
           isUpdating={this.props.state.appState.isUpdating}
           fileByteSize={this.props.state.appState.fileByteSize}
           receivedBytes={this.props.state.appState.receivedBytes}
-          progress={this.props.state.appState.progress}
+          downloadProgress={this.props.state.appState.downloadProgress}
         />
         {myUserID !== -1 && (
           <div>

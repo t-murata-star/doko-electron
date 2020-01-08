@@ -1,12 +1,12 @@
 import * as Actions from '../actions/initialStartupModal';
 
-export class _initialStartupModal {
+export class _initialStartupModalState {
   onHide: boolean = false;
   submitButtonDisabled: boolean = true;
   isChangeUser: boolean = false;
 }
 
-export default function initialStartupModal(state = new _initialStartupModal(), action: any) {
+export default function initialStartupModalState(state = new _initialStartupModalState(), action: any) {
   switch (action.type) {
     case Actions.SHOW_INITIAL_STARTUP_MODAL:
       return {
