@@ -171,18 +171,21 @@ class App extends React.Component<any, any> {
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = userID;
-    updatedUserInfo['version'] = APP_VERSION;
+    if (userInfo['version'] !== APP_VERSION) {
+      updatedUserInfo['version'] = APP_VERSION;
+      dispatch(updateUserInfoAction(updatedUserInfo, userID));
+    }
 
-    // 状態が「退社」のユーザのみ、状態を「在席」に変更する
-    if (userInfo['status'] === '退社') {
+    // 状態を「在席」に更新する（更新日時も更新される）
+    if (userInfo['status'] === '退社' || userInfo['status'] === '在席' || userInfo['status'] === '在席 (離席中)') {
       userInfo['status'] = '在席';
       updatedUserInfo['status'] = userInfo['status'];
       updatedUserInfo['name'] = userInfo['name'];
+      dispatch(updateUserInfoAction(updatedUserInfo, userID));
     }
 
     dispatch(setMyUserIDActionCreator(userID));
     dispatch(updateStateUserListActionCreator(userList));
-    dispatch(updateUserInfoAction(updatedUserInfo, userID));
 
     sendHeartbeat(dispatch);
   }
