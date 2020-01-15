@@ -1,12 +1,7 @@
 import MaterialUiButton from '@material-ui/core/Button';
 import $ from 'jquery';
-import React from 'react';
+import React, { useEffect, Props } from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
-import {
-  closeInitialStartupModalActionCreator,
-  disableSubmitButtonActionCreator,
-  isChengeUserActionCreator
-} from '../actions/initialStartupModal';
 import { setMyUserIDActionCreator } from '../actions/app';
 import {
   addUserAction,
@@ -18,6 +13,9 @@ import {
 import { UserInfo } from '../define/model';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 import './InitialStartupModal.css';
+import { useDispatch } from 'react-redux';
+import { initialStartupModal } from '../modules/initialStartupModalModule';
+import { APP_VERSION } from '../define';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -33,7 +31,7 @@ class InitialStartupModal extends React.Component<any, any> {
 
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(closeInitialStartupModalActionCreator());
+    dispatch(initialStartupModal.actions.showModal(false));
   };
 
   _addUser = async () => {
@@ -52,7 +50,7 @@ class InitialStartupModal extends React.Component<any, any> {
     await dispatch(addUserAction(this.userInfo));
     const userList = this.props.state.userListState;
     if (userList.isError.status) {
-      dispatch(disableSubmitButtonActionCreator(false));
+      dispatch(initialStartupModal.actions.disableSubmitButton(false));
       return;
     }
 
@@ -118,18 +116,18 @@ class InitialStartupModal extends React.Component<any, any> {
   onNameChange = (event: any) => {
     const { dispatch } = this.props;
     this.userInfo[event.currentTarget.name] = event.currentTarget.value;
-    dispatch(disableSubmitButtonActionCreator(event.currentTarget.value.length === 0 ? true : false));
+    dispatch(initialStartupModal.actions.disableSubmitButton(event.currentTarget.value.length === 0 ? true : false));
   };
 
   onUserChange = (event: any) => {
     const { dispatch } = this.props;
     this.userID = parseInt(event.currentTarget.value);
-    dispatch(disableSubmitButtonActionCreator(false));
+    dispatch(initialStartupModal.actions.disableSubmitButton(false));
   };
 
   handleSubmit = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(disableSubmitButtonActionCreator(true));
+    dispatch(initialStartupModal.actions.disableSubmitButton(true));
     event.preventDefault();
 
     if (this.props.state.initialStartupModalState.isChangeUser) {
@@ -141,16 +139,16 @@ class InitialStartupModal extends React.Component<any, any> {
 
   changeUserInput = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(disableSubmitButtonActionCreator(true));
-    dispatch(isChengeUserActionCreator(true));
+    dispatch(initialStartupModal.actions.disableSubmitButton(true));
+    dispatch(initialStartupModal.actions.changeSubmitMode(true));
     // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
     dispatch(getUserListAction(-1, 250));
   };
 
   registUserInput = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(disableSubmitButtonActionCreator(true));
-    dispatch(isChengeUserActionCreator(false));
+    dispatch(initialStartupModal.actions.disableSubmitButton(true));
+    dispatch(initialStartupModal.actions.changeSubmitMode(false));
   };
 
   render() {
@@ -242,5 +240,49 @@ class InitialStartupModal extends React.Component<any, any> {
     );
   }
 }
+
+// const _InitialStartupModal = () => {
+//   const dispatch = useDispatch();
+//   const userInfo: any = new UserInfo();
+
+//   useEffect(() => {
+//     $('.nameForInput').focus();
+//   });
+
+//   const closeModal = () => {
+//     dispatch(initialStartupModal.actions.showModal(false));
+//   };
+
+//   const _addUser = async () => {
+//     userInfo['version'] = APP_VERSION;
+//     userInfo['status'] = '在席';
+
+//     // addUserAction で userListState の myUserID に新規ユーザIDが設定される
+//     await dispatch(addUserAction(userInfo));
+//     // TODO:useSelectorでstateを取得する
+//     const userList = this.props.state.userListState;
+//     if (userList.isError.status) {
+//       dispatch(initialStartupModal.actions.disableSubmitButton(false));
+//       return;
+//     }
+
+//     const myUserID = this.props.state.userListState.addedUserInfo.id;
+//     dispatch(setMyUserIDActionCreator(myUserID));
+
+//     // userIDを設定ファイルに登録（既に存在する場合は上書き）
+//     electronStore.set('userID', myUserID);
+
+//     // orderパラメータをidと同じ値に更新する
+//     const addedUserInfo: any = {};
+//     addedUserInfo['order'] = myUserID;
+
+//     await dispatch(updateForAddedUserInfoAction(addedUserInfo, myUserID));
+//     dispatch(getUserListAction(myUserID));
+
+//     sendHeartbeat(dispatch);
+
+//     this.closeModal();
+//   };
+// };
 
 export default InitialStartupModal;

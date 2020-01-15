@@ -6,26 +6,26 @@ import './Loading.css';
 
 library.add(faSpinner); //あらかじめ使用するアイコンを追加しておく
 
+type ContentProps = {
+  isAppStateProcessing: boolean;
+  isUserListProcessing: boolean;
+  officeInfoProcessing: boolean;
+};
+
 // ローディングインジケータ
-class Loading extends React.Component<any, any> {
-  render() {
-    if (
-      this.props.state.appState.isProcessing ||
-      this.props.state.userListState.isFetching ||
-      this.props.state.officeInfoState.isFetching
-    ) {
-      return (
-        <div className='mx-auto'>
-          <div className='loading-background'></div>
-          <div className='loading'>
-            通信中 <FontAwesomeIcon icon='spinner' spin />
-          </div>
+const Loading: React.FC<ContentProps> = props => {
+  if (props.isAppStateProcessing || props.isUserListProcessing || props.officeInfoProcessing) {
+    return (
+      <div className='mx-auto'>
+        <div className='loading-background'></div>
+        <div className='loading'>
+          通信中 <FontAwesomeIcon icon='spinner' spin />
         </div>
-      );
-    } else {
-      return null;
-    }
+      </div>
+    );
+  } else {
+    return null;
   }
-}
+};
 
 export default Loading;

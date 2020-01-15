@@ -3,7 +3,7 @@ import appState from './app';
 import userListState from './userInfo/userList';
 import officeInfoState from './officeInfo/officeInfo';
 import userEditModalState from './userInfo/userEditModal';
-import initialStartupModalState from './initialStartupModal';
+import { initialStartupModal } from '../modules/initialStartupModalModule';
 import settingsState from './settings/settings';
 
 const rootReducer = combineReducers({
@@ -11,7 +11,7 @@ const rootReducer = combineReducers({
   userListState,
   officeInfoState,
   userEditModalState,
-  initialStartupModalState,
+  initialStartupModalState: initialStartupModal.reducer,
   settingsState
 });
 

@@ -2,7 +2,6 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
-import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
 import {
   loginAction,
   getNotificationAction,
@@ -22,6 +21,7 @@ import {
   updateUserInfoAction
 } from '../actions/userInfo/userList';
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
+import { initialStartupModal } from '../modules/initialStartupModalModule';
 import MenuButtonGroupForOfficeInfo from '../containers/officeInfo/MenuButtonGroupPanelForOfficeInfo';
 import MenuButtonGroupForUserList from '../containers/userInfo/MenuButtonGroupPanelForUserList';
 import OfficeInfo from '../containers/officeInfo/OfficeInfoPanel';
@@ -165,7 +165,7 @@ class App extends React.Component<any, any> {
     if (userInfo === null) {
       dispatch(returnEmptyUserListActionCreator());
       showMessageBox('ユーザ情報が存在しないため、ユーザ登録を行います。');
-      dispatch(showInitialStartupModalActionCreator());
+      dispatch(initialStartupModal.actions.showModal(true));
       return;
     }
 
@@ -192,7 +192,7 @@ class App extends React.Component<any, any> {
 
   _showModal = () => {
     const { dispatch } = this.props;
-    dispatch(showInitialStartupModalActionCreator());
+    dispatch(initialStartupModal.actions.showModal(true));
   };
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
@@ -398,11 +398,13 @@ class App extends React.Component<any, any> {
     const myUserID = this.props.state.appState['myUserID'];
     return (
       <div>
-        <Loading state={this.props.state} />
+        <Loading
+          isAppStateProcessing={this.props.state.appState.isProcessing}
+          isUserListProcessing={this.props.state.userListState.isFetching}
+          officeInfoProcessing={this.props.state.officeInfoState.isFetching}
+        />
         <Progress
           isUpdating={this.props.state.appState.isUpdating}
-          fileByteSize={this.props.state.appState.fileByteSize}
-          receivedBytes={this.props.state.appState.receivedBytes}
           downloadProgress={this.props.state.appState.downloadProgress}
         />
         {myUserID !== -1 && (
