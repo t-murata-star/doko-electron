@@ -16,6 +16,8 @@ import './InitialStartupModal.css';
 import { useDispatch } from 'react-redux';
 import { initialStartupModal } from '../modules/initialStartupModalModule';
 import { APP_VERSION } from '../define';
+import { useSelector } from "react-redux";
+import { RootState } from '../reducers';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -241,48 +243,50 @@ class InitialStartupModal extends React.Component<any, any> {
   }
 }
 
-// const _InitialStartupModal = () => {
-//   const dispatch = useDispatch();
-//   const userInfo: any = new UserInfo();
+const _InitialStartupModal = () => {
+  const dispatch = useDispatch();
+  const userInfo: any = new UserInfo();
 
-//   useEffect(() => {
-//     $('.nameForInput').focus();
-//   });
+  useEffect(() => {
+    $('.nameForInput').focus();
+  });
 
-//   const closeModal = () => {
-//     dispatch(initialStartupModal.actions.showModal(false));
-//   };
+  const closeModal = () => {
+    dispatch(initialStartupModal.actions.showModal(false));
+  };
 
-//   const _addUser = async () => {
-//     userInfo['version'] = APP_VERSION;
-//     userInfo['status'] = '在席';
+  const _addUser = async () => {
+    userInfo['version'] = APP_VERSION;
+    userInfo['status'] = '在席';
 
-//     // addUserAction で userListState の myUserID に新規ユーザIDが設定される
-//     await dispatch(addUserAction(userInfo));
-//     // TODO:useSelectorでstateを取得する
-//     const userList = this.props.state.userListState;
-//     if (userList.isError.status) {
-//       dispatch(initialStartupModal.actions.disableSubmitButton(false));
-//       return;
-//     }
+    // addUserAction で userListState の myUserID に新規ユーザIDが設定される
+    await dispatch(addUserAction(userInfo));
+    // TODO:useSelectorでstateを取得する
+    const userList = useSelector((state: RootState) => state.userListState);
+    if (userList.isError.status) {
+      dispatch(initialStartupModal.actions.disableSubmitButton(false));
+      return;
+    }
 
-//     const myUserID = this.props.state.userListState.addedUserInfo.id;
-//     dispatch(setMyUserIDActionCreator(myUserID));
+    // useSelectorが呼ばれる回数は冪等性を保たなければならないため、以下の呼び出しばエラーとなる
+    // 呼び出される前にreturnされる可能性がある
+    const myUserID = useSelector((state: RootState) => state.userListState.addedUserInfo.id);
+    dispatch(setMyUserIDActionCreator(myUserID));
 
-//     // userIDを設定ファイルに登録（既に存在する場合は上書き）
-//     electronStore.set('userID', myUserID);
+    // userIDを設定ファイルに登録（既に存在する場合は上書き）
+    electronStore.set('userID', myUserID);
 
-//     // orderパラメータをidと同じ値に更新する
-//     const addedUserInfo: any = {};
-//     addedUserInfo['order'] = myUserID;
+    // orderパラメータをidと同じ値に更新する
+    const addedUserInfo: any = {};
+    addedUserInfo['order'] = myUserID;
 
-//     await dispatch(updateForAddedUserInfoAction(addedUserInfo, myUserID));
-//     dispatch(getUserListAction(myUserID));
+    await dispatch(updateForAddedUserInfoAction(addedUserInfo, myUserID));
+    dispatch(getUserListAction(myUserID));
 
-//     sendHeartbeat(dispatch);
+    sendHeartbeat(dispatch);
 
-//     this.closeModal();
-//   };
-// };
+    this.closeModal();
+  };
+};
 
 export default InitialStartupModal;
