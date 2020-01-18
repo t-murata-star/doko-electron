@@ -2,13 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 
 class _initialState {
   onHide: boolean = false;
-  submitButtonDisabled: boolean = true;
   isChangeUser: boolean = false;
 }
 
 // createSlice() で actions と reducers を一気に生成
-export const initialStartupModal = createSlice({
-  name: 'counter',
+const initialStartupModal = createSlice({
+  name: 'initialStartupModal',
   initialState: new _initialState(),
   reducers: {
     showModal: (state, action) => {
@@ -31,3 +30,5 @@ export const initialStartupModal = createSlice({
     }
   }
 });
+
+export default initialStartupModal;

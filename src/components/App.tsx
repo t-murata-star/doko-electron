@@ -2,17 +2,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
-import {
-  loginAction,
-  getNotificationAction,
-  setMyUserIDActionCreator,
-  getS3SignedUrlAction,
-  setActiveIndexActionCreator,
-  // setIsUpdatingActionCreator,
-  setFileByteSizeActionCreator,
-  setReceivedBytesActionCreator,
-  setDownloadProgressActionCreator
-} from '../actions/app';
+import AppModule, { AsyncActions } from '../modules/appModule';
 import { getRestroomUsageAction } from '../actions/officeInfo/officeInfo';
 import {
   getUserListAction,
@@ -21,7 +11,7 @@ import {
   updateUserInfoAction
 } from '../actions/userInfo/userList';
 import InitialStartupModal from '../containers/InitialStartupModalPanel';
-import { initialStartupModal } from '../modules/initialStartupModalModule';
+import InitialStartupModalModule from '../modules/initialStartupModalModule';
 import MenuButtonGroupForOfficeInfo from '../containers/officeInfo/MenuButtonGroupPanelForOfficeInfo';
 import MenuButtonGroupForUserList from '../containers/userInfo/MenuButtonGroupPanelForUserList';
 import OfficeInfo from '../containers/officeInfo/OfficeInfoPanel';
@@ -56,7 +46,7 @@ class App extends React.Component<any, any> {
     // メインプロセスに、WEBアプリケーションに接続できたことを伝える
     ipcRenderer.send('connected', true);
 
-    await dispatch(loginAction());
+    await dispatch(AsyncActions.loginAction());
 
     if (this.props.state.appState.isError.status) {
       ipcRenderer.send('connected', false);
@@ -68,7 +58,7 @@ class App extends React.Component<any, any> {
     AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + this.props.state.appState.token;
 
     // お知らせチェック
-    await dispatch(getNotificationAction());
+    await dispatch(AsyncActions.getNotificationAction());
 
     const notification: Notification = this.props.state.appState.notification;
     const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
@@ -81,7 +71,7 @@ class App extends React.Component<any, any> {
     if (notification.latestAppVersion !== APP_VERSION) {
       showMessageBox(updateNotificationMessage);
       remote.shell.openExternal(APP_DOWNLOAD_URL);
-      remote.getCurrentWindow().destroy();
+      // remote.getCurrentWindow().destroy();
       return;
     }
 
@@ -165,7 +155,7 @@ class App extends React.Component<any, any> {
     if (userInfo === null) {
       dispatch(returnEmptyUserListActionCreator());
       showMessageBox('ユーザ情報が存在しないため、ユーザ登録を行います。');
-      dispatch(initialStartupModal.actions.showModal(true));
+      dispatch(InitialStartupModalModule.actions.showModal(true));
       return;
     }
 
@@ -184,7 +174,7 @@ class App extends React.Component<any, any> {
       dispatch(updateUserInfoAction(updatedUserInfo, userID));
     }
 
-    dispatch(setMyUserIDActionCreator(userID));
+    dispatch(AppModule.actions.setMyUserId(userID));
     dispatch(updateStateUserListActionCreator(userList));
 
     sendHeartbeat(dispatch);
@@ -192,7 +182,7 @@ class App extends React.Component<any, any> {
 
   _showModal = () => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModal.actions.showModal(true));
+    dispatch(InitialStartupModalModule.actions.showModal(true));
   };
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
@@ -206,8 +196,8 @@ class App extends React.Component<any, any> {
     // macOSでリサイズするとレイアウトが崩れてしまう問題の暫定対処
     await this._sleep(250);
 
-    dispatch(setMyUserIDActionCreator(-1));
-    dispatch(setMyUserIDActionCreator(myUserID));
+    dispatch(AppModule.actions.setMyUserId(-1));
+    dispatch(AppModule.actions.setMyUserId(myUserID));
   });
 
   // 状態を「離席中」に更新する
@@ -273,19 +263,19 @@ class App extends React.Component<any, any> {
     const notification: Notification = this.props.state.appState.notification;
     switch (remote.process.platform) {
       case 'win32':
-        dispatch(setFileByteSizeActionCreator(notification.updateInstaller.windows.fileByteSize));
+        dispatch(AppModule.actions.setFileByteSize(notification.updateInstaller.windows.fileByteSize));
         dispatch(
-          setDownloadProgressActionCreator(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
+          AppModule.actions.setDownloadProgress(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
         );
-        dispatch(setReceivedBytesActionCreator(receivedBytes));
+        dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
         break;
 
       case 'darwin':
-        dispatch(setFileByteSizeActionCreator(notification.updateInstaller.mac.fileByteSize));
+        dispatch(AppModule.actions.setFileByteSize(notification.updateInstaller.mac.fileByteSize));
         dispatch(
-          setDownloadProgressActionCreator(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
+          AppModule.actions.setDownloadProgress(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
         );
-        dispatch(setReceivedBytesActionCreator(receivedBytes));
+        dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
         break;
 
       default:
@@ -333,7 +323,7 @@ class App extends React.Component<any, any> {
         // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
         switch (remote.process.platform) {
           case 'win32':
-            await dispatch(getS3SignedUrlAction(notification.updateInstaller.windows.fileName));
+            await dispatch(AppModule.actions.getS3SignedUrlSuccess(notification.updateInstaller.windows.fileName));
             if (this.props.state.appState.isError.status) {
               showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
@@ -344,7 +334,7 @@ class App extends React.Component<any, any> {
             break;
 
           case 'darwin':
-            await dispatch(getS3SignedUrlAction(notification.updateInstaller.mac.fileName));
+            await dispatch(AppModule.actions.getS3SignedUrlSuccess(notification.updateInstaller.mac.fileName));
             if (this.props.state.appState.isError.status) {
               showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
@@ -368,7 +358,7 @@ class App extends React.Component<any, any> {
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
-    dispatch(setActiveIndexActionCreator(activeIndex));
+    dispatch(AppModule.actions.setActiveIndex(activeIndex));
 
     // 同じタブを複数押下した場合
     if (this.props.state.appState.activeIndex === activeIndex) {

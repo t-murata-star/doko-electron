@@ -4,8 +4,6 @@
 
 export class RequestError {
   status = false;
-  code = -1;
-  text = '';
 }
 
 export class UserInfo {

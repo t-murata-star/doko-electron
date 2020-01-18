@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
-import appState from './app';
 import userListState from './userInfo/userList';
 import officeInfoState from './officeInfo/officeInfo';
 import userEditModalState from './userInfo/userEditModal';
-import { initialStartupModal } from '../modules/initialStartupModalModule';
+import initialStartupModal from '../modules/initialStartupModalModule';
+import app from '../modules/appModule';
 import settingsState from './settings/settings';
 
 const rootReducer = combineReducers({
-  appState,
+  appState: app.reducer,
   userListState,
   officeInfoState,
   userEditModalState,
@@ -15,6 +15,6 @@ const rootReducer = combineReducers({
   settingsState
 });
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
 
 export default rootReducer;
