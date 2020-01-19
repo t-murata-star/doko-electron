@@ -1,12 +1,12 @@
 import { createSlice, Dispatch, Action } from '@reduxjs/toolkit';
-import { RequestError, Notification, UserInfo } from '../define/model';
+import { Notification, UserInfo } from '../define/model';
 import { API_URL, LOGIN_REQUEST_HEADERS, LOGIN_USER, AUTH_REQUEST_HEADERS } from '../define';
 
 class _initialState {
   token: string = ''; // 認証トークン。このトークンを用いてAPIサーバにリクエストを行う
   isAuthenticated: boolean = false;
   isFetching: boolean = false;
-  isError: RequestError = new RequestError();
+  isError: boolean = false;
   myUserID: number = -1;
   notification: Notification = new Notification();
   updateInstallerUrl: string = '';
@@ -23,10 +23,10 @@ const app = createSlice({
   name: 'app',
   initialState: new _initialState(),
   reducers: {
-    startApiRequest: (state, action) => {
+    startApiRequest: state => {
       return {
         ...state,
-        isFetching: appIsFetching(action)
+        isFetching: true
       };
     },
     loginSuccess: (state, action) => {
@@ -34,25 +34,24 @@ const app = createSlice({
         ...state,
         token: action.payload.token,
         isAuthenticated: true,
-        isChangeUser: appIsFetching(action),
-        isError: appIsError(state.isError, action)
+        isError: false
       };
     },
-    requestError: (state, action) => {
+    requestError: state => {
       return {
         ...state,
-        isFetching: appIsFetching(action),
-        isError: appIsError(state.isError, action)
+        isFetching: true,
+        isError: true
       };
     },
-    failRequest: (state, action) => {
+    failRequest: state => {
       return {
         ...state,
-        isFetching: appIsFetching(action),
-        isError: appIsError(state.isError, action)
+        isFetching: true,
+        isError: true
       };
     },
-    unauthorized: (state, action) => {
+    unauthorized: state => {
       /**
        * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
        * 画面をリロードして認証トークンを再取得する
@@ -119,35 +118,6 @@ const app = createSlice({
   }
 });
 
-const appIsFetching = (action: any) => {
-  switch (action.type) {
-    case app.actions.startApiRequest:
-      return true;
-    default:
-      return false;
-  }
-};
-
-const appIsError = (state = new RequestError(), action: any) => {
-  switch (action.type) {
-    case app.actions.requestError:
-      return {
-        ...state,
-        status: true
-      };
-    case app.actions.failRequest:
-      return {
-        ...state,
-        status: true
-      };
-    default:
-      return {
-        ...state,
-        status: false
-      };
-  }
-};
-
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
   switch (statusCode) {
     case 401:
@@ -162,7 +132,7 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
 export class AsyncActions {
   static loginAction = () => {
     return async (dispatch: Dispatch<Action<any>>) => {
-      dispatch(app.actions.startApiRequest);
+      dispatch(app.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
@@ -171,12 +141,12 @@ export class AsyncActions {
         });
 
         if (res.ok === false) {
-          return dispatch(app.actions.requestError);
+          return dispatch(app.actions.requestError());
         }
         const json = await res.json();
         return dispatch(app.actions.loginSuccess(json));
       } catch (error) {
-        return dispatch(app.actions.failRequest);
+        return dispatch(app.actions.failRequest());
       }
     };
   };
@@ -192,12 +162,12 @@ export class AsyncActions {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(app.actions.requestError);
+          return dispatch(app.actions.requestError());
         }
         const json = await res.json();
         return dispatch(app.actions.getNotificationSuccess(json));
       } catch (error) {
-        return dispatch(app.actions.failRequest);
+        return dispatch(app.actions.failRequest());
       }
     };
   };
@@ -216,7 +186,7 @@ export class AsyncActions {
       responseStatusCheck(dispatch, res.status);
 
       if (res.ok === false) {
-        return dispatch(app.actions.requestError);
+        return dispatch(app.actions.requestError());
       }
       console.log('Send heartbeat.');
       return;
@@ -234,12 +204,12 @@ export class AsyncActions {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(app.actions.requestError);
+          return dispatch(app.actions.requestError());
         }
         const json = await res.json();
         return dispatch(app.actions.getS3SignedUrlSuccess(json));
       } catch (error) {
-        dispatch(app.actions.failRequest);
+        dispatch(app.actions.failRequest());
       }
     };
   };
