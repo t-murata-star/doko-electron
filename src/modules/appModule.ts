@@ -121,7 +121,7 @@ const app = createSlice({
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
   switch (statusCode) {
     case 401:
-      dispatch(app.actions.unauthorized);
+      dispatch(app.actions.unauthorized());
       break;
 
     default:
