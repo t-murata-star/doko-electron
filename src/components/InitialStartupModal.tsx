@@ -2,14 +2,8 @@ import MaterialUiButton from '@material-ui/core/Button';
 import $ from 'jquery';
 import React, { useEffect, Props } from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
-import { setMyUserIDActionCreator } from '../actions/app';
-import {
-  addUserAction,
-  getUserListAction,
-  updateForAddedUserInfoAction,
-  updateStateUserListActionCreator,
-  updateUserInfoAction
-} from '../actions/userInfo/userList';
+import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
+import AppModule from '../modules/appModule';
 import { UserInfo } from '../define/model';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 import './InitialStartupModal.css';
@@ -17,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import initialStartupModal from '../modules/initialStartupModalModule';
 import { APP_VERSION } from '../define';
 import { useSelector } from 'react-redux';
-import { RootState } from '../reducers';
+import { RootState } from '../modules';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -49,15 +43,15 @@ class InitialStartupModal extends React.Component<any, any> {
     this.userInfo['status'] = '在席';
 
     // addUserAction で userListState の myUserID に新規ユーザIDが設定される
-    await dispatch(addUserAction(this.userInfo));
+    await dispatch(AsyncActionsUserList.addUserAction(this.userInfo));
     const userList = this.props.state.userListState;
-    if (userList.isError.status) {
+    if (userList.isError) {
       dispatch(initialStartupModal.actions.disableSubmitButton(false));
       return;
     }
 
     const myUserID = this.props.state.userListState.addedUserInfo.id;
-    dispatch(setMyUserIDActionCreator(myUserID));
+    dispatch(AppModule.actions.setMyUserId(myUserID));
 
     // userIDを設定ファイルに登録（既に存在する場合は上書き）
     electronStore.set('userID', myUserID);
@@ -66,8 +60,8 @@ class InitialStartupModal extends React.Component<any, any> {
     const addedUserInfo: any = {};
     addedUserInfo['order'] = myUserID;
 
-    await dispatch(updateForAddedUserInfoAction(addedUserInfo, myUserID));
-    dispatch(getUserListAction(myUserID));
+    await dispatch(AsyncActionsUserList.updateForAddedUserInfoAction(addedUserInfo, myUserID));
+    dispatch(AsyncActionsUserList.getUserListAction(myUserID));
 
     sendHeartbeat(dispatch);
 
@@ -85,7 +79,7 @@ class InitialStartupModal extends React.Component<any, any> {
     }
 
     electronStore.set('userID', myUserID);
-    dispatch(setMyUserIDActionCreator(myUserID));
+    dispatch(AppModule.actions.setMyUserId(myUserID));
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
@@ -103,15 +97,15 @@ class InitialStartupModal extends React.Component<any, any> {
       updatedUserInfo['status'] = '在席';
     }
 
-    await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
-    if (this.props.state.userListState.isError.status === true) {
+    await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+    if (this.props.state.userListState.isError === true) {
       return;
     }
 
-    dispatch(updateStateUserListActionCreator(userList));
+    dispatch(UserListModule.actions.updateStateUserList(userList));
     this.closeModal();
 
-    dispatch(getUserListAction(myUserID, 250));
+    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
     sendHeartbeat(dispatch);
   };
 
@@ -144,7 +138,7 @@ class InitialStartupModal extends React.Component<any, any> {
     dispatch(initialStartupModal.actions.disableSubmitButton(true));
     dispatch(initialStartupModal.actions.changeSubmitMode(true));
     // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
-    dispatch(getUserListAction(-1, 250));
+    dispatch(AsyncActionsUserList.getUserListAction(-1, 250));
   };
 
   registUserInput = (event: any) => {
@@ -155,7 +149,7 @@ class InitialStartupModal extends React.Component<any, any> {
 
   render() {
     const onHide = this.props.state.initialStartupModalState.onHide;
-    const isError = this.props.state.userListState.isError.status;
+    const isError = this.props.state.userListState.isError;
     const userList = this.props.state.userListState['userList'];
 
     return (
@@ -268,7 +262,7 @@ class InitialStartupModal extends React.Component<any, any> {
 //     // addUserAction で userListState の myUserID に新規ユーザIDが設定される
 //     await dispatch(addUserAction(this.userInfo));
 //     const userList = this.props.state.userListState;
-//     if (userList.isError.status) {
+//     if (userList.isError) {
 //       dispatch(initialStartupModal.actions.disableSubmitButton(false));
 //       return;
 //     }

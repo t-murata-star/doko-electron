@@ -4,15 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import React from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
-import { getRestroomUsageAction } from '../../actions/officeInfo/officeInfo';
 import './MenuButtonGroupForOfficeInfo.css';
+import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForOfficeInfo extends React.Component<any, any> {
   reload = async () => {
     const { dispatch } = this.props;
-    await dispatch(getRestroomUsageAction(250));
+    await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(250));
   };
 
   render() {

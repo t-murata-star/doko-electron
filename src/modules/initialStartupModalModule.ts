@@ -6,7 +6,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const initialStartupModal = createSlice({
+const slice = createSlice({
   name: 'initialStartupModal',
   initialState: new _initialState(),
   reducers: {
@@ -31,4 +31,4 @@ const initialStartupModal = createSlice({
   }
 });
 
-export default initialStartupModal;
+export default slice;

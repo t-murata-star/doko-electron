@@ -2,9 +2,9 @@ import React from 'react';
 import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
-import { setProcessingStatusActionCreator } from '../../actions/app';
-import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../../actions/userInfo/userEditModal';
-import { changeOrderAction, getUserListAction, inoperableActionCreator } from '../../actions/userInfo/userList';
+import AppModule from '../../modules/appModule';
+import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
+import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
 import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
@@ -31,7 +31,7 @@ class UserList extends React.Component<any, any> {
     }
 
     // 親ウインドウを操作不可にする
-    dispatch(inoperableActionCreator(true));
+    dispatch(UserListModule.actions.inoperable(true));
 
     const encodedEmail = encodeURI(email);
     // カレンダー表示のための子ウインドウを表示
@@ -50,7 +50,7 @@ class UserList extends React.Component<any, any> {
 
     calendarWindow.on('closed', () => {
       calendarWindow = null;
-      dispatch(inoperableActionCreator(false));
+      dispatch(UserListModule.actions.inoperable(false));
     });
   };
 
@@ -97,8 +97,8 @@ class UserList extends React.Component<any, any> {
       return;
     }
 
-    dispatch(disableSubmitButtonActionCreator());
-    dispatch(showUserEditModalActionCreator(selectedUserId, userInfo));
+    dispatch(UserEditModalMdule.actions.disableSubmitButton());
+    dispatch(UserEditModalMdule.actions.showUserEditModal([selectedUserId, userInfo]));
   };
 
   _rowFormatter = (row: Tabulator.RowComponent) => {
@@ -161,15 +161,15 @@ class UserList extends React.Component<any, any> {
       return;
     }
 
-    dispatch(setProcessingStatusActionCreator(true));
+    dispatch(AppModule.actions.setProcessingStatus(true));
     return new Promise(async resolve => {
       for (const row of rows) {
         const patchInfoUser = { order: row.getPosition(true) + 1 };
-        await dispatch(changeOrderAction(patchInfoUser, row.getData().id));
+        await dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id));
         await this._sleep(50);
       }
       resolve();
-      dispatch(setProcessingStatusActionCreator(false));
+      dispatch(AppModule.actions.setProcessingStatus(false));
     });
   };
 
@@ -178,13 +178,15 @@ class UserList extends React.Component<any, any> {
     const myUserID = this.props.state.appState.myUserID;
 
     await this._updateUserInfoOrder(row);
-    dispatch(getUserListAction(myUserID));
+    dispatch(AsyncActionsUserList.getUserListAction(myUserID));
   };
 
   _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
   render() {
-    const { userList } = this.props.state.userListState;
+    // const { userList } = this.props.state.userListState;
+    const { userList } = JSON.parse(JSON.stringify(this.props.state.userListState));
+
     return (
       // React-tabulatorのTypeScript型定義が未対応のため、@ts-ignoreでエラーを抑制
       <div>

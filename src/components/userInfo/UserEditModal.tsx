@@ -8,16 +8,9 @@ import { Tooltip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import React from 'react';
 import { Col, Container, Form, Modal } from 'react-bootstrap';
-import { setMyUserIDActionCreator } from '../../actions/app';
-import {
-  changeUserInfoActionCreator,
-  closeUserEditModalActionCreator,
-  disableSubmitButtonActionCreator,
-  enableSubmitButtonActionCreator,
-  handleEditUserActionCreator,
-  inputClearActionCreator
-} from '../../actions/userInfo/userEditModal';
-import { deleteUserAction, getUserListAction, updateUserInfoAction } from '../../actions/userInfo/userList';
+import AppModule from '../../modules/appModule';
+import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
+import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { APP_NAME, STATUS_LIST } from '../../define';
 import { UserInfo } from '../../define/model';
 import './UserEditModal.css';
@@ -38,56 +31,56 @@ class UserEditModal extends React.Component<any, any> {
   }
 
   componentDidUpdate() {
-    this.userInfo = Object.assign({}, this.props.state.userEditModalState.userInfo);
+    this.userInfo = { ...this.props.state.userEditModalState.userInfo };
   }
 
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(closeUserEditModalActionCreator());
+    dispatch(UserEditModalMdule.actions.closeUserEditModal());
   };
 
   _updateUserInfo = async (userInfo: UserInfo) => {
     const { dispatch } = this.props;
     const userID = this.props.state.userEditModalState.userID;
 
-    await dispatch(updateUserInfoAction(userInfo, userID));
+    await dispatch(AsyncActionsUserList.updateUserInfoAction(userInfo, userID));
     const userList = this.props.state.userListState;
-    if (userList.isError.status) {
-      dispatch(enableSubmitButtonActionCreator());
+    if (userList.isError) {
+      dispatch(UserEditModalMdule.actions.enableSubmitButton());
       return;
     }
     this.closeModal();
     const myUserID = this.props.state.appState.myUserID;
-    dispatch(getUserListAction(myUserID, 250));
+    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
   };
 
   _changeUser = async () => {
     const { dispatch } = this.props;
     electronStore.set('userID', this.userID);
-    await dispatch(setMyUserIDActionCreator(this.userID));
+    await dispatch(AppModule.actions.setMyUserId(this.userID));
     this.closeModal();
     const myUserID = this.props.state.appState.myUserID;
-    dispatch(getUserListAction(myUserID, 250));
+    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
   };
 
   onUserInfoChange = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(changeUserInfoActionCreator(this.userInfo, event.target.name, event.target.value));
+    dispatch(UserEditModalMdule.actions.changeUserInfo([this.userInfo, event.target.name, event.target.value]));
     if (this.props.state.userEditModalState.submitButtonDisabled) {
-      dispatch(enableSubmitButtonActionCreator());
+      dispatch(UserEditModalMdule.actions.enableSubmitButton());
     }
   };
 
   handleSubmit = (event: any) => {
     event.preventDefault();
     const { dispatch } = this.props;
-    dispatch(disableSubmitButtonActionCreator());
+    dispatch(UserEditModalMdule.actions.disableSubmitButton());
     this._updateUserInfo(this.userInfo);
   };
 
   handleEditUser = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(handleEditUserActionCreator());
+    dispatch(UserEditModalMdule.actions.handleEditUser());
   };
 
   deleteUser = async (event: any) => {
@@ -102,22 +95,22 @@ class UserEditModal extends React.Component<any, any> {
     if (index !== 0) {
       return;
     }
-    await dispatch(deleteUserAction(this.props.state.userEditModalState.userInfo['id'])).then(() => {
+    await dispatch(AsyncActionsUserList.deleteUserAction(this.props.state.userEditModalState.userInfo['id'])).then(() => {
       const userList = this.props.state.userListState;
-      if (userList.isError.status) {
+      if (userList.isError) {
         this.setState({ isError: true });
         return;
       }
       this.closeModal();
       const myUserID = this.props.state.appState.myUserID;
-      dispatch(getUserListAction(myUserID, 250));
+      dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
     });
   };
 
   inputClear = () => {
     const { dispatch } = this.props;
-    dispatch(inputClearActionCreator(this.userInfo));
-    dispatch(enableSubmitButtonActionCreator());
+    dispatch(UserEditModalMdule.actions.inputClear(this.userInfo));
+    dispatch(UserEditModalMdule.actions.enableSubmitButton());
   };
 
   render() {
@@ -136,7 +129,7 @@ class UserEditModal extends React.Component<any, any> {
         <Modal.Header>
           <Modal.Title id='contained-modal-title-vcenter'>
             情報変更
-            {userList.isError.status && <span className='error-message'>通信に失敗しました。</span>}
+            {userList.isError && <span className='error-message'>通信に失敗しました。</span>}
           </Modal.Title>
         </Modal.Header>
         <Form onSubmit={this.handleSubmit}>

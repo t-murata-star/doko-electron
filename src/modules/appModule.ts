@@ -19,7 +19,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const app = createSlice({
+const slice = createSlice({
   name: 'app',
   initialState: new _initialState(),
   reducers: {
@@ -121,7 +121,7 @@ const app = createSlice({
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
   switch (statusCode) {
     case 401:
-      dispatch(app.actions.unauthorized());
+      dispatch(slice.actions.unauthorized());
       break;
 
     default:
@@ -129,10 +129,10 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
   }
 };
 
-export class AsyncActions {
+export class AsyncActionsApp {
   static loginAction = () => {
     return async (dispatch: Dispatch<Action<any>>) => {
-      dispatch(app.actions.startApiRequest());
+      dispatch(slice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
@@ -141,12 +141,12 @@ export class AsyncActions {
         });
 
         if (res.ok === false) {
-          return dispatch(app.actions.requestError());
+          return dispatch(slice.actions.requestError());
         }
         const json = await res.json();
-        return dispatch(app.actions.loginSuccess(json));
+        return dispatch(slice.actions.loginSuccess(json));
       } catch (error) {
-        return dispatch(app.actions.failRequest());
+        dispatch(slice.actions.failRequest());
       }
     };
   };
@@ -162,19 +162,19 @@ export class AsyncActions {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(app.actions.requestError());
+          return dispatch(slice.actions.requestError());
         }
         const json = await res.json();
-        return dispatch(app.actions.getNotificationSuccess(json));
+        return dispatch(slice.actions.getNotificationSuccess(json));
       } catch (error) {
-        return dispatch(app.actions.failRequest());
+        dispatch(slice.actions.failRequest());
       }
     };
   };
 
   static sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>) => {
-      const body = Object.assign({}, userInfo);
+      const body = { ...userInfo };
       delete body['id'];
       delete body['order'];
       const res = await fetch(`${API_URL}/userList/${userID}`, {
@@ -186,7 +186,7 @@ export class AsyncActions {
       responseStatusCheck(dispatch, res.status);
 
       if (res.ok === false) {
-        return dispatch(app.actions.requestError());
+        return dispatch(slice.actions.requestError());
       }
       console.log('Send heartbeat.');
       return;
@@ -204,15 +204,15 @@ export class AsyncActions {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(app.actions.requestError());
+          return dispatch(slice.actions.requestError());
         }
         const json = await res.json();
-        return dispatch(app.actions.getS3SignedUrlSuccess(json));
+        return dispatch(slice.actions.getS3SignedUrlSuccess(json));
       } catch (error) {
-        dispatch(app.actions.failRequest());
+        dispatch(slice.actions.failRequest());
       }
     };
   };
 }
 
-export default app;
+export default slice;

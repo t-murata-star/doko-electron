@@ -1,6 +1,6 @@
-import * as SettingsActions from '../../actions/settings/settings';
+import { createSlice } from '@reduxjs/toolkit';
 
-export class _SettingsState {
+class _initialState {
   submitButtonsDisable = {
     user: {
       userChange: true,
@@ -21,71 +21,77 @@ export class _SettingsState {
   };
 }
 
-/**
- * 設定情報のstateを管理するReducer
- */
-export default function settingState(state = new _SettingsState(), action: any) {
-  switch (action.type) {
-    case SettingsActions.SET_USER_ID:
+// createSlice() で actions と reducers を一気に生成
+const slice = createSlice({
+  name: 'settings',
+  initialState: new _initialState(),
+  reducers: {
+    setUserId: (state, action) => {
       return {
         ...state,
         user: {
           ...state.user,
-          userID: action.userID
+          userID: action.payload
         }
       };
-    case SettingsActions.SET_EMAIL:
+    },
+    setEmail: (state, action) => {
       return {
         ...state,
         user: {
           ...state.user,
-          email: action.email
+          email: action.payload
         }
       };
-    case SettingsActions.CHANGE_DISABLED_SUBMIT_BUTTON_USER_CHANGE:
+    },
+    changeDisabledSubmitButtonUserChange: (state, action) => {
       return {
         ...state,
         submitButtonsDisable: {
           ...state.submitButtonsDisable,
           user: {
             ...state.submitButtonsDisable.user,
-            userChange: action.disabled
+            userChange: action.payload
           }
         }
       };
-    case SettingsActions.CHANGE_DISABLED_SUBMIT_BUTTON_EMAIL:
+    },
+    changeDisabledSubmitButtonEmail: (state, action) => {
       return {
         ...state,
         submitButtonsDisable: {
           ...state.submitButtonsDisable,
           user: {
             ...state.submitButtonsDisable.user,
-            email: action.disabled
+            email: action.payload
           }
         }
       };
-    case SettingsActions.CHANGE_ENABLED_STARTUP:
+    },
+    changeEnabledStartup: (state, action) => {
       return {
         ...state,
         system: {
           ...state.system,
-          startupEnabled: action.enabled
+          startupEnabled: action.payload
         }
       };
-    case SettingsActions.CHANGE_ENABLED_SNACKBAR:
+    },
+    changeEnabledSnackbar: (state, action) => {
       return {
         ...state,
         snackbar: {
           ...state.snackbar,
-          enabled: action.enabled,
-          message: action.message,
-          timeoutMs: action.timeoutMs
+          enabled: action.payload[0],
+          message: action.payload[1] ? action.payload[1] : '',
+          timeoutMs: action.payload[2] ? action.payload[2] : 5000
         }
       };
-    case SettingsActions.INITIALIZE_SETTING_STATE:
-      return new _SettingsState();
-
-    default:
-      return state;
+    },
+    initializeSettingState: () => {
+      return new _initialState();
+    }
   }
-}
+});
+
+export default slice;

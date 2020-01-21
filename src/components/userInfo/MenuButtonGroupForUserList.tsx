@@ -5,8 +5,8 @@ import Button from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
-import { disableSubmitButtonActionCreator, showUserEditModalActionCreator } from '../../actions/userInfo/userEditModal';
-import { getUserListAction } from '../../actions/userInfo/userList';
+import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
+import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import UserEditModal from '../../containers/userInfo/UserEditModalPanel';
 import { getUserInfo } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
@@ -18,7 +18,7 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
     const myUserID = this.props.state.appState.myUserID;
-    await dispatch(getUserListAction(myUserID, 250));
+    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
@@ -32,8 +32,8 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
       return;
     }
 
-    dispatch(disableSubmitButtonActionCreator());
-    dispatch(showUserEditModalActionCreator(myUserID, userInfo));
+    dispatch(UserEditModalMdule.actions.disableSubmitButton());
+    dispatch(UserEditModalMdule.actions.showUserEditModal([myUserID, userInfo]));
     // 自分編集ボタンのフォーカスを外す
     $('.menu-button-group-for-user-list-base-button').blur();
   };

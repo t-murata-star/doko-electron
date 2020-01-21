@@ -10,6 +10,7 @@ library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用
 class OfficeInfo extends React.Component<any, any> {
   render() {
     const officeInfo = this.props.state.officeInfoState;
+    console.log(officeInfo);
 
     return (
       <div className='office_info'>
@@ -32,14 +33,14 @@ class OfficeInfo extends React.Component<any, any> {
                 <Form.Label>
                   <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
                 </Form.Label>
-                {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError.status === false && (
+                {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError === false && (
                   <div style={{ color: 'red' }}>
                     <p>
                       <FontAwesomeIcon icon='door-closed' /> 満室
                     </p>
                   </div>
                 )}
-                {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError.status === false && (
+                {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError === false && (
                   <div style={{ color: 'blue' }}>
                     <p>
                       <FontAwesomeIcon icon='door-open' /> 空室：
@@ -47,7 +48,7 @@ class OfficeInfo extends React.Component<any, any> {
                     </p>
                   </div>
                 )}
-                {officeInfo.isError.status === true && (
+                {officeInfo.isError === true && (
                   <div style={{ color: 'red' }}>
                     <p>通信に失敗しました。</p>
                   </div>
