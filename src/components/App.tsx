@@ -27,6 +27,7 @@ import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
 import Progress from './Progress';
 import { connect } from 'react-redux';
+import { RootState } from '../modules';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -34,7 +35,12 @@ const electronStore = new Store();
 const childProcess = window.require('child_process');
 const path = require('path');
 
-class App extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class App extends React.Component<Props, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
     const userID: number = (electronStore.get('userID') as number | undefined) || -1;

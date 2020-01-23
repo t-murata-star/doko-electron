@@ -10,11 +10,17 @@ import './InitialStartupModal.css';
 import initialStartupModal from '../modules/initialStartupModalModule';
 import { APP_VERSION } from '../define';
 import { connect } from 'react-redux';
+import { RootState } from '../modules';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class InitialStartupModal extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class InitialStartupModal extends React.Component<Props, any> {
   userID: number = -1;
   userInfo: any = new UserInfo();
 
@@ -134,7 +140,7 @@ class InitialStartupModal extends React.Component<any, any> {
   render() {
     const onHide = this.props.state.initialStartupModalState.onHide;
     const isError = this.props.state.userListState.isError;
-    const userList = this.props.state.userListState['userList'];
+    const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
 
     return (
       <Modal

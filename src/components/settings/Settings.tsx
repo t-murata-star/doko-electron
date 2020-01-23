@@ -11,12 +11,18 @@ import { UserInfo } from '../../define/model';
 import { getUserInfo, sendHeartbeat } from '../common/functions';
 import './Settings.css';
 import { connect } from 'react-redux';
+import { RootState } from '../../modules';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class Settings extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class Settings extends React.Component<Props, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
 

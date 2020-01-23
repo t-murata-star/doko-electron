@@ -11,9 +11,15 @@ import UserEditModal from './UserEditModal';
 import { getUserInfo } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
 import { connect } from 'react-redux';
+import { RootState } from '../../modules';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
-class MenuButtonGroupForUserList extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class MenuButtonGroupForUserList extends React.Component<Props, any> {
   reload = async () => {
     const { dispatch } = this.props;
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();

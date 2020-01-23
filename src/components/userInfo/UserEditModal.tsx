@@ -15,12 +15,18 @@ import { APP_NAME, STATUS_LIST } from '../../define';
 import { UserInfo } from '../../define/model';
 import './UserEditModal.css';
 import { connect } from 'react-redux';
+import { RootState } from '../../modules';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class UserEditModal extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class UserEditModal extends React.Component<Props, any> {
   userID: number = -1;
   userInfo: any = new UserInfo();
 

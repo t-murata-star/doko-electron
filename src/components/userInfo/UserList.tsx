@@ -10,10 +10,16 @@ import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions'
 import Inoperable from '../Inoperable';
 import './UserList.css';
 import { connect } from 'react-redux';
+import { RootState } from '../../modules';
 
 const { remote } = window.require('electron');
 
-class UserList extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class UserList extends React.Component<Props, any> {
   shouldComponentUpdate(nextProps: any) {
     return (
       this.props.state.userListState.inoperable !== nextProps.state.userListState.inoperable ||

@@ -7,10 +7,16 @@ import { Col, Container, Form, Row } from 'react-bootstrap';
 import './MenuButtonGroupForOfficeInfo.css';
 import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
 import { connect } from 'react-redux';
+import { RootState } from '../../modules';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 
-class MenuButtonGroupForOfficeInfo extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
   reload = async () => {
     const { dispatch } = this.props;
     await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(250));

@@ -5,10 +5,16 @@ import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import './OfficeInfo.css';
 import { connect } from 'react-redux';
+import { RootState } from '../../modules';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
 
-class OfficeInfo extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class OfficeInfo extends React.Component<Props, any> {
   render() {
     const officeInfo = this.props.state.officeInfoState;
     console.log(officeInfo);
