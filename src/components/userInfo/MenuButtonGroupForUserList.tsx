@@ -7,9 +7,10 @@ import React from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import UserEditModal from '../../containers/userInfo/UserEditModalPanel';
+import UserEditModal from './UserEditModal';
 import { getUserInfo } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
+import { connect } from 'react-redux';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForUserList extends React.Component<any, any> {
@@ -80,4 +81,10 @@ class MenuButtonGroupForUserList extends React.Component<any, any> {
   }
 }
 
-export default MenuButtonGroupForUserList;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(MenuButtonGroupForUserList);

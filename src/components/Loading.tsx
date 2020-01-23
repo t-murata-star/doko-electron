@@ -12,8 +12,7 @@ type ContentProps = {
   officeInfoProcessing: boolean;
 };
 
-// ローディングインジケータ
-const Loading: React.FC<ContentProps> = props => {
+const MemoComponent = (props: ContentProps) => {
   if (props.isAppStateProcessing || props.isUserListProcessing || props.officeInfoProcessing) {
     return (
       <div className='mx-auto'>
@@ -27,5 +26,7 @@ const Loading: React.FC<ContentProps> = props => {
     return null;
   }
 };
+
+const Loading = React.memo(MemoComponent);
 
 export default Loading;

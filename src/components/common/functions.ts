@@ -1,5 +1,5 @@
 import { UserInfo } from '../../define/model';
-import store from '../../store/configureStore';
+import store from '../../configureStore';
 import { AsyncActionsApp } from '../../modules/appModule';
 import { APP_NAME } from '../../define';
 const { remote } = window.require('electron');

@@ -3,15 +3,15 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { baseTheme } from './components/materialui/theme';
-import AppPanel from './containers/AppPanel';
+import App from './components/App';
 import './index.css';
-import store from './store/configureStore';
+import store from './configureStore';
 
 render(
   <StylesProvider injectFirst>
     <MaterialThemeProvider theme={baseTheme}>
       <Provider store={store}>
-        <AppPanel />
+        <App />
       </Provider>
     </MaterialThemeProvider>
   </StylesProvider>,

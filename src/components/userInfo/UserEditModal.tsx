@@ -14,6 +14,7 @@ import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { APP_NAME, STATUS_LIST } from '../../define';
 import { UserInfo } from '../../define/model';
 import './UserEditModal.css';
+import { connect } from 'react-redux';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -241,4 +242,10 @@ class UserEditModal extends React.Component<any, any> {
   }
 }
 
-export default UserEditModal;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(UserEditModal);

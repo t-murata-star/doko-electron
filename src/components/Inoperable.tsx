@@ -5,12 +5,14 @@ type ContentProps = {
   enabled: boolean;
 };
 
-const Inoperable: React.FC<ContentProps> = props => {
+const MemoComponent = (props: ContentProps) => {
   if (props.enabled) {
     return <div className='inoperable' />;
   } else {
     return null;
   }
 };
+
+const Inoperable = React.memo(MemoComponent);
 
 export default Inoperable;

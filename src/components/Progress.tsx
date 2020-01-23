@@ -6,7 +6,7 @@ type ContentProps = {
   downloadProgress: number;
 };
 
-const Progress: React.FC<ContentProps> = props => {
+const MemoComponent = (props: ContentProps) => {
   if (props.isUpdating) {
     return (
       <div className='mx-auto'>
@@ -18,5 +18,7 @@ const Progress: React.FC<ContentProps> = props => {
     return null;
   }
 };
+
+const Progress = React.memo(MemoComponent);
 
 export default Progress;

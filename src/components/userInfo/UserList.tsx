@@ -9,12 +9,16 @@ import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
 import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
+import { connect } from 'react-redux';
 
 const { remote } = window.require('electron');
 
 class UserList extends React.Component<any, any> {
   shouldComponentUpdate(nextProps: any) {
-    return !(this.props.state.userListState.userList === nextProps.state.userListState.userList);
+    return (
+      this.props.state.userListState.inoperable !== nextProps.state.userListState.inoperable ||
+      this.props.state.userListState.userList !== nextProps.state.userListState.userList
+    );
   }
 
   formatter = (cell: Tabulator.CellComponent) => {
@@ -190,7 +194,7 @@ class UserList extends React.Component<any, any> {
   _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
   render() {
-    const { userList } = JSON.parse(JSON.stringify(this.props.state.userListState));
+    const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
 
     return (
       // React-tabulatorのTypeScript型定義が未対応のため、@ts-ignoreでエラーを抑制
@@ -225,4 +229,10 @@ class UserList extends React.Component<any, any> {
   }
 }
 
-export default UserList;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(UserList);

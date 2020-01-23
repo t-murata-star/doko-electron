@@ -7,11 +7,11 @@ import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
 import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import InitialStartupModal from './InitialStartupModal';
 import InitialStartupModalModule from '../modules/initialStartupModalModule';
-import MenuButtonGroupForOfficeInfo from '../containers/officeInfo/MenuButtonGroupPanelForOfficeInfo';
-import MenuButtonGroupForUserList from '../containers/userInfo/MenuButtonGroupPanelForUserList';
-import OfficeInfo from '../containers/officeInfo/OfficeInfoPanel';
-import Settings from '../containers/settings/SettingsPanel';
-import UserList from '../containers/userInfo/UserListPanel';
+import MenuButtonGroupForOfficeInfo from './officeInfo/MenuButtonGroupForOfficeInfo';
+import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
+import OfficeInfo from './officeInfo/OfficeInfo';
+import Settings from './settings/Settings';
+import UserList from './userInfo/UserList';
 import {
   APP_DOWNLOAD_URL,
   APP_NAME,
@@ -26,6 +26,7 @@ import { getUserInfo, sendHeartbeat, showMessageBox, showMessageBoxWithReturnVal
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
 import Progress from './Progress';
+import { connect } from 'react-redux';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -432,4 +433,10 @@ class App extends React.Component<any, any> {
   }
 }
 
-export default App;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(App);

@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import './OfficeInfo.css';
+import { connect } from 'react-redux';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
 
@@ -63,4 +64,10 @@ class OfficeInfo extends React.Component<any, any> {
   }
 }
 
-export default OfficeInfo;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(OfficeInfo);

@@ -10,6 +10,7 @@ import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { UserInfo } from '../../define/model';
 import { getUserInfo, sendHeartbeat } from '../common/functions';
 import './Settings.css';
+import { connect } from 'react-redux';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -154,7 +155,7 @@ class Settings extends React.Component<any, any> {
 
   render() {
     const myUserID = this.props.state.appState.myUserID;
-    const userList = this.props.state.userListState.userList;
+    const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
     const userInfo = getUserInfo(userList, myUserID) || new UserInfo();
     const settingState = this.props.state.settingsState;
 
@@ -285,4 +286,10 @@ class Settings extends React.Component<any, any> {
   }
 }
 
-export default Settings;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(Settings);
