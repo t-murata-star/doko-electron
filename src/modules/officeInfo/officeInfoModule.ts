@@ -1,5 +1,5 @@
 import { createSlice, Dispatch, Action } from '@reduxjs/toolkit';
-import { Restroom } from '../../define/model';
+import { Restroom, ApiResponse } from '../../define/model';
 import { API_URL, AUTH_REQUEST_HEADERS } from '../../define';
 import AppModule from '../appModule';
 
@@ -110,13 +110,16 @@ export class AsyncActionsOfficeInfo {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
         const json = await res.json();
-        return dispatch(slice.actions.getRestroomUsageSuccess(json));
+        dispatch(slice.actions.getRestroomUsageSuccess(json));
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
         dispatch(slice.actions.returnEmptyRestroomUsage());
+        return new ApiResponse(null, true);
       }
     };
   };

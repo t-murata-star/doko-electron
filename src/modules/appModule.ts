@@ -1,5 +1,5 @@
 import { createSlice, Dispatch, Action } from '@reduxjs/toolkit';
-import { Notification, UserInfo } from '../define/model';
+import { Notification, UserInfo, ApiResponse } from '../define/model';
 import { API_URL, LOGIN_REQUEST_HEADERS, LOGIN_USER, AUTH_REQUEST_HEADERS } from '../define';
 
 class _initialState {
@@ -141,12 +141,15 @@ export class AsyncActionsApp {
         });
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
         const json = await res.json();
-        return dispatch(slice.actions.loginSuccess(json));
+        dispatch(slice.actions.loginSuccess(json));
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
+        return new ApiResponse(null, true);
       }
     };
   };
@@ -162,12 +165,15 @@ export class AsyncActionsApp {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
         const json = await res.json();
-        return dispatch(slice.actions.getNotificationSuccess(json));
+        dispatch(slice.actions.getNotificationSuccess(json));
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
+        return new ApiResponse(null, true);
       }
     };
   };
@@ -189,7 +195,7 @@ export class AsyncActionsApp {
         return dispatch(slice.actions.requestError());
       }
       console.log('Send heartbeat.');
-      return;
+      return new ApiResponse();
     };
   };
 
@@ -204,12 +210,15 @@ export class AsyncActionsApp {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
         const json = await res.json();
-        return dispatch(slice.actions.getS3SignedUrlSuccess(json));
+        dispatch(slice.actions.getS3SignedUrlSuccess(json));
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
+        return new ApiResponse(null, true);
       }
     };
   };

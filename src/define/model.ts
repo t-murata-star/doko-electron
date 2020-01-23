@@ -2,6 +2,22 @@
  * 型定義として用いる
  */
 
+export class ApiResponse {
+  private payload: any = null;
+  private isError: boolean = false;
+
+  constructor(payload: any = null, isError: boolean = false) {
+    this.payload = payload;
+    this.isError = isError;
+  }
+
+  getPayload() {
+    return this.payload;
+  }
+  getIsError() {
+    return this.isError;
+  }
+}
 export class UserInfo {
   id: number = -1;
   order: number = -1;

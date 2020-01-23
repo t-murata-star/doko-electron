@@ -13,6 +13,10 @@ import './UserList.css';
 const { remote } = window.require('electron');
 
 class UserList extends React.Component<any, any> {
+  shouldComponentUpdate(nextProps: any) {
+    return !(this.props.state.userListState.userList === nextProps.state.userListState.userList);
+  }
+
   formatter = (cell: Tabulator.CellComponent) => {
     const email = cell.getValue();
     if (email !== '') {
@@ -163,12 +167,15 @@ class UserList extends React.Component<any, any> {
 
     dispatch(AppModule.actions.setProcessingStatus(true));
     return new Promise(async resolve => {
+      let index = 1;
       for (const row of rows) {
-        const patchInfoUser = { order: row.getPosition(true) + 1 };
+        const patchInfoUser = { order: index };
         await dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id));
         await this._sleep(50);
+        index++;
       }
       resolve();
+      dispatch(UserListModule.actions.changeOrderSuccess());
       dispatch(AppModule.actions.setProcessingStatus(false));
     });
   };
@@ -176,7 +183,6 @@ class UserList extends React.Component<any, any> {
   _rowMovedCallback = async (row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
-
     await this._updateUserInfoOrder(row);
     dispatch(AsyncActionsUserList.getUserListAction(myUserID));
   };
@@ -184,7 +190,6 @@ class UserList extends React.Component<any, any> {
   _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
   render() {
-    // const { userList } = this.props.state.userListState;
     const { userList } = JSON.parse(JSON.stringify(this.props.state.userListState));
 
     return (

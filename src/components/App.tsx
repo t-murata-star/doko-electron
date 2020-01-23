@@ -5,7 +5,7 @@ import React from 'react';
 import AppModule, { AsyncActionsApp } from '../modules/appModule';
 import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
 import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
-import InitialStartupModal from '../containers/InitialStartupModalPanel';
+import InitialStartupModal from './InitialStartupModal';
 import InitialStartupModalModule from '../modules/initialStartupModalModule';
 import MenuButtonGroupForOfficeInfo from '../containers/officeInfo/MenuButtonGroupPanelForOfficeInfo';
 import MenuButtonGroupForUserList from '../containers/userInfo/MenuButtonGroupPanelForUserList';
@@ -154,7 +154,7 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = userID;
     if (userInfo['version'] !== APP_VERSION) {
       updatedUserInfo['version'] = APP_VERSION;
@@ -163,8 +163,7 @@ class App extends React.Component<any, any> {
 
     // 状態を「在席」に更新する（更新日時も更新される）
     if (userInfo['status'] === '退社' || userInfo['status'] === '在席' || userInfo['status'] === '在席 (離席中)') {
-      userInfo['status'] = '在席';
-      updatedUserInfo['status'] = userInfo['status'];
+      updatedUserInfo['status'] = '在席';
       updatedUserInfo['name'] = userInfo['name'];
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     }
@@ -205,7 +204,7 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo['status'] = '在席 (離席中)';
@@ -223,11 +222,10 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo['status'] = '在席';
-    Object.assign(userInfo, updatedUserInfo);
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
 
     sendHeartbeat(dispatch);
@@ -244,11 +242,10 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['status'] = '退社';
     updatedUserInfo['name'] = userInfo['name'];
-    Object.assign(userInfo, updatedUserInfo);
     await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     ipcRenderer.send('close');
   });

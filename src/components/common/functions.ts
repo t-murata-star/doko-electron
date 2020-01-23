@@ -12,7 +12,7 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
   const userInfo = userList.filter(userInfo => {
     return userInfo['id'] === userID;
   })[0];
-  return { ...userInfo } || null;
+  return userInfo || null;
 };
 
 export const sendHeartbeat = (dispatch: any) => {

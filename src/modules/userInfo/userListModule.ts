@@ -1,16 +1,14 @@
 import { createSlice, Dispatch, Action } from '@reduxjs/toolkit';
-import { UserInfo } from '../../define/model';
+import { UserInfo, ApiResponse } from '../../define/model';
 import { LEAVING_TIME_THRESHOLD_M, API_URL, AUTH_REQUEST_HEADERS } from '../../define';
 import AppModule from '../appModule';
 
 class _initialState {
   userList: UserInfo[] = [];
   changeUserList: UserInfo[] = []; // サーバ上に登録されているユーザの中から自分のユーザを選択するために格納するユーザ一覧（userListと同じデータ）
-  updatedAt: string = '';
   isFetching: boolean = false;
   isError: boolean = false;
   selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
-  addedUserInfo: UserInfo = new UserInfo();
   inoperable: boolean = false;
 }
 
@@ -47,10 +45,9 @@ const slice = createSlice({
         isError: false
       };
     },
-    updateUserInfoSuccess: (state, action) => {
+    updateUserInfoSuccess: state => {
       return {
         ...state,
-        updatedAt: action.payload,
         isFetching: false,
         isError: false
       };
@@ -71,7 +68,6 @@ const slice = createSlice({
     addUserSuccess: (state, action) => {
       return {
         ...state,
-        addedUserInfo: action.payload,
         isFetching: false,
         isError: false
       };
@@ -165,11 +161,14 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
-        return dispatch(slice.actions.deleteUserSuccess());
+        dispatch(slice.actions.deleteUserSuccess());
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
+        return new ApiResponse(null, true);
       }
     };
   };
@@ -189,12 +188,18 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
-        const json = await res.json();
-        return dispatch(slice.actions.addUserSuccess(json));
+        const json: UserInfo = await res.json();
+        const userID = json.id;
+        dispatch(AppModule.actions.setMyUserId(json.id));
+        dispatch(slice.actions.addUserSuccess(userID));
+        // return new ApiResponse(userID);
+        return new ApiResponse(userID);
       } catch (error) {
         dispatch(slice.actions.failRequest());
+        return new ApiResponse(null, true);
       }
     };
   };
@@ -212,13 +217,16 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
         const json = await res.json();
-        return dispatch(slice.actions.getUserListSuccess([json, myUserID]));
+        dispatch(slice.actions.getUserListSuccess([json, myUserID]));
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
         dispatch(slice.actions.returnEmptyUserList());
+        return new ApiResponse(null, true);
       }
     };
   };
@@ -236,12 +244,14 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
-        return dispatch(slice.actions.changeOrderSuccess());
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
         dispatch(slice.actions.returnEmptyUserList());
+        return new ApiResponse(null, true);
       }
     };
   };
@@ -263,12 +273,14 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
-        const json = await res.json();
-        return dispatch(slice.actions.updateUserInfoSuccess(json));
+        dispatch(slice.actions.updateUserInfoSuccess());
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
+        return new ApiResponse(null, true);
       }
     };
   };
@@ -288,11 +300,14 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          return dispatch(slice.actions.requestError());
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
         }
-        return dispatch(slice.actions.updateForAddedUserInfoSuccess());
+        dispatch(slice.actions.updateForAddedUserInfoSuccess());
+        return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
+        return new ApiResponse(null, true);
       }
     };
   };
