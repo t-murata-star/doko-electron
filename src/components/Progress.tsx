@@ -1,20 +1,24 @@
 import React from 'react';
 import './Progress.css';
 
-// ローディングインジケータ
-class Progress extends React.Component<any, any> {
-  render() {
-    if (this.props.isUpdating) {
-      return (
-        <div className='mx-auto'>
-          <div className='update-progress-background'></div>
-          <div className='update-progress'>ダウンロード中.. {this.props.downloadProgress}%</div>
-        </div>
-      );
-    } else {
-      return null;
-    }
+type ContentProps = {
+  isUpdating: boolean;
+  downloadProgress: number;
+};
+
+const MemoComponent = (props: ContentProps) => {
+  if (props.isUpdating) {
+    return (
+      <div className='mx-auto'>
+        <div className='update-progress-background'></div>
+        <div className='update-progress'>ダウンロード中.. {props.downloadProgress}%</div>
+      </div>
+    );
+  } else {
+    return null;
   }
-}
+};
+
+const Progress = React.memo(MemoComponent);
 
 export default Progress;

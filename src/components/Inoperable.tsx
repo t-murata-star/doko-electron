@@ -1,14 +1,18 @@
 import React from 'react';
 import './Inoperable.css';
 
-class Inoperable extends React.Component<any, any> {
-  render() {
-    if (this.props.enabled) {
-      return <div className='inoperable' />;
-    } else {
-      return null;
-    }
+type ContentProps = {
+  enabled: boolean;
+};
+
+const MemoComponent = (props: ContentProps) => {
+  if (props.enabled) {
+    return <div className='inoperable' />;
+  } else {
+    return null;
   }
-}
+};
+
+const Inoperable = React.memo(MemoComponent);
 
 export default Inoperable;

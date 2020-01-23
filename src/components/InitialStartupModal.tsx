@@ -2,28 +2,25 @@ import MaterialUiButton from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
-import {
-  closeInitialStartupModalActionCreator,
-  disableSubmitButtonActionCreator,
-  isChengeUserActionCreator
-} from '../actions/initialStartupModal';
-import { setMyUserIDActionCreator } from '../actions/app';
-import {
-  addUserAction,
-  getUserListAction,
-  updateForAddedUserInfoAction,
-  updateStateUserListActionCreator,
-  updateUserInfoAction
-} from '../actions/userInfo/userList';
-import { UserInfo } from '../define/model';
+import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
+import AppModule from '../modules/appModule';
+import { UserInfo, ApiResponse } from '../define/model';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 import './InitialStartupModal.css';
+import initialStartupModal from '../modules/initialStartupModalModule';
+import { APP_VERSION } from '../define';
+import { connect } from 'react-redux';
+import { RootState } from '../modules';
 
-const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class InitialStartupModal extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class InitialStartupModal extends React.Component<Props, any> {
   userID: number = -1;
   userInfo: any = new UserInfo();
 
@@ -33,31 +30,25 @@ class InitialStartupModal extends React.Component<any, any> {
 
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(closeInitialStartupModalActionCreator());
+    dispatch(initialStartupModal.actions.showModal(false));
   };
 
   _addUser = async () => {
     const { dispatch } = this.props;
+    let response: ApiResponse;
 
-    const session = remote.session.defaultSession as Electron.Session;
-    const cookies: any = await session.cookies.get({
-      name: 'version'
-    });
-    if (cookies[0]) {
-      this.userInfo['version'] = cookies[0].value;
-    }
+    this.userInfo['version'] = APP_VERSION;
     this.userInfo['status'] = '在席';
 
     // addUserAction で userListState の myUserID に新規ユーザIDが設定される
-    await dispatch(addUserAction(this.userInfo));
-    const userList = this.props.state.userListState;
-    if (userList.isError.status) {
-      dispatch(disableSubmitButtonActionCreator(false));
+    response = await dispatch(AsyncActionsUserList.addUserAction(this.userInfo));
+    if (response.getIsError()) {
+      dispatch(initialStartupModal.actions.disableSubmitButton(false));
       return;
     }
 
-    const myUserID = this.props.state.userListState.addedUserInfo.id;
-    dispatch(setMyUserIDActionCreator(myUserID));
+    const myUserID = response.getPayload();
+    dispatch(AppModule.actions.setMyUserId(myUserID));
 
     // userIDを設定ファイルに登録（既に存在する場合は上書き）
     electronStore.set('userID', myUserID);
@@ -66,8 +57,8 @@ class InitialStartupModal extends React.Component<any, any> {
     const addedUserInfo: any = {};
     addedUserInfo['order'] = myUserID;
 
-    await dispatch(updateForAddedUserInfoAction(addedUserInfo, myUserID));
-    dispatch(getUserListAction(myUserID));
+    await dispatch(AsyncActionsUserList.updateForAddedUserInfoAction(addedUserInfo, myUserID));
+    dispatch(AsyncActionsUserList.getUserListAction(myUserID));
 
     sendHeartbeat(dispatch);
 
@@ -85,51 +76,44 @@ class InitialStartupModal extends React.Component<any, any> {
     }
 
     electronStore.set('userID', myUserID);
-    dispatch(setMyUserIDActionCreator(myUserID));
+    dispatch(AppModule.actions.setMyUserId(myUserID));
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
-
-    const session = remote.session.defaultSession as Electron.Session;
-    const cookies: any = await session.cookies.get({
-      name: 'version'
-    });
-    if (cookies[0]) {
-      updatedUserInfo['version'] = cookies[0].value;
-    }
+    updatedUserInfo['version'] = APP_VERSION;
 
     // 状態が「退社」のユーザのみ、状態を「在席」に変更する
     if (userInfo['status'] === '退社') {
       updatedUserInfo['status'] = '在席';
     }
 
-    await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
-    if (this.props.state.userListState.isError.status === true) {
+    await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+    if (this.props.state.userListState.isError === true) {
       return;
     }
 
-    dispatch(updateStateUserListActionCreator(userList));
+    dispatch(UserListModule.actions.updateStateUserList(userList));
     this.closeModal();
 
-    dispatch(getUserListAction(myUserID, 250));
+    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
     sendHeartbeat(dispatch);
   };
 
   onNameChange = (event: any) => {
     const { dispatch } = this.props;
     this.userInfo[event.currentTarget.name] = event.currentTarget.value;
-    dispatch(disableSubmitButtonActionCreator(event.currentTarget.value.length === 0 ? true : false));
+    dispatch(initialStartupModal.actions.disableSubmitButton(event.currentTarget.value.length === 0 ? true : false));
   };
 
   onUserChange = (event: any) => {
     const { dispatch } = this.props;
     this.userID = parseInt(event.currentTarget.value);
-    dispatch(disableSubmitButtonActionCreator(false));
+    dispatch(initialStartupModal.actions.disableSubmitButton(false));
   };
 
   handleSubmit = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(disableSubmitButtonActionCreator(true));
+    dispatch(initialStartupModal.actions.disableSubmitButton(true));
     event.preventDefault();
 
     if (this.props.state.initialStartupModalState.isChangeUser) {
@@ -141,22 +125,22 @@ class InitialStartupModal extends React.Component<any, any> {
 
   changeUserInput = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(disableSubmitButtonActionCreator(true));
-    dispatch(isChengeUserActionCreator(true));
+    dispatch(initialStartupModal.actions.disableSubmitButton(true));
+    dispatch(initialStartupModal.actions.changeSubmitMode(true));
     // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
-    dispatch(getUserListAction(-1, 250));
+    dispatch(AsyncActionsUserList.getUserListAction(-1, 250));
   };
 
   registUserInput = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(disableSubmitButtonActionCreator(true));
-    dispatch(isChengeUserActionCreator(false));
+    dispatch(initialStartupModal.actions.disableSubmitButton(true));
+    dispatch(initialStartupModal.actions.changeSubmitMode(false));
   };
 
   render() {
     const onHide = this.props.state.initialStartupModalState.onHide;
-    const isError = this.props.state.userListState.isError.status;
-    const userList = this.props.state.userListState['userList'];
+    const isError = this.props.state.userListState.isError;
+    const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
 
     return (
       <Modal
@@ -243,4 +227,10 @@ class InitialStartupModal extends React.Component<any, any> {
   }
 }
 
-export default InitialStartupModal;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(InitialStartupModal);

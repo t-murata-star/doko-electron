@@ -3,51 +3,50 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Switch from '@material-ui/core/Switch';
 import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
-import { setMyUserIDActionCreator } from '../../actions/app';
-import {
-  changeDisabledSubmitButtonEmailActionCreator,
-  changeDisabledSubmitButtonUserChangeActionCreator,
-  changeEnabledSnackbarActionCreator,
-  changeEnabledStartupActionCreator,
-  initializeSettingStateActionCreator,
-  setEmailActionCreator,
-  setUserIDActionCreator
-} from '../../actions/settings/settings';
-import { updateUserInfoAction } from '../../actions/userInfo/userList';
+import AppModule from '../../modules/appModule';
+import SettingsModule from '../../modules/settings/settingsModule';
+import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { UserInfo } from '../../define/model';
 import { getUserInfo, sendHeartbeat } from '../common/functions';
 import './Settings.css';
+import { connect } from 'react-redux';
+import { RootState } from '../../modules';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-class Settings extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class Settings extends React.Component<Props, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
 
     // state を初期化
-    dispatch(initializeSettingStateActionCreator());
+    dispatch(SettingsModule.actions.initializeSettingState());
 
     const myUserID = this.props.state.appState.myUserID;
 
     // ユーザ変更(プルダウンの初期選択で自分を選択する)
-    dispatch(setUserIDActionCreator(myUserID));
+    dispatch(SettingsModule.actions.setUserId(myUserID));
 
     // メールアドレス
     const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo !== null) {
-      dispatch(setEmailActionCreator(userInfo.email));
+      dispatch(SettingsModule.actions.setEmail(userInfo.email));
     }
 
     // スタートアップ
     const loginItemSettingsOptions = remote.app.getLoginItemSettings({ path: remote.app.getPath('exe') });
     if (loginItemSettingsOptions.openAtLogin) {
-      dispatch(changeEnabledStartupActionCreator(true));
+      dispatch(SettingsModule.actions.changeEnabledStartup(true));
     } else {
-      dispatch(changeEnabledStartupActionCreator(false));
+      dispatch(SettingsModule.actions.changeEnabledStartup(false));
     }
   }
 
@@ -63,10 +62,10 @@ class Settings extends React.Component<any, any> {
       return;
     }
 
-    dispatch(setUserIDActionCreator(changedUserID));
+    dispatch(SettingsModule.actions.setUserId(changedUserID));
 
     if (changedUserID !== -1 && changedUserID !== myUserID) {
-      dispatch(changeDisabledSubmitButtonUserChangeActionCreator(false));
+      dispatch(SettingsModule.actions.changeDisabledSubmitButtonUserChange(false));
     }
   };
 
@@ -87,15 +86,15 @@ class Settings extends React.Component<any, any> {
     const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null) {
-      dispatch(changeEnabledSnackbarActionCreator(true, '設定の保存に失敗しました。'));
+      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定の保存に失敗しました。']));
       return;
     }
 
     electronStore.set('userID', changedUserID);
-    dispatch(setEmailActionCreator(userInfo.email));
-    dispatch(setMyUserIDActionCreator(myUserID));
-    dispatch(changeEnabledSnackbarActionCreator(true, '設定を保存しました。'));
-    dispatch(changeDisabledSubmitButtonUserChangeActionCreator(true));
+    dispatch(SettingsModule.actions.setEmail(userInfo.email));
+    dispatch(AppModule.actions.setMyUserId(myUserID));
+    dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定を保存しました。']));
+    dispatch(SettingsModule.actions.changeDisabledSubmitButtonUserChange(true));
 
     sendHeartbeat(dispatch);
   };
@@ -103,10 +102,10 @@ class Settings extends React.Component<any, any> {
   // メールアドレスの変更
   onUserEmailInputChange = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(setEmailActionCreator(event.currentTarget.value));
+    dispatch(SettingsModule.actions.setEmail(event.currentTarget.value));
 
     if (this.props.state.settingsState.submitButtonsDisable.user.email) {
-      dispatch(changeDisabledSubmitButtonEmailActionCreator(false));
+      dispatch(SettingsModule.actions.changeDisabledSubmitButtonEmail(false));
     }
   };
 
@@ -120,12 +119,12 @@ class Settings extends React.Component<any, any> {
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['email'] = settingState.user.email;
-    await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
-    if (this.props.state.userListState.isError.status) {
-      dispatch(changeEnabledSnackbarActionCreator(true, '設定の保存に失敗しました。'));
+    await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+    if (this.props.state.userListState.isError) {
+      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定の保存に失敗しました。']));
     } else {
-      dispatch(changeEnabledSnackbarActionCreator(true, '設定を保存しました。'));
-      dispatch(changeDisabledSubmitButtonEmailActionCreator(true));
+      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定を保存しました。']));
+      dispatch(SettingsModule.actions.changeDisabledSubmitButtonEmail(true));
     }
   };
 
@@ -133,7 +132,7 @@ class Settings extends React.Component<any, any> {
   changeAndSaveStartup = async (event: any) => {
     const { dispatch } = this.props;
 
-    await dispatch(changeEnabledStartupActionCreator(event.target.checked));
+    await dispatch(SettingsModule.actions.changeEnabledStartup(event.target.checked));
     const settingState = this.props.state.settingsState;
     let openAtLogin: boolean;
     if (settingState.system.startupEnabled) {
@@ -145,7 +144,7 @@ class Settings extends React.Component<any, any> {
       openAtLogin
     });
 
-    dispatch(changeEnabledSnackbarActionCreator(true, '設定を保存しました。'));
+    dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定を保存しました。']));
   };
 
   onSnackBarClose = (event: any | MouseEvent, reason?: string) => {
@@ -153,7 +152,7 @@ class Settings extends React.Component<any, any> {
     if (reason === 'clickaway') {
       return;
     }
-    dispatch(changeEnabledSnackbarActionCreator(false));
+    dispatch(SettingsModule.actions.changeEnabledSnackbar(false));
   };
 
   resizeWindow = () => {
@@ -162,7 +161,7 @@ class Settings extends React.Component<any, any> {
 
   render() {
     const myUserID = this.props.state.appState.myUserID;
-    const userList = this.props.state.userListState.userList;
+    const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
     const userInfo = getUserInfo(userList, myUserID) || new UserInfo();
     const settingState = this.props.state.settingsState;
 
@@ -293,4 +292,10 @@ class Settings extends React.Component<any, any> {
   }
 }
 
-export default Settings;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(Settings);

@@ -2,31 +2,16 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
-import { showInitialStartupModalActionCreator } from '../actions/initialStartupModal';
-import {
-  loginAction,
-  getNotificationAction,
-  setMyUserIDActionCreator,
-  getS3SignedUrlAction,
-  setActiveIndexActionCreator,
-  // setIsUpdatingActionCreator,
-  setFileByteSizeActionCreator,
-  setReceivedBytesActionCreator,
-  setDownloadProgressActionCreator
-} from '../actions/app';
-import { getRestroomUsageAction } from '../actions/officeInfo/officeInfo';
-import {
-  getUserListAction,
-  returnEmptyUserListActionCreator,
-  updateStateUserListActionCreator,
-  updateUserInfoAction
-} from '../actions/userInfo/userList';
-import InitialStartupModal from '../containers/InitialStartupModalPanel';
-import MenuButtonGroupForOfficeInfo from '../containers/officeInfo/MenuButtonGroupPanelForOfficeInfo';
-import MenuButtonGroupForUserList from '../containers/userInfo/MenuButtonGroupPanelForUserList';
-import OfficeInfo from '../containers/officeInfo/OfficeInfoPanel';
-import Settings from '../containers/settings/SettingsPanel';
-import UserList from '../containers/userInfo/UserListPanel';
+import AppModule, { AsyncActionsApp } from '../modules/appModule';
+import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
+import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
+import InitialStartupModal from './InitialStartupModal';
+import InitialStartupModalModule from '../modules/initialStartupModalModule';
+import MenuButtonGroupForOfficeInfo from './officeInfo/MenuButtonGroupForOfficeInfo';
+import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
+import OfficeInfo from './officeInfo/OfficeInfo';
+import Settings from './settings/Settings';
+import UserList from './userInfo/UserList';
 import {
   APP_DOWNLOAD_URL,
   APP_NAME,
@@ -41,6 +26,8 @@ import { getUserInfo, sendHeartbeat, showMessageBox, showMessageBoxWithReturnVal
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
 import Progress from './Progress';
+import { connect } from 'react-redux';
+import { RootState } from '../modules';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -48,7 +35,12 @@ const electronStore = new Store();
 const childProcess = window.require('child_process');
 const path = require('path');
 
-class App extends React.Component<any, any> {
+type Props = {
+  state: RootState;
+  dispatch: any;
+};
+
+class App extends React.Component<Props, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
     const userID: number = (electronStore.get('userID') as number | undefined) || -1;
@@ -56,9 +48,9 @@ class App extends React.Component<any, any> {
     // メインプロセスに、WEBアプリケーションに接続できたことを伝える
     ipcRenderer.send('connected', true);
 
-    await dispatch(loginAction());
+    await dispatch(AsyncActionsApp.loginAction());
 
-    if (this.props.state.appState.isError.status) {
+    if (this.props.state.appState.isError) {
       ipcRenderer.send('connected', false);
       remote.getCurrentWindow().loadFile(remote.getGlobal('errorPageFilepath'));
       return;
@@ -68,7 +60,7 @@ class App extends React.Component<any, any> {
     AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + this.props.state.appState.token;
 
     // お知らせチェック
-    await dispatch(getNotificationAction());
+    await dispatch(AsyncActionsApp.getNotificationAction());
 
     const notification: Notification = this.props.state.appState.notification;
     const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
@@ -81,7 +73,7 @@ class App extends React.Component<any, any> {
     if (notification.latestAppVersion !== APP_VERSION) {
       showMessageBox(updateNotificationMessage);
       remote.shell.openExternal(APP_DOWNLOAD_URL);
-      remote.getCurrentWindow().destroy();
+      // remote.getCurrentWindow().destroy();
       return;
     }
 
@@ -142,7 +134,7 @@ class App extends React.Component<any, any> {
     }, HEARTBEAT_INTERVAL_MS);
 
     /**
-     * 初回起動チェック
+     * 初回起動チェック　ｓ
      * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
      */
     if (userID === -1) {
@@ -150,8 +142,8 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    await dispatch(getUserListAction(userID));
-    if (this.props.state.userListState.isError.status === true) {
+    await dispatch(AsyncActionsUserList.getUserListAction(userID));
+    if (this.props.state.userListState.isError === true) {
       return;
     }
 
@@ -163,36 +155,35 @@ class App extends React.Component<any, any> {
      * 無ければ新規登録画面へ遷移する
      */
     if (userInfo === null) {
-      dispatch(returnEmptyUserListActionCreator());
+      dispatch(UserListModule.actions.returnEmptyUserList());
       showMessageBox('ユーザ情報が存在しないため、ユーザ登録を行います。');
-      dispatch(showInitialStartupModalActionCreator());
+      dispatch(InitialStartupModalModule.actions.showModal(true));
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = userID;
     if (userInfo['version'] !== APP_VERSION) {
       updatedUserInfo['version'] = APP_VERSION;
-      dispatch(updateUserInfoAction(updatedUserInfo, userID));
+      dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     }
 
     // 状態を「在席」に更新する（更新日時も更新される）
     if (userInfo['status'] === '退社' || userInfo['status'] === '在席' || userInfo['status'] === '在席 (離席中)') {
-      userInfo['status'] = '在席';
-      updatedUserInfo['status'] = userInfo['status'];
+      updatedUserInfo['status'] = '在席';
       updatedUserInfo['name'] = userInfo['name'];
-      dispatch(updateUserInfoAction(updatedUserInfo, userID));
+      dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     }
 
-    dispatch(setMyUserIDActionCreator(userID));
-    dispatch(updateStateUserListActionCreator(userList));
+    dispatch(AppModule.actions.setMyUserId(userID));
+    dispatch(UserListModule.actions.updateStateUserList(userList));
 
     sendHeartbeat(dispatch);
   }
 
   _showModal = () => {
     const { dispatch } = this.props;
-    dispatch(showInitialStartupModalActionCreator());
+    dispatch(InitialStartupModalModule.actions.showModal(true));
   };
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
@@ -206,8 +197,8 @@ class App extends React.Component<any, any> {
     // macOSでリサイズするとレイアウトが崩れてしまう問題の暫定対処
     await this._sleep(250);
 
-    dispatch(setMyUserIDActionCreator(-1));
-    dispatch(setMyUserIDActionCreator(myUserID));
+    dispatch(AppModule.actions.setMyUserId(-1));
+    dispatch(AppModule.actions.setMyUserId(myUserID));
   });
 
   // 状態を「離席中」に更新する
@@ -220,12 +211,12 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo['status'] = '在席 (離席中)';
     Object.assign(userInfo, updatedUserInfo);
-    dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
+    dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
   // 状態を「在席」に更新する
@@ -238,12 +229,11 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo['status'] = '在席';
-    Object.assign(userInfo, updatedUserInfo);
-    dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
+    dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
 
     sendHeartbeat(dispatch);
   });
@@ -259,12 +249,11 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['status'] = '退社';
     updatedUserInfo['name'] = userInfo['name'];
-    Object.assign(userInfo, updatedUserInfo);
-    await dispatch(updateUserInfoAction(updatedUserInfo, myUserID));
+    await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     ipcRenderer.send('close');
   });
 
@@ -273,19 +262,19 @@ class App extends React.Component<any, any> {
     const notification: Notification = this.props.state.appState.notification;
     switch (remote.process.platform) {
       case 'win32':
-        dispatch(setFileByteSizeActionCreator(notification.updateInstaller.windows.fileByteSize));
+        dispatch(AppModule.actions.setFileByteSize(notification.updateInstaller.windows.fileByteSize));
         dispatch(
-          setDownloadProgressActionCreator(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
+          AppModule.actions.setDownloadProgress(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
         );
-        dispatch(setReceivedBytesActionCreator(receivedBytes));
+        dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
         break;
 
       case 'darwin':
-        dispatch(setFileByteSizeActionCreator(notification.updateInstaller.mac.fileByteSize));
+        dispatch(AppModule.actions.setFileByteSize(notification.updateInstaller.mac.fileByteSize));
         dispatch(
-          setDownloadProgressActionCreator(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
+          AppModule.actions.setDownloadProgress(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
         );
-        dispatch(setReceivedBytesActionCreator(receivedBytes));
+        dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
         break;
 
       default:
@@ -333,8 +322,8 @@ class App extends React.Component<any, any> {
         // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
         switch (remote.process.platform) {
           case 'win32':
-            await dispatch(getS3SignedUrlAction(notification.updateInstaller.windows.fileName));
-            if (this.props.state.appState.isError.status) {
+            await dispatch(AppModule.actions.getS3SignedUrlSuccess(notification.updateInstaller.windows.fileName));
+            if (this.props.state.appState.isError) {
               showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
               return;
@@ -344,8 +333,8 @@ class App extends React.Component<any, any> {
             break;
 
           case 'darwin':
-            await dispatch(getS3SignedUrlAction(notification.updateInstaller.mac.fileName));
-            if (this.props.state.appState.isError.status) {
+            await dispatch(AppModule.actions.getS3SignedUrlSuccess(notification.updateInstaller.mac.fileName));
+            if (this.props.state.appState.isError) {
               showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
               return;
@@ -368,7 +357,7 @@ class App extends React.Component<any, any> {
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
-    dispatch(setActiveIndexActionCreator(activeIndex));
+    dispatch(AppModule.actions.setActiveIndex(activeIndex));
 
     // 同じタブを複数押下した場合
     if (this.props.state.appState.activeIndex === activeIndex) {
@@ -378,12 +367,12 @@ class App extends React.Component<any, any> {
     switch (activeIndex) {
       // 社内情報タブを選択
       case 0:
-        await dispatch(getUserListAction(myUserID, 250));
+        await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
         break;
 
       // 社員情報タブを選択
       case 1:
-        await dispatch(getRestroomUsageAction(250));
+        await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(250));
         break;
 
       default:
@@ -398,11 +387,13 @@ class App extends React.Component<any, any> {
     const myUserID = this.props.state.appState['myUserID'];
     return (
       <div>
-        <Loading state={this.props.state} />
+        <Loading
+          isAppStateProcessing={this.props.state.appState.isProcessing}
+          isUserListProcessing={this.props.state.userListState.isFetching}
+          officeInfoProcessing={this.props.state.officeInfoState.isFetching}
+        />
         <Progress
           isUpdating={this.props.state.appState.isUpdating}
-          fileByteSize={this.props.state.appState.fileByteSize}
-          receivedBytes={this.props.state.appState.receivedBytes}
           downloadProgress={this.props.state.appState.downloadProgress}
         />
         {myUserID !== -1 && (
@@ -448,4 +439,10 @@ class App extends React.Component<any, any> {
   }
 }
 
-export default App;
+const mapStateToProps = (state: any) => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps)(App);

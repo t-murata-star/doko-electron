@@ -1,6 +1,6 @@
 import { UserInfo } from '../../define/model';
-import store from '../../store/configureStore';
-import { sendHeartbeatAction } from '../../actions/app';
+import store from '../../configureStore';
+import { AsyncActionsApp } from '../../modules/appModule';
 import { APP_NAME } from '../../define';
 const { remote } = window.require('electron');
 
@@ -27,7 +27,7 @@ export const sendHeartbeat = (dispatch: any) => {
   const updatedUserInfo: any = {};
   updatedUserInfo['id'] = myUserID;
   updatedUserInfo['heartbeat'] = '';
-  dispatch(sendHeartbeatAction(updatedUserInfo, myUserID));
+  dispatch(AsyncActionsApp.sendHeartbeatAction(updatedUserInfo, myUserID));
 };
 
 export const showMessageBox = (message: any, type: 'info' | 'warning' = 'info') => {
