@@ -76,7 +76,7 @@ const slice = createSlice({
     getS3SignedUrlSuccess: (state, action) => {
       return {
         ...state,
-        updateInstallerUrl: action.payload
+        updateInstallerUrl: action.payload.url
       };
     },
     setProcessingStatus: (state, action) => {

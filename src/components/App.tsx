@@ -324,7 +324,7 @@ class App extends React.Component<Props, any> {
         // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
         switch (remote.process.platform) {
           case 'win32':
-            await dispatch(AppModule.actions.getS3SignedUrlSuccess(notification.updateInstaller.windows.fileName));
+            await dispatch(AsyncActionsApp.getS3SignedUrlAction(notification.updateInstaller.windows.fileName));
             if (this.props.state.appState.isError) {
               showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
@@ -335,7 +335,7 @@ class App extends React.Component<Props, any> {
             break;
 
           case 'darwin':
-            await dispatch(AppModule.actions.getS3SignedUrlSuccess(notification.updateInstaller.mac.fileName));
+            await dispatch(AsyncActionsApp.getS3SignedUrlAction(notification.updateInstaller.mac.fileName));
             if (this.props.state.appState.isError) {
               showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
               remote.getCurrentWindow().destroy();
