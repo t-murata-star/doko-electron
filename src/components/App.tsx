@@ -73,7 +73,7 @@ class App extends React.Component<Props, any> {
     if (notification.latestAppVersion !== APP_VERSION) {
       showMessageBox(updateNotificationMessage);
       remote.shell.openExternal(APP_DOWNLOAD_URL);
-      // remote.getCurrentWindow().destroy();
+      remote.getCurrentWindow().destroy();
       return;
     }
 
