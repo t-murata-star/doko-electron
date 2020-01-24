@@ -5,7 +5,6 @@ import AppModule from '../appModule';
 
 class _initialState {
   userList: UserInfo[] = [];
-  changeUserList: UserInfo[] = []; // サーバ上に登録されているユーザの中から自分のユーザを選択するために格納するユーザ一覧（userListと同じデータ）
   isFetching: boolean = false;
   isError: boolean = false;
   selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
@@ -59,12 +58,6 @@ const slice = createSlice({
         isError: false
       };
     },
-    updateStateUserList: (state, action) => {
-      return {
-        ...state,
-        userList: action.payload
-      };
-    },
     addUserSuccess: (state, action) => {
       return {
         ...state,
@@ -102,6 +95,12 @@ const slice = createSlice({
       return {
         ...state,
         inoperable: action.payload
+      };
+    },
+    setUserInfo: (state, action) => {
+      return {
+        ...state,
+        userList: action.payload
       };
     }
   }

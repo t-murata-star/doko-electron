@@ -134,7 +134,7 @@ class App extends React.Component<Props, any> {
     }, HEARTBEAT_INTERVAL_MS);
 
     /**
-     * 初回起動チェック　ｓ
+     * 初回起動チェック
      * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
      */
     if (userID === -1) {
@@ -147,7 +147,7 @@ class App extends React.Component<Props, any> {
       return;
     }
 
-    const userList: UserInfo[] = this.props.state.userListState['userList'];
+    const userList: UserInfo[] = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
     const userInfo = getUserInfo(userList, userID);
 
     /**
@@ -161,22 +161,24 @@ class App extends React.Component<Props, any> {
       return;
     }
 
-    const updatedUserInfo = { ...userInfo };
+    const updatedUserInfo: any = {};
     updatedUserInfo['id'] = userID;
     if (userInfo['version'] !== APP_VERSION) {
       updatedUserInfo['version'] = APP_VERSION;
+      // アプリバージョンのみ更新（更新日時も更新されない）
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     }
 
     // 状態を「在席」に更新する（更新日時も更新される）
     if (userInfo['status'] === '退社' || userInfo['status'] === '在席' || userInfo['status'] === '在席 (離席中)') {
-      updatedUserInfo['status'] = '在席';
+      userInfo['status'] = '在席';
+      updatedUserInfo['status'] = userInfo['status'];
       updatedUserInfo['name'] = userInfo['name'];
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     }
 
+    dispatch(UserListModule.actions.setUserInfo(userList));
     dispatch(AppModule.actions.setMyUserId(userID));
-    dispatch(UserListModule.actions.updateStateUserList(userList));
 
     sendHeartbeat(dispatch);
   }

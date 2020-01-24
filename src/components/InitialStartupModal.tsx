@@ -2,7 +2,7 @@ import MaterialUiButton from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
-import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
+import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import AppModule from '../modules/appModule';
 import { UserInfo, ApiResponse } from '../define/model';
 import { getUserInfo, sendHeartbeat } from './common/functions';
@@ -80,11 +80,16 @@ class InitialStartupModal extends React.Component<Props, any> {
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
-    updatedUserInfo['version'] = APP_VERSION;
+    if (userInfo['version'] !== APP_VERSION) {
+      updatedUserInfo['version'] = APP_VERSION;
+      dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+    }
 
-    // 状態が「退社」のユーザのみ、状態を「在席」に変更する
-    if (userInfo['status'] === '退社') {
+    // 状態を「在席」に更新する（更新日時も更新される）
+    if (userInfo['status'] === '退社' || userInfo['status'] === '在席' || userInfo['status'] === '在席 (離席中)') {
       updatedUserInfo['status'] = '在席';
+      updatedUserInfo['name'] = userInfo['name'];
+      dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     }
 
     await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
@@ -92,7 +97,6 @@ class InitialStartupModal extends React.Component<Props, any> {
       return;
     }
 
-    dispatch(UserListModule.actions.updateStateUserList(userList));
     this.closeModal();
 
     dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));

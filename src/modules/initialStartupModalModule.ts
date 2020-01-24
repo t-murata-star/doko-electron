@@ -6,7 +6,7 @@ class _initialState {
   isChangeUser: boolean = false;
   submitButtonDisabled: boolean = true;
   userID: number = -1;
-  userInfo: any = new UserInfo();
+  userInfo: UserInfo = new UserInfo();
 }
 
 // createSlice() で actions と reducers を一気に生成
