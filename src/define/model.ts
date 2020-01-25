@@ -33,17 +33,14 @@ export class UserInfo {
 }
 
 export class Notification {
-  enabled: boolean = false;
   content: string = '';
   latestAppVersion: string = '';
   updateInstaller = {
     windows: {
-      fileName: '',
-      fileByteSize: 0
+      fileName: ''
     },
     mac: {
-      fileName: '',
-      fileByteSize: 0
+      fileName: ''
     }
   };
 }

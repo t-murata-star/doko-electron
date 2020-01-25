@@ -20,7 +20,7 @@ import {
   HEARTBEAT_INTERVAL_MS,
   SAVE_INSTALLER_FILENAME
 } from '../define';
-import { Notification, UserInfo } from '../define/model';
+import { Notification, UserInfo, ApiResponse } from '../define/model';
 import './App.scss';
 import { getUserInfo, sendHeartbeat, showMessageBox, showMessageBoxWithReturnValue } from './common/functions';
 import Loading from './Loading';
@@ -78,7 +78,7 @@ class App extends React.Component<Props, any> {
     }
 
     // if (notification.latestAppVersion !== APP_VERSION) {
-    //   dispatch(setIsUpdatingActionCreator(true));
+    //   dispatch(AppModule.actions.setUpdatingStatus(true));
     //   const index = showMessageBoxWithReturnValue('OK', 'Cancel', updateNotificationMessage);
     //   this._updateApp(index);
     //   return;
@@ -217,7 +217,6 @@ class App extends React.Component<Props, any> {
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo['status'] = '在席 (離席中)';
-    Object.assign(userInfo, updatedUserInfo);
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
@@ -261,21 +260,15 @@ class App extends React.Component<Props, any> {
 
   updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
     const { dispatch } = this.props;
-    const notification: Notification = this.props.state.appState.notification;
+    const updateInstallerFileByteSize = this.props.state.appState.updateInstallerFileByteSize;
     switch (remote.process.platform) {
       case 'win32':
-        dispatch(AppModule.actions.setFileByteSize(notification.updateInstaller.windows.fileByteSize));
-        dispatch(
-          AppModule.actions.setDownloadProgress(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
-        );
+        dispatch(AppModule.actions.setDownloadProgress(Math.round((receivedBytes / updateInstallerFileByteSize) * 1000) / 10));
         dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
         break;
 
       case 'darwin':
-        dispatch(AppModule.actions.setFileByteSize(notification.updateInstaller.mac.fileByteSize));
-        dispatch(
-          AppModule.actions.setDownloadProgress(Math.round((receivedBytes / this.props.state.appState.fileByteSize) * 1000) / 10)
-        );
+        dispatch(AppModule.actions.setDownloadProgress(Math.round((receivedBytes / updateInstallerFileByteSize) * 1000) / 10));
         dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
         break;
 
@@ -318,31 +311,20 @@ class App extends React.Component<Props, any> {
     const { dispatch } = this.props;
     const notification: Notification = this.props.state.appState.notification;
 
+    let response: ApiResponse;
     let updateInstallerFilepath = '';
+    let fileName = '';
     switch (index) {
       case 0:
-        // TODO:既にダウンロード済みの場合、そのインストーラを起動する。
         switch (remote.process.platform) {
           case 'win32':
-            await dispatch(AsyncActionsApp.getS3SignedUrlAction(notification.updateInstaller.windows.fileName));
-            if (this.props.state.appState.isError) {
-              showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
-              remote.getCurrentWindow().destroy();
-              return;
-            }
-            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.exe`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, this.props.state.appState.updateInstallerUrl);
+            fileName = notification.updateInstaller.windows.fileName;
+            installAndUpdate(fileName, 'exe');
             break;
 
           case 'darwin':
-            await dispatch(AsyncActionsApp.getS3SignedUrlAction(notification.updateInstaller.mac.fileName));
-            if (this.props.state.appState.isError) {
-              showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
-              remote.getCurrentWindow().destroy();
-              return;
-            }
-            updateInstallerFilepath = `${path.join(remote.app.getPath('temp'), SAVE_INSTALLER_FILENAME)}_${APP_VERSION}.dmg`;
-            ipcRenderer.send('updateApp', updateInstallerFilepath, this.props.state.appState.updateInstallerUrl);
+            fileName = notification.updateInstaller.mac.fileName;
+            installAndUpdate(fileName, 'pkg');
             break;
 
           default:
@@ -353,6 +335,23 @@ class App extends React.Component<Props, any> {
       default:
         remote.getCurrentWindow().destroy();
         break;
+    }
+
+    async function installAndUpdate(fileName: string, fileExtension: string) {
+      response = await dispatch(AsyncActionsApp.getS3SignedUrlAction(fileName));
+      const url = response.getPayload();
+      response = await dispatch(AsyncActionsApp.getS3ObjectFileByteSizeAction(fileName));
+      if (response.getIsError()) {
+        showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+        // remote.getCurrentWindow().destroy();
+        return;
+      }
+
+      updateInstallerFilepath = `${path.join(
+        remote.app.getPath('temp'),
+        SAVE_INSTALLER_FILENAME
+      )}_${APP_VERSION}.${fileExtension}`;
+      ipcRenderer.send('updateApp', updateInstallerFilepath, url);
     }
   }
 
