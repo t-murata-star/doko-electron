@@ -2,10 +2,10 @@ import { StylesProvider, ThemeProvider as MaterialThemeProvider } from '@materia
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { baseTheme } from './components/materialui/theme';
 import App from './components/App';
-import './index.css';
+import { baseTheme } from './components/materialui/theme';
 import store from './configureStore';
+import './index.css';
 
 render(
   <StylesProvider injectFirst>

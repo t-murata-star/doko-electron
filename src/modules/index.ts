@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import userList from './userInfo/userListModule';
-import officeInfoState from './officeInfo/officeInfoModule';
-import userEditModalState from './userInfo/userEditModalMdule';
-import initialStartupModal from './initialStartupModalModule';
 import app from './appModule';
+import initialStartupModal from './initialStartupModalModule';
+import officeInfoState from './officeInfo/officeInfoModule';
 import settingsState from './settings/settingsModule';
+import userEditModalState from './userInfo/userEditModalMdule';
+import userList from './userInfo/userListModule';
 
 const rootReducer = combineReducers({
   appState: app.reducer,

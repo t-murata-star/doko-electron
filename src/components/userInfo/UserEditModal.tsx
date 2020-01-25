@@ -1,21 +1,15 @@
-/**
- * プレゼンテーショナルコンポーネント
- * プレゼンテーショナルコンポーネントは基本的にpropsをもとに見た目を作る普通のReactコンポーネント。
- * できるだけステートレスで作る。（可能な限りステートレス）
- */
-
 import { Tooltip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import React from 'react';
 import { Col, Container, Form, Modal } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { APP_NAME, STATUS_LIST } from '../../define';
+import { UserInfo } from '../../define/model';
+import { RootState } from '../../modules';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { APP_NAME, STATUS_LIST } from '../../define';
-import { UserInfo } from '../../define/model';
 import './UserEditModal.css';
-import { connect } from 'react-redux';
-import { RootState } from '../../modules';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');

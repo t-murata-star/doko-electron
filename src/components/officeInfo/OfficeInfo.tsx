@@ -3,9 +3,9 @@ import { faDoorClosed, faDoorOpen, faFemale, faMale } from '@fortawesome/free-so
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
-import './OfficeInfo.css';
 import { connect } from 'react-redux';
 import { RootState } from '../../modules';
+import './OfficeInfo.css';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
 

@@ -2,16 +2,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
-import AppModule, { AsyncActionsApp } from '../modules/appModule';
-import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
-import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
-import InitialStartupModal from './InitialStartupModal';
-import InitialStartupModalModule from '../modules/initialStartupModalModule';
-import MenuButtonGroupForOfficeInfo from './officeInfo/MenuButtonGroupForOfficeInfo';
-import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
-import OfficeInfo from './officeInfo/OfficeInfo';
-import Settings from './settings/Settings';
-import UserList from './userInfo/UserList';
+import { connect } from 'react-redux';
 import {
   APP_DOWNLOAD_URL,
   APP_NAME,
@@ -20,14 +11,23 @@ import {
   HEARTBEAT_INTERVAL_MS,
   SAVE_INSTALLER_FILENAME
 } from '../define';
-import { Notification, UserInfo, ApiResponse } from '../define/model';
+import { ApiResponse, Notification, UserInfo } from '../define/model';
+import { RootState } from '../modules';
+import AppModule, { AsyncActionsApp } from '../modules/appModule';
+import InitialStartupModalModule from '../modules/initialStartupModalModule';
+import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
+import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import './App.scss';
 import { getUserInfo, sendHeartbeat, showMessageBox, showMessageBoxWithReturnValue } from './common/functions';
+import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
+import MenuButtonGroupForOfficeInfo from './officeInfo/MenuButtonGroupForOfficeInfo';
+import OfficeInfo from './officeInfo/OfficeInfo';
 import Progress from './Progress';
-import { connect } from 'react-redux';
-import { RootState } from '../modules';
+import Settings from './settings/Settings';
+import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
+import UserList from './userInfo/UserList';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');

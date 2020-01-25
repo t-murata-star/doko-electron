@@ -1,6 +1,6 @@
-import { createSlice, Dispatch, Action } from '@reduxjs/toolkit';
-import { Restroom, ApiResponse } from '../../define/model';
+import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
 import { API_URL, AUTH_REQUEST_HEADERS } from '../../define';
+import { ApiResponse, Restroom } from '../../define/model';
 import AppModule from '../appModule';
 
 class _initialState {

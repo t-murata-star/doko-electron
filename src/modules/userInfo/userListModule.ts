@@ -1,6 +1,6 @@
-import { createSlice, Dispatch, Action } from '@reduxjs/toolkit';
-import { UserInfo, ApiResponse } from '../../define/model';
-import { LEAVING_TIME_THRESHOLD_M, API_URL, AUTH_REQUEST_HEADERS } from '../../define';
+import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
+import { API_URL, AUTH_REQUEST_HEADERS, LEAVING_TIME_THRESHOLD_M } from '../../define';
+import { ApiResponse, UserInfo } from '../../define/model';
 import AppModule from '../appModule';
 
 class _initialState {

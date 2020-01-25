@@ -1,6 +1,6 @@
-import { createSlice, Dispatch, Action } from '@reduxjs/toolkit';
-import { Notification, UserInfo, ApiResponse } from '../define/model';
-import { API_URL, LOGIN_REQUEST_HEADERS, LOGIN_USER, AUTH_REQUEST_HEADERS } from '../define';
+import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
+import { API_URL, AUTH_REQUEST_HEADERS, LOGIN_REQUEST_HEADERS, LOGIN_USER } from '../define';
+import { ApiResponse, Notification, UserInfo } from '../define/model';
 
 class _initialState {
   token: string = ''; // 認証トークン。このトークンを用いてAPIサーバにリクエストを行う

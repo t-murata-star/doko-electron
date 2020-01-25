@@ -1,7 +1,7 @@
-import { UserInfo } from '../../define/model';
 import store from '../../configureStore';
-import { AsyncActionsApp } from '../../modules/appModule';
 import { APP_NAME } from '../../define';
+import { UserInfo } from '../../define/model';
+import { AsyncActionsApp } from '../../modules/appModule';
 const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意

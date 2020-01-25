@@ -4,10 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import React from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
-import './MenuButtonGroupForOfficeInfo.css';
-import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
 import { connect } from 'react-redux';
 import { RootState } from '../../modules';
+import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
+import './MenuButtonGroupForOfficeInfo.css';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 

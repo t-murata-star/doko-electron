@@ -1,16 +1,16 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
+import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
+import { RootState } from '../../modules';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
 import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
-import { connect } from 'react-redux';
-import { RootState } from '../../modules';
 
 const { remote } = window.require('electron');
 
