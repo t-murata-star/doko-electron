@@ -5,7 +5,7 @@ import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
-import { UserInfo } from '../../define/model';
+import { ApiResponse, UserInfo } from '../../define/model';
 import { RootState } from '../../modules';
 import AppModule from '../../modules/appModule';
 import SettingsModule from '../../modules/settings/settingsModule';
@@ -115,12 +115,13 @@ class Settings extends React.Component<Props, any> {
     const { dispatch } = this.props;
     const settingState = this.props.state.settingsState;
     const myUserID = this.props.state.appState.myUserID;
+    let response: ApiResponse;
 
     const updatedUserInfo: any = {};
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['email'] = settingState.user.email;
-    await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
-    if (this.props.state.userListState.isError) {
+    response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+    if (response.getIsError()) {
       dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定の保存に失敗しました。']));
     } else {
       dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定を保存しました。']));

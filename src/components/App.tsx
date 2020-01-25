@@ -44,13 +44,14 @@ class App extends React.Component<Props, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
     const userID: number = (electronStore.get('userID') as number | undefined) || -1;
+    let response: ApiResponse;
 
     // メインプロセスに、WEBアプリケーションに接続できたことを伝える
     ipcRenderer.send('connected', true);
 
-    await dispatch(AsyncActionsApp.loginAction());
+    response = await dispatch(AsyncActionsApp.loginAction());
 
-    if (this.props.state.appState.isError) {
+    if (response.getIsError()) {
       ipcRenderer.send('connected', false);
       remote.getCurrentWindow().loadFile(remote.getGlobal('errorPageFilepath'));
       return;
@@ -142,8 +143,8 @@ class App extends React.Component<Props, any> {
       return;
     }
 
-    await dispatch(AsyncActionsUserList.getUserListAction(userID));
-    if (this.props.state.userListState.isError === true) {
+    response = await dispatch(AsyncActionsUserList.getUserListAction(userID));
+    if (response.getIsError()) {
       return;
     }
 

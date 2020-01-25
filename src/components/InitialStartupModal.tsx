@@ -70,6 +70,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     const myUserID = this.userID;
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
+    let response: ApiResponse;
 
     if (userInfo === null) {
       return;
@@ -82,18 +83,20 @@ class InitialStartupModal extends React.Component<Props, any> {
     updatedUserInfo['id'] = myUserID;
     if (userInfo['version'] !== APP_VERSION) {
       updatedUserInfo['version'] = APP_VERSION;
-      dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+      response = dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+      if (response.getIsError()) {
+        return;
+      }
     }
 
     // 状態を「在席」に更新する（更新日時も更新される）
     if (userInfo['status'] === '退社' || userInfo['status'] === '在席' || userInfo['status'] === '在席 (離席中)') {
       updatedUserInfo['status'] = '在席';
       updatedUserInfo['name'] = userInfo['name'];
-      dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
-    }
-
-    if (this.props.state.userListState.isError === true) {
-      return;
+      response = dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+      if (response.getIsError()) {
+        return;
+      }
     }
 
     this.closeModal();

@@ -4,7 +4,7 @@ import React from 'react';
 import { Col, Container, Form, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, STATUS_LIST } from '../../define';
-import { UserInfo } from '../../define/model';
+import { ApiResponse, UserInfo } from '../../define/model';
 import { RootState } from '../../modules';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
@@ -24,13 +24,6 @@ class UserEditModal extends React.Component<Props, any> {
   userID: number = -1;
   userInfo: any = new UserInfo();
 
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      isError: false
-    };
-  }
-
   componentDidUpdate() {
     this.userInfo = { ...this.props.state.userEditModalState.userInfo };
   }
@@ -43,10 +36,10 @@ class UserEditModal extends React.Component<Props, any> {
   _updateUserInfo = async (userInfo: UserInfo) => {
     const { dispatch } = this.props;
     const userID = this.props.state.userEditModalState.userID;
+    let response: ApiResponse;
 
-    await dispatch(AsyncActionsUserList.updateUserInfoAction(userInfo, userID));
-    const userList = this.props.state.userListState;
-    if (userList.isError) {
+    response = await dispatch(AsyncActionsUserList.updateUserInfoAction(userInfo, userID));
+    if (response.getIsError()) {
       dispatch(UserEditModalMdule.actions.enableSubmitButton());
       return;
     }
@@ -86,6 +79,8 @@ class UserEditModal extends React.Component<Props, any> {
 
   deleteUser = async (event: any) => {
     const { dispatch } = this.props;
+    let response: ApiResponse;
+
     const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
       title: APP_NAME,
       type: 'info',
@@ -96,16 +91,16 @@ class UserEditModal extends React.Component<Props, any> {
     if (index !== 0) {
       return;
     }
-    await dispatch(AsyncActionsUserList.deleteUserAction(this.props.state.userEditModalState.userInfo['id'])).then(() => {
-      const userList = this.props.state.userListState;
-      if (userList.isError) {
-        this.setState({ isError: true });
-        return;
-      }
-      this.closeModal();
-      const myUserID = this.props.state.appState.myUserID;
-      dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
-    });
+
+    const selectedUserId = this.props.state.userEditModalState.userInfo['id'];
+    response = await dispatch(AsyncActionsUserList.deleteUserAction(selectedUserId));
+    if (response.getIsError()) {
+      return;
+    }
+
+    this.closeModal();
+    const myUserID = this.props.state.appState.myUserID;
+    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
   };
 
   inputClear = () => {

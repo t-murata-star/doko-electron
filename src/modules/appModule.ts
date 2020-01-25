@@ -39,14 +39,14 @@ const slice = createSlice({
     requestError: state => {
       return {
         ...state,
-        isFetching: true,
+        isFetching: false,
         isError: true
       };
     },
     failRequest: state => {
       return {
         ...state,
-        isFetching: true,
+        isFetching: false,
         isError: true
       };
     },
