@@ -92,7 +92,6 @@ class InitialStartupModal extends React.Component<Props, any> {
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     }
 
-    await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     if (this.props.state.userListState.isError === true) {
       return;
     }
