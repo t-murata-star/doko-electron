@@ -339,11 +339,17 @@ class App extends React.Component<Props, any> {
 
     async function installAndUpdate(fileName: string, fileExtension: string) {
       response = await dispatch(AsyncActionsApp.getS3SignedUrlAction(fileName));
+      if (response.getIsError()) {
+        showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+        remote.getCurrentWindow().destroy();
+        return;
+      }
       const url = response.getPayload();
+
       response = await dispatch(AsyncActionsApp.getS3ObjectFileByteSizeAction(fileName));
       if (response.getIsError()) {
         showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
-        // remote.getCurrentWindow().destroy();
+        remote.getCurrentWindow().destroy();
         return;
       }
 
