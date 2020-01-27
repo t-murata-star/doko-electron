@@ -39,6 +39,22 @@ export class UserInfo {
   heartbeat: string = '';
 }
 
+export class UserStatus {
+  s01 = '在席';
+  s02 = '退社';
+  s03 = '年休';
+  s04 = 'AM半休';
+  s05 = 'PM半休';
+  s06 = 'FLEX';
+  s07 = '出張';
+  s08 = '外出';
+  s09 = '本社外勤務';
+  s10 = '行方不明';
+  s11 = '遅刻';
+  s12 = '接客中';
+  s13 = '在席 (離席中)';
+}
+
 export class Notification {
   content: string = '';
   latestAppVersion: string = '';

@@ -1,5 +1,5 @@
 import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
-import { API_URL, AUTH_REQUEST_HEADERS, LEAVING_TIME_THRESHOLD_M } from '../../define';
+import { API_URL, AUTH_REQUEST_HEADERS, LEAVING_TIME_THRESHOLD_M, USER_STATUS } from '../../define';
 import { ApiResponse, UserInfo } from '../../define/model';
 import AppModule from '../appModule';
 
@@ -130,11 +130,11 @@ function updateLeavingTimeForUserList(userList: UserInfo[], myUserID: number) {
     if (userInfo.id === myUserID) {
       continue;
     }
-    if (['在席', '在席 (離席中)'].includes(userInfo['status']) === true) {
+    if ([USER_STATUS.s01, USER_STATUS.s13].includes(userInfo['status']) === true) {
       const heartbeat: Date = new Date(userInfo['heartbeat']);
       const diffMin = Math.floor((nowDate.getTime() - heartbeat.getTime()) / (1000 * 60));
       if (diffMin >= LEAVING_TIME_THRESHOLD_M) {
-        userInfo['status'] = '退社';
+        userInfo['status'] = USER_STATUS.s02;
         // 更新日時を最後のheartbeat送信日時に設定する
         userInfo['updatedAt'] = userInfo['heartbeat'];
       }

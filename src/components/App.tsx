@@ -9,7 +9,8 @@ import {
   APP_VERSION,
   AUTH_REQUEST_HEADERS,
   HEARTBEAT_INTERVAL_MS,
-  SAVE_INSTALLER_FILENAME
+  SAVE_INSTALLER_FILENAME,
+  USER_STATUS
 } from '../define';
 import { ApiResponse, Notification, UserInfo, Props } from '../define/model';
 import AppModule, { AsyncActionsApp } from '../modules/appModule';
@@ -165,8 +166,12 @@ class App extends React.Component<Props, any> {
     }
 
     // 状態を「在席」に更新する（更新日時も更新される）
-    if (userInfo['status'] === '退社' || userInfo['status'] === '在席' || userInfo['status'] === '在席 (離席中)') {
-      userInfo['status'] = '在席';
+    if (
+      userInfo['status'] === USER_STATUS.s02 ||
+      userInfo['status'] === USER_STATUS.s01 ||
+      userInfo['status'] === USER_STATUS.s13
+    ) {
+      userInfo['status'] = USER_STATUS.s01;
       updatedUserInfo['status'] = userInfo['status'];
       updatedUserInfo['name'] = userInfo['name'];
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
@@ -204,14 +209,14 @@ class App extends React.Component<Props, any> {
     const myUserID = this.props.state.appState['myUserID'];
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS.s01, USER_STATUS.s13].includes(userInfo['status']) === false) {
       return;
     }
 
     const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
-    updatedUserInfo['status'] = '在席 (離席中)';
+    updatedUserInfo['status'] = USER_STATUS.s13;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
@@ -221,14 +226,14 @@ class App extends React.Component<Props, any> {
     const myUserID = this.props.state.appState['myUserID'];
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS.s01, USER_STATUS.s13].includes(userInfo['status']) === false) {
       return;
     }
 
     const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
-    updatedUserInfo['status'] = '在席';
+    updatedUserInfo['status'] = USER_STATUS.s01;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
 
     sendHeartbeat(dispatch);
@@ -240,14 +245,14 @@ class App extends React.Component<Props, any> {
     const myUserID = this.props.state.appState['myUserID'];
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || ['在席', '在席 (離席中)'].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS.s01, USER_STATUS.s13].includes(userInfo['status']) === false) {
       ipcRenderer.send('close');
       return;
     }
 
     const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
-    updatedUserInfo['status'] = '退社';
+    updatedUserInfo['status'] = USER_STATUS.s02;
     updatedUserInfo['name'] = userInfo['name'];
     await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     ipcRenderer.send('close');

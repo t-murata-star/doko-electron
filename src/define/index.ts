@@ -1,3 +1,5 @@
+import { UserStatus } from './model';
+
 const { remote } = window.require('electron');
 
 export const APP_NAME: string = remote.getGlobal('description') || '';
@@ -15,22 +17,22 @@ export const AUTH_REQUEST_HEADERS: any = {
   'Content-type': 'application/json; charset=UTF-8',
   Authorization: ''
 };
+export const USER_STATUS: UserStatus = new UserStatus();
 export const STATUS_LIST: string[] = [
-  '在席',
-  '退社',
-  '年休',
-  'AM半休',
-  'PM半休',
-  'FLEX',
-  '出張',
-  '外出',
-  '本社外勤務',
-  '行方不明',
-  '遅刻',
-  '接客中',
-  '在席 (離席中)'
+  USER_STATUS.s01,
+  USER_STATUS.s02,
+  USER_STATUS.s03,
+  USER_STATUS.s04,
+  USER_STATUS.s05,
+  USER_STATUS.s06,
+  USER_STATUS.s07,
+  USER_STATUS.s08,
+  USER_STATUS.s09,
+  USER_STATUS.s10,
+  USER_STATUS.s11,
+  USER_STATUS.s12,
+  USER_STATUS.s13
 ];
-
 export const HEARTBEAT_INTERVAL_MS: number = parseInt(process.env.REACT_APP_HEARTBEAT_INTERVAL_MS || '270000');
 export const LEAVING_TIME_THRESHOLD_M: number = parseInt(process.env.REACT_APP_LEAVING_TIME_THRESHOLD_M || '10');
 export const CALENDAR_URL: string = process.env.REACT_APP_CALENDAR_URL || '';

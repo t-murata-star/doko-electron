@@ -3,7 +3,7 @@ import $ from 'jquery';
 import React from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { APP_VERSION } from '../define';
+import { APP_VERSION, USER_STATUS } from '../define';
 import { ApiResponse, UserInfo, Props } from '../define/model';
 import AppModule from '../modules/appModule';
 import initialStartupModal from '../modules/initialStartupModalModule';
@@ -32,7 +32,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     let response: ApiResponse;
 
     this.userInfo['version'] = APP_VERSION;
-    this.userInfo['status'] = '在席';
+    this.userInfo['status'] = USER_STATUS.s01;
 
     // addUserAction で userListState の myUserID に新規ユーザIDが設定される
     response = await dispatch(AsyncActionsUserList.addUserAction(this.userInfo));
@@ -84,8 +84,12 @@ class InitialStartupModal extends React.Component<Props, any> {
     }
 
     // 状態を「在席」に更新する（更新日時も更新される）
-    if (userInfo['status'] === '退社' || userInfo['status'] === '在席' || userInfo['status'] === '在席 (離席中)') {
-      updatedUserInfo['status'] = '在席';
+    if (
+      userInfo['status'] === USER_STATUS.s02 ||
+      userInfo['status'] === USER_STATUS.s01 ||
+      userInfo['status'] === USER_STATUS.s13
+    ) {
+      updatedUserInfo['status'] = USER_STATUS.s01;
       updatedUserInfo['name'] = userInfo['name'];
       response = dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
       if (response.getIsError()) {

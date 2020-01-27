@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
-import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
+import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS } from '../../define';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
@@ -114,37 +114,37 @@ class UserList extends React.Component<Props, any> {
     const rowData = row.getData();
     // 状態によってテキストの色を変える
     switch (rowData.status) {
-      case '退社':
+      case USER_STATUS.s02:
         row.getElement().style.color = '#0000FF';
         break;
-      case '年休':
+      case USER_STATUS.s03:
         row.getElement().style.color = '#FF0000';
         break;
-      case 'AM半休':
+      case USER_STATUS.s04:
         row.getElement().style.color = '#00A900';
         break;
-      case 'PM半休':
+      case USER_STATUS.s05:
         row.getElement().style.color = '#FF0000';
         break;
-      case 'FLEX':
+      case USER_STATUS.s06:
         row.getElement().style.color = '#00A900';
         break;
-      case '出張':
+      case USER_STATUS.s07:
         row.getElement().style.color = '#0000FF';
         break;
-      case '外出':
+      case USER_STATUS.s08:
         row.getElement().style.color = '#0000FF';
         break;
-      case '本社外勤務':
+      case USER_STATUS.s09:
         row.getElement().style.color = '#0000FF';
         break;
-      case '行方不明':
+      case USER_STATUS.s10:
         row.getElement().style.color = '#FF0000';
         break;
-      case '遅刻':
+      case USER_STATUS.s11:
         row.getElement().style.color = '#00A900';
         break;
-      case '接客中':
+      case USER_STATUS.s12:
         row.getElement().style.color = '#00A900';
         break;
       default:
