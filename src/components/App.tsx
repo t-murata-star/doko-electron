@@ -241,7 +241,6 @@ class App extends React.Component<Props, any> {
 
   closeApp = ipcRenderer.on('closeApp', async (event: any) => {
     const { dispatch } = this.props;
-
     const myUserID = this.props.state.appState['myUserID'];
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
@@ -261,7 +260,6 @@ class App extends React.Component<Props, any> {
   updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
     const { dispatch } = this.props;
     const updateInstallerFileByteSize = this.props.state.appState.updateInstallerFileByteSize;
-
     dispatch(AppModule.actions.setDownloadProgress(Math.round((receivedBytes / updateInstallerFileByteSize) * 1000) / 10));
     dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
   });
@@ -297,9 +295,6 @@ class App extends React.Component<Props, any> {
   async _updateApp(index: number) {
     const { dispatch } = this.props;
     const notification: Notification = this.props.state.appState.notification;
-
-    let response: ApiResponse;
-    let updateInstallerFilepath = '';
     let fileName = '';
     switch (index) {
       case 0:
@@ -327,6 +322,7 @@ class App extends React.Component<Props, any> {
     }
 
     async function installAndUpdate(fileName: string, fileExtension: string) {
+      let response: ApiResponse;
       response = await dispatch(AsyncActionsApp.getS3SignedUrlAction(fileName));
       if (response.getIsError()) {
         showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
@@ -342,7 +338,7 @@ class App extends React.Component<Props, any> {
         return;
       }
 
-      updateInstallerFilepath = `${path.join(
+      const updateInstallerFilepath = `${path.join(
         remote.app.getPath('temp'),
         SAVE_INSTALLER_FILENAME
       )}_${APP_VERSION}.${fileExtension}`;
