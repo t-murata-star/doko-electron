@@ -261,22 +261,9 @@ class App extends React.Component<Props, any> {
   updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
     const { dispatch } = this.props;
     const updateInstallerFileByteSize = this.props.state.appState.updateInstallerFileByteSize;
-    switch (remote.process.platform) {
-      case 'win32':
-        dispatch(AppModule.actions.setDownloadProgress(Math.round((receivedBytes / updateInstallerFileByteSize) * 1000) / 10));
-        dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
-        break;
 
-      case 'darwin':
-        dispatch(AppModule.actions.setDownloadProgress(Math.round((receivedBytes / updateInstallerFileByteSize) * 1000) / 10));
-        dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
-        break;
-
-      default:
-        showMessageBox(`使用中のPCはアップデートに対応していません。`, 'warning');
-        remote.getCurrentWindow().destroy();
-        break;
-    }
+    dispatch(AppModule.actions.setDownloadProgress(Math.round((receivedBytes / updateInstallerFileByteSize) * 1000) / 10));
+    dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
   });
 
   updateInstallerDownloadOnSccess = ipcRenderer.on('updateInstallerDownloadOnSccess', (event: any, savePath: string) => {
@@ -328,6 +315,8 @@ class App extends React.Component<Props, any> {
             break;
 
           default:
+            showMessageBox(`使用しているPCはアップデートに対応していません。`, 'warning');
+            remote.getCurrentWindow().destroy();
             break;
         }
         break;
