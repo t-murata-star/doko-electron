@@ -34,7 +34,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     this.userInfo['version'] = APP_VERSION;
     this.userInfo['status'] = USER_STATUS.s01;
 
-    // addUserAction で userListState の myUserID に新規ユーザIDが設定される
+    // addUserAction で appState の myUserID に新規ユーザIDが設定される
     response = await dispatch(AsyncActionsUserList.addUserAction(this.userInfo));
     if (response.getIsError()) {
       dispatch(initialStartupModal.actions.disableSubmitButton(false));
