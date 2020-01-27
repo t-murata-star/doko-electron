@@ -4,20 +4,15 @@ import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
 import { CALENDAR_URL, EMAIL_DOMAIN } from '../../define';
-import { RootState } from '../../modules';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
+import { Props } from '../../define/model';
 
 const { remote } = window.require('electron');
-
-type Props = {
-  state: RootState;
-  dispatch: any;
-};
 
 class UserList extends React.Component<Props, any> {
   shouldComponentUpdate(nextProps: any) {

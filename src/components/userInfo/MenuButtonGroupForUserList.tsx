@@ -6,18 +6,13 @@ import $ from 'jquery';
 import React from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { RootState } from '../../modules';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { getUserInfo } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
 import UserEditModal from './UserEditModal';
+import { Props } from '../../define/model';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
-
-type Props = {
-  state: RootState;
-  dispatch: any;
-};
 
 class MenuButtonGroupForUserList extends React.Component<Props, any> {
   reload = async () => {

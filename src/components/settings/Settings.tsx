@@ -5,8 +5,7 @@ import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
-import { ApiResponse, UserInfo } from '../../define/model';
-import { RootState } from '../../modules';
+import { ApiResponse, UserInfo, Props } from '../../define/model';
 import AppModule from '../../modules/appModule';
 import SettingsModule from '../../modules/settings/settingsModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
@@ -16,11 +15,6 @@ import './Settings.css';
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
-
-type Props = {
-  state: RootState;
-  dispatch: any;
-};
 
 class Settings extends React.Component<Props, any> {
   async componentDidMount() {

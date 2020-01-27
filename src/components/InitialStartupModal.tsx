@@ -4,8 +4,7 @@ import React from 'react';
 import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_VERSION } from '../define';
-import { ApiResponse, UserInfo } from '../define/model';
-import { RootState } from '../modules';
+import { ApiResponse, UserInfo, Props } from '../define/model';
 import AppModule from '../modules/appModule';
 import initialStartupModal from '../modules/initialStartupModalModule';
 import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
@@ -14,11 +13,6 @@ import './InitialStartupModal.css';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
-
-type Props = {
-  state: RootState;
-  dispatch: any;
-};
 
 class InitialStartupModal extends React.Component<Props, any> {
   userID: number = -1;

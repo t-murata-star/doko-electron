@@ -1,6 +1,13 @@
+import { RootState } from '../modules';
+
 /**
  * 型定義として用いる
  */
+
+export type Props = {
+  state: RootState;
+  dispatch: any;
+};
 
 export class ApiResponse {
   private payload: any = null;

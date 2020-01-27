@@ -4,8 +4,7 @@ import React from 'react';
 import { Col, Container, Form, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, STATUS_LIST } from '../../define';
-import { ApiResponse, UserInfo } from '../../define/model';
-import { RootState } from '../../modules';
+import { ApiResponse, UserInfo, Props } from '../../define/model';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
@@ -14,11 +13,6 @@ import './UserEditModal.css';
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
-
-type Props = {
-  state: RootState;
-  dispatch: any;
-};
 
 class UserEditModal extends React.Component<Props, any> {
   userID: number = -1;

@@ -11,8 +11,7 @@ import {
   HEARTBEAT_INTERVAL_MS,
   SAVE_INSTALLER_FILENAME
 } from '../define';
-import { ApiResponse, Notification, UserInfo } from '../define/model';
-import { RootState } from '../modules';
+import { ApiResponse, Notification, UserInfo, Props } from '../define/model';
 import AppModule, { AsyncActionsApp } from '../modules/appModule';
 import InitialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
@@ -34,11 +33,6 @@ const Store = window.require('electron-store');
 const electronStore = new Store();
 const childProcess = window.require('child_process');
 const path = require('path');
-
-type Props = {
-  state: RootState;
-  dispatch: any;
-};
 
 class App extends React.Component<Props, any> {
   async componentDidMount() {

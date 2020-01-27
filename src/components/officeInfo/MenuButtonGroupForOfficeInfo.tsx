@@ -5,16 +5,11 @@ import Button from '@material-ui/core/Button';
 import React from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { RootState } from '../../modules';
 import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
 import './MenuButtonGroupForOfficeInfo.css';
+import { Props } from '../../define/model';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
-
-type Props = {
-  state: RootState;
-  dispatch: any;
-};
 
 class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
   reload = async () => {

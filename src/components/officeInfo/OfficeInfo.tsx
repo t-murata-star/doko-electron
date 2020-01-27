@@ -4,15 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { RootState } from '../../modules';
 import './OfficeInfo.css';
+import { Props } from '../../define/model';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
-
-type Props = {
-  state: RootState;
-  dispatch: any;
-};
 
 class OfficeInfo extends React.Component<Props, any> {
   render() {
