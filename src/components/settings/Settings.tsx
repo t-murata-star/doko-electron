@@ -205,7 +205,7 @@ class Settings extends React.Component<Props, any> {
                   disabled={settingState.submitButtonsDisable.user.userChange}
                   style={{ boxShadow: 'none' }}
                   className='settings-save-button'>
-                  保存
+                  変更
                 </Button>
               </ListGroup.Item>
               <ListGroup.Item>
