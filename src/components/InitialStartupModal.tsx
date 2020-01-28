@@ -106,7 +106,14 @@ class InitialStartupModal extends React.Component<Props, any> {
   onNameChange = (event: any) => {
     const { dispatch } = this.props;
     this.userInfo[event.currentTarget.name] = event.currentTarget.value;
-    dispatch(initialStartupModal.actions.disableSubmitButton(event.currentTarget.value.length === 0 ? true : false));
+    if (event.currentTarget.value.length > 0 && this.props.state.initialStartupModalState.submitButtonDisabled === true) {
+      dispatch(initialStartupModal.actions.disableSubmitButton(false));
+      return;
+    }
+    if (event.currentTarget.value.length === 0 && this.props.state.initialStartupModalState.submitButtonDisabled === false) {
+      dispatch(initialStartupModal.actions.disableSubmitButton(true));
+      return;
+    }
   };
 
   onUserChange = (event: any) => {
