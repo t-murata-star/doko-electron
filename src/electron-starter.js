@@ -65,7 +65,7 @@ function createWindow() {
   // メニューバーを非表示にする
   mainWindow.setMenuBarVisibility(false);
 
-  // const loadURL = process.env.LOAD_URL || `file://${path.join(__dirname, "../build/index.html")}`;
+  // webAppURL = `file://${path.join(__dirname, '../build/index.html')}`;
 
   // WEBアプリケーションに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
