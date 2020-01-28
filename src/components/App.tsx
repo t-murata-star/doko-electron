@@ -134,7 +134,7 @@ class App extends React.Component<Props, any> {
      * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
      */
     if (userID === -1) {
-      this._showModal();
+      dispatch(InitialStartupModalModule.actions.showModal(true));
       return;
     }
 
@@ -151,9 +151,6 @@ class App extends React.Component<Props, any> {
      * 無ければ新規登録画面へ遷移する
      */
     if (userInfo === null) {
-      dispatch(UserListModule.actions.returnEmptyUserList());
-      showMessageBox('ユーザ情報が存在しないため、ユーザ登録を行います。');
-      dispatch(InitialStartupModalModule.actions.showModal(true));
       return;
     }
 
@@ -182,11 +179,6 @@ class App extends React.Component<Props, any> {
 
     sendHeartbeat(dispatch);
   }
-
-  _showModal = () => {
-    const { dispatch } = this.props;
-    dispatch(InitialStartupModalModule.actions.showModal(true));
-  };
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
     remote.getCurrentWindow().hide();

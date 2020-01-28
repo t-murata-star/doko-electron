@@ -1,7 +1,9 @@
 import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
-import { API_URL, AUTH_REQUEST_HEADERS, LEAVING_TIME_THRESHOLD_M, USER_STATUS } from '../../define';
+import { API_URL, AUTH_REQUEST_HEADERS, LEAVING_TIME_THRESHOLD_M, USER_STATUS, APP_NAME } from '../../define';
 import { ApiResponse, UserInfo } from '../../define/model';
 import AppModule from '../appModule';
+import InitialStartupModalModule from '../initialStartupModalModule';
+const { remote } = window.require('electron');
 
 class _initialState {
   userList: UserInfo[] = [];
@@ -203,7 +205,7 @@ export class AsyncActionsUserList {
     };
   };
 
-  static getUserListAction = (myUserID: number, sleepMs: number = 0) => {
+  static getUserListAction = (myUserID: number, sleepMs: number = 0, isMyUserIDCheck: boolean = true) => {
     return async (dispatch: Dispatch<Action<any>>) => {
       dispatch(slice.actions.startApiRequest());
       try {
@@ -219,8 +221,28 @@ export class AsyncActionsUserList {
           dispatch(slice.actions.requestError());
           return new ApiResponse(null, true);
         }
-        const json = await res.json();
+        const json: UserInfo[] = await res.json();
         dispatch(slice.actions.getUserListSuccess([json, myUserID]));
+
+        /**
+         * サーバ上に自分の情報が存在するかどうかチェック
+         * 無ければ新規登録画面へ遷移する
+         */
+        if (isMyUserIDCheck) {
+          const userInfo = json.filter(userInfo => {
+            return userInfo['id'] === myUserID;
+          });
+          if (userInfo.length === 0) {
+            remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+              title: APP_NAME,
+              type: 'info',
+              buttons: ['OK'],
+              message: 'ユーザ情報が存在しないため、ユーザ登録を行います。'
+            });
+            dispatch(AppModule.actions.setMyUserId(-1));
+            dispatch(InitialStartupModalModule.actions.showModal(true));
+          }
+        }
         return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());

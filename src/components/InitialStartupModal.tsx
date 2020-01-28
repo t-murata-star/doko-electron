@@ -132,7 +132,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     dispatch(initialStartupModal.actions.disableSubmitButton(true));
     dispatch(initialStartupModal.actions.changeSubmitMode(true));
     // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
-    dispatch(AsyncActionsUserList.getUserListAction(-1, 250));
+    dispatch(AsyncActionsUserList.getUserListAction(-1, 250, false));
   };
 
   registUserInput = (event: any) => {
