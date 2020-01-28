@@ -77,7 +77,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     updatedUserInfo['id'] = myUserID;
     if (userInfo['version'] !== APP_VERSION) {
       updatedUserInfo['version'] = APP_VERSION;
-      response = dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+      response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
       if (response.getIsError()) {
         return;
       }
@@ -91,7 +91,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     ) {
       updatedUserInfo['status'] = USER_STATUS.s01;
       updatedUserInfo['name'] = userInfo['name'];
-      response = dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+      response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
       if (response.getIsError()) {
         return;
       }
