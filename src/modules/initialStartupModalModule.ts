@@ -28,6 +28,9 @@ const slice = createSlice({
         ...state,
         isChangeUser: action.payload
       };
+    },
+    initializeState: () => {
+      return new _initialState();
     }
   }
 });

@@ -88,7 +88,7 @@ const slice = createSlice({
         }
       };
     },
-    initializeSettingState: () => {
+    initializeState: () => {
       return new _initialState();
     }
   }

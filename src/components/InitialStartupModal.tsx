@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { APP_VERSION, USER_STATUS } from '../define';
 import { ApiResponse, UserInfo, Props } from '../define/model';
 import AppModule from '../modules/appModule';
-import initialStartupModal from '../modules/initialStartupModalModule';
+import initialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 import './InitialStartupModal.css';
@@ -24,7 +24,7 @@ class InitialStartupModal extends React.Component<Props, any> {
 
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModal.actions.showModal(false));
+    dispatch(initialStartupModalModule.actions.showModal(false));
   };
 
   _addUser = async () => {
@@ -37,7 +37,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     // addUserAction で appState の myUserID に新規ユーザIDが設定される
     response = await dispatch(AsyncActionsUserList.addUserAction(this.userInfo));
     if (response.getIsError()) {
-      dispatch(initialStartupModal.actions.disableSubmitButton(false));
+      dispatch(initialStartupModalModule.actions.disableSubmitButton(false));
       return;
     }
 
@@ -107,11 +107,11 @@ class InitialStartupModal extends React.Component<Props, any> {
     const { dispatch } = this.props;
     this.userInfo[event.currentTarget.name] = event.currentTarget.value;
     if (event.currentTarget.value.length > 0 && this.props.state.initialStartupModalState.submitButtonDisabled === true) {
-      dispatch(initialStartupModal.actions.disableSubmitButton(false));
+      dispatch(initialStartupModalModule.actions.disableSubmitButton(false));
       return;
     }
     if (event.currentTarget.value.length === 0 && this.props.state.initialStartupModalState.submitButtonDisabled === false) {
-      dispatch(initialStartupModal.actions.disableSubmitButton(true));
+      dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
       return;
     }
   };
@@ -119,12 +119,12 @@ class InitialStartupModal extends React.Component<Props, any> {
   onUserChange = (event: any) => {
     const { dispatch } = this.props;
     this.userID = parseInt(event.currentTarget.value);
-    dispatch(initialStartupModal.actions.disableSubmitButton(false));
+    dispatch(initialStartupModalModule.actions.disableSubmitButton(false));
   };
 
   handleSubmit = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModal.actions.disableSubmitButton(true));
+    dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
     event.preventDefault();
 
     if (this.props.state.initialStartupModalState.isChangeUser) {
@@ -136,16 +136,16 @@ class InitialStartupModal extends React.Component<Props, any> {
 
   changeUserInput = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModal.actions.disableSubmitButton(true));
-    dispatch(initialStartupModal.actions.changeSubmitMode(true));
+    dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
+    dispatch(initialStartupModalModule.actions.changeSubmitMode(true));
     // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
     dispatch(AsyncActionsUserList.getUserListAction(-1, 250, false));
   };
 
   registUserInput = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModal.actions.disableSubmitButton(true));
-    dispatch(initialStartupModal.actions.changeSubmitMode(false));
+    dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
+    dispatch(initialStartupModalModule.actions.changeSubmitMode(false));
   };
 
   render() {

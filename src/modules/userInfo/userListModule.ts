@@ -240,6 +240,7 @@ export class AsyncActionsUserList {
               message: 'ユーザ情報が存在しないため、ユーザ登録を行います。'
             });
             dispatch(AppModule.actions.setMyUserId(-1));
+            dispatch(InitialStartupModalModule.actions.initializeState());
             dispatch(InitialStartupModalModule.actions.showModal(true));
           }
         }

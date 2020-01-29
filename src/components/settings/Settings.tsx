@@ -21,7 +21,7 @@ class Settings extends React.Component<Props, any> {
     const { dispatch } = this.props;
 
     // state を初期化
-    dispatch(SettingsModule.actions.initializeSettingState());
+    dispatch(SettingsModule.actions.initializeState());
 
     const myUserID = this.props.state.appState.myUserID;
 
