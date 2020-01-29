@@ -3,14 +3,14 @@ import Button from '@material-ui/core/Button';
 import React from 'react';
 import { Col, Container, Form, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { APP_NAME, STATUS_LIST } from '../../define';
+import { STATUS_LIST } from '../../define';
 import { ApiResponse, UserInfo, Props } from '../../define/model';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import './UserEditModal.css';
+import { showMessageBoxWithReturnValue } from '../common/functions';
 
-const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
@@ -75,12 +75,11 @@ class UserEditModal extends React.Component<Props, any> {
     const { dispatch } = this.props;
     let response: ApiResponse;
 
-    const index = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-      title: APP_NAME,
-      type: 'info',
-      buttons: ['OK', 'Cancel'],
-      message: '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo['name']
-    });
+    const index = showMessageBoxWithReturnValue(
+      'OK',
+      'Cancel',
+      '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo['name']
+    );
 
     if (index !== 0) {
       return;
