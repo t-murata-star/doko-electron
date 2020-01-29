@@ -179,8 +179,6 @@ export class AsyncActionsApp {
   static sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>) => {
       const body = { ...userInfo };
-      delete body['id'];
-      delete body['order'];
       const res = await fetch(`${API_URL}/userList/${userID}`, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,

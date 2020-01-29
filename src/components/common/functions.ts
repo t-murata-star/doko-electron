@@ -25,7 +25,6 @@ export const sendHeartbeat = (dispatch: any) => {
   }
 
   const updatedUserInfo: any = {};
-  updatedUserInfo['id'] = myUserID;
   updatedUserInfo['heartbeat'] = '';
   dispatch(AsyncActionsApp.sendHeartbeatAction(updatedUserInfo, myUserID));
 };
