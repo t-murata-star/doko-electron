@@ -285,30 +285,28 @@ class App extends React.Component<Props, any> {
   });
 
   async _updateApp(index: number) {
+    if (index !== 0) {
+      remote.getCurrentWindow().destroy();
+      return;
+    }
+
     const { dispatch } = this.props;
     const notification: Notification = this.props.state.appState.notification;
     let fileName = '';
-    switch (index) {
-      case 0:
-        switch (remote.process.platform) {
-          case 'win32':
-            fileName = notification.updateInstaller.windows.fileName;
-            installAndUpdate(fileName, 'exe');
-            break;
 
-          case 'darwin':
-            fileName = notification.updateInstaller.mac.fileName;
-            installAndUpdate(fileName, 'pkg');
-            break;
+    switch (remote.process.platform) {
+      case 'win32':
+        fileName = notification.updateInstaller.windows.fileName;
+        installAndUpdate(fileName, 'exe');
+        break;
 
-          default:
-            showMessageBox(`使用しているPCはアップデートに対応していません。`, 'warning');
-            remote.getCurrentWindow().destroy();
-            break;
-        }
+      case 'darwin':
+        fileName = notification.updateInstaller.mac.fileName;
+        installAndUpdate(fileName, 'pkg');
         break;
 
       default:
+        showMessageBox(`使用しているPCはアップデートに対応していません。`, 'warning');
         remote.getCurrentWindow().destroy();
         break;
     }
