@@ -172,12 +172,10 @@ class UserList extends React.Component<Props, any> {
 
     dispatch(AppModule.actions.setProcessingStatus(true));
     return new Promise(async resolve => {
-      let index = 1;
       for (const row of rows) {
-        const patchInfoUser = { order: index };
+        const patchInfoUser = { order: row.getPosition(true) };
         await dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id));
         await this._sleep(50);
-        index++;
       }
       resolve();
       dispatch(UserListModule.actions.changeOrderSuccess());
