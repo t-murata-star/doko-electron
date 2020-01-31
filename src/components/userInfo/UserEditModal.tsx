@@ -1,15 +1,16 @@
 import { Tooltip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import $ from 'jquery';
 import React from 'react';
 import { Col, Container, Form, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { STATUS_LIST } from '../../define';
-import { ApiResponse, UserInfo, Props } from '../../define/model';
+import { ApiResponse, Props, UserInfo } from '../../define/model';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import './UserEditModal.css';
 import { showMessageBoxWithReturnValue } from '../common/functions';
+import './UserEditModal.css';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -38,8 +39,11 @@ class UserEditModal extends React.Component<Props, any> {
       return;
     }
     this.closeModal();
+
+    const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     const myUserID = this.props.state.appState.myUserID;
-    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
+    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
+    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
   _changeUser = async () => {
