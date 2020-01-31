@@ -101,11 +101,15 @@ export class AsyncActionsOfficeInfo {
     return async (dispatch: Dispatch<Action<any>>) => {
       dispatch(slice.actions.startApiRequest());
       try {
-        await _sleep(sleepMs);
+        const startTime = Date.now();
         const res = await fetch(`${API_URL}/restrooms`, {
           method: 'GET',
           headers: AUTH_REQUEST_HEADERS
         });
+        const lowestWaitTime = sleepMs - (Date.now() - startTime);
+        if (Math.sign(lowestWaitTime) === 1) {
+          await _sleep(lowestWaitTime);
+        }
 
         responseStatusCheck(dispatch, res.status);
 
