@@ -96,8 +96,11 @@ class UserEditModal extends React.Component<Props, any> {
     }
 
     this.closeModal();
+
+    const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     const myUserID = this.props.state.appState.myUserID;
-    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
+    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
+    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
   inputClear = () => {
