@@ -157,7 +157,7 @@ class UserList extends React.Component<Props, any> {
   };
 
   // 各ユーザの「order」パラメータをユーザ一覧の表示順序を元に更新する
-  _updateUserInfoOrder = (rowComponent: Tabulator.RowComponent) => {
+  _updateUserInfoOrder = async (rowComponent: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
     const rows = rowComponent.getTable().getRows();
     const index = showMessageBoxWithReturnValue(
@@ -171,16 +171,14 @@ class UserList extends React.Component<Props, any> {
     }
 
     dispatch(AppModule.actions.setProcessingStatus(true));
-    return new Promise(async resolve => {
-      for (const row of rows) {
-        const patchInfoUser = { order: row.getPosition(true) };
-        await dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id));
-        await this._sleep(50);
-      }
-      resolve();
-      dispatch(UserListModule.actions.changeOrderSuccess());
-      dispatch(AppModule.actions.setProcessingStatus(false));
-    });
+    for (const row of rows) {
+      const patchInfoUser = { order: row.getPosition(true) };
+      await dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id));
+      await this._sleep(50);
+    }
+    dispatch(UserListModule.actions.changeOrderSuccess());
+    dispatch(AppModule.actions.setProcessingStatus(false));
+    return;
   };
 
   _rowMovedCallback = async (row: Tabulator.RowComponent) => {

@@ -389,7 +389,7 @@ class App extends React.Component<Props, any> {
                 indicatorColor='primary'
                 textColor='primary'
                 className='app-tabs'>
-                <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab'></Tab> />
+                <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab' />
                 <Tab label='社内情報' style={{ minHeight: '35px' }} className='app-tab' />
                 <Tab label='設定' style={{ minHeight: '35px' }} className='app-tab' />
               </Tabs>
