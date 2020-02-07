@@ -124,7 +124,7 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
  * LEAVING_TIME_THRESHOLD_M 以上heartbeatが更新されていないユーザの状態を「退社」に変更する。
  * ただし、この変更は画面表示のみであり、サーバ上の情報は更新しない。
  */
-function updateLeavingTimeForUserList(userList: UserInfo[], myUserID: number) {
+const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) => {
   if (!userList) return [];
 
   const nowDate: Date = new Date();
@@ -144,14 +144,14 @@ function updateLeavingTimeForUserList(userList: UserInfo[], myUserID: number) {
   }
 
   return userList;
-}
+};
 
 // スリープ処理
 const _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
 export class AsyncActionsUserList {
   static deleteUserAction = (userID: number) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
@@ -175,7 +175,7 @@ export class AsyncActionsUserList {
   };
 
   static addUserAction = (userInfo: UserInfo) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       const body = { ...userInfo };
       delete body['id'];
@@ -206,7 +206,7 @@ export class AsyncActionsUserList {
   };
 
   static getUserListAction = (myUserID: number, sleepMs: number = 0, isMyUserIDCheck: boolean = true) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       try {
         const startTime = Date.now();
@@ -258,7 +258,7 @@ export class AsyncActionsUserList {
   };
 
   static changeOrderAction = (userInfo: { order: number }, userID: number) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
@@ -283,7 +283,7 @@ export class AsyncActionsUserList {
   };
 
   static updateUserInfoAction = (userInfo: UserInfo, userID: number) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       const body = { ...userInfo };
       delete body['id'];
@@ -312,7 +312,7 @@ export class AsyncActionsUserList {
   };
 
   static updateForAddedUserInfoAction = (userInfo: UserInfo, userID: number) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       const body = { ...userInfo };
       delete body['id'];

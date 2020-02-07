@@ -98,7 +98,7 @@ function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
 
 export class AsyncActionsOfficeInfo {
   static getRestroomUsageAction = (sleepMs: number = 0) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       try {
         const startTime = Date.now();

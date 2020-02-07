@@ -129,7 +129,7 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
 
 export class AsyncActionsApp {
   static loginAction = () => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/auth/login`, {
@@ -153,7 +153,7 @@ export class AsyncActionsApp {
   };
 
   static getNotificationAction = () => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       try {
         const res = await fetch(`${API_URL}/notification`, {
           method: 'GET',
@@ -177,7 +177,7 @@ export class AsyncActionsApp {
   };
 
   static sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       const body = { ...userInfo };
       const res = await fetch(`${API_URL}/userList/${userID}`, {
         method: 'PATCH',
@@ -188,7 +188,8 @@ export class AsyncActionsApp {
       responseStatusCheck(dispatch, res.status);
 
       if (res.ok === false) {
-        return dispatch(slice.actions.requestError());
+        dispatch(slice.actions.requestError());
+        return new ApiResponse(null, true);
       }
       console.log('Send heartbeat.');
       return new ApiResponse();
@@ -196,7 +197,7 @@ export class AsyncActionsApp {
   };
 
   static getS3SignedUrlAction = (fileName: string) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       try {
         const res = await fetch(`${API_URL}/getS3SignedUrl?fileName=${fileName}`, {
           method: 'GET',
@@ -220,7 +221,7 @@ export class AsyncActionsApp {
   };
 
   static getS3ObjectFileByteSizeAction = (fileName: string) => {
-    return async (dispatch: Dispatch<Action<any>>) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       try {
         const res = await fetch(`${API_URL}/getS3ObjectFileByteSize?fileName=${fileName}`, {
           method: 'GET',
