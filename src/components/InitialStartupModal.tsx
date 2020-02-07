@@ -1,7 +1,7 @@
 import MaterialUiButton from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
-import { Button, Col, Container, Form, Modal } from 'react-bootstrap';
+import { Button, Col, Container, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_VERSION, USER_STATUS } from '../define';
 import { ApiResponse, UserInfo, Props } from '../define/model';
@@ -10,6 +10,7 @@ import initialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import { getUserInfo, sendHeartbeat } from './common/functions';
 import './InitialStartupModal.css';
+import { Backdrop, Fade, Modal } from '@material-ui/core';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -19,6 +20,10 @@ class InitialStartupModal extends React.Component<Props, any> {
   userInfo: any = new UserInfo();
 
   componentDidUpdate() {
+    this.onRendered();
+  }
+
+  onRendered() {
     $('.nameForInput').focus();
   }
 
@@ -155,84 +160,85 @@ class InitialStartupModal extends React.Component<Props, any> {
 
     return (
       <Modal
-        dialogClassName='initialStartupModal'
-        show={onHide}
         aria-labelledby='contained-modal-title-vcenter'
-        centered
-        backdrop='static'
-        animation={true}
-        size='xl'>
-        <Modal.Header>
-          <Modal.Title id='contained-modal-title-vcenter'>
-            ユーザ登録
-            {isError && <span className='error-message'>通信に失敗しました。</span>}
-          </Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={this.handleSubmit}>
-          <Modal.Body>
-            <Container>
-              <Form.Row>
-                <Col md='2' />
-                <Col md='8'>
-                  <Form.Group controlId='name'>
-                    <Form.Label>氏名</Form.Label>
-                    {this.props.state.initialStartupModalState.isChangeUser && (
-                      <div>
-                        <Form.Control name='name' as='select' onChange={this.onUserChange}>
-                          <option hidden>選択してください</option>
-                          {userList
-                            .sort((a: UserInfo, b: UserInfo) => {
-                              return a.order - b.order;
-                            })
-                            .map((userInfo: UserInfo, index: number) => (
-                              <option key={index} value={userInfo['id']}>
-                                {userInfo['name']}
-                              </option>
-                            ))}
-                        </Form.Control>
-                        <Form.Text>
-                          <span>新規登録は</span>
-                          <Button variant='link' className='modal-button-user-delete userChange' onClick={this.registUserInput}>
-                            こちら
-                          </Button>
-                        </Form.Text>
-                      </div>
-                    )}
-                    {!this.props.state.initialStartupModalState.isChangeUser && (
-                      <div>
-                        <Form.Control
-                          className='nameForInput'
-                          name='name'
-                          placeholder='氏名を入力してください'
-                          onChange={this.onNameChange}
-                          maxLength={100}
-                        />
-                        <Form.Text>
-                          <span>登録済みの場合は</span>
-                          <Button variant='link' className='modal-button-user-delete userChange' onClick={this.changeUserInput}>
-                            こちら
-                          </Button>
-                        </Form.Text>
-                      </div>
-                    )}
-                  </Form.Group>
-                </Col>
-                <Col md='2' />
-              </Form.Row>
-            </Container>
-          </Modal.Body>
-          <Modal.Footer>
-            <MaterialUiButton
-              type='submit'
-              variant='contained'
-              color='primary'
-              disabled={this.props.state.initialStartupModalState.submitButtonDisabled}
-              style={{ boxShadow: 'none' }}
-              className='initial-startup-modal-base-button'>
-              登録
-            </MaterialUiButton>
-          </Modal.Footer>
-        </Form>
+        aria-describedby='spring-modal-description'
+        className={'modal'}
+        open={onHide}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 200
+        }}
+        onRendered={this.onRendered}>
+        <Fade in={onHide}>
+          <div className={'initial-startup-modal-paper'}>
+            <Form onSubmit={this.handleSubmit}>
+              ユーザ登録
+              {isError && <span className='error-message'>通信に失敗しました。</span>}
+              <hr />
+              <Container>
+                <Form.Row>
+                  <Col md='2' />
+                  <Col md='8'>
+                    <Form.Group controlId='name'>
+                      <Form.Label>氏名</Form.Label>
+                      {this.props.state.initialStartupModalState.isChangeUser && (
+                        <div>
+                          <Form.Control name='name' as='select' onChange={this.onUserChange}>
+                            <option hidden>選択してください</option>
+                            {userList
+                              .sort((a: UserInfo, b: UserInfo) => {
+                                return a.order - b.order;
+                              })
+                              .map((userInfo: UserInfo, index: number) => (
+                                <option key={index} value={userInfo['id']}>
+                                  {userInfo['name']}
+                                </option>
+                              ))}
+                          </Form.Control>
+                          <Form.Text>
+                            <span>新規登録は</span>
+                            <Button variant='link' className='modal-button-user-delete userChange' onClick={this.registUserInput}>
+                              こちら
+                            </Button>
+                          </Form.Text>
+                        </div>
+                      )}
+                      {!this.props.state.initialStartupModalState.isChangeUser && (
+                        <div>
+                          <Form.Control
+                            className='nameForInput'
+                            name='name'
+                            placeholder='氏名を入力してください'
+                            onChange={this.onNameChange}
+                            maxLength={100}
+                          />
+                          <Form.Text>
+                            <span>登録済みの場合は</span>
+                            <Button variant='link' className='modal-button-user-delete userChange' onClick={this.changeUserInput}>
+                              こちら
+                            </Button>
+                          </Form.Text>
+                        </div>
+                      )}
+                    </Form.Group>
+                  </Col>
+                  <Col md='2' />
+                </Form.Row>
+              </Container>
+              <hr />
+              <MaterialUiButton
+                type='submit'
+                variant='contained'
+                color='primary'
+                disabled={this.props.state.initialStartupModalState.submitButtonDisabled}
+                style={{ float: 'right', boxShadow: 'none' }}
+                className='initial-startup-modal-base-button'>
+                登録
+              </MaterialUiButton>
+            </Form>
+          </div>
+        </Fade>
       </Modal>
     );
   }

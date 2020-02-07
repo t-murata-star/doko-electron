@@ -79,7 +79,7 @@ function createWindow() {
   // ウインドウがクローズされようとするときに発生するイベント
   mainWindow.on('close', closeEvent => {
     closeEvent.preventDefault();
-    const index = electron.dialog.showMessageBox(mainWindow, {
+    const index = electron.dialog.showMessageBoxSync(mainWindow, {
       title: APP_NAME,
       type: 'info',
       buttons: ['OK', 'Cancel'],
@@ -181,7 +181,7 @@ function createWindow() {
 }
 
 function showUpdateResumeMessage(item) {
-  const index = electron.dialog.showMessageBox(mainWindow, {
+  const index = electron.dialog.showMessageBoxSync(mainWindow, {
     title: APP_NAME,
     type: 'info',
     buttons: ['OK', 'Cancel'],
@@ -194,7 +194,7 @@ function showUpdateResumeMessage(item) {
       if (item.canResume()) {
         item.resume();
       } else {
-        electron.dialog.showMessageBox(mainWindow, {
+        electron.dialog.showMessageBoxSync(mainWindow, {
           title: APP_NAME,
           type: 'warning',
           buttons: ['OK'],
@@ -216,7 +216,7 @@ function showUpdateResumeMessage(item) {
 // タスクトレイを作成
 function createTray() {
   // 通知領域に表示するアイコンを指定
-  var iconPath = path.join(__dirname, '../public/favicon.png');
+  const iconPath = path.join(__dirname, '../public/favicon.png');
   const tray = new electron.Tray(iconPath);
   // 通知領域をクリックした際のメニュー
   const contextMenu = electron.Menu.buildFromTemplate([
