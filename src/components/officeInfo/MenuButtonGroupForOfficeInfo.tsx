@@ -14,7 +14,7 @@ library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使�
 class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
   reload = async () => {
     const { dispatch } = this.props;
-    await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(250));
+    await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350));
   };
 
   render() {

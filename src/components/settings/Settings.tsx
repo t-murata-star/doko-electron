@@ -11,6 +11,7 @@ import SettingsModule from '../../modules/settings/settingsModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { getUserInfo, sendHeartbeat } from '../common/functions';
 import './Settings.css';
+import { TextField, MenuItem } from '@material-ui/core';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -181,20 +182,29 @@ class Settings extends React.Component<Props, any> {
                     <p>
                       <small className='text-muted'>現在のユーザ: {userInfo.name}</small>
                     </p>
-                    <Form.Control name='user-change' as='select' onChange={this.onUserChange}>
-                      <option value={userInfo.id} hidden>
+                    <TextField
+                      select
+                      name='user-change'
+                      value={userInfo.id}
+                      onChange={this.onUserChange}
+                      fullWidth
+                      size={'small'}
+                      SelectProps={{
+                        native: false
+                      }}>
+                      <MenuItem hidden value='-1'>
                         選択してください
-                      </option>
+                      </MenuItem>
                       {userList
                         .sort((a: UserInfo, b: UserInfo) => {
                           return a.order - b.order;
                         })
                         .map((userInfo: UserInfo, index: number) => (
-                          <option key={index} value={userInfo.id} disabled={myUserID === userInfo.id}>
-                            {userInfo['name']}
-                          </option>
+                          <MenuItem key={index} value={userInfo.id} disabled={myUserID === userInfo.id}>
+                            {userInfo.name}
+                          </MenuItem>
                         ))}
-                    </Form.Control>
+                    </TextField>
                   </Form.Group>
                   <Form.Group as={Col} />
                 </Form.Row>
@@ -216,12 +226,14 @@ class Settings extends React.Component<Props, any> {
                       <small className='text-muted'>社員情報からGoogleカレンダーを表示する事ができます。</small>
                     </p>
                     <div className='form-inline'>
-                      <Form.Control
+                      <TextField
                         name='email'
-                        placeholder=''
                         value={settingState.user.email}
                         onChange={this.onUserEmailInputChange}
-                        maxLength={100}
+                        size='small'
+                        inputProps={{
+                          maxLength: 100
+                        }}
                         disabled={userInfo.id === -1}
                       />
                       {EMAIL_DOMAIN}

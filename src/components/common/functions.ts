@@ -30,7 +30,7 @@ export const sendHeartbeat = (dispatch: any) => {
 };
 
 export const showMessageBox = (message: any, type: 'info' | 'warning' = 'info') => {
-  remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+  remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
     title: APP_NAME,
     type,
     buttons: ['OK'],
@@ -44,7 +44,7 @@ export const showMessageBoxWithReturnValue = (
   message: any,
   type: 'info' | 'warning' = 'info'
 ): number => {
-  return remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+  return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
     title: APP_NAME,
     type: 'info',
     buttons: [OKButtonText, cancelButtonText],

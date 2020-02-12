@@ -1,7 +1,3 @@
-.user-list {
-  margin-bottom: 9px;
-  user-select: none; /* 選択を禁止する */
-}
 .tabulator-row.tabulator-selectable:hover {
   background-color: #e2e2e2 !important;
   cursor: default !important;

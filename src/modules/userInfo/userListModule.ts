@@ -237,7 +237,7 @@ export class AsyncActionsUserList {
             return userInfo['id'] === myUserID;
           });
           if (userInfo.length === 0) {
-            remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+            remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
               title: APP_NAME,
               type: 'info',
               buttons: ['OK'],

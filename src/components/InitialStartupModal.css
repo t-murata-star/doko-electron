@@ -1,7 +1,3 @@
-.initialStartupModal > .modal-content {
-  width: 400px;
-  margin: auto;
-}
 .error-message {
   color: red;
   font-size: 18px;
@@ -18,4 +14,10 @@
 .initial-startup-modal-base-button {
   width: 10rem;
   margin-left: 8px;
+}
+.initial-startup-modal-paper {
+  width: 400px;
+  background-color: #fff;
+  padding: 15px 15px 15px;
+  border-radius: 5px;
 }
