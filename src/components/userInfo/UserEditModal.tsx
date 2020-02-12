@@ -1,22 +1,17 @@
-import { Fade, Tooltip, Button } from '@material-ui/core';
+import { Fade, Tooltip, Button, TextField, MenuItem } from '@material-ui/core';
 import $ from 'jquery';
 import React from 'react';
 import { Modal, Backdrop } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { ApiResponse, Props, UserInfo } from '../../define/model';
-import AppModule from '../../modules/appModule';
-import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
+import UserEditModalModule from '../../modules/userInfo/userEditModalModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { showMessageBoxWithReturnValue } from '../common/functions';
 import './UserEditModal.css';
 import { Container, Form, Col } from 'react-bootstrap';
 import { STATUS_LIST } from '../../define';
 
-const Store = window.require('electron-store');
-const electronStore = new Store();
-
 class UserEditModal extends React.Component<Props, any> {
-  userID: number = -1;
   userInfo: any = new UserInfo();
 
   componentDidUpdate() {
@@ -25,7 +20,7 @@ class UserEditModal extends React.Component<Props, any> {
 
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(UserEditModalMdule.actions.closeUserEditModal());
+    dispatch(UserEditModalModule.actions.closeUserEditModal());
   };
 
   _updateUserInfo = async (userInfo: UserInfo) => {
@@ -35,44 +30,35 @@ class UserEditModal extends React.Component<Props, any> {
 
     response = await dispatch(AsyncActionsUserList.updateUserInfoAction(userInfo, userID));
     if (response.getIsError()) {
-      dispatch(UserEditModalMdule.actions.enableSubmitButton());
+      dispatch(UserEditModalModule.actions.enableSubmitButton());
       return;
     }
     this.closeModal();
 
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     const myUserID = this.props.state.appState.myUserID;
-    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
+    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
-  };
-
-  _changeUser = async () => {
-    const { dispatch } = this.props;
-    electronStore.set('userID', this.userID);
-    await dispatch(AppModule.actions.setMyUserId(this.userID));
-    this.closeModal();
-    const myUserID = this.props.state.appState.myUserID;
-    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
   };
 
   onUserInfoChange = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(UserEditModalMdule.actions.changeUserInfo([this.userInfo, event.target.name, event.target.value]));
+    dispatch(UserEditModalModule.actions.changeUserInfo([this.userInfo, event.target.name, event.target.value]));
     if (this.props.state.userEditModalState.submitButtonDisabled) {
-      dispatch(UserEditModalMdule.actions.enableSubmitButton());
+      dispatch(UserEditModalModule.actions.enableSubmitButton());
     }
   };
 
   handleSubmit = (event: any) => {
     event.preventDefault();
     const { dispatch } = this.props;
-    dispatch(UserEditModalMdule.actions.disableSubmitButton());
+    dispatch(UserEditModalModule.actions.disableSubmitButton());
     this._updateUserInfo(this.userInfo);
   };
 
   handleEditUser = (event: any) => {
     const { dispatch } = this.props;
-    dispatch(UserEditModalMdule.actions.handleEditUser());
+    dispatch(UserEditModalModule.actions.handleEditUser());
   };
 
   deleteUser = async (event: any) => {
@@ -99,14 +85,14 @@ class UserEditModal extends React.Component<Props, any> {
 
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     const myUserID = this.props.state.appState.myUserID;
-    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
+    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
   inputClear = () => {
     const { dispatch } = this.props;
-    dispatch(UserEditModalMdule.actions.inputClear(this.userInfo));
-    dispatch(UserEditModalMdule.actions.enableSubmitButton());
+    dispatch(UserEditModalModule.actions.inputClear(this.userInfo));
+    dispatch(UserEditModalModule.actions.enableSubmitButton());
   };
 
   render() {
@@ -122,12 +108,12 @@ class UserEditModal extends React.Component<Props, any> {
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
-          timeout: 200
+          timeout: 300
         }}>
         <Fade in={this.props.state.userEditModalState.onHide}>
           <div className={'modal-paper'}>
             <Form onSubmit={this.handleSubmit}>
-              <h3>情報変更</h3>
+              <h5>情報変更</h5>
               {userList.isError && <span className='error-message'>通信に失敗しました。</span>}
               <hr />
               <Container>
@@ -136,12 +122,15 @@ class UserEditModal extends React.Component<Props, any> {
                     <Form.Label>
                       <span className='name'>氏名</span>
                     </Form.Label>
-                    <Form.Control
+                    <TextField
                       name='name'
-                      placeholder=''
                       value={userInfo.name}
                       onChange={this.onUserInfoChange}
-                      maxLength={100}
+                      size='small'
+                      fullWidth
+                      inputProps={{
+                        maxLength: 100
+                      }}
                     />
                   </Form.Group>
                   <Form.Group as={Col} controlId='status'>
@@ -162,44 +151,64 @@ class UserEditModal extends React.Component<Props, any> {
                         在席
                       </Button>
                     </Tooltip>
-                    <Form.Control name='status' as='select' value={userInfo.status} onChange={this.onUserInfoChange}>
+                    <TextField
+                      select
+                      name='status'
+                      value={userInfo.status}
+                      onChange={this.onUserInfoChange}
+                      fullWidth
+                      size={'small'}
+                      SelectProps={{
+                        native: false
+                      }}>
                       {STATUS_LIST.map((status: string, index: number) => (
-                        <option key={index}>{status}</option>
+                        <MenuItem key={index} value={status}>
+                          {status}
+                        </MenuItem>
                       ))}
-                      <option hidden>{userInfo.status}</option>
-                    </Form.Control>
+                      <MenuItem hidden>{userInfo.status}</MenuItem>
+                    </TextField>
                   </Form.Group>
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} controlId='destination'>
                     <Form.Label>行き先</Form.Label>
-                    <Form.Control
+                    <TextField
                       name='destination'
-                      placeholder=''
                       value={userInfo.destination}
                       onChange={this.onUserInfoChange}
-                      maxLength={100}
+                      size='small'
+                      fullWidth
+                      inputProps={{
+                        maxLength: 100
+                      }}
                     />
                   </Form.Group>
                   <Form.Group as={Col} controlId='return'>
                     <Form.Label>戻り</Form.Label>
-                    <Form.Control
+                    <TextField
                       name='return'
-                      placeholder=''
                       value={userInfo.return}
                       onChange={this.onUserInfoChange}
-                      maxLength={100}
+                      size='small'
+                      fullWidth
+                      inputProps={{
+                        maxLength: 100
+                      }}
                     />
                   </Form.Group>
                 </Form.Row>
                 <Form.Group controlId='message'>
                   <Form.Label>メッセージ</Form.Label>
-                  <Form.Control
+                  <TextField
                     name='message'
-                    placeholder=''
                     value={userInfo.message}
                     onChange={this.onUserInfoChange}
-                    maxLength={100}
+                    size='small'
+                    fullWidth
+                    inputProps={{
+                      maxLength: 100
+                    }}
                   />
                 </Form.Group>
               </Container>

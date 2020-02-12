@@ -5,7 +5,7 @@ import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
 import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS } from '../../define';
 import AppModule from '../../modules/appModule';
-import UserEditModalMdule from '../../modules/userInfo/userEditModalMdule';
+import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
 import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
@@ -139,10 +139,10 @@ class UserList extends React.Component<Props, any> {
         row.getElement().style.color = '#0000FF';
         break;
       case USER_STATUS.s10:
-        row.getElement().style.color = '#FF0000';
+        row.getElement().style.color = '#00A900';
         break;
       case USER_STATUS.s11:
-        row.getElement().style.color = '#00A900';
+        row.getElement().style.color = '#FF0000';
         break;
       case USER_STATUS.s12:
         row.getElement().style.color = '#00A900';
@@ -205,7 +205,6 @@ class UserList extends React.Component<Props, any> {
           columns={this.COLUMNS_CONFIG_FOR_TABULATOR}
           tooltips={true}
           layout={'fitData'}
-          height={window.innerHeight - 91}
           columnMinWidth={80}
           rowDblClick={this.showUserEditModal}
           resizableColumns={false}

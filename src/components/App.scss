@@ -38,7 +38,11 @@ body {
 .modal-paper {
   width: 680px;
   background-color: #fff;
-  border: 1px solid #000;
   padding: 15px 15px 15px;
   border-radius: 5px;
+}
+.user-list {
+  margin-bottom: 9px;
+  user-select: none; /* 選択を禁止する */
+  height: calc(100vh - 90px);
 }

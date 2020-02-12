@@ -28,6 +28,7 @@ import Progress from './Progress';
 import Settings from './settings/Settings';
 import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
 import UserList from './userInfo/UserList';
+import { Fade } from '@material-ui/core';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -184,17 +185,6 @@ class App extends React.Component<Props, any> {
     remote.getCurrentWindow().hide();
   });
 
-  electronResizeEvent = ipcRenderer.on('electronResizeEvent', async () => {
-    const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-
-    // macOSでリサイズするとレイアウトが崩れてしまう問題の暫定対処
-    await this._sleep(250);
-
-    dispatch(AppModule.actions.setMyUserId(-1));
-    dispatch(AppModule.actions.setMyUserId(myUserID));
-  });
-
   // 状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
@@ -349,12 +339,12 @@ class App extends React.Component<Props, any> {
     switch (activeIndex) {
       // 社内情報タブを選択
       case 0:
-        await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 250));
+        await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
         break;
 
       // 社員情報タブを選択
       case 1:
-        await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(250));
+        await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350));
         break;
 
       default:
@@ -379,40 +369,48 @@ class App extends React.Component<Props, any> {
           downloadProgress={this.props.state.appState.downloadProgress}
         />
         {myUserID !== -1 && (
-          <div>
-            <MaterialThemeProvider theme={tabTheme}>
-              <Tabs
-                value={this.props.state.appState.activeIndex}
-                variant='fullWidth'
-                onChange={this.handleActiveIndexUpdate}
-                style={{ minHeight: '35px' }}
-                indicatorColor='primary'
-                textColor='primary'
-                className='app-tabs'>
-                <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab' />
-                <Tab label='社内情報' style={{ minHeight: '35px' }} className='app-tab' />
-                <Tab label='設定' style={{ minHeight: '35px' }} className='app-tab' />
-              </Tabs>
-            </MaterialThemeProvider>
-          </div>
+          <Fade in={true}>
+            <div>
+              <MaterialThemeProvider theme={tabTheme}>
+                <Tabs
+                  value={this.props.state.appState.activeIndex}
+                  variant='fullWidth'
+                  onChange={this.handleActiveIndexUpdate}
+                  style={{ minHeight: '35px' }}
+                  indicatorColor='primary'
+                  textColor='primary'
+                  className='app-tabs'>
+                  <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab' />
+                  <Tab label='社内情報' style={{ minHeight: '35px' }} className='app-tab' />
+                  <Tab label='設定' style={{ minHeight: '35px' }} className='app-tab' />
+                </Tabs>
+              </MaterialThemeProvider>
+            </div>
+          </Fade>
         )}
         <div className='contents'>
           {myUserID !== -1 && this.props.state.appState.activeIndex === 0 && (
-            <div>
-              <UserList />
-              <MenuButtonGroupForUserList />
-            </div>
+            <Fade in={true}>
+              <div>
+                <UserList />
+                <MenuButtonGroupForUserList />
+              </div>
+            </Fade>
           )}
           {myUserID !== -1 && this.props.state.appState.activeIndex === 1 && (
-            <div>
-              <OfficeInfo />
-              <MenuButtonGroupForOfficeInfo />
-            </div>
+            <Fade in={true}>
+              <div>
+                <OfficeInfo />
+                <MenuButtonGroupForOfficeInfo />
+              </div>
+            </Fade>
           )}
           {myUserID !== -1 && this.props.state.appState.activeIndex === 2 && (
-            <div>
-              <Settings />
-            </div>
+            <Fade in={true}>
+              <div>
+                <Settings />
+              </div>
+            </Fade>
           )}
         </div>
         <InitialStartupModal />
