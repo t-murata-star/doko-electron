@@ -29,3 +29,6 @@
 .user-edit-modal-tooltip {
   font-size: 12px;
 }
+.submit-button-group {
+  float: right;
+}

@@ -218,27 +218,30 @@ class UserEditModal extends React.Component<Props, any> {
                 variant='outlined'
                 color='default'
                 onClick={this.deleteUser}
-                style={{ marginRight: 'auto', boxShadow: 'none' }}
-                className='user-edit-modal-delete-button'>
+                style={{ float: 'left', boxShadow: 'none' }}
+                className='user-edit-modal-delete-button'
+                tabIndex={-1}>
                 削除
               </Button>
-              <Button
-                variant='contained'
-                color='primary'
-                type='submit'
-                disabled={this.props.state.userEditModalState.submitButtonDisabled}
-                style={{ float: 'right', boxShadow: 'none' }}
-                className='user-edit-modal-base-button'>
-                登録
-              </Button>
-              <Button
-                variant='outlined'
-                color='default'
-                onClick={this.closeModal}
-                className='user-edit-modal-base-button'
-                style={{ float: 'right', boxShadow: 'none' }}>
-                キャンセル
-              </Button>
+              <div className='submit-button-group'>
+                <Button
+                  variant='outlined'
+                  color='default'
+                  onClick={this.closeModal}
+                  className='user-edit-modal-base-button'
+                  style={{ boxShadow: 'none' }}>
+                  キャンセル
+                </Button>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  type='submit'
+                  disabled={this.props.state.userEditModalState.submitButtonDisabled}
+                  style={{ boxShadow: 'none' }}
+                  className='user-edit-modal-base-button'>
+                  登録
+                </Button>
+              </div>
             </Form>
           </div>
         </Fade>
