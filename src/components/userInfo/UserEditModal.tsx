@@ -147,7 +147,8 @@ class UserEditModal extends React.Component<Props, any> {
                         size='small'
                         onClick={this.inputClear}
                         style={{ maxHeight: '28px', boxShadow: 'none' }}
-                        className='user-edit-modal-presence-button'>
+                        className='user-edit-modal-presence-button'
+                        tabIndex={-1}>
                         在席
                       </Button>
                     </Tooltip>
