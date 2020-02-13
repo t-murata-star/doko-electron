@@ -67,8 +67,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
     let response: ApiResponse;
-    // eslint-disable-next-line no-debugger
-    debugger;
+
     if (userInfo === null) {
       return;
     }
