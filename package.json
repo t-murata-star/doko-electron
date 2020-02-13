@@ -37,7 +37,6 @@
     "css-loader": "3.2.0",
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
-    "electron": "^8.0.0",
     "electron-store": "^5.0.0",
     "electron-window-state": "^5.0.3",
     "eslint-config-react-app": "^5.0.2",
@@ -116,7 +115,8 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
-    "electron-builder": "^21.1.5",
+    "electron": "^8.0.0",
+    "electron-builder": "^22.3.2",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.3",
     "redux-devtools": "^3.5.0"
