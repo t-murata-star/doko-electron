@@ -7,7 +7,7 @@ import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS_INFO } from '../../define';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
 import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { getUserInfo, showMessageBoxWithReturnValue } from '../common/functions';
+import { getUserInfo, showMessageBoxSyncWithReturnValue } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
 import { Props } from '../../define/model';
@@ -136,7 +136,7 @@ class UserList extends React.Component<Props, any> {
   _updateUserInfoOrder = async (rowComponent: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
     const rows = rowComponent.getTable().getRows();
-    const index = showMessageBoxWithReturnValue(
+    const index = showMessageBoxSyncWithReturnValue(
       'OK',
       'Cancel',
       `並べ替えてよろしいですか？\n※表示順序は全てのユーザで共通です。`

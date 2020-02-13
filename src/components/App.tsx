@@ -18,7 +18,7 @@ import InitialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
 import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import './App.scss';
-import { getUserInfo, sendHeartbeat, showMessageBox, showMessageBoxWithReturnValue } from './common/functions';
+import { getUserInfo, sendHeartbeat, showMessageBoxSync, showMessageBoxSyncWithReturnValue } from './common/functions';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
@@ -68,7 +68,7 @@ class App extends React.Component<Props, any> {
      * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
      */
     if (notification.latestAppVersion !== APP_VERSION) {
-      showMessageBox(updateNotificationMessage);
+      showMessageBoxSync(updateNotificationMessage);
       remote.shell.openExternal(APP_DOWNLOAD_URL);
       remote.getCurrentWindow().destroy();
       return;
@@ -76,7 +76,7 @@ class App extends React.Component<Props, any> {
 
     // if (notification.latestAppVersion !== APP_VERSION) {
     //   dispatch(AppModule.actions.setUpdatingStatus(true));
-    //   const index = showMessageBoxWithReturnValue('OK', 'Cancel', updateNotificationMessage);
+    //   const index = showMessageBoxSyncWithReturnValue('OK', 'Cancel', updateNotificationMessage);
     //   this._updateApp(index);
     //   return;
     // }
@@ -86,7 +86,7 @@ class App extends React.Component<Props, any> {
      * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
      */
     if (!electronStore.get('startup.notified')) {
-      const index = showMessageBoxWithReturnValue(
+      const index = showMessageBoxSyncWithReturnValue(
         'YES',
         'NO',
         `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
@@ -119,7 +119,7 @@ class App extends React.Component<Props, any> {
      * 一度だけお知らせを表示する。
      */
     if (electronStore.get('appVersion') !== APP_VERSION) {
-      showMessageBox(notification.content);
+      showMessageBoxSync(notification.content);
       electronStore.set('appVersion', APP_VERSION);
     }
 
@@ -263,14 +263,14 @@ class App extends React.Component<Props, any> {
 
       remote.getCurrentWindow().destroy();
     } catch (error) {
-      showMessageBox(`${APP_NAME}インストーラの実行に失敗しました。`, 'warning');
+      showMessageBoxSync(`${APP_NAME}インストーラの実行に失敗しました。`, 'warning');
       remote.getCurrentWindow().destroy();
       return;
     }
   });
 
   updateInstallerDownloadOnFailed = ipcRenderer.on('updateInstallerDownloadOnFailed', (event: any, errorMessage: string) => {
-    const index = showMessageBoxWithReturnValue('OK', 'Cancel', `アップデートに失敗しました。\n再開しますか？`, 'warning');
+    const index = showMessageBoxSyncWithReturnValue('OK', 'Cancel', `アップデートに失敗しました。\n再開しますか？`, 'warning');
     this._updateApp(index);
   });
 
@@ -296,7 +296,7 @@ class App extends React.Component<Props, any> {
         break;
 
       default:
-        showMessageBox(`使用しているPCはアップデートに対応していません。`, 'warning');
+        showMessageBoxSync(`使用しているPCはアップデートに対応していません。`, 'warning');
         remote.getCurrentWindow().destroy();
         break;
     }
@@ -305,7 +305,7 @@ class App extends React.Component<Props, any> {
       let response: ApiResponse;
       response = await dispatch(AsyncActionsApp.getS3SignedUrlAction(fileName));
       if (response.getIsError()) {
-        showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+        showMessageBoxSync(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
         remote.getCurrentWindow().destroy();
         return;
       }
@@ -313,7 +313,7 @@ class App extends React.Component<Props, any> {
 
       response = await dispatch(AsyncActionsApp.getS3ObjectFileByteSizeAction(fileName));
       if (response.getIsError()) {
-        showMessageBox(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+        showMessageBoxSync(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
         remote.getCurrentWindow().destroy();
         return;
       }

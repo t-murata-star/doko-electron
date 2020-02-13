@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ApiResponse, Props, UserInfo } from '../../define/model';
 import UserEditModalModule from '../../modules/userInfo/userEditModalModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { showMessageBoxWithReturnValue } from '../common/functions';
+import { showMessageBoxSyncWithReturnValue } from '../common/functions';
 import './UserEditModal.css';
 import { Container, Form, Col } from 'react-bootstrap';
 import { STATUS_LIST } from '../../define';
@@ -65,7 +65,7 @@ class UserEditModal extends React.Component<Props, any> {
     const { dispatch } = this.props;
     let response: ApiResponse;
 
-    const index = showMessageBoxWithReturnValue(
+    const index = showMessageBoxSyncWithReturnValue(
       'OK',
       'Cancel',
       '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo['name']

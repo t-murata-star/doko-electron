@@ -1,6 +1,4 @@
-const path = require('path');
 const electron = require('electron');
-const windowStateKeeper = require('electron-window-state');
 const { app } = electron;
 const packageJson = require('../package.json');
 
@@ -46,6 +44,7 @@ if (process.env.LOAD_URL) {
 
 function createWindow() {
   // アプリケーションのウインドウサイズを保持
+  const windowStateKeeper = require('electron-window-state');
   const mainWindowState = windowStateKeeper({
     defaultWidth: 1200,
     defaultHeight: 750
@@ -223,6 +222,7 @@ function showUpdateResumeMessage(item) {
 // タスクトレイを作成
 function createTray() {
   // 通知領域に表示するアイコンを指定
+  const path = require('path');
   const iconPath = path.join(__dirname, '../public/favicon.png');
   const tray = new electron.Tray(iconPath);
   // 通知領域をクリックした際のメニュー

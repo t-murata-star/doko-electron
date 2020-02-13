@@ -29,7 +29,7 @@ export const sendHeartbeat = (dispatch: any) => {
   dispatch(AsyncActionsApp.sendHeartbeatAction(updatedUserInfo, myUserID));
 };
 
-export const showMessageBox = (message: any, type: 'info' | 'warning' = 'info') => {
+export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'info') => {
   remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
     title: APP_NAME,
     type,
@@ -38,7 +38,7 @@ export const showMessageBox = (message: any, type: 'info' | 'warning' = 'info') 
   });
 };
 
-export const showMessageBoxWithReturnValue = (
+export const showMessageBoxSyncWithReturnValue = (
   OKButtonText: string,
   cancelButtonText: string,
   message: any,
