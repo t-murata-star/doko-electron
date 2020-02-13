@@ -276,11 +276,13 @@ if (!gotTheLock) {
 }
 
 // レンダラープロセスからメインプロセスへのデータ送信（非同期通信）
-electron.ipcMain.on('close', event => {
+electron.ipcMain.on('closeApp', event => {
   if (electronDownloadItem) {
     electronDownloadItem.cancel();
   }
-  mainWindow.destroy();
+  if (mainWindow.isDestroyed() === false) {
+    mainWindow.destroy();
+  }
 });
 
 electron.ipcMain.on('reload', event => {

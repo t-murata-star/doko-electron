@@ -1,5 +1,5 @@
 import store from '../../configureStore';
-import { APP_NAME } from '../../define';
+import { APP_NAME, APP_VERSION } from '../../define';
 import { UserInfo } from '../../define/model';
 import { AsyncActionsApp } from '../../modules/appModule';
 const { remote } = window.require('electron');
@@ -30,12 +30,21 @@ export const sendHeartbeat = (dispatch: any) => {
 };
 
 export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'info') => {
-  remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
-    title: APP_NAME,
-    type,
-    buttons: ['OK'],
-    message
-  });
+  if (APP_VERSION === '3.0.0') {
+    remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+      title: APP_NAME,
+      type,
+      buttons: ['OK'],
+      message
+    });
+  } else {
+    remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
+      title: APP_NAME,
+      type,
+      buttons: ['OK'],
+      message
+    });
+  }
 };
 
 export const showMessageBoxSyncWithReturnValue = (
@@ -43,11 +52,20 @@ export const showMessageBoxSyncWithReturnValue = (
   cancelButtonText: string,
   message: any,
   type: 'info' | 'warning' = 'info'
-): number => {
-  return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
-    title: APP_NAME,
-    type: 'info',
-    buttons: [OKButtonText, cancelButtonText],
-    message
-  });
+): any => {
+  if (APP_VERSION === '3.0.0') {
+    return remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+      title: APP_NAME,
+      type: 'info',
+      buttons: [OKButtonText, cancelButtonText],
+      message
+    });
+  } else {
+    return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
+      title: APP_NAME,
+      type: 'info',
+      buttons: [OKButtonText, cancelButtonText],
+      message
+    });
+  }
 };

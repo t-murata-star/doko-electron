@@ -70,7 +70,7 @@ class App extends React.Component<Props, any> {
     if (notification.latestAppVersion !== APP_VERSION) {
       showMessageBoxSync(updateNotificationMessage);
       remote.shell.openExternal(APP_DOWNLOAD_URL);
-      remote.getCurrentWindow().destroy();
+      this._closeApp();
       return;
     }
 
@@ -227,7 +227,7 @@ class App extends React.Component<Props, any> {
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === false) {
-      ipcRenderer.send('close');
+      this._closeApp();
       return;
     }
 
@@ -236,7 +236,7 @@ class App extends React.Component<Props, any> {
     updatedUserInfo['status'] = USER_STATUS_INFO.s02.status;
     updatedUserInfo['name'] = userInfo['name'];
     await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
-    ipcRenderer.send('close');
+    this._closeApp();
   });
 
   updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
@@ -261,10 +261,10 @@ class App extends React.Component<Props, any> {
           break;
       }
 
-      remote.getCurrentWindow().destroy();
+      this._closeApp();
     } catch (error) {
       showMessageBoxSync(`${APP_NAME}インストーラの実行に失敗しました。`, 'warning');
-      remote.getCurrentWindow().destroy();
+      this._closeApp();
       return;
     }
   });
@@ -275,8 +275,34 @@ class App extends React.Component<Props, any> {
   });
 
   async _updateApp(index: number) {
+    const installAndUpdate = async (fileName: string, fileExtension: string) => {
+      let response: ApiResponse;
+      response = await dispatch(AsyncActionsApp.getS3SignedUrlAction(fileName));
+      if (response.getIsError()) {
+        showMessageBoxSync(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+
+        this._closeApp();
+        return;
+      }
+      const url = response.getPayload();
+
+      response = await dispatch(AsyncActionsApp.getS3ObjectFileByteSizeAction(fileName));
+      if (response.getIsError()) {
+        showMessageBoxSync(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
+
+        this._closeApp();
+        return;
+      }
+
+      const updateInstallerFilepath = `${path.join(
+        remote.app.getPath('temp'),
+        SAVE_INSTALLER_FILENAME
+      )}_${APP_VERSION}.${fileExtension}`;
+      ipcRenderer.send('updateApp', updateInstallerFilepath, url);
+    };
+
     if (index !== 0) {
-      remote.getCurrentWindow().destroy();
+      this._closeApp();
       return;
     }
 
@@ -297,32 +323,8 @@ class App extends React.Component<Props, any> {
 
       default:
         showMessageBoxSync(`使用しているPCはアップデートに対応していません。`, 'warning');
-        remote.getCurrentWindow().destroy();
+        this._closeApp();
         break;
-    }
-
-    async function installAndUpdate(fileName: string, fileExtension: string) {
-      let response: ApiResponse;
-      response = await dispatch(AsyncActionsApp.getS3SignedUrlAction(fileName));
-      if (response.getIsError()) {
-        showMessageBoxSync(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
-        remote.getCurrentWindow().destroy();
-        return;
-      }
-      const url = response.getPayload();
-
-      response = await dispatch(AsyncActionsApp.getS3ObjectFileByteSizeAction(fileName));
-      if (response.getIsError()) {
-        showMessageBoxSync(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
-        remote.getCurrentWindow().destroy();
-        return;
-      }
-
-      const updateInstallerFilepath = `${path.join(
-        remote.app.getPath('temp'),
-        SAVE_INSTALLER_FILENAME
-      )}_${APP_VERSION}.${fileExtension}`;
-      ipcRenderer.send('updateApp', updateInstallerFilepath, url);
     }
   }
 
@@ -352,8 +354,12 @@ class App extends React.Component<Props, any> {
     }
   };
 
-  // スリープ処理
-  _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+  _closeApp = () => {
+    if (remote.getCurrentWindow().isDestroyed() === false) {
+      remote.getCurrentWindow().destroy();
+      // ipcRenderer.send('closeApp');
+    }
+  };
 
   render() {
     const myUserID = this.props.state.appState['myUserID'];
