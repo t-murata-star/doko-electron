@@ -26,6 +26,13 @@ global.description = APP_NAME;
 global.appVersion = VERSION;
 
 /**
+ * The default value of app.allowRendererProcessReuse is deprecated, it is currently "false".
+ * It will change to be "true" in Electron 9.
+ * For more information please check https://github.com/electron/electron/issues/18397
+ */
+app.allowRendererProcessReuse = true;
+
+/**
  * 環境変数が設定されていればその設定値を接続先を使用する
  * 設定されていなければ、当プログラムにて定義した接続先を使用する
  */
