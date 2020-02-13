@@ -185,9 +185,9 @@ class Settings extends React.Component<Props, any> {
                     <TextField
                       select
                       name='user-change'
-                      value={userInfo.id}
+                      value={settingState.user.userID}
                       onChange={this.onUserChange}
-                      fullWidth
+                      style={{ width: 250 }}
                       size={'small'}
                       SelectProps={{
                         native: false
