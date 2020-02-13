@@ -18,10 +18,10 @@ let updateInstallerFilepath = '';
 let electronDownloadItem;
 
 // 【メイン・レンダラープロセス共通で使用するグローバル変数】
-// 通信エラーによりWEBアプリケーションの読み込みに失敗した場合に表示されるエラー画面のファイルパス
+// 通信エラーによりレンダラープロセスの読み込みに失敗した場合に表示されるエラー画面のファイルパス
 global.errorPageFilepath = './public/error.html';
-// WEBアプリケーションに接続できたかどうか
-global.isConnectedForWebApp = false;
+// レンダラープロセスに接続できたかどうか
+global.isConnectedForRendererProcess = false;
 global.description = APP_NAME;
 global.appVersion = VERSION;
 
@@ -74,7 +74,7 @@ function createWindow() {
 
   // webAppURL = `file://${path.join(__dirname, '../build/index.html')}`;
 
-  // WEBアプリケーションに接続する
+  // レンダラープロセスに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     // 通信に失敗した場合は再読み込み用ページへ遷移
     mainWindow.loadFile(global.errorPageFilepath);
@@ -97,10 +97,10 @@ function createWindow() {
       // ダイアログで「OK」を選択した場合
       case 0:
         /**
-         * ElectronがWEBアプリケーションを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
+         * Electronがレンダラープロセスを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
          */
-        if (global.isConnectedForWebApp === true) {
+        if (global.isConnectedForRendererProcess === true) {
           mainWindow.webContents.send('closeApp');
         } else {
           if (electronDownloadItem) {
@@ -284,14 +284,14 @@ electron.ipcMain.on('close', event => {
 });
 
 electron.ipcMain.on('reload', event => {
-  // WEBアプリケーションに接続する
+  // レンダラープロセスに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     mainWindow.loadFile(global.errorPageFilepath);
   });
 });
 
 electron.ipcMain.on('connected', (event, isConnected) => {
-  global.isConnectedForWebApp = isConnected;
+  global.isConnectedForRendererProcess = isConnected;
 });
 
 electron.ipcMain.on('updateApp', (event, filepath, downloadURL) => {

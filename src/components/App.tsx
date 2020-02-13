@@ -42,7 +42,7 @@ class App extends React.Component<Props, any> {
     const userID: number = (electronStore.get('userID') as number | undefined) || -1;
     let response: ApiResponse;
 
-    // メインプロセスに、WEBアプリケーションに接続できたことを伝える
+    // メインプロセスに、レンダラープロセスに接続できたことを伝える
     ipcRenderer.send('connected', true);
 
     response = await dispatch(AsyncActionsApp.loginAction());
