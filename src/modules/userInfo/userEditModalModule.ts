@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { UserInfo } from '../../define/model';
-import { USER_STATUS } from '../../define';
+import { USER_STATUS_INFO } from '../../define';
 
 class _initialState {
   onHide: boolean = false;
@@ -53,7 +53,7 @@ const slice = createSlice({
       };
     },
     inputClear: (state, action) => {
-      action.payload['status'] = USER_STATUS.s01;
+      action.payload['status'] = USER_STATUS_INFO.s01.status;
       action.payload['destination'] = '';
       action.payload['return'] = '';
       return {

@@ -2,7 +2,7 @@ import MaterialUiButton from '@material-ui/core/Button';
 import React from 'react';
 import { Button, Col, Container, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { APP_VERSION, USER_STATUS } from '../define';
+import { APP_VERSION, USER_STATUS_INFO } from '../define';
 import { ApiResponse, UserInfo, Props } from '../define/model';
 import AppModule from '../modules/appModule';
 import initialStartupModalModule from '../modules/initialStartupModalModule';
@@ -33,7 +33,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     let response: ApiResponse;
 
     this.userInfo['version'] = APP_VERSION;
-    this.userInfo['status'] = USER_STATUS.s01;
+    this.userInfo['status'] = USER_STATUS_INFO.s01.status;
 
     // addUserAction で appState の myUserID に新規ユーザIDが設定される
     response = await dispatch(AsyncActionsUserList.addUserAction(this.userInfo));
@@ -88,11 +88,11 @@ class InitialStartupModal extends React.Component<Props, any> {
 
     // 状態を「在席」に更新する（更新日時も更新される）
     if (
-      userInfo['status'] === USER_STATUS.s02 ||
-      userInfo['status'] === USER_STATUS.s01 ||
-      userInfo['status'] === USER_STATUS.s13
+      userInfo['status'] === USER_STATUS_INFO.s02.status ||
+      userInfo['status'] === USER_STATUS_INFO.s01.status ||
+      userInfo['status'] === USER_STATUS_INFO.s13.status
     ) {
-      updatedUserInfo['status'] = USER_STATUS.s01;
+      updatedUserInfo['status'] = USER_STATUS_INFO.s01.status;
       updatedUserInfo['name'] = userInfo['name'];
       response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
       if (response.getIsError()) {

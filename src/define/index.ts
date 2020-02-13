@@ -1,4 +1,4 @@
-import { UserStatus } from './model';
+import { UserStatusInfo } from './model';
 
 const { remote } = window.require('electron');
 
@@ -17,22 +17,12 @@ export const AUTH_REQUEST_HEADERS: any = {
   'Content-type': 'application/json; charset=UTF-8',
   Authorization: ''
 };
-export const USER_STATUS: UserStatus = new UserStatus();
-export const STATUS_LIST: string[] = [
-  USER_STATUS.s01,
-  USER_STATUS.s02,
-  USER_STATUS.s03,
-  USER_STATUS.s04,
-  USER_STATUS.s05,
-  USER_STATUS.s06,
-  USER_STATUS.s07,
-  USER_STATUS.s08,
-  USER_STATUS.s09,
-  USER_STATUS.s10,
-  USER_STATUS.s11,
-  USER_STATUS.s12,
-  USER_STATUS.s13
-];
+export const USER_STATUS_INFO: UserStatusInfo = new UserStatusInfo();
+export const STATUS_LIST: string[] = Object.entries(USER_STATUS_INFO).map(
+  ([, value]: [string, { status: string; color: string }]) => {
+    return value.status;
+  }
+);
 export const HEARTBEAT_INTERVAL_MS: number = parseInt(process.env.REACT_APP_HEARTBEAT_INTERVAL_MS || '270000');
 export const LEAVING_TIME_THRESHOLD_M: number = parseInt(process.env.REACT_APP_LEAVING_TIME_THRESHOLD_M || '10');
 export const CALENDAR_URL: string = process.env.REACT_APP_CALENDAR_URL || '';

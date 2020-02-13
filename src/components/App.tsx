@@ -10,7 +10,7 @@ import {
   AUTH_REQUEST_HEADERS,
   HEARTBEAT_INTERVAL_MS,
   SAVE_INSTALLER_FILENAME,
-  USER_STATUS
+  USER_STATUS_INFO
 } from '../define';
 import { ApiResponse, Notification, UserInfo, Props } from '../define/model';
 import AppModule, { AsyncActionsApp } from '../modules/appModule';
@@ -165,11 +165,11 @@ class App extends React.Component<Props, any> {
 
     // 状態を「在席」に更新する（更新日時も更新される）
     if (
-      userInfo['status'] === USER_STATUS.s02 ||
-      userInfo['status'] === USER_STATUS.s01 ||
-      userInfo['status'] === USER_STATUS.s13
+      userInfo['status'] === USER_STATUS_INFO.s02.status ||
+      userInfo['status'] === USER_STATUS_INFO.s01.status ||
+      userInfo['status'] === USER_STATUS_INFO.s13.status
     ) {
-      userInfo['status'] = USER_STATUS.s01;
+      userInfo['status'] = USER_STATUS_INFO.s01.status;
       updatedUserInfo['status'] = userInfo['status'];
       updatedUserInfo['name'] = userInfo['name'];
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
@@ -191,14 +191,14 @@ class App extends React.Component<Props, any> {
     const myUserID = this.props.state.appState['myUserID'];
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS.s01, USER_STATUS.s13].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === false) {
       return;
     }
 
     const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
-    updatedUserInfo['status'] = USER_STATUS.s13;
+    updatedUserInfo['status'] = USER_STATUS_INFO.s13.status;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
@@ -208,14 +208,14 @@ class App extends React.Component<Props, any> {
     const myUserID = this.props.state.appState['myUserID'];
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS.s01, USER_STATUS.s13].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === false) {
       return;
     }
 
     const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
     updatedUserInfo['name'] = userInfo['name'];
-    updatedUserInfo['status'] = USER_STATUS.s01;
+    updatedUserInfo['status'] = USER_STATUS_INFO.s01.status;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
 
     sendHeartbeat(dispatch);
@@ -226,14 +226,14 @@ class App extends React.Component<Props, any> {
     const myUserID = this.props.state.appState['myUserID'];
     const userList = this.props.state.userListState['userList'];
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS.s01, USER_STATUS.s13].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === false) {
       ipcRenderer.send('close');
       return;
     }
 
     const updatedUserInfo = { ...userInfo };
     updatedUserInfo['id'] = myUserID;
-    updatedUserInfo['status'] = USER_STATUS.s02;
+    updatedUserInfo['status'] = USER_STATUS_INFO.s02.status;
     updatedUserInfo['name'] = userInfo['name'];
     await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     ipcRenderer.send('close');

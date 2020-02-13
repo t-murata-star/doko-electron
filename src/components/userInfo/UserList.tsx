@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
-import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS } from '../../define';
+import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS_INFO } from '../../define';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
 import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
@@ -112,44 +112,20 @@ class UserList extends React.Component<Props, any> {
 
   _rowFormatter = (row: Tabulator.RowComponent) => {
     const rowData = row.getData();
+
     // 状態によってテキストの色を変える
-    switch (rowData.status) {
-      case USER_STATUS.s02:
-        row.getElement().style.color = '#0000FF';
-        break;
-      case USER_STATUS.s03:
-        row.getElement().style.color = '#FF0000';
-        break;
-      case USER_STATUS.s04:
-        row.getElement().style.color = '#00A900';
-        break;
-      case USER_STATUS.s05:
-        row.getElement().style.color = '#FF0000';
-        break;
-      case USER_STATUS.s06:
-        row.getElement().style.color = '#00A900';
-        break;
-      case USER_STATUS.s07:
-        row.getElement().style.color = '#0000FF';
-        break;
-      case USER_STATUS.s08:
-        row.getElement().style.color = '#0000FF';
-        break;
-      case USER_STATUS.s09:
-        row.getElement().style.color = '#0000FF';
-        break;
-      case USER_STATUS.s10:
-        row.getElement().style.color = '#00A900';
-        break;
-      case USER_STATUS.s11:
-        row.getElement().style.color = '#FF0000';
-        break;
-      case USER_STATUS.s12:
-        row.getElement().style.color = '#00A900';
-        break;
-      default:
-        break;
+    const statusInfo: any = Object.entries(USER_STATUS_INFO)
+      .filter(([, value]: [string, { status: string; color: string }]) => {
+        return value.status === rowData.status;
+      })
+      .map((value: [string, any][]) => {
+        return value[1];
+      });
+
+    if (statusInfo.length > 0) {
+      row.getElement().style.color = statusInfo[0].color;
     }
+
     // 自分の名前を太字にする
     if (rowData.id === this.props.state.appState['myUserID']) {
       row.getCell('name').getElement().style.fontWeight = 'bold';

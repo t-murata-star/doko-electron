@@ -39,20 +39,20 @@ export class UserInfo {
   heartbeat: string = '';
 }
 
-export class UserStatus {
-  s01 = '在席';
-  s02 = '退社';
-  s03 = '年休';
-  s04 = 'AM半休';
-  s05 = 'PM半休';
-  s06 = 'FLEX';
-  s07 = '出張';
-  s08 = '外出';
-  s09 = '本社外勤務';
-  s10 = '遅刻';
-  s11 = '行方不明';
-  s12 = '接客中';
-  s13 = '在席 (離席中)';
+export class UserStatusInfo {
+  s01 = { status: '在席', color: '#000000' };
+  s02 = { status: '退社', color: '#0000FF' };
+  s03 = { status: '年休', color: '#FF0000' };
+  s04 = { status: 'AM半休', color: '#00A900' };
+  s05 = { status: 'PM半休', color: '#FF0000' };
+  s06 = { status: 'FLEX', color: '#00A900' };
+  s07 = { status: '出張', color: '#0000FF' };
+  s08 = { status: '外出', color: '#0000FF' };
+  s09 = { status: '本社外勤務', color: '#0000FF' };
+  s10 = { status: '遅刻', color: '#00A900' };
+  s11 = { status: '行方不明', color: '#FF0000' };
+  s12 = { status: '接客中', color: '#00A900' };
+  s13 = { status: '在席 (離席中)', color: '#000000' };
 }
 
 export class Notification {
