@@ -191,9 +191,11 @@ class InitialStartupModal extends React.Component<Props, any> {
                           size={'small'}
                           SelectProps={{
                             native: false
-                          }}>
+                          }}
+                          disabled={userList.length === 0}>
                           <MenuItem hidden value='-1'>
-                            選択してください
+                            {userList.length > 0 && <div>選択してください</div>}
+                            {userList.length === 0 && <div>ユーザが存在しません</div>}
                           </MenuItem>
                           {userList
                             .sort((a: UserInfo, b: UserInfo) => {
