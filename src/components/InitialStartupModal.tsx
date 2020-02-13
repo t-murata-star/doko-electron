@@ -173,7 +173,7 @@ class InitialStartupModal extends React.Component<Props, any> {
         <Fade in={onHide}>
           <div className={'initial-startup-modal-paper'}>
             <Form onSubmit={this.handleSubmit}>
-              <h5>ユーザ登録</h5>
+              <span className='modal-title'>ユーザ登録</span>
               {isError && <span className='error-message'>通信に失敗しました。</span>}
               <hr />
               <Container>

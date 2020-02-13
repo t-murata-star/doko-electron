@@ -368,6 +368,7 @@ class App extends React.Component<Props, any> {
           isUpdating={this.props.state.appState.isUpdating}
           downloadProgress={this.props.state.appState.downloadProgress}
         />
+        <InitialStartupModal />
         {myUserID !== -1 && (
           <Fade in={true}>
             <div>
@@ -413,7 +414,6 @@ class App extends React.Component<Props, any> {
             </Fade>
           )}
         </div>
-        <InitialStartupModal />
       </div>
     );
   }

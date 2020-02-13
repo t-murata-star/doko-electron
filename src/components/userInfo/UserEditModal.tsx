@@ -113,7 +113,7 @@ class UserEditModal extends React.Component<Props, any> {
         <Fade in={this.props.state.userEditModalState.onHide}>
           <div className={'modal-paper'}>
             <Form onSubmit={this.handleSubmit}>
-              <h5>情報変更</h5>
+              <span className='modal-title'>情報変更</span>
               {userList.isError && <span className='error-message'>通信に失敗しました。</span>}
               <hr />
               <Container>
