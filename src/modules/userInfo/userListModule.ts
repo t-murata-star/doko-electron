@@ -241,7 +241,7 @@ export class AsyncActionsUserList {
               title: APP_NAME,
               type: 'info',
               buttons: ['OK'],
-              message: 'ユーザ情報が存在しないため、ユーザ登録を行います。'
+              message: 'ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。'
             });
             dispatch(AppModule.actions.setMyUserId(-1));
             dispatch(InitialStartupModalModule.actions.initializeState());
