@@ -126,7 +126,6 @@ class UserEditModal extends React.Component<Props, any> {
                       name='name'
                       value={userInfo.name}
                       onChange={this.onUserInfoChange}
-                      size='small'
                       fullWidth
                       inputProps={{
                         maxLength: 100
@@ -158,7 +157,6 @@ class UserEditModal extends React.Component<Props, any> {
                       value={userInfo.status}
                       onChange={this.onUserInfoChange}
                       fullWidth
-                      size={'small'}
                       SelectProps={{
                         native: false
                       }}>
@@ -178,7 +176,6 @@ class UserEditModal extends React.Component<Props, any> {
                       name='destination'
                       value={userInfo.destination}
                       onChange={this.onUserInfoChange}
-                      size='small'
                       fullWidth
                       inputProps={{
                         maxLength: 100
@@ -191,7 +188,6 @@ class UserEditModal extends React.Component<Props, any> {
                       name='return'
                       value={userInfo.return}
                       onChange={this.onUserInfoChange}
-                      size='small'
                       fullWidth
                       inputProps={{
                         maxLength: 100
@@ -205,7 +201,6 @@ class UserEditModal extends React.Component<Props, any> {
                     name='message'
                     value={userInfo.message}
                     onChange={this.onUserInfoChange}
-                    size='small'
                     fullWidth
                     inputProps={{
                       maxLength: 100
