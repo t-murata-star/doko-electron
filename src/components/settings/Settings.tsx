@@ -188,6 +188,7 @@ class Settings extends React.Component<Props, any> {
                       value={settingState.user.userID}
                       onChange={this.onUserChange}
                       style={{ width: 250 }}
+                      size={'small'}
                       SelectProps={{
                         native: false
                       }}>
@@ -229,6 +230,7 @@ class Settings extends React.Component<Props, any> {
                         name='email'
                         value={settingState.user.email}
                         onChange={this.onUserEmailInputChange}
+                        size='small'
                         inputProps={{
                           maxLength: 100
                         }}

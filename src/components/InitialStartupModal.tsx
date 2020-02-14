@@ -187,6 +187,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                           value={this.userID}
                           onChange={this.onUserChange}
                           fullWidth
+                          size={'small'}
                           SelectProps={{
                             native: false
                           }}
@@ -220,6 +221,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                           name='name'
                           placeholder='氏名を入力してください'
                           onChange={this.onNameChange}
+                          size='small'
                           fullWidth
                           inputProps={{
                             maxLength: 100
