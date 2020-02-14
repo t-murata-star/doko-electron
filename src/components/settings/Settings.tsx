@@ -230,7 +230,7 @@ class Settings extends React.Component<Props, any> {
                         name='email'
                         value={settingState.user.email}
                         onChange={this.onUserEmailInputChange}
-                        size='small'
+                        size={'small'}
                         inputProps={{
                           maxLength: 100
                         }}
