@@ -33,8 +33,8 @@ import { Fade } from '@material-ui/core';
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
-const childProcess = window.require('child_process');
-const path = require('path');
+const childProcess = window.require('electron').remote.require('child_process');
+const path = window.require('electron').remote.require('path');
 
 class App extends React.Component<Props, any> {
   async componentDidMount() {
