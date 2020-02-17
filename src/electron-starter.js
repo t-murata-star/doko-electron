@@ -95,6 +95,9 @@ function createWindow() {
     switch (index) {
       // ダイアログで「OK」を選択した場合
       case 0:
+        if (electronDownloadItem) {
+          electronDownloadItem.cancel();
+        }
         /**
          * Electronがレンダラープロセスを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
@@ -102,9 +105,6 @@ function createWindow() {
         if (global.isConnectedForRendererProcess === true) {
           mainWindow.webContents.send('closeApp');
         } else {
-          if (electronDownloadItem) {
-            electronDownloadItem.cancel();
-          }
           mainWindow.destroy();
         }
         break;
@@ -277,9 +277,6 @@ if (!gotTheLock) {
 
 // レンダラープロセスからメインプロセスへのデータ送信（非同期通信）
 electron.ipcMain.on('closeApp', event => {
-  if (electronDownloadItem) {
-    electronDownloadItem.cancel();
-  }
   if (mainWindow.isDestroyed() === false) {
     mainWindow.destroy();
   }
