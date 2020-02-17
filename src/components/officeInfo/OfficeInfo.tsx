@@ -21,11 +21,11 @@ class OfficeInfo extends React.Component<Props, any> {
           <Col md='2' />
           <Col md='4'>
             <ListGroup>
-              <ListGroup.Item>
+              <ListGroup.Item className='toilet-women'>
                 <Form.Label>
                   <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
                 </Form.Label>
-                <p>Coming never!</p>
+                <p>&nbsp;</p>
               </ListGroup.Item>
             </ListGroup>
           </Col>
