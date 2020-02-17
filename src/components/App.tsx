@@ -9,7 +9,6 @@ import {
   APP_VERSION,
   AUTH_REQUEST_HEADERS,
   HEARTBEAT_INTERVAL_MS,
-  SAVE_INSTALLER_FILENAME,
   USER_STATUS_INFO
 } from '../define';
 import { ApiResponse, Notification, UserInfo, Props } from '../define/model';
@@ -24,7 +23,6 @@ import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
 import MenuButtonGroupForOfficeInfo from './officeInfo/MenuButtonGroupForOfficeInfo';
 import OfficeInfo from './officeInfo/OfficeInfo';
-import Progress from './Progress';
 import Settings from './settings/Settings';
 import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
 import UserList from './userInfo/UserList';
@@ -33,8 +31,6 @@ import { Fade } from '@material-ui/core';
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
-const childProcess = window.require('electron').remote.require('child_process');
-const path = window.require('electron').remote.require('path');
 
 class App extends React.Component<Props, any> {
   async componentDidMount() {
@@ -73,13 +69,6 @@ class App extends React.Component<Props, any> {
       this._closeApp();
       return;
     }
-
-    // if (notification.latestAppVersion !== APP_VERSION) {
-    //   dispatch(AppModule.actions.setUpdatingStatus(true));
-    //   const index = showMessageBoxSyncWithReturnValue('OK', 'Cancel', updateNotificationMessage);
-    //   this._updateApp(index);
-    //   return;
-    // }
 
     /**
      * スタートアップ登録処理。
@@ -239,95 +228,6 @@ class App extends React.Component<Props, any> {
     this._closeApp();
   });
 
-  updateOnProgress = ipcRenderer.on('updateOnProgress', (event: any, receivedBytes: number) => {
-    const { dispatch } = this.props;
-    const updateInstallerFileByteSize = this.props.state.appState.updateInstallerFileByteSize;
-    dispatch(AppModule.actions.setDownloadProgress(Math.round((receivedBytes / updateInstallerFileByteSize) * 1000) / 10));
-    dispatch(AppModule.actions.setReceivedBytes(receivedBytes));
-  });
-
-  updateInstallerDownloadOnSccess = ipcRenderer.on('updateInstallerDownloadOnSccess', (event: any, savePath: string) => {
-    try {
-      switch (remote.process.platform) {
-        case 'win32':
-          childProcess.execFileSync(savePath);
-          break;
-
-        case 'darwin':
-          childProcess.execSync(`open ${savePath}`);
-          break;
-
-        default:
-          break;
-      }
-
-      this._closeApp();
-    } catch (error) {
-      showMessageBoxSync(`${APP_NAME}インストーラの実行に失敗しました。`, 'warning');
-      this._closeApp();
-      return;
-    }
-  });
-
-  updateInstallerDownloadOnFailed = ipcRenderer.on('updateInstallerDownloadOnFailed', (event: any, errorMessage: string) => {
-    const index = showMessageBoxSyncWithReturnValue('OK', 'Cancel', `アップデートに失敗しました。\n再開しますか？`, 'warning');
-    this._updateApp(index);
-  });
-
-  async _updateApp(index: number) {
-    const installAndUpdate = async (fileName: string, fileExtension: string) => {
-      let response: ApiResponse;
-      response = await dispatch(AsyncActionsApp.getS3SignedUrlAction(fileName));
-      if (response.getIsError()) {
-        showMessageBoxSync(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
-
-        this._closeApp();
-        return;
-      }
-      const url = response.getPayload();
-
-      response = await dispatch(AsyncActionsApp.getS3ObjectFileByteSizeAction(fileName));
-      if (response.getIsError()) {
-        showMessageBoxSync(`${APP_NAME}インストーラのダウンロードに失敗しました。`, 'warning');
-
-        this._closeApp();
-        return;
-      }
-
-      const updateInstallerFilepath = `${path.join(
-        remote.app.getPath('temp'),
-        SAVE_INSTALLER_FILENAME
-      )}_${APP_VERSION}.${fileExtension}`;
-      ipcRenderer.send('updateApp', updateInstallerFilepath, url);
-    };
-
-    if (index !== 0) {
-      this._closeApp();
-      return;
-    }
-
-    const { dispatch } = this.props;
-    const notification: Notification = this.props.state.appState.notification;
-    let fileName = '';
-
-    switch (remote.process.platform) {
-      case 'win32':
-        fileName = notification.updateInstaller.windows.fileName;
-        installAndUpdate(fileName, 'exe');
-        break;
-
-      case 'darwin':
-        fileName = notification.updateInstaller.mac.fileName;
-        installAndUpdate(fileName, 'pkg');
-        break;
-
-      default:
-        showMessageBoxSync(`使用しているPCはアップデートに対応していません。`, 'warning');
-        this._closeApp();
-        break;
-    }
-  }
-
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
@@ -369,10 +269,6 @@ class App extends React.Component<Props, any> {
           isAppStateProcessing={this.props.state.appState.isProcessing}
           isUserListProcessing={this.props.state.userListState.isFetching}
           officeInfoProcessing={this.props.state.officeInfoState.isFetching}
-        />
-        <Progress
-          isUpdating={this.props.state.appState.isUpdating}
-          downloadProgress={this.props.state.appState.downloadProgress}
         />
         <InitialStartupModal />
         {myUserID !== -1 && (

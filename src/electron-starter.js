@@ -10,10 +10,6 @@ const APP_NAME = packageJson.description || '';
 const VERSION = packageJson.version || '';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = packageJson.config.defaultLoadURL || '';
-// アップデートのためのアプリケーションインストーラのダウンロード先ファイルパス
-let updateInstallerFilepath = '';
-// ElectronAPIのDownloadItemクラスをグローバル変数として格納するための変数
-let electronDownloadItem;
 
 // 【メイン・レンダラープロセス共通で使用するグローバル変数】
 // 通信エラーによりレンダラープロセスの読み込みに失敗した場合に表示されるエラー画面のファイルパス
@@ -95,9 +91,6 @@ function createWindow() {
     switch (index) {
       // ダイアログで「OK」を選択した場合
       case 0:
-        if (electronDownloadItem) {
-          electronDownloadItem.cancel();
-        }
         /**
          * Electronがレンダラープロセスを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
@@ -160,63 +153,7 @@ function createWindow() {
     mainWindow.webContents.send('electronShutdownEvent');
   });
 
-  mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
-    electronDownloadItem = item;
-    item.setSavePath(updateInstallerFilepath);
-    item.on('updated', (event, state) => {
-      if (state === 'interrupted') {
-        showUpdateResumeMessage(item);
-      } else if (state === 'progressing') {
-        if (item.isPaused()) {
-          showUpdateResumeMessage(item);
-        } else {
-          mainWindow.webContents.send('updateOnProgress', item.getReceivedBytes());
-        }
-      }
-    });
-    item.once('done', (event, state) => {
-      if (state === 'completed') {
-        mainWindow.webContents.send('updateInstallerDownloadOnSccess', item.getSavePath());
-      } else {
-        mainWindow.webContents.send('updateInstallerDownloadOnFailed');
-      }
-    });
-  });
-
   createTray();
-}
-
-function showUpdateResumeMessage(item) {
-  const index = electron.dialog.showMessageBoxSync(mainWindow, {
-    title: APP_NAME,
-    type: 'info',
-    buttons: ['OK', 'Cancel'],
-    message: '通信に失敗したため、ダウンロードを中止しました。\n再開しますか？'
-  });
-
-  switch (index) {
-    // ダイアログで「OK」を選択した場合
-    case 0:
-      if (item.canResume()) {
-        item.resume();
-      } else {
-        electron.dialog.showMessageBoxSync(mainWindow, {
-          title: APP_NAME,
-          type: 'warning',
-          buttons: ['OK'],
-          message: 'ダウンロードの再開に失敗しました。'
-        });
-        item.cancel();
-        mainWindow.destroy();
-      }
-      break;
-
-    // ダイアログで「OK」以外を選択した場合
-    default:
-      item.cancel();
-      mainWindow.destroy();
-      break;
-  }
 }
 
 // タスクトレイを作成
@@ -291,10 +228,4 @@ electron.ipcMain.on('reload', event => {
 
 electron.ipcMain.on('connected', (event, isConnected) => {
   global.isConnectedForRendererProcess = isConnected;
-});
-
-electron.ipcMain.on('updateApp', (event, filepath, downloadURL) => {
-  updateInstallerFilepath = filepath;
-  const webContents = mainWindow.webContents;
-  webContents.downloadURL(downloadURL);
 });

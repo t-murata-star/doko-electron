@@ -9,12 +9,8 @@ class _initialState {
   isError: boolean = false;
   myUserID: number = -1;
   notification: Notification = new Notification();
-  updateInstallerFileByteSize: number = 0;
   isProcessing: boolean = false;
   activeIndex: number = 0;
-  isUpdating: boolean = false;
-  receivedBytes: number = 0;
-  downloadProgress: number = 0;
 }
 
 // createSlice() で actions と reducers を一気に生成
@@ -72,17 +68,6 @@ const slice = createSlice({
         myUserID: action.payload
       };
     },
-    getS3SignedUrlSuccess: state => {
-      return {
-        ...state
-      };
-    },
-    getS3ObjectFileByteSizeSuccess: (state, action) => {
-      return {
-        ...state,
-        updateInstallerFileByteSize: action.payload.fileByteSize
-      };
-    },
     setProcessingStatus: (state, action) => {
       return {
         ...state,
@@ -93,24 +78,6 @@ const slice = createSlice({
       return {
         ...state,
         activeIndex: action.payload
-      };
-    },
-    setUpdatingStatus: (state, action) => {
-      return {
-        ...state,
-        isUpdating: action.payload
-      };
-    },
-    setReceivedBytes: (state, action) => {
-      return {
-        ...state,
-        receivedBytes: action.payload
-      };
-    },
-    setDownloadProgress: (state, action) => {
-      return {
-        ...state,
-        downloadProgress: action.payload
       };
     }
   }
@@ -193,54 +160,6 @@ export class AsyncActionsApp {
       }
       console.log('Send heartbeat.');
       return new ApiResponse();
-    };
-  };
-
-  static getS3SignedUrlAction = (fileName: string) => {
-    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      try {
-        const res = await fetch(`${API_URL}/getS3SignedUrl?fileName=${fileName}`, {
-          method: 'GET',
-          headers: AUTH_REQUEST_HEADERS
-        });
-
-        responseStatusCheck(dispatch, res.status);
-
-        if (res.ok === false) {
-          dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
-        }
-        const json = await res.json();
-        dispatch(slice.actions.getS3SignedUrlSuccess());
-        return new ApiResponse(json.url);
-      } catch (error) {
-        dispatch(slice.actions.failRequest());
-        return new ApiResponse(null, true);
-      }
-    };
-  };
-
-  static getS3ObjectFileByteSizeAction = (fileName: string) => {
-    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      try {
-        const res = await fetch(`${API_URL}/getS3ObjectFileByteSize?fileName=${fileName}`, {
-          method: 'GET',
-          headers: AUTH_REQUEST_HEADERS
-        });
-
-        responseStatusCheck(dispatch, res.status);
-
-        if (res.ok === false) {
-          dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
-        }
-        const json = await res.json();
-        dispatch(slice.actions.getS3ObjectFileByteSizeSuccess(json));
-        return new ApiResponse();
-      } catch (error) {
-        dispatch(slice.actions.failRequest());
-        return new ApiResponse(null, true);
-      }
     };
   };
 }

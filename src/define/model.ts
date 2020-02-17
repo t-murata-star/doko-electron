@@ -58,14 +58,6 @@ export class UserStatusInfo {
 export class Notification {
   content: string = '';
   latestAppVersion: string = '';
-  updateInstaller = {
-    windows: {
-      fileName: ''
-    },
-    mac: {
-      fileName: ''
-    }
-  };
 }
 
 export class Restroom {
