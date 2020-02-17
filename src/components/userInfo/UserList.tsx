@@ -148,7 +148,7 @@ class UserList extends React.Component<Props, any> {
 
     dispatch(AppModule.actions.setProcessingStatus(true));
     for (const row of rows) {
-      const patchInfoUser = { order: row.getPosition(true) };
+      const patchInfoUser = { order: row.getPosition(true) + 1 };
       await dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id));
       await this._sleep(50);
     }
