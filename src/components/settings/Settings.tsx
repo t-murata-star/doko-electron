@@ -191,10 +191,8 @@ class Settings extends React.Component<Props, any> {
                       size={'small'}
                       SelectProps={{
                         native: false
-                      }}>
-                      <MenuItem hidden value='-1'>
-                        選択してください
-                      </MenuItem>
+                      }}
+                      disabled={userList.length === 0}>
                       {userList
                         .sort((a: UserInfo, b: UserInfo) => {
                           return a.order - b.order;
