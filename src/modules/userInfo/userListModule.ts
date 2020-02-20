@@ -121,7 +121,7 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
 
 /**
  * 全ユーザの退社チェック
- * LEAVING_TIME_THRESHOLD_M 以上heartbeatが更新されていないユーザの状態を「退社」に変更する。
+ * LEAVING_TIME_THRESHOLD_M 以上healthCheckAtが更新されていないユーザの状態を「退社」に変更する。
  * ただし、この変更は画面表示のみであり、サーバ上の情報は更新しない。
  */
 const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) => {
@@ -133,12 +133,12 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
       continue;
     }
     if ([USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === true) {
-      const heartbeat: Date = new Date(userInfo['heartbeat']);
-      const diffMin = Math.floor((nowDate.getTime() - heartbeat.getTime()) / (1000 * 60));
+      const healthCheckAt: Date = new Date(userInfo['healthCheckAt']);
+      const diffMin = Math.floor((nowDate.getTime() - healthCheckAt.getTime()) / (1000 * 60));
       if (diffMin >= LEAVING_TIME_THRESHOLD_M) {
         userInfo['status'] = USER_STATUS_INFO.s02.status;
-        // 更新日時を最後のheartbeat送信日時に設定する
-        userInfo['updatedAt'] = userInfo['heartbeat'];
+        // 更新日時を最後のhealthCheckAt送信日時に設定する
+        userInfo['updatedAt'] = userInfo['healthCheckAt'];
       }
     }
   }
@@ -288,7 +288,7 @@ export class AsyncActionsUserList {
       const body = { ...userInfo };
       delete body['id'];
       delete body['order'];
-      delete body['heartbeat'];
+      delete body['healthCheckAt'];
       try {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
           method: 'PATCH',

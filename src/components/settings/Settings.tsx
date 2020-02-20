@@ -9,7 +9,7 @@ import { ApiResponse, UserInfo, Props } from '../../define/model';
 import AppModule from '../../modules/appModule';
 import SettingsModule from '../../modules/settings/settingsModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { getUserInfo, sendHeartbeat } from '../common/functions';
+import { getUserInfo, sendHealthCheck } from '../common/functions';
 import './Settings.css';
 import { TextField, MenuItem } from '@material-ui/core';
 
@@ -91,7 +91,7 @@ class Settings extends React.Component<Props, any> {
     dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定を保存しました。']));
     dispatch(SettingsModule.actions.changeDisabledSubmitButtonUserChange(true));
 
-    sendHeartbeat(dispatch);
+    sendHealthCheck(dispatch);
   };
 
   // メールアドレスの変更

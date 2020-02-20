@@ -15,7 +15,7 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
   return userInfo || null;
 };
 
-export const sendHeartbeat = (dispatch: any) => {
+export const sendHealthCheck = (dispatch: any) => {
   const myUserID = store.getState().appState['myUserID'];
   const userList = store.getState().userListState['userList'];
   const userInfo = getUserInfo(userList, myUserID);
@@ -25,8 +25,8 @@ export const sendHeartbeat = (dispatch: any) => {
   }
 
   const updatedUserInfo: any = {};
-  updatedUserInfo['heartbeat'] = '';
-  dispatch(AsyncActionsApp.sendHeartbeatAction(updatedUserInfo, myUserID));
+  updatedUserInfo['healthCheckAt'] = '';
+  dispatch(AsyncActionsApp.sendHealthCheckAction(updatedUserInfo, myUserID));
 };
 
 export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'info') => {

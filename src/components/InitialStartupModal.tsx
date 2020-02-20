@@ -7,7 +7,7 @@ import { ApiResponse, UserInfo, Props } from '../define/model';
 import AppModule from '../modules/appModule';
 import initialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
-import { getUserInfo, sendHeartbeat } from './common/functions';
+import { getUserInfo, sendHealthCheck } from './common/functions';
 import './InitialStartupModal.css';
 import { Backdrop, Fade, Modal, TextField, MenuItem } from '@material-ui/core';
 
@@ -55,7 +55,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     await dispatch(AsyncActionsUserList.updateForAddedUserInfoAction(addedUserInfo, myUserID));
     dispatch(AsyncActionsUserList.getUserListAction(myUserID));
 
-    sendHeartbeat(dispatch);
+    sendHealthCheck(dispatch);
 
     this.closeModal();
     this.initializeField();
@@ -102,7 +102,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     this.closeModal();
 
     dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
-    sendHeartbeat(dispatch);
+    sendHealthCheck(dispatch);
     this.initializeField();
   };
 

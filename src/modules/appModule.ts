@@ -143,7 +143,7 @@ export class AsyncActionsApp {
     };
   };
 
-  static sendHeartbeatAction = (userInfo: UserInfo, userID: number) => {
+  static sendHealthCheckAction = (userInfo: UserInfo, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       const body = { ...userInfo };
       const res = await fetch(`${API_URL}/userList/${userID}`, {
@@ -158,7 +158,7 @@ export class AsyncActionsApp {
         dispatch(slice.actions.requestError());
         return new ApiResponse(null, true);
       }
-      console.log('Send heartbeat.');
+      console.log('Send healthCheckAt.');
       return new ApiResponse();
     };
   };

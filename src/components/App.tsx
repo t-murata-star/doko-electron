@@ -8,7 +8,7 @@ import {
   APP_NAME,
   APP_VERSION,
   AUTH_REQUEST_HEADERS,
-  HEARTBEAT_INTERVAL_MS,
+  HEALTH_CHECK_INTERVAL_MS,
   USER_STATUS_INFO
 } from '../define';
 import { ApiResponse, Notification, UserInfo, Props } from '../define/model';
@@ -17,7 +17,7 @@ import InitialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
 import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import './App.scss';
-import { getUserInfo, sendHeartbeat, showMessageBoxSync, showMessageBoxSyncWithReturnValue } from './common/functions';
+import { getUserInfo, sendHealthCheck, showMessageBoxSync, showMessageBoxSyncWithReturnValue } from './common/functions';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
@@ -116,8 +116,8 @@ class App extends React.Component<Props, any> {
      * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
      */
     setInterval(() => {
-      sendHeartbeat(dispatch);
-    }, HEARTBEAT_INTERVAL_MS);
+      sendHealthCheck(dispatch);
+    }, HEALTH_CHECK_INTERVAL_MS);
 
     /**
      * 初回起動チェック
@@ -167,7 +167,7 @@ class App extends React.Component<Props, any> {
     dispatch(UserListModule.actions.setUserInfo(userList));
     dispatch(AppModule.actions.setMyUserId(userID));
 
-    sendHeartbeat(dispatch);
+    sendHealthCheck(dispatch);
   }
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
@@ -207,7 +207,7 @@ class App extends React.Component<Props, any> {
     updatedUserInfo['status'] = USER_STATUS_INFO.s01.status;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
 
-    sendHeartbeat(dispatch);
+    sendHealthCheck(dispatch);
   });
 
   closeApp = ipcRenderer.on('closeApp', async (event: any) => {

@@ -36,7 +36,7 @@ export class UserInfo {
   message: string = '';
   version: string = '';
   email: string = '';
-  heartbeat: string = '';
+  healthCheckAt: string = '';
 }
 
 export class UserStatusInfo {
