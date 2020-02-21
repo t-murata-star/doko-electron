@@ -3,7 +3,7 @@ import $ from 'jquery';
 import React from 'react';
 import { Modal, Backdrop } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { ApiResponse, Props, UserInfo } from '../../define/model';
+import { ApiResponse, Props, UserInfo, UserInfoForUpdate } from '../../define/model';
 import UserEditModalModule from '../../modules/userInfo/userEditModalModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { showMessageBoxSyncWithReturnValue } from '../common/functions';
@@ -28,7 +28,13 @@ class UserEditModal extends React.Component<Props, any> {
     const userID = this.props.state.userEditModalState.userID;
     let response: ApiResponse;
 
-    response = await dispatch(AsyncActionsUserList.updateUserInfoAction(userInfo, userID));
+    const updatedUserInfo: UserInfoForUpdate = {};
+    updatedUserInfo.name = userInfo.name;
+    updatedUserInfo.status = userInfo.status;
+    updatedUserInfo.destination = userInfo.destination;
+    updatedUserInfo.return = userInfo.return;
+    updatedUserInfo.message = userInfo.message;
+    response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     if (response.getIsError()) {
       dispatch(UserEditModalModule.actions.enableSubmitButton());
       return;

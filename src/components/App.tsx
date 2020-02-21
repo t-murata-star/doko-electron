@@ -11,7 +11,7 @@ import {
   HEALTH_CHECK_INTERVAL_MS,
   USER_STATUS_INFO
 } from '../define';
-import { ApiResponse, Notification, UserInfo, Props } from '../define/model';
+import { ApiResponse, Notification, UserInfo, Props, UserInfoForUpdate } from '../define/model';
 import AppModule, { AsyncActionsApp } from '../modules/appModule';
 import InitialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
@@ -144,8 +144,7 @@ class App extends React.Component<Props, any> {
       return;
     }
 
-    const updatedUserInfo: any = {};
-    updatedUserInfo['id'] = userID;
+    const updatedUserInfo: UserInfoForUpdate = {};
     if (userInfo['version'] !== APP_VERSION) {
       updatedUserInfo['version'] = APP_VERSION;
       // アプリバージョンのみ更新（更新日時も更新されない）
@@ -184,8 +183,7 @@ class App extends React.Component<Props, any> {
       return;
     }
 
-    const updatedUserInfo = { ...userInfo };
-    updatedUserInfo['id'] = myUserID;
+    const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo['status'] = USER_STATUS_INFO.s13.status;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
@@ -201,8 +199,7 @@ class App extends React.Component<Props, any> {
       return;
     }
 
-    const updatedUserInfo = { ...userInfo };
-    updatedUserInfo['id'] = myUserID;
+    const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo['name'] = userInfo['name'];
     updatedUserInfo['status'] = USER_STATUS_INFO.s01.status;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
@@ -220,8 +217,7 @@ class App extends React.Component<Props, any> {
       return;
     }
 
-    const updatedUserInfo = { ...userInfo };
-    updatedUserInfo['id'] = myUserID;
+    const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo['status'] = USER_STATUS_INFO.s02.status;
     updatedUserInfo['name'] = userInfo['name'];
     await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));

@@ -1,6 +1,6 @@
 import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
 import { API_URL, AUTH_REQUEST_HEADERS, LEAVING_TIME_THRESHOLD_M, USER_STATUS_INFO, APP_NAME } from '../../define';
-import { ApiResponse, UserInfo } from '../../define/model';
+import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
 import AppModule from '../appModule';
 import InitialStartupModalModule from '../initialStartupModalModule';
 const { remote } = window.require('electron');
@@ -257,7 +257,7 @@ export class AsyncActionsUserList {
     };
   };
 
-  static changeOrderAction = (userInfo: { order: number }, userID: number) => {
+  static changeOrderAction = (userInfo: UserInfoForUpdate, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       try {
@@ -282,7 +282,7 @@ export class AsyncActionsUserList {
     };
   };
 
-  static updateUserInfoAction = (userInfo: UserInfo, userID: number) => {
+  static updateUserInfoAction = (userInfo: UserInfoForUpdate, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       const body = { ...userInfo };
@@ -311,7 +311,7 @@ export class AsyncActionsUserList {
     };
   };
 
-  static updateForAddedUserInfoAction = (userInfo: UserInfo, userID: number) => {
+  static updateForAddedUserInfoAction = (userInfo: UserInfoForUpdate, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       const body = { ...userInfo };

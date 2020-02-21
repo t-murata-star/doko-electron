@@ -25,6 +25,21 @@ export class ApiResponse {
     return this.isError;
   }
 }
+
+export interface UserInfoForUpdate {
+  id?: number;
+  order?: number;
+  name?: string;
+  status?: string;
+  destination?: string;
+  return?: string;
+  updatedAt?: string;
+  message?: string;
+  version?: string;
+  email?: string;
+  healthCheckAt?: string;
+}
+
 export class UserInfo {
   id: number = -1;
   order: number = -1;

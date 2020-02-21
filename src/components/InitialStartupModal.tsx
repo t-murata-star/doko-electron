@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, Col, Container, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_VERSION, USER_STATUS_INFO } from '../define';
-import { ApiResponse, UserInfo, Props } from '../define/model';
+import { ApiResponse, UserInfo, Props, UserInfoForUpdate } from '../define/model';
 import AppModule from '../modules/appModule';
 import initialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
@@ -75,8 +75,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     electronStore.set('userID', myUserID);
     dispatch(AppModule.actions.setMyUserId(myUserID));
 
-    const updatedUserInfo: any = {};
-    updatedUserInfo['id'] = myUserID;
+    const updatedUserInfo: UserInfoForUpdate = {};
     if (userInfo['version'] !== APP_VERSION) {
       updatedUserInfo['version'] = APP_VERSION;
       response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));

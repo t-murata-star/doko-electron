@@ -5,7 +5,7 @@ import React from 'react';
 import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
-import { ApiResponse, UserInfo, Props } from '../../define/model';
+import { ApiResponse, UserInfo, Props, UserInfoForUpdate } from '../../define/model';
 import AppModule from '../../modules/appModule';
 import SettingsModule from '../../modules/settings/settingsModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
@@ -112,8 +112,7 @@ class Settings extends React.Component<Props, any> {
     const myUserID = this.props.state.appState.myUserID;
     let response: ApiResponse;
 
-    const updatedUserInfo: any = {};
-    updatedUserInfo['id'] = myUserID;
+    const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo['email'] = settingState.user.email;
     response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     if (response.getIsError()) {
