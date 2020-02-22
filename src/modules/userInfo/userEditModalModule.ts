@@ -53,9 +53,9 @@ const slice = createSlice({
       };
     },
     inputClear: (state, action) => {
-      action.payload['status'] = USER_STATUS_INFO.s01.status;
-      action.payload['destination'] = '';
-      action.payload['return'] = '';
+      action.payload.status = USER_STATUS_INFO.s01.status;
+      action.payload.destination = '';
+      action.payload.return = '';
       return {
         ...state,
         userInfo: action.payload

@@ -10,10 +10,10 @@ export const LOGIN_USER: any = {
   password: process.env.REACT_APP_PASSWORD || ''
 };
 export const APP_DOWNLOAD_URL: string = process.env.REACT_APP_DOWNLOAD_URL || '';
-export const LOGIN_REQUEST_HEADERS: any = {
+export const LOGIN_REQUEST_HEADERS: {'Content-type': string } = {
   'Content-type': 'application/json; charset=UTF-8'
 };
-export const AUTH_REQUEST_HEADERS: any = {
+export const AUTH_REQUEST_HEADERS: {'Content-type': string, Authorization: string }  = {
   'Content-type': 'application/json; charset=UTF-8',
   Authorization: ''
 };

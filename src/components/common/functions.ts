@@ -10,14 +10,14 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
     return null;
   }
   const userInfo = userList.filter(userInfo => {
-    return userInfo['id'] === userID;
+    return userInfo.id === userID;
   })[0];
   return userInfo || null;
 };
 
 export const sendHealthCheck = (dispatch: any) => {
-  const myUserID = store.getState().appState['myUserID'];
-  const userList = store.getState().userListState['userList'];
+  const myUserID = store.getState().appState.myUserID;
+  const userList = store.getState().userListState.userList;
   const userInfo = getUserInfo(userList, myUserID);
 
   if (userInfo === null) {
@@ -25,7 +25,7 @@ export const sendHealthCheck = (dispatch: any) => {
   }
 
   const updatedUserInfo: any = {};
-  updatedUserInfo['healthCheckAt'] = '';
+  updatedUserInfo.healthCheckAt = '';
   dispatch(AsyncActionsApp.sendHealthCheckAction(updatedUserInfo, myUserID));
 };
 

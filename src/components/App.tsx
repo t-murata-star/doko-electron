@@ -50,7 +50,7 @@ class App extends React.Component<Props, any> {
     }
 
     // APIリクエストヘッダに認証トークンを設定する
-    AUTH_REQUEST_HEADERS['Authorization'] = 'Bearer ' + this.props.state.appState.token;
+    AUTH_REQUEST_HEADERS.Authorization = 'Bearer ' + this.props.state.appState.token;
 
     // お知らせチェック
     await dispatch(AsyncActionsApp.getNotificationAction());
@@ -145,21 +145,21 @@ class App extends React.Component<Props, any> {
     }
 
     const updatedUserInfo: UserInfoForUpdate = {};
-    if (userInfo['version'] !== APP_VERSION) {
-      updatedUserInfo['version'] = APP_VERSION;
+    if (userInfo.version !== APP_VERSION) {
+      updatedUserInfo.version = APP_VERSION;
       // アプリバージョンのみ更新（更新日時も更新されない）
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     }
 
     // 状態を「在席」に更新する（更新日時も更新される）
     if (
-      userInfo['status'] === USER_STATUS_INFO.s02.status ||
-      userInfo['status'] === USER_STATUS_INFO.s01.status ||
-      userInfo['status'] === USER_STATUS_INFO.s13.status
+      userInfo.status === USER_STATUS_INFO.s02.status ||
+      userInfo.status === USER_STATUS_INFO.s01.status ||
+      userInfo.status === USER_STATUS_INFO.s13.status
     ) {
-      userInfo['status'] = USER_STATUS_INFO.s01.status;
-      updatedUserInfo['status'] = userInfo['status'];
-      updatedUserInfo['name'] = userInfo['name'];
+      userInfo.status = USER_STATUS_INFO.s01.status;
+      updatedUserInfo.status = userInfo.status;
+      updatedUserInfo.name = userInfo.name;
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     }
 
@@ -176,32 +176,32 @@ class App extends React.Component<Props, any> {
   // 状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState['myUserID'];
-    const userList = this.props.state.userListState['userList'];
+    const myUserID = this.props.state.appState.myUserID;
+    const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
       return;
     }
 
     const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo['name'] = userInfo['name'];
-    updatedUserInfo['status'] = USER_STATUS_INFO.s13.status;
+    updatedUserInfo.name = userInfo.name;
+    updatedUserInfo.status = USER_STATUS_INFO.s13.status;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
   // 状態を「在席」に更新する
   electronUnlockScreenEvent = ipcRenderer.on('electronUnlockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState['myUserID'];
-    const userList = this.props.state.userListState['userList'];
+    const myUserID = this.props.state.appState.myUserID;
+    const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
       return;
     }
 
     const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo['name'] = userInfo['name'];
-    updatedUserInfo['status'] = USER_STATUS_INFO.s01.status;
+    updatedUserInfo.name = userInfo.name;
+    updatedUserInfo.status = USER_STATUS_INFO.s01.status;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
 
     sendHealthCheck(dispatch);
@@ -209,17 +209,17 @@ class App extends React.Component<Props, any> {
 
   closeApp = ipcRenderer.on('closeApp', async (event: any) => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState['myUserID'];
-    const userList = this.props.state.userListState['userList'];
+    const myUserID = this.props.state.appState.myUserID;
+    const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === false) {
+    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
       this._closeApp();
       return;
     }
 
     const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo['status'] = USER_STATUS_INFO.s02.status;
-    updatedUserInfo['name'] = userInfo['name'];
+    updatedUserInfo.status = USER_STATUS_INFO.s02.status;
+    updatedUserInfo.name = userInfo.name;
     await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     this._closeApp();
   });
@@ -258,7 +258,7 @@ class App extends React.Component<Props, any> {
   };
 
   render() {
-    const myUserID = this.props.state.appState['myUserID'];
+    const myUserID = this.props.state.appState.myUserID;
     return (
       <div>
         <Loading

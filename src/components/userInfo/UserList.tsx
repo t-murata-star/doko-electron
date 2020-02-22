@@ -98,8 +98,8 @@ class UserList extends React.Component<Props, any> {
 
   showUserEditModal = (e: any, row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
-    const userList = this.props.state.userListState['userList'];
-    const selectedUserId = row.getData()['id'];
+    const userList = this.props.state.userListState.userList;
+    const selectedUserId = row.getData().id;
     const userInfo = getUserInfo(userList, selectedUserId);
 
     if (userInfo === null) {
@@ -127,7 +127,7 @@ class UserList extends React.Component<Props, any> {
     }
 
     // 自分の名前を太字にする
-    if (rowData.id === this.props.state.appState['myUserID']) {
+    if (rowData.id === this.props.state.appState.myUserID) {
       row.getCell('name').getElement().style.fontWeight = 'bold';
     }
   };

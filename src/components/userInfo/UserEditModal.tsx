@@ -74,14 +74,14 @@ class UserEditModal extends React.Component<Props, any> {
     const index = showMessageBoxSyncWithReturnValue(
       'OK',
       'Cancel',
-      '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo['name']
+      '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo.name
     );
 
     if (index !== 0) {
       return;
     }
 
-    const selectedUserId = this.props.state.userEditModalState.userInfo['id'];
+    const selectedUserId = this.props.state.userEditModalState.userInfo.id;
     response = await dispatch(AsyncActionsUserList.deleteUserAction(selectedUserId));
     if (response.getIsError()) {
       return;

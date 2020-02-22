@@ -74,13 +74,6 @@ const slice = createSlice({
         isError: false
       };
     },
-    updateForAddedUserInfoSuccess: state => {
-      return {
-        ...state,
-        isFetching: false,
-        isError: false
-      };
-    },
     selectUser: (state, action) => {
       return {
         ...state,
@@ -132,13 +125,13 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
     if (userInfo.id === myUserID) {
       continue;
     }
-    if ([USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo['status']) === true) {
-      const healthCheckAt: Date = new Date(userInfo['healthCheckAt']);
+    if ([USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === true) {
+      const healthCheckAt: Date = new Date(userInfo.healthCheckAt);
       const diffMin = Math.floor((nowDate.getTime() - healthCheckAt.getTime()) / (1000 * 60));
       if (diffMin >= LEAVING_TIME_THRESHOLD_M) {
-        userInfo['status'] = USER_STATUS_INFO.s02.status;
+        userInfo.status = USER_STATUS_INFO.s02.status;
         // 更新日時を最後のhealthCheckAt送信日時に設定する
-        userInfo['updatedAt'] = userInfo['healthCheckAt'];
+        userInfo.updatedAt = userInfo.healthCheckAt;
       }
     }
   }
@@ -178,7 +171,8 @@ export class AsyncActionsUserList {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
       const body = { ...userInfo };
-      delete body['id'];
+      // id はAPIサーバで自動採番のため、キーを削除する
+      delete body.id;
       try {
         const res = await fetch(`${API_URL}/userList`, {
           method: 'POST',
@@ -234,7 +228,7 @@ export class AsyncActionsUserList {
          */
         if (isMyUserIDCheck) {
           const userInfo = json.filter(userInfo => {
-            return userInfo['id'] === myUserID;
+            return userInfo.id === myUserID;
           });
           if (userInfo.length === 0) {
             remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
@@ -285,15 +279,11 @@ export class AsyncActionsUserList {
   static updateUserInfoAction = (userInfo: UserInfoForUpdate, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(slice.actions.startApiRequest());
-      const body = { ...userInfo };
-      delete body['id'];
-      delete body['order'];
-      delete body['healthCheckAt'];
       try {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
           method: 'PATCH',
           headers: AUTH_REQUEST_HEADERS,
-          body: JSON.stringify(body)
+          body: JSON.stringify(userInfo)
         });
 
         responseStatusCheck(dispatch, res.status);
@@ -303,33 +293,6 @@ export class AsyncActionsUserList {
           return new ApiResponse(null, true);
         }
         dispatch(slice.actions.updateUserInfoSuccess());
-        return new ApiResponse();
-      } catch (error) {
-        dispatch(slice.actions.failRequest());
-        return new ApiResponse(null, true);
-      }
-    };
-  };
-
-  static updateForAddedUserInfoAction = (userInfo: UserInfoForUpdate, userID: number) => {
-    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
-      const body = { ...userInfo };
-      delete body['id'];
-      try {
-        const res = await fetch(`${API_URL}/userList/${userID}`, {
-          method: 'PATCH',
-          headers: AUTH_REQUEST_HEADERS,
-          body: JSON.stringify(body)
-        });
-
-        responseStatusCheck(dispatch, res.status);
-
-        if (res.ok === false) {
-          dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
-        }
-        dispatch(slice.actions.updateForAddedUserInfoSuccess());
         return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());

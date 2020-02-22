@@ -32,8 +32,8 @@ class InitialStartupModal extends React.Component<Props, any> {
     const { dispatch } = this.props;
     let response: ApiResponse;
 
-    this.userInfo['version'] = APP_VERSION;
-    this.userInfo['status'] = USER_STATUS_INFO.s01.status;
+    this.userInfo.version = APP_VERSION;
+    this.userInfo.status = USER_STATUS_INFO.s01.status;
 
     // addUserAction で appState の myUserID に新規ユーザIDが設定される
     response = await dispatch(AsyncActionsUserList.addUserAction(this.userInfo));
@@ -49,10 +49,10 @@ class InitialStartupModal extends React.Component<Props, any> {
     electronStore.set('userID', myUserID);
 
     // orderパラメータをidと同じ値に更新する
-    const addedUserInfo: any = {};
-    addedUserInfo['order'] = myUserID;
+    const addedUserInfo: UserInfoForUpdate = {};
+    addedUserInfo.order = myUserID;
 
-    await dispatch(AsyncActionsUserList.updateForAddedUserInfoAction(addedUserInfo, myUserID));
+    await dispatch(AsyncActionsUserList.updateUserInfoAction(addedUserInfo, myUserID));
     dispatch(AsyncActionsUserList.getUserListAction(myUserID));
 
     sendHealthCheck(dispatch);
@@ -64,7 +64,7 @@ class InitialStartupModal extends React.Component<Props, any> {
   _changeUser = async () => {
     const { dispatch } = this.props;
     const myUserID = this.userID;
-    const userList = this.props.state.userListState['userList'];
+    const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     let response: ApiResponse;
 
@@ -76,8 +76,8 @@ class InitialStartupModal extends React.Component<Props, any> {
     dispatch(AppModule.actions.setMyUserId(myUserID));
 
     const updatedUserInfo: UserInfoForUpdate = {};
-    if (userInfo['version'] !== APP_VERSION) {
-      updatedUserInfo['version'] = APP_VERSION;
+    if (userInfo.version !== APP_VERSION) {
+      updatedUserInfo.version = APP_VERSION;
       response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
       if (response.getIsError()) {
         return;
@@ -86,12 +86,12 @@ class InitialStartupModal extends React.Component<Props, any> {
 
     // 状態を「在席」に更新する（更新日時も更新される）
     if (
-      userInfo['status'] === USER_STATUS_INFO.s02.status ||
-      userInfo['status'] === USER_STATUS_INFO.s01.status ||
-      userInfo['status'] === USER_STATUS_INFO.s13.status
+      userInfo.status === USER_STATUS_INFO.s02.status ||
+      userInfo.status === USER_STATUS_INFO.s01.status ||
+      userInfo.status === USER_STATUS_INFO.s13.status
     ) {
-      updatedUserInfo['status'] = USER_STATUS_INFO.s01.status;
-      updatedUserInfo['name'] = userInfo['name'];
+      updatedUserInfo.status = USER_STATUS_INFO.s01.status;
+      updatedUserInfo.name = userInfo.name;
       response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
       if (response.getIsError()) {
         return;
@@ -200,8 +200,8 @@ class InitialStartupModal extends React.Component<Props, any> {
                               return a.order - b.order;
                             })
                             .map((userInfo: UserInfo, index: number) => (
-                              <MenuItem key={index} value={userInfo['id']}>
-                                {userInfo['name']}
+                              <MenuItem key={index} value={userInfo.id}>
+                                {userInfo.name}
                               </MenuItem>
                             ))}
                         </TextField>
