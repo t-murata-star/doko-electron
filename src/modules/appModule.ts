@@ -158,7 +158,7 @@ export class AsyncActionsApp {
         dispatch(slice.actions.requestError());
         return new ApiResponse(null, true);
       }
-      console.log('Send healthCheckAt.');
+      console.log('Send healthCheck.');
       return new ApiResponse();
     };
   };

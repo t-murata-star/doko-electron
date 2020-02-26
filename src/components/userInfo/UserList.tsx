@@ -173,8 +173,6 @@ class UserList extends React.Component<Props, any> {
       // React-tabulatorのTypeScript型定義が未対応のため、@ts-ignoreでエラーを抑制
       <div>
         <Inoperable enabled={this.props.state.userListState.inoperable} />
-        {/*
-        // @ts-ignore */}
         <ReactTabulator
           className='user-list'
           data={userList}
@@ -184,15 +182,14 @@ class UserList extends React.Component<Props, any> {
           columnMinWidth={80}
           rowDblClick={this.showUserEditModal}
           resizableColumns={false}
-          // @ts-ignore
-          rowFormatter={this._rowFormatter}
-          placeholder={'通信に失敗しました。'}
           options={{
             movableRows: true,
             initialSort: [
               { column: 'updatedAt', dir: 'asc' },
               { column: 'order', dir: 'asc' }
-            ]
+            ],
+            rowFormatter: this._rowFormatter,
+            placeholder: '通信に失敗しました。'
           }}
           rowMoved={this._rowMovedCallback}
         />
