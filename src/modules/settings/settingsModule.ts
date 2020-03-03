@@ -10,7 +10,8 @@ class _initialState {
   snackbar = {
     enabled: false,
     message: '',
-    timeoutMs: 5000
+    timeoutMs: 5000,
+    queueMessages: new Array<string>()
   };
   user = {
     userID: -1,
@@ -90,6 +91,28 @@ const slice = createSlice({
     },
     initializeState: () => {
       return new _initialState();
+    },
+    enqueueSnackbarMessages: (state, action) => {
+      const queueMessages = [...state.snackbar.queueMessages];
+      queueMessages.push(action.payload);
+      return {
+        ...state,
+        snackbar: {
+          ...state.snackbar,
+          queueMessages
+        }
+      };
+    },
+    dequeueSnackbarMessages: state => {
+      const queueMessages = [...state.snackbar.queueMessages];
+      queueMessages.shift();
+      return {
+        ...state,
+        snackbar: {
+          ...state.snackbar,
+          queueMessages
+        }
+      };
     }
   }
 });

@@ -81,14 +81,14 @@ class Settings extends React.Component<Props, any> {
     const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null) {
-      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定の保存に失敗しました。']));
+      this.showSnackBar('設定の保存に失敗しました。');
       return;
     }
 
     electronStore.set('userID', changedUserID);
     dispatch(SettingsModule.actions.setEmail(userInfo.email));
     dispatch(AppModule.actions.setMyUserId(myUserID));
-    dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定を保存しました。']));
+    this.showSnackBar('設定を保存しました。');
     dispatch(SettingsModule.actions.changeDisabledSubmitButtonUserChange(true));
 
     sendHealthCheck(dispatch);
@@ -116,9 +116,9 @@ class Settings extends React.Component<Props, any> {
     updatedUserInfo['email'] = settingState.user.email;
     response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     if (response.getIsError()) {
-      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定の保存に失敗しました。']));
+      this.showSnackBar('設定の保存に失敗しました。');
     } else {
-      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定を保存しました。']));
+      this.showSnackBar('設定を保存しました。');
       dispatch(SettingsModule.actions.changeDisabledSubmitButtonEmail(true));
     }
   };
@@ -139,7 +139,7 @@ class Settings extends React.Component<Props, any> {
       openAtLogin
     });
 
-    dispatch(SettingsModule.actions.changeEnabledSnackbar([true, '設定を保存しました。']));
+    this.showSnackBar('設定を保存しました。');
   };
 
   onSnackBarClose = (event: any | MouseEvent, reason?: string) => {
@@ -148,6 +148,35 @@ class Settings extends React.Component<Props, any> {
       return;
     }
     dispatch(SettingsModule.actions.changeEnabledSnackbar(false));
+  };
+
+  showSnackBar = (message: string) => {
+    const { dispatch } = this.props;
+    const settingState = this.props.state.settingsState;
+
+    if (settingState.snackbar.queueMessages.length > 0) {
+      return;
+    }
+
+    if (settingState.snackbar.enabled) {
+      // 現在表示されているsnackbarを破棄して、新しいsnackbarを表示する
+      dispatch(SettingsModule.actions.enqueueSnackbarMessages(message));
+      dispatch(SettingsModule.actions.changeEnabledSnackbar(false));
+    } else {
+      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, message]));
+    }
+  };
+
+  onSnackBarExited = () => {
+    const { dispatch } = this.props;
+    const settingState = this.props.state.settingsState;
+    const queueMessages = [...settingState.snackbar.queueMessages];
+
+    if (queueMessages.length > 0) {
+      const message = queueMessages.shift();
+      dispatch(SettingsModule.actions.dequeueSnackbarMessages());
+      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, message]));
+    }
   };
 
   resizeWindow = () => {
@@ -167,6 +196,7 @@ class Settings extends React.Component<Props, any> {
           autoHideDuration={settingState.snackbar.timeoutMs}
           open={settingState.snackbar.enabled}
           onClose={this.onSnackBarClose}
+          onExited={this.onSnackBarExited}
           message={settingState.snackbar.message}
         />
         <Row className='settings_user'>
