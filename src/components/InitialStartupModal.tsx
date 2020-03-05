@@ -1,6 +1,6 @@
-import Button from '@material-ui/core/Button';
+import MaterialUiButton from '@material-ui/core/Button';
 import React from 'react';
-import { Col, Container, Form } from 'react-bootstrap';
+import { Button, Col, Container, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_VERSION, USER_STATUS_INFO } from '../define';
 import { ApiResponse, UserInfo, Props, UserInfoForUpdate } from '../define/model';
@@ -9,7 +9,7 @@ import initialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import { getUserInfo, sendHealthCheck } from './common/functions';
 import './InitialStartupModal.css';
-import { Backdrop, Fade, Modal, TextField, MenuItem, Link } from '@material-ui/core';
+import { Backdrop, Fade, Modal, TextField, MenuItem } from '@material-ui/core';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -207,9 +207,9 @@ class InitialStartupModal extends React.Component<Props, any> {
                         </TextField>
                         <Form.Text>
                           <span>新規登録は</span>
-                          <Link component='button' className='userChange' onClick={this.registUserInput}>
+                          <Button variant='link' className='userChange' onClick={this.registUserInput}>
                             こちら
-                          </Link>
+                          </Button>
                         </Form.Text>
                       </div>
                     )}
@@ -229,9 +229,9 @@ class InitialStartupModal extends React.Component<Props, any> {
                         />
                         <Form.Text>
                           <span>登録済みの場合は</span>
-                          <Link component='button' className='userChange' onClick={this.changeUserInput}>
+                          <Button variant='link' className='userChange' onClick={this.changeUserInput}>
                             こちら
-                          </Link>
+                          </Button>
                         </Form.Text>
                       </div>
                     )}
@@ -240,7 +240,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                 </Form.Row>
               </Container>
               <hr />
-              <Button
+              <MaterialUiButton
                 type='submit'
                 variant='contained'
                 color='primary'
@@ -248,7 +248,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                 style={{ float: 'right', boxShadow: 'none' }}
                 className='initial-startup-modal-base-button'>
                 登録
-              </Button>
+              </MaterialUiButton>
             </Form>
           </div>
         </Fade>
