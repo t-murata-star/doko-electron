@@ -207,7 +207,7 @@ class App extends React.Component<Props, any> {
     sendHealthCheck(dispatch);
   });
 
-  closeApp = ipcRenderer.on('closeApp', async (event: any) => {
+  closeApp = ipcRenderer.on('closeApp', async () => {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
     const userList = this.props.state.userListState.userList;

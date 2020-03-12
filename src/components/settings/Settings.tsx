@@ -46,7 +46,7 @@ class Settings extends React.Component<Props, any> {
   }
 
   // ユーザ変更
-  onUserChange = (event: any) => {
+  onUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
     const changedUserID = parseInt(event.target.value);
@@ -65,7 +65,7 @@ class Settings extends React.Component<Props, any> {
   };
 
   // ユーザ変更の保存
-  onSaveSettingsForUserChange = async (event: any) => {
+  onSaveSettingsForUserChange = async (event: React.MouseEvent<{}>) => {
     event.preventDefault();
     const { dispatch } = this.props;
     const settingState = this.props.state.settingsState;
@@ -95,7 +95,7 @@ class Settings extends React.Component<Props, any> {
   };
 
   // メールアドレスの変更
-  onUserEmailInputChange = (event: any) => {
+  onUserEmailInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
     dispatch(SettingsModule.actions.setEmail(event.currentTarget.value));
 
@@ -105,7 +105,7 @@ class Settings extends React.Component<Props, any> {
   };
 
   // メールアドレスの保存
-  onSaveSettingsForEmail = async (event: any) => {
+  onSaveSettingsForEmail = async (event: React.MouseEvent<{}>) => {
     event.preventDefault();
     const { dispatch } = this.props;
     const settingState = this.props.state.settingsState;
@@ -124,7 +124,7 @@ class Settings extends React.Component<Props, any> {
   };
 
   // スタートアップの変更と保存
-  changeAndSaveStartup = async (event: any) => {
+  changeAndSaveStartup = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
 
     await dispatch(SettingsModule.actions.changeEnabledStartup(event.target.checked));
@@ -142,7 +142,7 @@ class Settings extends React.Component<Props, any> {
     this.showSnackBar('設定を保存しました。');
   };
 
-  onSnackBarClose = (event: any | MouseEvent, reason?: string) => {
+  onSnackBarClose = (event: React.SyntheticEvent, reason?: string) => {
     const { dispatch } = this.props;
     if (reason === 'clickaway') {
       return;

@@ -105,7 +105,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     this.initializeField();
   };
 
-  onNameChange = (event: any) => {
+  onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
     this.userInfo[event.target.name] = event.target.value;
     if (event.target.value.length > 0 && this.props.state.initialStartupModalState.submitButtonDisabled === true) {
@@ -118,13 +118,13 @@ class InitialStartupModal extends React.Component<Props, any> {
     }
   };
 
-  onUserChange = (event: any) => {
+  onUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
     this.userID = parseInt(event.target.value);
     dispatch(initialStartupModalModule.actions.disableSubmitButton(false));
   };
 
-  handleSubmit = (event: any) => {
+  handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const { dispatch } = this.props;
     dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
     event.preventDefault();
@@ -136,7 +136,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     }
   };
 
-  changeUserInput = (event: any) => {
+  changeUserInput = () => {
     const { dispatch } = this.props;
     this.initializeField();
     dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
@@ -145,7 +145,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     dispatch(AsyncActionsUserList.getUserListAction(-1, 350, false));
   };
 
-  registUserInput = (event: any) => {
+  registUserInput = () => {
     const { dispatch } = this.props;
     this.initializeField();
     dispatch(initialStartupModalModule.actions.disableSubmitButton(true));

@@ -46,12 +46,6 @@ const slice = createSlice({
         submitButtonDisabled: true
       };
     },
-    handleEditUser: state => {
-      return {
-        ...state,
-        submitButtonDisabled: true
-      };
-    },
     inputClear: (state, action) => {
       action.payload.status = USER_STATUS_INFO.s01.status;
       action.payload.destination = '';

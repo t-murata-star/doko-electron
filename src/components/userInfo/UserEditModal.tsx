@@ -47,7 +47,7 @@ class UserEditModal extends React.Component<Props, any> {
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
-  onUserInfoChange = (event: any) => {
+  onUserInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
     dispatch(UserEditModalModule.actions.changeUserInfo([this.userInfo, event.target.name, event.target.value]));
     if (this.props.state.userEditModalState.submitButtonDisabled) {
@@ -55,19 +55,14 @@ class UserEditModal extends React.Component<Props, any> {
     }
   };
 
-  handleSubmit = (event: any) => {
+  handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { dispatch } = this.props;
     dispatch(UserEditModalModule.actions.disableSubmitButton());
     this._updateUserInfo(this.userInfo);
   };
 
-  handleEditUser = (event: any) => {
-    const { dispatch } = this.props;
-    dispatch(UserEditModalModule.actions.handleEditUser());
-  };
-
-  deleteUser = async (event: any) => {
+  deleteUser = async () => {
     const { dispatch } = this.props;
     let response: ApiResponse;
 
