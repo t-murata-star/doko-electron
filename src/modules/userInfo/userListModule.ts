@@ -130,8 +130,6 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
       const diffMin = Math.floor((nowDate.getTime() - healthCheckAt.getTime()) / (1000 * 60));
       if (diffMin >= LEAVING_TIME_THRESHOLD_M) {
         userInfo.status = USER_STATUS_INFO.s02.status;
-        // 更新日時を最後のhealthCheckAt送信日時に設定する
-        userInfo.updatedAt = userInfo.healthCheckAt;
       }
     }
   }
