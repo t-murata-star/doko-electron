@@ -1,5 +1,4 @@
-const electron = require('electron');
-const { app } = electron;
+const { BrowserWindow, dialog, powerMonitor, Tray, Menu, ipcMain, app } = require('electron');
 const packageJson = require('../package.json');
 
 let mainWindow;
@@ -38,7 +37,33 @@ if (process.env.LOAD_URL) {
   webAppURL = DEFAULT_LOAD_URL;
 }
 
-function createWindow() {
+// タスクトレイを作成
+const createTray = () => {
+  // 通知領域に表示するアイコンを指定
+  const path = require('path');
+  const iconPath = path.join(__dirname, '../public/favicon.png');
+  const tray = new Tray(iconPath);
+  // 通知領域をクリックした際のメニュー
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '終了',
+      click() {
+        app.quit();
+      }
+    }
+  ]);
+
+  tray.setContextMenu(contextMenu);
+  tray.setToolTip(APP_NAME);
+  tray.on('click', () => {
+    mainWindow.show();
+  });
+  tray.on('right-click', () => {
+    tray.popUpContextMenu(contextMenu);
+  });
+};
+
+const createWindow = () => {
   // アプリケーションのウインドウサイズを保持
   const windowStateKeeper = require('electron-window-state');
   const mainWindowState = windowStateKeeper({
@@ -46,7 +71,7 @@ function createWindow() {
     defaultHeight: 750
   });
 
-  mainWindow = new electron.BrowserWindow({
+  mainWindow = new BrowserWindow({
     title: `${APP_NAME} Version ${VERSION}`,
     width: mainWindowState.width,
     height: mainWindowState.height,
@@ -81,7 +106,7 @@ function createWindow() {
   // ウインドウがクローズされようとするときに発生するイベント
   mainWindow.on('close', closeEvent => {
     closeEvent.preventDefault();
-    const index = electron.dialog.showMessageBoxSync(mainWindow, {
+    const index = dialog.showMessageBoxSync(mainWindow, {
       title: APP_NAME,
       type: 'info',
       buttons: ['OK', 'Cancel'],
@@ -139,48 +164,22 @@ function createWindow() {
   });
 
   // スクリーンロックのイベントキャッチ
-  electron.powerMonitor.on('lock-screen', () => {
+  powerMonitor.on('lock-screen', () => {
     mainWindow.webContents.send('electronLockScreenEvent');
   });
 
   // スクリーンアンロックのイベントキャッチ
-  electron.powerMonitor.on('unlock-screen', () => {
+  powerMonitor.on('unlock-screen', () => {
     mainWindow.webContents.send('electronUnlockScreenEvent');
   });
 
   // シャットダウンのイベントキャッチ（Electron ver5時点ではLinuxとMacOSのみ対応）
-  electron.powerMonitor.on('shutdown', () => {
+  powerMonitor.on('shutdown', () => {
     mainWindow.webContents.send('electronShutdownEvent');
   });
 
   createTray();
-}
-
-// タスクトレイを作成
-function createTray() {
-  // 通知領域に表示するアイコンを指定
-  const path = require('path');
-  const iconPath = path.join(__dirname, '../public/favicon.png');
-  const tray = new electron.Tray(iconPath);
-  // 通知領域をクリックした際のメニュー
-  const contextMenu = electron.Menu.buildFromTemplate([
-    {
-      label: '終了',
-      click(menuItem) {
-        app.quit();
-      }
-    }
-  ]);
-
-  tray.setContextMenu(contextMenu);
-  tray.setToolTip(APP_NAME);
-  tray.on('click', () => {
-    mainWindow.show();
-  });
-  tray.on('right-click', () => {
-    tray.popUpContextMenu(contextMenu);
-  });
-}
+};
 
 // 二重起動防止処理
 const gotTheLock = app.requestSingleInstanceLock();
@@ -213,19 +212,19 @@ if (!gotTheLock) {
 }
 
 // レンダラープロセスからメインプロセスへのデータ送信（非同期通信）
-electron.ipcMain.on('closeApp', event => {
+ipcMain.on('closeApp', event => {
   if (mainWindow.isDestroyed() === false) {
     mainWindow.destroy();
   }
 });
 
-electron.ipcMain.on('reload', event => {
+ipcMain.on('reload', event => {
   // レンダラープロセスに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     mainWindow.loadFile(global.errorPageFilepath);
   });
 });
 
-electron.ipcMain.on('connected', (event, isConnected) => {
+ipcMain.on('connected', (event, isConnected) => {
   global.isConnectedForRendererProcess = isConnected;
 });
