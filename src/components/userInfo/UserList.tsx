@@ -170,7 +170,6 @@ class UserList extends React.Component<Props, any> {
     const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
 
     return (
-      // React-tabulatorのTypeScript型定義が未対応のため、@ts-ignoreでエラーを抑制
       <div>
         <Inoperable enabled={this.props.state.userListState.inoperable} />
         <ReactTabulator
