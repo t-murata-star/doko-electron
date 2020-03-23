@@ -1,4 +1,4 @@
-import { Fade, Tooltip, Button, TextField, MenuItem } from '@material-ui/core';
+import { Fade, Tooltip, Button, TextField } from '@material-ui/core';
 import $ from 'jquery';
 import React from 'react';
 import { Modal, Backdrop } from '@material-ui/core';
@@ -161,14 +161,14 @@ class UserEditModal extends React.Component<Props, any> {
                       fullWidth
                       size={'small'}
                       SelectProps={{
-                        native: false
+                        native: true
                       }}>
                       {STATUS_LIST.map((status: string, index: number) => (
-                        <MenuItem key={index} value={status}>
+                        <option key={index} value={status}>
                           {status}
-                        </MenuItem>
+                        </option>
                       ))}
-                      <MenuItem hidden>{userInfo.status}</MenuItem>
+                      <option hidden>{userInfo.status}</option>
                     </TextField>
                   </Form.Group>
                 </Form.Row>

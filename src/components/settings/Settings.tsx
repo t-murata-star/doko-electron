@@ -11,7 +11,7 @@ import SettingsModule from '../../modules/settings/settingsModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { getUserInfo, sendHealthCheck } from '../common/functions';
 import './Settings.css';
-import { TextField, MenuItem } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -219,7 +219,7 @@ class Settings extends React.Component<Props, any> {
                       style={{ width: 250 }}
                       size={'small'}
                       SelectProps={{
-                        native: false
+                        native: true
                       }}
                       disabled={userList.length === 0}>
                       {userList
@@ -227,9 +227,9 @@ class Settings extends React.Component<Props, any> {
                           return a.order - b.order;
                         })
                         .map((userInfo: UserInfo, index: number) => (
-                          <MenuItem key={index} value={userInfo.id} disabled={myUserID === userInfo.id}>
+                          <option key={index} value={userInfo.id} disabled={myUserID === userInfo.id}>
                             {userInfo.name}
-                          </MenuItem>
+                          </option>
                         ))}
                     </TextField>
                   </Form.Group>

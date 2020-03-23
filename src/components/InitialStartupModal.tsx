@@ -9,7 +9,7 @@ import initialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import { getUserInfo, sendHealthCheck } from './common/functions';
 import './InitialStartupModal.css';
-import { Backdrop, Fade, Modal, TextField, MenuItem } from '@material-ui/core';
+import { Backdrop, Fade, Modal, TextField } from '@material-ui/core';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -188,21 +188,27 @@ class InitialStartupModal extends React.Component<Props, any> {
                           fullWidth
                           size={'small'}
                           SelectProps={{
-                            native: false
+                            native: true
                           }}
                           disabled={userList.length === 0}>
-                          <MenuItem hidden value='-1'>
-                            {userList.length > 0 && <div>選択してください</div>}
-                            {userList.length === 0 && <div>ユーザが存在しません</div>}
-                          </MenuItem>
+                          {userList.length > 0 && (
+                            <option hidden value='-1'>
+                              選択してください
+                            </option>
+                          )}
+                          {userList.length === 0 && (
+                            <option hidden value='-1'>
+                              ユーザが存在しません
+                            </option>
+                          )}
                           {userList
                             .sort((a: UserInfo, b: UserInfo) => {
                               return a.order - b.order;
                             })
                             .map((userInfo: UserInfo, index: number) => (
-                              <MenuItem key={index} value={userInfo.id}>
+                              <option key={index} value={userInfo.id}>
                                 {userInfo.name}
-                              </MenuItem>
+                              </option>
                             ))}
                         </TextField>
                         <Form.Text>
