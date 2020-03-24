@@ -6,6 +6,8 @@ import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import './OfficeInfo.css';
 import { Props } from '../../define/model';
+import { Grid, Paper } from '@material-ui/core';
+import MenuButtonGroupForOfficeInfo from './MenuButtonGroupForOfficeInfo';
 
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
 
@@ -16,6 +18,29 @@ class OfficeInfo extends React.Component<Props, any> {
 
     return (
       <div className='office_info'>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Paper className='paper'>xs=12</Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper className='paper'>xs=12 sm=6</Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper className='paper'>xs=12 sm=6</Paper>
+          </Grid>
+          <Grid item xs={3}>
+            <Paper className='paper'>xs=6 sm=3</Paper>
+          </Grid>
+          <Grid item xs={3}>
+            <Paper className='paper'>xs=6 sm=3</Paper>
+          </Grid>
+          <Grid item xs={3}>
+            <Paper className='paper'>xs=6 sm=3</Paper>
+          </Grid>
+          <Grid item xs={3}>
+            <Paper className='paper'>xs=6 sm=3</Paper>
+          </Grid>
+        </Grid>
         <h4 style={{ textAlign: 'center' }}>トイレ利用状況</h4>
         <Row>
           <Col md='2' />
@@ -60,6 +85,7 @@ class OfficeInfo extends React.Component<Props, any> {
           </Col>
           <Col md='2' />
         </Row>
+        <MenuButtonGroupForOfficeInfo />
       </div>
     );
   }

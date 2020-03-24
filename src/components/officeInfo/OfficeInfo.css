@@ -2,8 +2,12 @@
   margin-top: 15px;
   margin-bottom: 20px;
   font-size: 18px;
-  margin-left: 12px;
+  margin: 15px;
 }
 .toilet-women {
   background-color: lightgray;
+}
+.paper {
+  padding: 5px;
+  text-align: center;
 }

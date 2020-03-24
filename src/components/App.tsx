@@ -21,7 +21,6 @@ import { getUserInfo, sendHealthCheck, showMessageBoxSync, showMessageBoxSyncWit
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
-import MenuButtonGroupForOfficeInfo from './officeInfo/MenuButtonGroupForOfficeInfo';
 import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
 import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
@@ -300,7 +299,6 @@ class App extends React.Component<Props, any> {
             <Fade in={true}>
               <div>
                 <OfficeInfo />
-                <MenuButtonGroupForOfficeInfo />
               </div>
             </Fade>
           )}
