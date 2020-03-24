@@ -23,7 +23,6 @@ import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
 import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
-import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
 import UserList from './userInfo/UserList';
 import { Fade } from '@material-ui/core';
 
@@ -291,7 +290,6 @@ class App extends React.Component<Props, any> {
             <Fade in={true}>
               <div>
                 <UserList />
-                <MenuButtonGroupForUserList />
               </div>
             </Fade>
           )}

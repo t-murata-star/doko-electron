@@ -26,7 +26,7 @@ class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
           color='default'
           onClick={this.reload}
           disabled={officeInfo.isFetching === true}
-          className='menu-button-group-for-user-list-base-button'
+          fullWidth
           style={{ boxShadow: 'none' }}>
           <FontAwesomeIcon icon='sync' />
           &nbsp;再読込

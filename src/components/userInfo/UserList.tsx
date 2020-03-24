@@ -11,6 +11,7 @@ import { getUserInfo, showMessageBoxSyncWithReturnValue } from '../common/functi
 import Inoperable from '../Inoperable';
 import './UserList.css';
 import { Props } from '../../define/model';
+import MenuButtonGroupForUserList from './MenuButtonGroupForUserList';
 
 const { remote } = window.require('electron');
 
@@ -190,8 +191,8 @@ class UserList extends React.Component<Props, any> {
             rowFormatter: this._rowFormatter,
             placeholder: '通信に失敗しました。'
           }}
-          rowMoved={this._rowMovedCallback}
-        />
+          rowMoved={this._rowMovedCallback}/>
+        <MenuButtonGroupForUserList />
       </div>
     );
   }

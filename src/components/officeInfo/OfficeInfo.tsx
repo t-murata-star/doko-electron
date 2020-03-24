@@ -2,7 +2,6 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faDoorClosed, faDoorOpen, faFemale, faMale } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import { Col, Form, ListGroup, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import './OfficeInfo.css';
 import { Props } from '../../define/model';
@@ -18,73 +17,51 @@ class OfficeInfo extends React.Component<Props, any> {
 
     return (
       <div className='office_info'>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Paper className='paper'>xs=12</Paper>
+        <h4 style={{ textAlign: 'center' }}>執務室</h4>
+        <Grid container justify='center' alignItems='center' spacing={3} className='info'>
+          <Grid item xs={4}>
+            <Paper className='paper' elevation={2}>
+              気温
+              <div className='info_content'>13.5 ℃</div>
+            </Paper>
           </Grid>
-          <Grid item xs={6}>
-            <Paper className='paper'>xs=12 sm=6</Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper className='paper'>xs=12 sm=6</Paper>
-          </Grid>
-          <Grid item xs={3}>
-            <Paper className='paper'>xs=6 sm=3</Paper>
-          </Grid>
-          <Grid item xs={3}>
-            <Paper className='paper'>xs=6 sm=3</Paper>
-          </Grid>
-          <Grid item xs={3}>
-            <Paper className='paper'>xs=6 sm=3</Paper>
-          </Grid>
-          <Grid item xs={3}>
-            <Paper className='paper'>xs=6 sm=3</Paper>
+          <Grid item xs={4}>
+            <Paper className='paper' elevation={2}>
+              湿度
+              <div className='info_content'>47.2 %</div>
+            </Paper>
           </Grid>
         </Grid>
-        <h4 style={{ textAlign: 'center' }}>トイレ利用状況</h4>
-        <Row>
-          <Col md='2' />
-          <Col md='4'>
-            <ListGroup>
-              <ListGroup.Item className='toilet-women'>
-                <Form.Label>
-                  <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
-                </Form.Label>
-                <p>&nbsp;</p>
-              </ListGroup.Item>
-            </ListGroup>
-          </Col>
-          <Col md='4'>
-            <ListGroup>
-              <ListGroup.Item>
-                <Form.Label>
-                  <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
-                </Form.Label>
-                {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError === false && (
-                  <div style={{ color: 'red' }}>
-                    <p>
-                      <FontAwesomeIcon icon='door-closed' /> 満室
-                    </p>
-                  </div>
-                )}
-                {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError === false && (
-                  <div style={{ color: 'blue' }}>
-                    <p>
-                      <FontAwesomeIcon icon='door-open' /> 空室：
-                      {officeInfo.restrooms.vacancyForMen === -1 ? '-' : officeInfo.restrooms.vacancyForMen}
-                    </p>
-                  </div>
-                )}
-                {officeInfo.isError === true && (
-                  <div style={{ color: 'red' }}>
-                    <p>通信に失敗しました。</p>
-                  </div>
-                )}
-              </ListGroup.Item>
-            </ListGroup>
-          </Col>
-          <Col md='2' />
-        </Row>
+        <h4 style={{ textAlign: 'center' }}>トイレ使用状況</h4>
+        <Grid container justify='center' alignItems='center' spacing={3}>
+          <Grid item xs={4}>
+            <Paper className='paper restroom-women' elevation={2}>
+              <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
+              <div className='restrooms_content_women'>&nbsp;</div>
+            </Paper>
+          </Grid>
+          <Grid item xs={4}>
+            <Paper className='paper' elevation={2}>
+              <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
+              {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError === false && (
+                <div className='restrooms_content_no_vacancy'>
+                  <FontAwesomeIcon icon='door-closed' /> 満室
+                </div>
+              )}
+              {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError === false && (
+                <div className='restrooms_content_vacancy'>
+                  <FontAwesomeIcon icon='door-open' /> 空室：
+                  {officeInfo.restrooms.vacancyForMen === -1 ? '-' : officeInfo.restrooms.vacancyForMen}
+                </div>
+              )}
+              {officeInfo.isError === true && (
+                <div style={{ color: 'red' }}>
+                  <p>通信に失敗しました。</p>
+                </div>
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
         <MenuButtonGroupForOfficeInfo />
       </div>
     );

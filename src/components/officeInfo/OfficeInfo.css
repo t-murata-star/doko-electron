@@ -1,13 +1,27 @@
 .office_info {
-  margin-top: 15px;
-  margin-bottom: 20px;
   font-size: 18px;
   margin: 15px;
 }
-.toilet-women {
-  background-color: lightgray;
+.info {
+  margin-bottom: 15px;
 }
-.paper {
-  padding: 5px;
+.info_content {
   text-align: center;
+  font-size: xx-large;
+}
+.restrooms_content_no_vacancy {
+  color: red;
+  text-align: center;
+  font-size: x-large;
+}
+.restrooms_content_vacancy {
+  color: blue;
+  text-align: center;
+  font-size: x-large;
+}
+.restrooms_content_women {
+  font-size: x-large;
+}
+.restroom-women {
+  background-color: lightgray;
 }
