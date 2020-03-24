@@ -12,15 +12,15 @@
 .restrooms_content_no_vacancy {
   color: red;
   text-align: center;
-  font-size: x-large;
+  font-size: larger;
 }
 .restrooms_content_vacancy {
   color: blue;
   text-align: center;
-  font-size: x-large;
+  font-size: larger;
 }
 .restrooms_content_women {
-  font-size: x-large;
+  font-size: larger;
 }
 .restroom-women {
   background-color: lightgray;
