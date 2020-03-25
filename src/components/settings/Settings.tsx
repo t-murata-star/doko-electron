@@ -1,6 +1,7 @@
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import Switch from '@material-ui/core/Switch';
+import MuiAlert, { AlertProps, Color } from '@material-ui/lab/Alert';
 import React from 'react';
 import { Col, Form, ListGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
@@ -11,11 +12,15 @@ import SettingsModule from '../../modules/settings/settingsModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { getUserInfo, sendHealthCheck } from '../common/functions';
 import './Settings.css';
-import { TextField, Grid } from '@material-ui/core';
+import { TextField, Grid, Fade } from '@material-ui/core';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
+
+const Alert = (props: AlertProps) => {
+  return <MuiAlert elevation={6} variant='filled' {...props} />;
+};
 
 class Settings extends React.Component<Props, any> {
   async componentDidMount() {
@@ -81,14 +86,14 @@ class Settings extends React.Component<Props, any> {
     const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null) {
-      this.showSnackBar('設定の保存に失敗しました。');
+      this.showSnackBar('error', '設定の保存に失敗しました。', null);
       return;
     }
 
     electronStore.set('userID', changedUserID);
     dispatch(SettingsModule.actions.setEmail(userInfo.email));
     dispatch(AppModule.actions.setMyUserId(myUserID));
-    this.showSnackBar('設定を保存しました。');
+    this.showSnackBar('success', '設定を保存しました。');
     dispatch(SettingsModule.actions.changeDisabledSubmitButtonUserChange(true));
 
     sendHealthCheck(dispatch);
@@ -116,9 +121,9 @@ class Settings extends React.Component<Props, any> {
     updatedUserInfo['email'] = settingState.user.email;
     response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
     if (response.getIsError()) {
-      this.showSnackBar('設定の保存に失敗しました。');
+      this.showSnackBar('error', '設定の保存に失敗しました。', null);
     } else {
-      this.showSnackBar('設定を保存しました。');
+      this.showSnackBar('success', '設定を保存しました。');
       dispatch(SettingsModule.actions.changeDisabledSubmitButtonEmail(true));
     }
   };
@@ -139,18 +144,18 @@ class Settings extends React.Component<Props, any> {
       openAtLogin
     });
 
-    this.showSnackBar('設定を保存しました。');
+    this.showSnackBar('success', '設定を保存しました。');
   };
 
   onSnackBarClose = (event: React.SyntheticEvent, reason?: string) => {
     const { dispatch } = this.props;
-    if (reason === 'clickaway') {
-      return;
-    }
-    dispatch(SettingsModule.actions.changeEnabledSnackbar(false));
+    // if (reason === 'clickaway') {
+    //   return;
+    // }
+    dispatch(SettingsModule.actions.changeEnabledSnackbar([false]));
   };
 
-  showSnackBar = (message: string) => {
+  showSnackBar = (severity: Color, message: string, timeoutMs: number | null = 5000) => {
     const { dispatch } = this.props;
     const settingState = this.props.state.settingsState;
 
@@ -161,9 +166,9 @@ class Settings extends React.Component<Props, any> {
     if (settingState.snackbar.enabled) {
       // 現在表示されているsnackbarを破棄して、新しいsnackbarを表示する
       dispatch(SettingsModule.actions.enqueueSnackbarMessages(message));
-      dispatch(SettingsModule.actions.changeEnabledSnackbar(false));
+      dispatch(SettingsModule.actions.changeEnabledSnackbar([false]));
     } else {
-      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, message]));
+      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, severity, message, timeoutMs]));
     }
   };
 
@@ -175,7 +180,7 @@ class Settings extends React.Component<Props, any> {
     if (queueMessages.length > 0) {
       const message = queueMessages.shift();
       dispatch(SettingsModule.actions.dequeueSnackbarMessages());
-      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, message]));
+      dispatch(SettingsModule.actions.changeEnabledSnackbar([true, settingState.snackbar.severity, message]));
     }
   };
 
@@ -197,8 +202,9 @@ class Settings extends React.Component<Props, any> {
           open={settingState.snackbar.enabled}
           onClose={this.onSnackBarClose}
           onExited={this.onSnackBarExited}
-          message={settingState.snackbar.message}
-        />
+          TransitionComponent={Fade}>
+          <Alert severity={settingState.snackbar.severity}>{settingState.snackbar.message}</Alert>
+        </Snackbar>
         <Grid container justify='center' spacing={2} className='settings_user'>
           <Grid item xs={10}>
             <h4>ユーザ</h4>

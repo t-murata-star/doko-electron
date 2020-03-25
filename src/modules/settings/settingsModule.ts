@@ -1,4 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { Color } from '@material-ui/lab/Alert';
+
+interface Snackbar {
+  enabled: false;
+  severity: Color;
+  message: string;
+  timeoutMs: number | null;
+  queueMessages: Array<string>;
+}
 
 class _initialState {
   submitButtonsDisable = {
@@ -7,8 +16,9 @@ class _initialState {
       email: true
     }
   };
-  snackbar = {
+  snackbar: Snackbar = {
     enabled: false,
+    severity: 'info',
     message: '',
     timeoutMs: 5000,
     queueMessages: new Array<string>()
@@ -84,8 +94,9 @@ const slice = createSlice({
         snackbar: {
           ...state.snackbar,
           enabled: action.payload[0],
-          message: action.payload[1] ? action.payload[1] : '',
-          timeoutMs: action.payload[2] ? action.payload[2] : 5000
+          severity: action.payload[1] ? action.payload[1] : state.snackbar.severity,
+          message: action.payload[2] ? action.payload[2] : state.snackbar.message,
+          timeoutMs: action.payload[3] !== null ? action.payload[3] : null
         }
       };
     },
