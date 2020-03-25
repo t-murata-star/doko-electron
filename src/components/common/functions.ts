@@ -1,7 +1,8 @@
+import { Color } from '@material-ui/lab/Alert';
 import store from '../../configureStore';
 import { APP_NAME, APP_VERSION } from '../../define';
 import { UserInfo } from '../../define/model';
-import { AsyncActionsApp } from '../../modules/appModule';
+import AppModule, { AsyncActionsApp } from '../../modules/appModule';
 const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意
@@ -67,5 +68,42 @@ export const showMessageBoxSyncWithReturnValue = (
       buttons: [OKButtonText, cancelButtonText],
       message
     });
+  }
+};
+
+export const showSnackBar = (severity: Color, message: string, timeoutMs: number | null = 5000) => {
+  const dispatch = store.dispatch;
+  const appState = store.getState().appState;
+
+  if (appState.snackbar.queueMessages.length > 0) {
+    return;
+  }
+
+  if (appState.snackbar.enabled) {
+    // 現在表示されているsnackbarを破棄して、新しいsnackbarを表示する
+    dispatch(AppModule.actions.enqueueSnackbarMessages(message));
+    dispatch(AppModule.actions.changeEnabledSnackbar([false]));
+  } else {
+    dispatch(AppModule.actions.changeEnabledSnackbar([true, severity, message, timeoutMs]));
+  }
+};
+
+export const onSnackBarClose = (event: React.SyntheticEvent, reason?: string) => {
+  const dispatch = store.dispatch;
+  // if (reason === 'clickaway') {
+  //   return;
+  // }
+  dispatch(AppModule.actions.changeEnabledSnackbar([false]));
+};
+
+export const onSnackBarExited = () => {
+  const dispatch = store.dispatch;
+  const appState = store.getState().appState;
+  const queueMessages = [...appState.snackbar.queueMessages];
+
+  if (queueMessages.length > 0) {
+    const message = queueMessages.shift();
+    dispatch(AppModule.actions.dequeueSnackbarMessages());
+    dispatch(AppModule.actions.changeEnabledSnackbar([true, appState.snackbar.severity, message]));
   }
 };

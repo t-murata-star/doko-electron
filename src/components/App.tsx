@@ -1,5 +1,7 @@
+import { Fade, Snackbar } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -11,24 +13,34 @@ import {
   HEALTH_CHECK_INTERVAL_MS,
   USER_STATUS_INFO
 } from '../define';
-import { ApiResponse, Notification, UserInfo, Props, UserInfoForUpdate } from '../define/model';
+import { ApiResponse, Notification, Props, UserInfo, UserInfoForUpdate } from '../define/model';
 import AppModule, { AsyncActionsApp } from '../modules/appModule';
 import InitialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
 import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import './App.scss';
-import { getUserInfo, sendHealthCheck, showMessageBoxSync, showMessageBoxSyncWithReturnValue } from './common/functions';
+import {
+  getUserInfo,
+  onSnackBarClose,
+  onSnackBarExited,
+  sendHealthCheck,
+  showMessageBoxSync,
+  showMessageBoxSyncWithReturnValue
+} from './common/functions';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
 import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
 import UserList from './userInfo/UserList';
-import { Fade } from '@material-ui/core';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
+
+const Alert = (props: AlertProps) => {
+  return <MuiAlert elevation={6} variant='filled' {...props} />;
+};
 
 class App extends React.Component<Props, any> {
   async componentDidMount() {
@@ -258,6 +270,7 @@ class App extends React.Component<Props, any> {
 
   render() {
     const myUserID = this.props.state.appState.myUserID;
+    const appState = this.props.state.appState;
     return (
       <div>
         <Loading
@@ -265,6 +278,15 @@ class App extends React.Component<Props, any> {
           isUserListProcessing={this.props.state.userListState.isFetching}
           officeInfoProcessing={this.props.state.officeInfoState.isFetching}
         />
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          autoHideDuration={appState.snackbar.timeoutMs}
+          open={appState.snackbar.enabled}
+          onClose={onSnackBarClose}
+          onExited={onSnackBarExited}
+          TransitionComponent={Fade}>
+          <Alert severity={appState.snackbar.severity}>{appState.snackbar.message}</Alert>
+        </Snackbar>
         <InitialStartupModal />
         {myUserID !== -1 && (
           <Fade in={true}>
