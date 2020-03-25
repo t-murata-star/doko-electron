@@ -126,7 +126,7 @@ class App extends React.Component<Props, any> {
      * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
      */
     setInterval(() => {
-      sendHealthCheck(dispatch);
+      sendHealthCheck();
     }, HEALTH_CHECK_INTERVAL_MS);
 
     /**
@@ -176,7 +176,7 @@ class App extends React.Component<Props, any> {
     dispatch(UserListModule.actions.setUserInfo(userList));
     dispatch(AppModule.actions.setMyUserId(userID));
 
-    sendHealthCheck(dispatch);
+    sendHealthCheck();
   }
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
@@ -214,7 +214,7 @@ class App extends React.Component<Props, any> {
     updatedUserInfo.status = USER_STATUS_INFO.s01.status;
     dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
 
-    sendHealthCheck(dispatch);
+    sendHealthCheck();
   });
 
   closeApp = ipcRenderer.on('closeApp', async () => {

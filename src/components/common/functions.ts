@@ -16,7 +16,8 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
   return userInfo || null;
 };
 
-export const sendHealthCheck = (dispatch: any) => {
+export const sendHealthCheck = () => {
+  const dispatch: any = store.dispatch;
   const myUserID = store.getState().appState.myUserID;
   const userList = store.getState().userListState.userList;
   const userInfo = getUserInfo(userList, myUserID);
@@ -72,7 +73,7 @@ export const showMessageBoxSyncWithReturnValue = (
 };
 
 export const showSnackBar = (severity: Color, message: string, timeoutMs: number | null = 5000) => {
-  const dispatch = store.dispatch;
+  const dispatch: any = store.dispatch;
   const appState = store.getState().appState;
 
   if (appState.snackbar.queueMessages.length > 0) {
@@ -89,7 +90,7 @@ export const showSnackBar = (severity: Color, message: string, timeoutMs: number
 };
 
 export const onSnackBarClose = (event: React.SyntheticEvent, reason?: string) => {
-  const dispatch = store.dispatch;
+  const dispatch: any = store.dispatch;
   // if (reason === 'clickaway') {
   //   return;
   // }
@@ -97,7 +98,7 @@ export const onSnackBarClose = (event: React.SyntheticEvent, reason?: string) =>
 };
 
 export const onSnackBarExited = () => {
-  const dispatch = store.dispatch;
+  const dispatch: any = store.dispatch;
   const appState = store.getState().appState;
   const queueMessages = [...appState.snackbar.queueMessages];
 

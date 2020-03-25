@@ -90,7 +90,7 @@ class Settings extends React.Component<Props, any> {
     showSnackBar('success', '設定を保存しました。');
     dispatch(SettingsModule.actions.changeDisabledSubmitButtonUserChange(true));
 
-    sendHealthCheck(dispatch);
+    sendHealthCheck();
   };
 
   // メールアドレスの変更

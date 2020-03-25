@@ -55,7 +55,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     await dispatch(AsyncActionsUserList.updateUserInfoAction(addedUserInfo, myUserID));
     dispatch(AsyncActionsUserList.getUserListAction(myUserID));
 
-    sendHealthCheck(dispatch);
+    sendHealthCheck();
 
     this.closeModal();
     this.initializeField();
@@ -101,7 +101,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     this.closeModal();
 
     dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
-    sendHealthCheck(dispatch);
+    sendHealthCheck();
     this.initializeField();
   };
 
