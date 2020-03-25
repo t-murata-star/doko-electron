@@ -13,6 +13,10 @@ class _initialState {
     vacancyForMen: -1,
     vacancyForWomen: -1
   };
+  info = {
+    tempreture: -1,
+    humidity: -1
+  };
 }
 
 // createSlice() で actions と reducers を一気に生成
@@ -55,10 +59,12 @@ const slice = createSlice({
         isError: false
       };
     },
-    returnEmptyRestroomUsage: state => {
+    getOfficeInfoSuccess: (state, action) => {
       return {
         ...state,
-        rooms: []
+        info: action.payload,
+        isFetching: false,
+        isError: false
       };
     }
   }
@@ -122,7 +128,36 @@ export class AsyncActionsOfficeInfo {
         return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
-        dispatch(slice.actions.returnEmptyRestroomUsage());
+        return new ApiResponse(null, true);
+      }
+    };
+  };
+
+  static getOfficeInfoAction = (sleepMs: number = 0) => {
+    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
+      dispatch(slice.actions.startApiRequest());
+      try {
+        const startTime = Date.now();
+        const res = await fetch(`${API_URL}/officeInfo`, {
+          method: 'GET',
+          headers: AUTH_REQUEST_HEADERS
+        });
+        const lowestWaitTime = sleepMs - (Date.now() - startTime);
+        if (Math.sign(lowestWaitTime) === 1) {
+          await _sleep(lowestWaitTime);
+        }
+
+        responseStatusCheck(dispatch, res.status);
+
+        if (res.ok === false) {
+          dispatch(slice.actions.requestError());
+          return new ApiResponse(null, true);
+        }
+        const json = await res.json();
+        dispatch(slice.actions.getOfficeInfoSuccess(json));
+        return new ApiResponse();
+      } catch (error) {
+        dispatch(slice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };

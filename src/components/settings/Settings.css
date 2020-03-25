@@ -1,14 +1,9 @@
 .settings {
-  margin-top: 15px;
-  margin-bottom: 20px;
   font-size: 18px;
-  margin-left: 12px;
+  margin: 15px;
 }
 .settings_user {
-  margin-bottom: 2%;
-}
-.settings_system {
-  margin-bottom: 2%;
+  margin-bottom: 15px;
 }
 .settings-save-button {
   position: absolute;

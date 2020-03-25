@@ -1,9 +1,39 @@
 .office_info {
-  margin-top: 15px;
-  margin-bottom: 20px;
   font-size: 18px;
-  margin-left: 12px;
+  margin: 15px;
 }
-.toilet-women {
+.info {
+  margin-bottom: 15px;
+}
+.info_content {
+  text-align: center;
+  font-size: xx-large;
+}
+.info_content_unit {
+  font-size: large;
+  margin-left: 10px;
+}
+.restrooms_content_no_vacancy {
+  color: red;
+  text-align: center;
+  font-size: larger;
+  margin: 5px;
+}
+.restrooms_content_vacancy {
+  color: blue;
+  text-align: center;
+  font-size: larger;
+  margin: 5px;
+}
+.restrooms_content_women {
+  font-size: larger;
+  margin: 5px;
+}
+.restroom-women {
   background-color: lightgray;
+}
+.content_error {
+  color: red;
+  text-align: center;
+  margin: 5px;
 }

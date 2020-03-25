@@ -2,7 +2,7 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import Switch from '@material-ui/core/Switch';
 import React from 'react';
-import { Col, Form, ListGroup, Row } from 'react-bootstrap';
+import { Col, Form, ListGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { ApiResponse, UserInfo, Props, UserInfoForUpdate } from '../../define/model';
@@ -11,7 +11,7 @@ import SettingsModule from '../../modules/settings/settingsModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
 import { getUserInfo, sendHealthCheck } from '../common/functions';
 import './Settings.css';
-import { TextField } from '@material-ui/core';
+import { TextField, Grid } from '@material-ui/core';
 
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
@@ -199,9 +199,8 @@ class Settings extends React.Component<Props, any> {
           onExited={this.onSnackBarExited}
           message={settingState.snackbar.message}
         />
-        <Row className='settings_user'>
-          <Col md='1' />
-          <Col md='10'>
+        <Grid container justify='center' spacing={2} className='settings_user'>
+          <Grid item xs={10}>
             <h4>ユーザ</h4>
             <ListGroup>
               <ListGroup.Item>
@@ -278,12 +277,10 @@ class Settings extends React.Component<Props, any> {
                 </Button>
               </ListGroup.Item>
             </ListGroup>
-          </Col>
-          <Col md='1' />
-        </Row>
-        <Row className='settings_system'>
-          <Col md='1' />
-          <Col md='10'>
+          </Grid>
+        </Grid>
+        <Grid container justify='center' spacing={2}>
+          <Grid item xs={10}>
             <h4>システム</h4>
             <ListGroup>
               <ListGroup.Item>
@@ -318,9 +315,8 @@ class Settings extends React.Component<Props, any> {
                 </Button>
               </ListGroup.Item>
             </ListGroup>
-          </Col>
-          <Col md='1' />
-        </Row>
+          </Grid>
+        </Grid>
       </div>
     );
   }

@@ -21,10 +21,8 @@ import { getUserInfo, sendHealthCheck, showMessageBoxSync, showMessageBoxSyncWit
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
-import MenuButtonGroupForOfficeInfo from './officeInfo/MenuButtonGroupForOfficeInfo';
 import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
-import MenuButtonGroupForUserList from './userInfo/MenuButtonGroupForUserList';
 import UserList from './userInfo/UserList';
 import { Fade } from '@material-ui/core';
 
@@ -237,12 +235,13 @@ class App extends React.Component<Props, any> {
     switch (activeIndex) {
       // 社内情報タブを選択
       case 0:
-        await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
+        dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
         break;
 
       // 社員情報タブを選択
       case 1:
-        await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350));
+        dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350));
+        dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350));
         break;
 
       default:
@@ -292,7 +291,6 @@ class App extends React.Component<Props, any> {
             <Fade in={true}>
               <div>
                 <UserList />
-                <MenuButtonGroupForUserList />
               </div>
             </Fade>
           )}
@@ -300,7 +298,6 @@ class App extends React.Component<Props, any> {
             <Fade in={true}>
               <div>
                 <OfficeInfo />
-                <MenuButtonGroupForOfficeInfo />
               </div>
             </Fade>
           )}

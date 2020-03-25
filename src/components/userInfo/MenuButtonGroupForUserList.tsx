@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
-import { Col, Container, Form, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
@@ -12,6 +11,7 @@ import { getUserInfo } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
 import UserEditModal from './UserEditModal';
 import { Props } from '../../define/model';
+import { Grid } from '@material-ui/core';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForUserList extends React.Component<Props, any> {
@@ -47,37 +47,35 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
     const userInfo = getUserInfo(userList.userList, myUserID);
 
     return (
-      <Row className='menu-button-group-for-user-list'>
-        <Container>
-          <Form.Row>
-            <Form.Group as={Col} controlId='reload'>
-              <Button
-                variant='outlined'
-                color='default'
-                onClick={this.reload}
-                disabled={userList.isFetching === true}
-                className='menu-button-group-for-user-list-base-button'
-                style={{ boxShadow: 'none' }}>
-                <FontAwesomeIcon icon='sync' />
-                &nbsp;再読込
-              </Button>
-            </Form.Group>
-            <Form.Group as={Col} controlId='showUserEditModal'>
-              <Button
-                variant='outlined'
-                color='default'
-                onClick={this.showUserEditModal}
-                disabled={userInfo === null || appState.isAuthenticated === false}
-                className='menu-button-group-for-user-list-base-button'
-                style={{ boxShadow: 'none' }}>
-                <FontAwesomeIcon icon='edit' />
-                &nbsp;自分編集
-              </Button>
-            </Form.Group>
-          </Form.Row>
-        </Container>
+      <div className='menu-button-group-for-user-list'>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Button
+              variant='outlined'
+              color='default'
+              onClick={this.reload}
+              disabled={userList.isFetching === true}
+              fullWidth
+              style={{ boxShadow: 'none' }}>
+              <FontAwesomeIcon icon='sync' />
+              &nbsp;再読込
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              variant='outlined'
+              color='default'
+              onClick={this.showUserEditModal}
+              disabled={userInfo === null || appState.isAuthenticated === false}
+              fullWidth
+              style={{ boxShadow: 'none' }}>
+              <FontAwesomeIcon icon='edit' />
+              &nbsp;自分編集
+            </Button>
+          </Grid>
+        </Grid>
         <UserEditModal />
-      </Row>
+      </div>
     );
   }
 }
