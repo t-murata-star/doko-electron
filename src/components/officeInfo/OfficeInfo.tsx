@@ -13,7 +13,6 @@ library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用
 class OfficeInfo extends React.Component<Props, any> {
   render() {
     const officeInfo = this.props.state.officeInfoState;
-    console.log(officeInfo);
 
     return (
       <div className='office_info'>
@@ -23,7 +22,8 @@ class OfficeInfo extends React.Component<Props, any> {
             <Paper className='paper' elevation={2}>
               気温
               <div className='info_content'>
-                13.5<span className='info_content_unit'>℃</span>
+                {officeInfo.info.tempreture === -1 ? '-' : officeInfo.info.tempreture}
+                <span className='info_content_unit'>℃</span>
               </div>
             </Paper>
           </Grid>
@@ -31,7 +31,8 @@ class OfficeInfo extends React.Component<Props, any> {
             <Paper className='paper' elevation={2}>
               湿度
               <div className='info_content'>
-                47.2<span className='info_content_unit'>%</span>
+                {officeInfo.info.humidity === -1 ? '-' : officeInfo.info.humidity}
+                <span className='info_content_unit'>%</span>
               </div>
             </Paper>
           </Grid>
@@ -58,7 +59,7 @@ class OfficeInfo extends React.Component<Props, any> {
                 </div>
               )}
               {officeInfo.isError === true && (
-                <div style={{ color: 'red' }}>
+                <div className='content_error'>
                   <p>通信に失敗しました。</p>
                 </div>
               )}

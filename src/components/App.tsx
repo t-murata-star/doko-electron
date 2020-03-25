@@ -235,12 +235,13 @@ class App extends React.Component<Props, any> {
     switch (activeIndex) {
       // 社内情報タブを選択
       case 0:
-        await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
+        dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
         break;
 
       // 社員情報タブを選択
       case 1:
-        await dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350));
+        dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350));
+        dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350));
         break;
 
       default:
