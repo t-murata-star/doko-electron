@@ -9,18 +9,25 @@
   text-align: center;
   font-size: xx-large;
 }
+.info_content_unit {
+  font-size: large;
+  margin-left: 10px;
+}
 .restrooms_content_no_vacancy {
   color: red;
   text-align: center;
   font-size: larger;
+  margin: 5px;
 }
 .restrooms_content_vacancy {
   color: blue;
   text-align: center;
   font-size: larger;
+  margin: 5px;
 }
 .restrooms_content_women {
   font-size: larger;
+  margin: 5px;
 }
 .restroom-women {
   background-color: lightgray;

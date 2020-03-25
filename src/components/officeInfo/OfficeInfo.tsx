@@ -22,13 +22,17 @@ class OfficeInfo extends React.Component<Props, any> {
           <Grid item xs={4}>
             <Paper className='paper' elevation={2}>
               気温
-              <div className='info_content'>13.5 ℃</div>
+              <div className='info_content'>
+                13.5<span className='info_content_unit'>℃</span>
+              </div>
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper className='paper' elevation={2}>
               湿度
-              <div className='info_content'>47.2 %</div>
+              <div className='info_content'>
+                47.2<span className='info_content_unit'>%</span>
+              </div>
             </Paper>
           </Grid>
         </Grid>
@@ -50,8 +54,7 @@ class OfficeInfo extends React.Component<Props, any> {
               )}
               {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError === false && (
                 <div className='restrooms_content_vacancy'>
-                  <FontAwesomeIcon icon='door-open' /> 空室：
-                  {officeInfo.restrooms.vacancyForMen === -1 ? '-' : officeInfo.restrooms.vacancyForMen}
+                  <FontAwesomeIcon icon='door-open' /> 空室
                 </div>
               )}
               {officeInfo.isError === true && (
