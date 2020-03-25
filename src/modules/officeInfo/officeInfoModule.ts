@@ -121,7 +121,7 @@ export class AsyncActionsOfficeInfo {
 
         if (res.ok === false) {
           dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
+          throw new Error();
         }
         const json = await res.json();
         dispatch(slice.actions.getRestroomUsageSuccess(json));
@@ -151,7 +151,7 @@ export class AsyncActionsOfficeInfo {
 
         if (res.ok === false) {
           dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
+          throw new Error();
         }
         const json = await res.json();
         dispatch(slice.actions.getOfficeInfoSuccess(json));

@@ -7,14 +7,24 @@ import { connect } from 'react-redux';
 import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
 import './MenuButtonGroupForOfficeInfo.css';
 import { Props } from '../../define/model';
+import { showSnackBar } from '../common/functions';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
   reload = async () => {
     const { dispatch } = this.props;
-    dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350));
-    dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350));
+    const responses = await Promise.all([
+      dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350)),
+      dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350))
+    ]);
+
+    for (const response of responses) {
+      if (response.getIsError()) {
+        showSnackBar('error', '通信に失敗しました。', null);
+        break;
+      }
+    }
   };
 
   render() {

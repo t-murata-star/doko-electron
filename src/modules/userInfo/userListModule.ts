@@ -154,7 +154,7 @@ export class AsyncActionsUserList {
 
         if (res.ok === false) {
           dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
+          throw new Error();
         }
         dispatch(slice.actions.deleteUserSuccess());
         return new ApiResponse();
@@ -182,7 +182,7 @@ export class AsyncActionsUserList {
 
         if (res.ok === false) {
           dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
+          throw new Error();
         }
         const json: UserInfo = await res.json();
         const userID = json.id;
@@ -215,7 +215,7 @@ export class AsyncActionsUserList {
 
         if (res.ok === false) {
           dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
+          throw new Error();
         }
         const json: UserInfo[] = await res.json();
         dispatch(slice.actions.getUserListSuccess([json, myUserID]));
@@ -263,7 +263,7 @@ export class AsyncActionsUserList {
 
         if (res.ok === false) {
           dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
+          throw new Error();
         }
         return new ApiResponse();
       } catch (error) {
@@ -288,7 +288,7 @@ export class AsyncActionsUserList {
 
         if (res.ok === false) {
           dispatch(slice.actions.requestError());
-          return new ApiResponse(null, true);
+          throw new Error();
         }
         dispatch(slice.actions.updateUserInfoSuccess());
         return new ApiResponse();

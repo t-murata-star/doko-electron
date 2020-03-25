@@ -48,19 +48,14 @@ class OfficeInfo extends React.Component<Props, any> {
           <Grid item xs={4}>
             <Paper className='paper' elevation={2}>
               <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
-              {officeInfo.restrooms.isNoVacancyForMen === true && officeInfo.isError === false && (
+              {officeInfo.restrooms.isNoVacancyForMen === true && (
                 <div className='restrooms_content_no_vacancy'>
                   <FontAwesomeIcon icon='door-closed' /> 満室
                 </div>
               )}
-              {officeInfo.restrooms.isNoVacancyForMen === false && officeInfo.isError === false && (
+              {officeInfo.restrooms.isNoVacancyForMen === false && (
                 <div className='restrooms_content_vacancy'>
                   <FontAwesomeIcon icon='door-open' /> 空室
-                </div>
-              )}
-              {officeInfo.isError === true && (
-                <div className='content_error'>
-                  <p>通信に失敗しました。</p>
                 </div>
               )}
             </Paper>
