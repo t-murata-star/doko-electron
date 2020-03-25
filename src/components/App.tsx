@@ -16,7 +16,6 @@ import {
 import { ApiResponse, Notification, Props, UserInfo, UserInfoForUpdate } from '../define/model';
 import AppModule, { AsyncActionsApp } from '../modules/appModule';
 import InitialStartupModalModule from '../modules/initialStartupModalModule';
-import { AsyncActionsOfficeInfo } from '../modules/officeInfo/officeInfoModule';
 import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
 import './App.scss';
 import {
@@ -25,7 +24,9 @@ import {
   onSnackBarExited,
   sendHealthCheck,
   showMessageBoxSync,
-  showMessageBoxSyncWithReturnValue
+  showMessageBoxSyncWithReturnValue,
+  getAllOfficeInfo,
+  checkResponseError
 } from './common/functions';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
@@ -247,13 +248,12 @@ class App extends React.Component<Props, any> {
     switch (activeIndex) {
       // 社内情報タブを選択
       case 0:
-        dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
+        checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350)));
         break;
 
       // 社員情報タブを選択
       case 1:
-        dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350));
-        dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350));
+        getAllOfficeInfo();
         break;
 
       default:

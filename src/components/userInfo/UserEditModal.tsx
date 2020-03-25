@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ApiResponse, Props, UserInfo, UserInfoForUpdate } from '../../define/model';
 import UserEditModalModule from '../../modules/userInfo/userEditModalModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { showMessageBoxSyncWithReturnValue } from '../common/functions';
+import { showMessageBoxSyncWithReturnValue, checkResponseError } from '../common/functions';
 import './UserEditModal.css';
 import { Container, Form, Col } from 'react-bootstrap';
 import { STATUS_LIST } from '../../define';
@@ -34,7 +34,7 @@ class UserEditModal extends React.Component<Props, any> {
     updatedUserInfo.destination = userInfo.destination;
     updatedUserInfo.return = userInfo.return;
     updatedUserInfo.message = userInfo.message;
-    response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
+    response = await checkResponseError(dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID)));
     if (response.getIsError()) {
       dispatch(UserEditModalModule.actions.enableSubmitButton());
       return;
@@ -43,7 +43,7 @@ class UserEditModal extends React.Component<Props, any> {
 
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     const myUserID = this.props.state.appState.myUserID;
-    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
+    await checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350)));
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
@@ -77,7 +77,7 @@ class UserEditModal extends React.Component<Props, any> {
     }
 
     const selectedUserId = this.props.state.userEditModalState.userInfo.id;
-    response = await dispatch(AsyncActionsUserList.deleteUserAction(selectedUserId));
+    response = await checkResponseError(dispatch(AsyncActionsUserList.deleteUserAction(selectedUserId)));
     if (response.getIsError()) {
       return;
     }
@@ -86,7 +86,7 @@ class UserEditModal extends React.Component<Props, any> {
 
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     const myUserID = this.props.state.appState.myUserID;
-    await dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
+    await checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350)));
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 
@@ -97,7 +97,6 @@ class UserEditModal extends React.Component<Props, any> {
   };
 
   render() {
-    const userList = this.props.state.userListState;
     const userInfo = this.props.state.userEditModalState.userInfo;
 
     return (
@@ -115,7 +114,6 @@ class UserEditModal extends React.Component<Props, any> {
           <div className={'modal-paper'}>
             <Form onSubmit={this.handleSubmit}>
               <span className='modal-title'>情報変更</span>
-              {userList.isError && <span className='error-message'>通信に失敗しました。</span>}
               <hr />
               <Container>
                 <Form.Row>

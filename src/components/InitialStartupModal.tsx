@@ -7,7 +7,7 @@ import { ApiResponse, UserInfo, Props, UserInfoForUpdate } from '../define/model
 import AppModule from '../modules/appModule';
 import initialStartupModalModule from '../modules/initialStartupModalModule';
 import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
-import { getUserInfo, sendHealthCheck } from './common/functions';
+import { getUserInfo, sendHealthCheck, checkResponseError } from './common/functions';
 import './InitialStartupModal.css';
 import { Backdrop, Fade, Modal, TextField } from '@material-ui/core';
 
@@ -36,7 +36,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     this.userInfo.status = USER_STATUS_INFO.s01.status;
 
     // addUserAction で appState の myUserID に新規ユーザIDが設定される
-    response = await dispatch(AsyncActionsUserList.addUserAction(this.userInfo));
+    response = await checkResponseError(dispatch(AsyncActionsUserList.addUserAction(this.userInfo)));
     if (response.getIsError()) {
       dispatch(initialStartupModalModule.actions.disableSubmitButton(false));
       return;
@@ -53,7 +53,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     addedUserInfo.order = myUserID;
 
     await dispatch(AsyncActionsUserList.updateUserInfoAction(addedUserInfo, myUserID));
-    dispatch(AsyncActionsUserList.getUserListAction(myUserID));
+    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID)));
 
     sendHealthCheck();
 
@@ -78,7 +78,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     const updatedUserInfo: UserInfoForUpdate = {};
     if (userInfo.version !== APP_VERSION) {
       updatedUserInfo.version = APP_VERSION;
-      response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+      response = await checkResponseError(dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID)));
       if (response.getIsError()) {
         return;
       }
@@ -92,7 +92,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     ) {
       updatedUserInfo.status = USER_STATUS_INFO.s01.status;
       updatedUserInfo.name = userInfo.name;
-      response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+      response = await checkResponseError(dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID)));
       if (response.getIsError()) {
         return;
       }
@@ -100,7 +100,7 @@ class InitialStartupModal extends React.Component<Props, any> {
 
     this.closeModal();
 
-    dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350));
+    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350)));
     sendHealthCheck();
     this.initializeField();
   };
@@ -142,7 +142,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
     dispatch(initialStartupModalModule.actions.changeSubmitMode(true));
     // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
-    dispatch(AsyncActionsUserList.getUserListAction(-1, 350, false));
+    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(-1, 350, false)));
   };
 
   registUserInput = () => {
@@ -154,7 +154,6 @@ class InitialStartupModal extends React.Component<Props, any> {
 
   render() {
     const onHide = this.props.state.initialStartupModalState.onHide;
-    const isError = this.props.state.userListState.isError;
     const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
 
     return (
@@ -172,7 +171,6 @@ class InitialStartupModal extends React.Component<Props, any> {
           <div className={'initial-startup-modal-paper'}>
             <Form onSubmit={this.handleSubmit}>
               <span className='modal-title'>ユーザ登録</span>
-              {isError && <span className='error-message'>通信に失敗しました。</span>}
               <hr />
               <Container>
                 <Form.Row>

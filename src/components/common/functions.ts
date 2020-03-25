@@ -1,8 +1,9 @@
 import { Color } from '@material-ui/lab/Alert';
 import store from '../../configureStore';
 import { APP_NAME, APP_VERSION } from '../../define';
-import { UserInfo } from '../../define/model';
+import { UserInfo, ApiResponse } from '../../define/model';
 import AppModule, { AsyncActionsApp } from '../../modules/appModule';
+import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
 const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意
@@ -106,5 +107,35 @@ export const onSnackBarExited = () => {
     const message = queueMessages.shift();
     dispatch(AppModule.actions.dequeueSnackbarMessages());
     dispatch(AppModule.actions.changeEnabledSnackbar([true, appState.snackbar.severity, message]));
+  }
+};
+
+export const checkResponseError = async (promiseResponse: Promise<ApiResponse>) => {
+  const response = await promiseResponse;
+  if (response.getIsError()) {
+    showSnackBar('error', '通信に失敗しました。', null);
+  }
+  return response;
+};
+
+// export const checkResponseError = async (response: ApiResponse) => {
+//   if (response.getIsError()) {
+//     showSnackBar('error', '通信に失敗しました。', null);
+//   }
+// };
+
+export const getAllOfficeInfo = async () => {
+  const dispatch: any = store.dispatch;
+
+  const responses = await Promise.all([
+    dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350)),
+    dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350))
+  ]);
+
+  for (const response of responses) {
+    if (response.getIsError()) {
+      showSnackBar('error', '通信に失敗しました。', null);
+      break;
+    }
   }
 };

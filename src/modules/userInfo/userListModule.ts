@@ -24,13 +24,6 @@ const slice = createSlice({
         isFetching: true
       };
     },
-    requestError: state => {
-      return {
-        ...state,
-        isFetching: false,
-        isError: true
-      };
-    },
     failRequest: state => {
       return {
         ...state,
@@ -78,12 +71,6 @@ const slice = createSlice({
       return {
         ...state,
         selectedUserId: action.payload
-      };
-    },
-    returnEmptyUserList: state => {
-      return {
-        ...state,
-        userList: []
       };
     },
     inoperable: (state, action) => {
@@ -153,7 +140,6 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          dispatch(slice.actions.requestError());
           throw new Error();
         }
         dispatch(slice.actions.deleteUserSuccess());
@@ -181,7 +167,6 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          dispatch(slice.actions.requestError());
           throw new Error();
         }
         const json: UserInfo = await res.json();
@@ -214,7 +199,6 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          dispatch(slice.actions.requestError());
           throw new Error();
         }
         const json: UserInfo[] = await res.json();
@@ -243,7 +227,6 @@ export class AsyncActionsUserList {
         return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
-        dispatch(slice.actions.returnEmptyUserList());
         return new ApiResponse(null, true);
       }
     };
@@ -262,13 +245,11 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          dispatch(slice.actions.requestError());
           throw new Error();
         }
         return new ApiResponse();
       } catch (error) {
         dispatch(slice.actions.failRequest());
-        dispatch(slice.actions.returnEmptyUserList());
         return new ApiResponse(null, true);
       }
     };
@@ -287,7 +268,6 @@ export class AsyncActionsUserList {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          dispatch(slice.actions.requestError());
           throw new Error();
         }
         dispatch(slice.actions.updateUserInfoSuccess());

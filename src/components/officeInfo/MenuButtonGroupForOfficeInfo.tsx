@@ -4,27 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import React from 'react';
 import { connect } from 'react-redux';
-import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
 import './MenuButtonGroupForOfficeInfo.css';
 import { Props } from '../../define/model';
-import { showSnackBar } from '../common/functions';
+import { getAllOfficeInfo } from '../common/functions';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
   reload = async () => {
-    const { dispatch } = this.props;
-    const responses = await Promise.all([
-      dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350)),
-      dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350))
-    ]);
-
-    for (const response of responses) {
-      if (response.getIsError()) {
-        showSnackBar('error', '通信に失敗しました。', null);
-        break;
-      }
-    }
+    getAllOfficeInfo();
   };
 
   render() {

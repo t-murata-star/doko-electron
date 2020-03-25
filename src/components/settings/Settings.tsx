@@ -9,7 +9,7 @@ import { ApiResponse, Props, UserInfo, UserInfoForUpdate } from '../../define/mo
 import AppModule from '../../modules/appModule';
 import SettingsModule from '../../modules/settings/settingsModule';
 import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { getUserInfo, sendHealthCheck, showSnackBar } from '../common/functions';
+import { getUserInfo, sendHealthCheck, showSnackBar, checkResponseError } from '../common/functions';
 import './Settings.css';
 
 const { remote } = window.require('electron');
@@ -113,10 +113,8 @@ class Settings extends React.Component<Props, any> {
 
     const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo['email'] = settingState.user.email;
-    response = await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
-    if (response.getIsError()) {
-      showSnackBar('error', '設定の保存に失敗しました。', null);
-    } else {
+    response = await checkResponseError(dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID)));
+    if (response.getIsError() === false) {
       showSnackBar('success', '設定を保存しました。');
       dispatch(SettingsModule.actions.changeDisabledSubmitButtonEmail(true));
     }

@@ -48,13 +48,6 @@ const slice = createSlice({
         isError: false
       };
     },
-    requestError: state => {
-      return {
-        ...state,
-        isFetching: false,
-        isError: true
-      };
-    },
     failRequest: state => {
       return {
         ...state,
@@ -156,7 +149,6 @@ export class AsyncActionsApp {
         });
 
         if (res.ok === false) {
-          dispatch(slice.actions.requestError());
           throw new Error();
         }
         const json = await res.json();
@@ -180,7 +172,6 @@ export class AsyncActionsApp {
         responseStatusCheck(dispatch, res.status);
 
         if (res.ok === false) {
-          dispatch(slice.actions.requestError());
           throw new Error();
         }
         const json = await res.json();
@@ -205,7 +196,6 @@ export class AsyncActionsApp {
       responseStatusCheck(dispatch, res.status);
 
       if (res.ok === false) {
-        dispatch(slice.actions.requestError());
         return new ApiResponse(null, true);
       }
       console.log('Send healthCheck.');

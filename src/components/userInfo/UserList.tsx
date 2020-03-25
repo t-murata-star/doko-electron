@@ -7,10 +7,10 @@ import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS_INFO } from '../../define';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
 import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { getUserInfo, showMessageBoxSyncWithReturnValue } from '../common/functions';
+import { getUserInfo, showMessageBoxSyncWithReturnValue, checkResponseError } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
-import { Props } from '../../define/model';
+import { Props, ApiResponse } from '../../define/model';
 import MenuButtonGroupForUserList from './MenuButtonGroupForUserList';
 
 const { remote } = window.require('electron');
@@ -148,9 +148,15 @@ class UserList extends React.Component<Props, any> {
     }
 
     dispatch(AppModule.actions.setProcessingStatus(true));
+
+    let response: ApiResponse;
     for (const row of rows) {
       const patchInfoUser = { order: row.getPosition(true) + 1 };
-      await dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id));
+      response = await checkResponseError(dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id)));
+      if (response.getIsError()) {
+        dispatch(AppModule.actions.setProcessingStatus(false));
+        return;
+      }
       await this._sleep(50);
     }
     dispatch(UserListModule.actions.changeOrderSuccess());
@@ -162,7 +168,7 @@ class UserList extends React.Component<Props, any> {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
     await this._updateUserInfoOrder(row);
-    dispatch(AsyncActionsUserList.getUserListAction(myUserID));
+    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID)));
   };
 
   _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
@@ -188,10 +194,10 @@ class UserList extends React.Component<Props, any> {
               { column: 'updatedAt', dir: 'asc' },
               { column: 'order', dir: 'asc' }
             ],
-            rowFormatter: this._rowFormatter,
-            placeholder: '通信に失敗しました。'
+            rowFormatter: this._rowFormatter
           }}
-          rowMoved={this._rowMovedCallback}/>
+          rowMoved={this._rowMovedCallback}
+        />
         <MenuButtonGroupForUserList />
       </div>
     );
