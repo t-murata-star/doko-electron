@@ -174,7 +174,7 @@ class App extends React.Component<Props, any> {
       dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
     }
 
-    dispatch(UserListModule.actions.setUserInfo(userList));
+    dispatch(UserListModule.actions.reRenderUserList(userList));
     dispatch(AppModule.actions.setMyUserId(userID));
 
     sendHealthCheck();

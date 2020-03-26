@@ -144,6 +144,7 @@ class UserList extends React.Component<Props, any> {
     );
 
     if (index !== 0) {
+      dispatch(UserListModule.actions.reRenderUserList(this.props.state.userListState.userList));
       return;
     }
 
@@ -154,6 +155,7 @@ class UserList extends React.Component<Props, any> {
       const patchInfoUser = { order: row.getPosition(true) + 1 };
       response = await checkResponseError(dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id)));
       if (response.getIsError()) {
+        dispatch(UserListModule.actions.reRenderUserList(this.props.state.userListState.userList));
         dispatch(AppModule.actions.setProcessingStatus(false));
         return;
       }
@@ -161,14 +163,14 @@ class UserList extends React.Component<Props, any> {
     }
     dispatch(UserListModule.actions.changeOrderSuccess());
     dispatch(AppModule.actions.setProcessingStatus(false));
+
+    const myUserID = this.props.state.appState.myUserID;
+    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID)));
     return;
   };
 
-  _rowMovedCallback = async (row: Tabulator.RowComponent) => {
-    const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    await this._updateUserInfoOrder(row);
-    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID)));
+  _rowMovedCallback = (row: Tabulator.RowComponent) => {
+    this._updateUserInfoOrder(row);
   };
 
   _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));

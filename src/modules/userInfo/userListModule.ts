@@ -79,10 +79,10 @@ const slice = createSlice({
         inoperable: action.payload
       };
     },
-    setUserInfo: (state, action) => {
+    reRenderUserList: (state, action) => {
       return {
         ...state,
-        userList: action.payload
+        userList: JSON.parse(JSON.stringify(action.payload))
       };
     }
   }
