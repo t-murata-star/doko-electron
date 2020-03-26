@@ -72,9 +72,6 @@ class InitialStartupModal extends React.Component<Props, any> {
       return;
     }
 
-    electronStore.set('userID', myUserID);
-    dispatch(AppModule.actions.setMyUserId(myUserID));
-
     const updatedUserInfo: UserInfoForUpdate = {};
     if (userInfo.version !== APP_VERSION) {
       updatedUserInfo.version = APP_VERSION;
@@ -97,6 +94,9 @@ class InitialStartupModal extends React.Component<Props, any> {
         return;
       }
     }
+
+    electronStore.set('userID', myUserID);
+    dispatch(AppModule.actions.setMyUserId(myUserID));
 
     this.closeModal();
 
