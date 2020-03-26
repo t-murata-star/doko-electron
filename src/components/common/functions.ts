@@ -84,18 +84,19 @@ export const showSnackBar = (severity: Color, message: string, timeoutMs: number
   if (appState.snackbar.enabled) {
     // 現在表示されているsnackbarを破棄して、新しいsnackbarを表示する
     dispatch(AppModule.actions.enqueueSnackbarMessages(message));
-    dispatch(AppModule.actions.changeEnabledSnackbar([false]));
+    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: false }));
   } else {
-    dispatch(AppModule.actions.changeEnabledSnackbar([true, severity, message, timeoutMs]));
+    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: true, severity, message, timeoutMs }));
   }
 };
 
 export const onSnackBarClose = (event: React.SyntheticEvent, reason?: string) => {
   const dispatch: any = store.dispatch;
+  // 画面クリックでsnackbarを閉じない
   // if (reason === 'clickaway') {
   //   return;
   // }
-  dispatch(AppModule.actions.changeEnabledSnackbar([false]));
+  dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: false }));
 };
 
 export const onSnackBarExited = () => {
@@ -106,7 +107,7 @@ export const onSnackBarExited = () => {
   if (queueMessages.length > 0) {
     const message = queueMessages.shift();
     dispatch(AppModule.actions.dequeueSnackbarMessages());
-    dispatch(AppModule.actions.changeEnabledSnackbar([true, appState.snackbar.severity, message]));
+    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: true, severity: appState.snackbar.severity, message }));
   }
 };
 
@@ -117,12 +118,6 @@ export const checkResponseError = async (promiseResponse: Promise<ApiResponse>) 
   }
   return response;
 };
-
-// export const checkResponseError = async (response: ApiResponse) => {
-//   if (response.getIsError()) {
-//     showSnackBar('error', '通信に失敗しました。', null);
-//   }
-// };
 
 export const getAllOfficeInfo = async () => {
   const dispatch: any = store.dispatch;

@@ -94,10 +94,10 @@ const slice = createSlice({
         ...state,
         snackbar: {
           ...state.snackbar,
-          enabled: action.payload[0],
-          severity: action.payload[1] ? action.payload[1] : state.snackbar.severity,
-          message: action.payload[2] ? action.payload[2] : state.snackbar.message,
-          timeoutMs: action.payload[3] !== null ? action.payload[3] : null
+          enabled: action.payload.enabled,
+          severity: action.payload.severity ? action.payload.severity : state.snackbar.severity,
+          message: action.payload.message ? action.payload.message : state.snackbar.message,
+          timeoutMs: action.payload.timeoutMs !== null ? action.payload.timeoutMs : null
         }
       };
     },

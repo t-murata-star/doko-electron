@@ -34,7 +34,7 @@ const slice = createSlice({
     getUserListSuccess: (state, action) => {
       return {
         ...state,
-        userList: updateLeavingTimeForUserList(action.payload[0], action.payload[1]),
+        userList: updateLeavingTimeForUserList(action.payload.userList, action.payload.myUserID),
         isFetching: false,
         isError: false
       };
@@ -202,7 +202,7 @@ export class AsyncActionsUserList {
           throw new Error();
         }
         const json: UserInfo[] = await res.json();
-        dispatch(slice.actions.getUserListSuccess([json, myUserID]));
+        dispatch(slice.actions.getUserListSuccess({ userList: json, myUserID }));
 
         /**
          * サーバ上に自分の情報が存在するかどうかチェック

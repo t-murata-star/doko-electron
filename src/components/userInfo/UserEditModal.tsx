@@ -50,6 +50,13 @@ class UserEditModal extends React.Component<Props, any> {
   onUserInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
     dispatch(UserEditModalModule.actions.changeUserInfo([this.userInfo, event.target.name, event.target.value]));
+    dispatch(
+      UserEditModalModule.actions.changeUserInfo({
+        userInfo: this.userInfo,
+        targetName: event.target.name,
+        targetValue: event.target.value
+      })
+    );
     if (this.props.state.userEditModalState.submitButtonDisabled) {
       dispatch(UserEditModalModule.actions.enableSubmitButton());
     }

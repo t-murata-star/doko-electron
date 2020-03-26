@@ -18,8 +18,8 @@ const slice = createSlice({
       return {
         ...state,
         onHide: true,
-        userID: action.payload[0],
-        userInfo: action.payload[1]
+        userID: action.payload.userID,
+        userInfo: action.payload.userInfo
       };
     },
     closeUserEditModal: state => {
@@ -56,10 +56,10 @@ const slice = createSlice({
       };
     },
     changeUserInfo: (state, action) => {
-      action.payload[0][action.payload[1]] = action.payload[2];
+      action.payload.userInfo[action.payload.targetName] = action.payload.targetValue;
       return {
         ...state,
-        userInfo: action.payload[0]
+        userInfo: action.payload.userInfo
       };
     }
   }
