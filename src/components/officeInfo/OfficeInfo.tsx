@@ -22,7 +22,7 @@ class OfficeInfo extends React.Component<Props, any> {
             <Paper className='paper' elevation={2}>
               気温
               <div className='info_content'>
-                {officeInfo.info.tempreture === -1 ? '-' : officeInfo.info.tempreture}
+                {officeInfo.info.tempreture === -1 ? '-' : officeInfo.info.tempreture.toFixed(1)}
                 <span className='info_content_unit'>℃</span>
               </div>
             </Paper>
@@ -31,7 +31,7 @@ class OfficeInfo extends React.Component<Props, any> {
             <Paper className='paper' elevation={2}>
               湿度
               <div className='info_content'>
-                {officeInfo.info.humidity === -1 ? '-' : officeInfo.info.humidity}
+                {officeInfo.info.humidity === -1 ? '-' : officeInfo.info.humidity.toFixed(1)}
                 <span className='info_content_unit'>%</span>
               </div>
             </Paper>
