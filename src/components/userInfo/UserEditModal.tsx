@@ -53,7 +53,7 @@ class UserEditModal extends React.Component<Props, any> {
       UserEditModalModule.actions.changeUserInfo({
         userInfo: this.userInfo,
         targetName: event.target.name,
-        targetValue: event.target.value
+        targetValue: event.target.value,
       })
     );
     if (this.props.state.userEditModalState.submitButtonDisabled) {
@@ -114,7 +114,7 @@ class UserEditModal extends React.Component<Props, any> {
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
-          timeout: 300
+          timeout: 300,
         }}>
         <Fade in={this.props.state.userEditModalState.onHide}>
           <div className={'modal-paper'}>
@@ -134,7 +134,7 @@ class UserEditModal extends React.Component<Props, any> {
                       size={'small'}
                       fullWidth
                       inputProps={{
-                        maxLength: 100
+                        maxLength: 100,
                       }}
                     />
                   </Form.Group>
@@ -165,7 +165,7 @@ class UserEditModal extends React.Component<Props, any> {
                       fullWidth
                       size={'small'}
                       SelectProps={{
-                        native: true
+                        native: true,
                       }}>
                       {STATUS_LIST.map((status: string, index: number) => (
                         <option key={index} value={status}>
@@ -186,7 +186,7 @@ class UserEditModal extends React.Component<Props, any> {
                       size={'small'}
                       fullWidth
                       inputProps={{
-                        maxLength: 100
+                        maxLength: 100,
                       }}
                     />
                   </Form.Group>
@@ -199,7 +199,7 @@ class UserEditModal extends React.Component<Props, any> {
                       size={'small'}
                       fullWidth
                       inputProps={{
-                        maxLength: 100
+                        maxLength: 100,
                       }}
                     />
                   </Form.Group>
@@ -213,7 +213,7 @@ class UserEditModal extends React.Component<Props, any> {
                     size={'small'}
                     fullWidth
                     inputProps={{
-                      maxLength: 100
+                      maxLength: 100,
                     }}
                   />
                 </Form.Group>
@@ -257,7 +257,7 @@ class UserEditModal extends React.Component<Props, any> {
 
 const mapStateToProps = (state: any) => {
   return {
-    state
+    state,
   };
 };
 

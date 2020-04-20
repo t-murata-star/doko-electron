@@ -69,7 +69,7 @@ class OfficeInfo extends React.Component<Props, any> {
 
 const mapStateToProps = (state: any) => {
   return {
-    state
+    state,
   };
 };
 

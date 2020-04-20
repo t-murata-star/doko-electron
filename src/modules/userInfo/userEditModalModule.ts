@@ -19,31 +19,31 @@ const slice = createSlice({
         ...state,
         onHide: true,
         userID: action.payload.userID,
-        userInfo: action.payload.userInfo
+        userInfo: action.payload.userInfo,
       };
     },
-    closeUserEditModal: state => {
+    closeUserEditModal: (state) => {
       return {
         ...state,
-        onHide: false
+        onHide: false,
       };
     },
-    disableSubmitButton: state => {
+    disableSubmitButton: (state) => {
       return {
         ...state,
-        submitButtonDisabled: true
+        submitButtonDisabled: true,
       };
     },
-    enableSubmitButton: state => {
+    enableSubmitButton: (state) => {
       return {
         ...state,
-        submitButtonDisabled: false
+        submitButtonDisabled: false,
       };
     },
-    handleChangeUser: state => {
+    handleChangeUser: (state) => {
       return {
         ...state,
-        submitButtonDisabled: true
+        submitButtonDisabled: true,
       };
     },
     inputClear: (state, action) => {
@@ -52,17 +52,17 @@ const slice = createSlice({
       action.payload.return = '';
       return {
         ...state,
-        userInfo: action.payload
+        userInfo: action.payload,
       };
     },
     changeUserInfo: (state, action) => {
       action.payload.userInfo[action.payload.targetName] = action.payload.targetValue;
       return {
         ...state,
-        userInfo: action.payload.userInfo
+        userInfo: action.payload.userInfo,
       };
-    }
-  }
+    },
+  },
 });
 
 export default slice;

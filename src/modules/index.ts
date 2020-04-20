@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
   officeInfoState: officeInfoState.reducer,
   userEditModalState: userEditModalState.reducer,
   initialStartupModalState: initialStartupModal.reducer,
-  settingsState: settingsState.reducer
+  settingsState: settingsState.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

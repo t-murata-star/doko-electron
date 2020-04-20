@@ -11,11 +11,11 @@ class _initialState {
     isNoVacancyForMen: false,
     isNoVacancyForWomen: false,
     vacancyForMen: -1,
-    vacancyForWomen: -1
+    vacancyForWomen: -1,
   };
   info = {
     tempreture: -1,
-    humidity: -1
+    humidity: -1,
   };
 }
 
@@ -24,17 +24,17 @@ const slice = createSlice({
   name: 'officeInfo',
   initialState: new _initialState(),
   reducers: {
-    startApiRequest: state => {
+    startApiRequest: (state) => {
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     },
-    failRequest: state => {
+    failRequest: (state) => {
       return {
         ...state,
         isFetching: false,
-        isError: true
+        isError: true,
       };
     },
     getRestroomUsageSuccess: (state, action) => {
@@ -46,10 +46,10 @@ const slice = createSlice({
           isNoVacancyForMen: checkNoVacantForRestroom(action.payload, 'men'),
           isNoVacancyForWomen: checkNoVacantForRestroom(action.payload, 'women'),
           vacancyForMen: getVacantCountForRestroom(action.payload, 'men'),
-          vacancyForWomen: getVacantCountForRestroom(action.payload, 'women')
+          vacancyForWomen: getVacantCountForRestroom(action.payload, 'women'),
         },
         isFetching: false,
-        isError: false
+        isError: false,
       };
     },
     getOfficeInfoSuccess: (state, action) => {
@@ -57,10 +57,10 @@ const slice = createSlice({
         ...state,
         info: action.payload,
         isFetching: false,
-        isError: false
+        isError: false,
       };
-    }
-  }
+    },
+  },
 });
 
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
@@ -75,14 +75,14 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
 };
 
 // スリープ処理
-const _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+const _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
 // トイレの満席チェック
 function checkNoVacantForRestroom(rooms: Restroom[], gender: string) {
   if (!rooms) return true;
 
-  const filteredByGender = rooms.filter(room => room.gender === gender);
-  const filteredByUsing = filteredByGender.filter(room => room.isUsing === true);
+  const filteredByGender = rooms.filter((room) => room.gender === gender);
+  const filteredByUsing = filteredByGender.filter((room) => room.isUsing === true);
   return filteredByGender.length === filteredByUsing.length;
 }
 
@@ -90,8 +90,8 @@ function checkNoVacantForRestroom(rooms: Restroom[], gender: string) {
 function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
   if (!rooms) return 0;
 
-  const filteredByGender = rooms.filter(room => room.gender === gender);
-  const filteredByUsing = filteredByGender.filter(room => room.isUsing === false);
+  const filteredByGender = rooms.filter((room) => room.gender === gender);
+  const filteredByUsing = filteredByGender.filter((room) => room.isUsing === false);
   return filteredByUsing.length;
 }
 
@@ -103,7 +103,7 @@ export class AsyncActionsOfficeInfo {
         const startTime = Date.now();
         const res = await fetch(`${API_URL}/restrooms`, {
           method: 'GET',
-          headers: AUTH_REQUEST_HEADERS
+          headers: AUTH_REQUEST_HEADERS,
         });
         const lowestWaitTime = sleepMs - (Date.now() - startTime);
         if (Math.sign(lowestWaitTime) === 1) {
@@ -132,7 +132,7 @@ export class AsyncActionsOfficeInfo {
         const startTime = Date.now();
         const res = await fetch(`${API_URL}/officeInfo`, {
           method: 'GET',
-          headers: AUTH_REQUEST_HEADERS
+          headers: AUTH_REQUEST_HEADERS,
         });
         const lowestWaitTime = sleepMs - (Date.now() - startTime);
         if (Math.sign(lowestWaitTime) === 1) {

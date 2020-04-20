@@ -49,8 +49,8 @@ const createTray = () => {
       label: '終了',
       click() {
         app.quit();
-      }
-    }
+      },
+    },
   ]);
 
   tray.setContextMenu(contextMenu);
@@ -68,7 +68,7 @@ const createWindow = () => {
   const windowStateKeeper = require('electron-window-state');
   const mainWindowState = windowStateKeeper({
     defaultWidth: 1200,
-    defaultHeight: 750
+    defaultHeight: 750,
   });
 
   mainWindow = new BrowserWindow({
@@ -83,8 +83,8 @@ const createWindow = () => {
     maximizable: true,
     webPreferences: {
       devTools: false,
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
   mainWindowState.manage(mainWindow);
@@ -104,13 +104,13 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools();
 
   // ウインドウがクローズされようとするときに発生するイベント
-  mainWindow.on('close', closeEvent => {
+  mainWindow.on('close', (closeEvent) => {
     closeEvent.preventDefault();
     const index = dialog.showMessageBoxSync(mainWindow, {
       title: APP_NAME,
       type: 'info',
       buttons: ['OK', 'Cancel'],
-      message: `${APP_NAME}を終了しますか？`
+      message: `${APP_NAME}を終了しますか？`,
     });
 
     switch (index) {
@@ -212,13 +212,13 @@ if (!gotTheLock) {
 }
 
 // レンダラープロセスからメインプロセスへのデータ送信（非同期通信）
-ipcMain.on('closeApp', event => {
+ipcMain.on('closeApp', (event) => {
   if (mainWindow.isDestroyed() === false) {
     mainWindow.destroy();
   }
 });
 
-ipcMain.on('reload', event => {
+ipcMain.on('reload', (event) => {
   // レンダラープロセスに接続する
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     mainWindow.loadFile(global.errorPageFilepath);

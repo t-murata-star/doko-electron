@@ -7,15 +7,15 @@ export const APP_VERSION: string = remote.getGlobal('appVersion') || '';
 export const API_URL: string = process.env.REACT_APP_API_URL || '';
 export const LOGIN_USER: any = {
   username: process.env.REACT_APP_USERNAME || '',
-  password: process.env.REACT_APP_PASSWORD || ''
+  password: process.env.REACT_APP_PASSWORD || '',
 };
 export const APP_DOWNLOAD_URL: string = process.env.REACT_APP_DOWNLOAD_URL || '';
-export const LOGIN_REQUEST_HEADERS: {'Content-type': string } = {
-  'Content-type': 'application/json; charset=UTF-8'
-};
-export const AUTH_REQUEST_HEADERS: {'Content-type': string, Authorization: string }  = {
+export const LOGIN_REQUEST_HEADERS: { 'Content-type': string } = {
   'Content-type': 'application/json; charset=UTF-8',
-  Authorization: ''
+};
+export const AUTH_REQUEST_HEADERS: { 'Content-type': string; Authorization: string } = {
+  'Content-type': 'application/json; charset=UTF-8',
+  Authorization: '',
 };
 export const USER_STATUS_INFO: UserStatusInfo = new UserStatusInfo();
 export const STATUS_LIST: string[] = Object.entries(USER_STATUS_INFO).map(

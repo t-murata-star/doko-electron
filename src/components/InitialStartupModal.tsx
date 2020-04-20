@@ -165,7 +165,7 @@ class InitialStartupModal extends React.Component<Props, any> {
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
-          timeout: 200
+          timeout: 200,
         }}>
         <Fade in={onHide}>
           <div className={'initial-startup-modal-paper'}>
@@ -186,7 +186,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                           fullWidth
                           size={'small'}
                           SelectProps={{
-                            native: true
+                            native: true,
                           }}
                           disabled={userList.length === 0}>
                           {userList.length > 0 && (
@@ -227,7 +227,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                           size={'small'}
                           fullWidth
                           inputProps={{
-                            maxLength: 100
+                            maxLength: 100,
                           }}
                           autoFocus={true}
                         />
@@ -263,7 +263,7 @@ class InitialStartupModal extends React.Component<Props, any> {
 
 const mapStateToProps = (state: any) => {
   return {
-    state
+    state,
   };
 };
 

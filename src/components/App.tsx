@@ -11,7 +11,7 @@ import {
   APP_VERSION,
   AUTH_REQUEST_HEADERS,
   HEALTH_CHECK_INTERVAL_MS,
-  USER_STATUS_INFO
+  USER_STATUS_INFO,
 } from '../define';
 import { ApiResponse, Notification, Props, UserInfo, UserInfoForUpdate } from '../define/model';
 import AppModule, { AsyncActionsApp } from '../modules/appModule';
@@ -26,7 +26,7 @@ import {
   showMessageBoxSync,
   showMessageBoxSyncWithReturnValue,
   getAllOfficeInfo,
-  checkResponseError
+  checkResponseError,
 } from './common/functions';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
@@ -109,7 +109,7 @@ class App extends React.Component<Props, any> {
 
       remote.app.setLoginItemSettings({
         openAtLogin,
-        path: remote.app.getPath('exe')
+        path: remote.app.getPath('exe'),
       });
     }
 
@@ -338,7 +338,7 @@ class App extends React.Component<Props, any> {
 
 const mapStateToProps = (state: any) => {
   return {
-    state
+    state,
   };
 };
 

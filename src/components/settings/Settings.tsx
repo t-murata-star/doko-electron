@@ -133,7 +133,7 @@ class Settings extends React.Component<Props, any> {
       openAtLogin = false;
     }
     remote.app.setLoginItemSettings({
-      openAtLogin
+      openAtLogin,
     });
 
     showSnackBar('success', '設定を保存しました。');
@@ -170,7 +170,7 @@ class Settings extends React.Component<Props, any> {
                       style={{ width: 250 }}
                       size={'small'}
                       SelectProps={{
-                        native: true
+                        native: true,
                       }}
                       disabled={userList.length === 0}>
                       {userList
@@ -210,7 +210,7 @@ class Settings extends React.Component<Props, any> {
                         onChange={this.onUserEmailInputChange}
                         size={'small'}
                         inputProps={{
-                          maxLength: 100
+                          maxLength: 100,
                         }}
                         disabled={userInfo.id === -1}
                       />
@@ -276,7 +276,7 @@ class Settings extends React.Component<Props, any> {
 
 const mapStateToProps = (state: any) => {
   return {
-    state
+    state,
   };
 };
 

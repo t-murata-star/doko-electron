@@ -14,25 +14,25 @@ const slice = createSlice({
     showModal: (state, action) => {
       return {
         ...state,
-        onHide: action.payload
+        onHide: action.payload,
       };
     },
     disableSubmitButton: (state, action) => {
       return {
         ...state,
-        submitButtonDisabled: action.payload
+        submitButtonDisabled: action.payload,
       };
     },
     changeSubmitMode: (state, action) => {
       return {
         ...state,
-        isChangeUser: action.payload
+        isChangeUser: action.payload,
       };
     },
     initializeState: () => {
       return new _initialState();
-    }
-  }
+    },
+  },
 });
 
 export default slice;

@@ -53,7 +53,7 @@ class UserList extends React.Component<Props, any> {
       fullscreenable: false,
       minimizable: false,
       maximizable: false,
-      parent: remote.getCurrentWindow()
+      parent: remote.getCurrentWindow(),
     });
     calendarWindow.setMenuBarVisibility(false);
     calendarWindow.loadURL(`${CALENDAR_URL}&src=${encodedEmail}${EMAIL_DOMAIN}&`);
@@ -81,8 +81,8 @@ class UserList extends React.Component<Props, any> {
       formatter: 'datetime',
       formatterParams: {
         outputFormat: 'YYYY/MM/DD',
-        invalidPlaceholder: ''
-      }
+        invalidPlaceholder: '',
+      },
     },
     {
       title: 'カレンダー',
@@ -92,9 +92,9 @@ class UserList extends React.Component<Props, any> {
       headerSort: false,
       tooltip: false,
       formatter: this.formatter,
-      cellClick: this.openCalendar
+      cellClick: this.openCalendar,
     },
-    { title: 'メッセージ', field: 'message', headerSort: false, minWidth: 80 }
+    { title: 'メッセージ', field: 'message', headerSort: false, minWidth: 80 },
   ];
 
   showUserEditModal = (e: any, row: Tabulator.RowComponent) => {
@@ -173,7 +173,7 @@ class UserList extends React.Component<Props, any> {
     this._updateUserInfoOrder(row);
   };
 
-  _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+  _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
   render() {
     const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
@@ -194,9 +194,9 @@ class UserList extends React.Component<Props, any> {
             movableRows: true,
             initialSort: [
               { column: 'updatedAt', dir: 'asc' },
-              { column: 'order', dir: 'asc' }
+              { column: 'order', dir: 'asc' },
             ],
-            rowFormatter: this._rowFormatter
+            rowFormatter: this._rowFormatter,
           }}
           rowMoved={this._rowMovedCallback}
         />
@@ -208,7 +208,7 @@ class UserList extends React.Component<Props, any> {
 
 const mapStateToProps = (state: any) => {
   return {
-    state
+    state,
   };
 };
 

@@ -11,7 +11,7 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
   if (!userList) {
     return null;
   }
-  const userInfo = userList.filter(userInfo => {
+  const userInfo = userList.filter((userInfo) => {
     return userInfo.id === userID;
   })[0];
   return userInfo || null;
@@ -38,14 +38,14 @@ export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'inf
       title: APP_NAME,
       type,
       buttons: ['OK'],
-      message
+      message,
     });
   } else {
     remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
       title: APP_NAME,
       type,
       buttons: ['OK'],
-      message
+      message,
     });
   }
 };
@@ -61,14 +61,14 @@ export const showMessageBoxSyncWithReturnValue = (
       title: APP_NAME,
       type: 'info',
       buttons: [OKButtonText, cancelButtonText],
-      message
+      message,
     });
   } else {
     return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
       title: APP_NAME,
       type: 'info',
       buttons: [OKButtonText, cancelButtonText],
-      message
+      message,
     });
   }
 };
@@ -124,7 +124,7 @@ export const getAllOfficeInfo = async () => {
 
   const responses = await Promise.all([
     dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350)),
-    dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350))
+    dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350)),
   ]);
 
   for (const response of responses) {

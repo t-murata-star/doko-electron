@@ -12,14 +12,14 @@ builder
       appId: `com.electron.s`,
       mac: {
         target: {
-          target: 'pkg'
-        }
-      }
-    }
+          target: 'pkg',
+        },
+      },
+    },
   })
   .then(() => {
     // handle result
   })
-  .catch(error => {
+  .catch((error) => {
     // handle error
   });

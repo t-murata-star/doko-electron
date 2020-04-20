@@ -18,17 +18,17 @@ const slice = createSlice({
   name: 'userList',
   initialState: new _initialState(),
   reducers: {
-    startApiRequest: state => {
+    startApiRequest: (state) => {
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     },
-    failRequest: state => {
+    failRequest: (state) => {
       return {
         ...state,
         isFetching: false,
-        isError: true
+        isError: true,
       };
     },
     getUserListSuccess: (state, action) => {
@@ -36,56 +36,56 @@ const slice = createSlice({
         ...state,
         userList: updateLeavingTimeForUserList(action.payload.userList, action.payload.myUserID),
         isFetching: false,
-        isError: false
+        isError: false,
       };
     },
-    updateUserInfoSuccess: state => {
+    updateUserInfoSuccess: (state) => {
       return {
         ...state,
         isFetching: false,
-        isError: false
+        isError: false,
       };
     },
-    changeOrderSuccess: state => {
+    changeOrderSuccess: (state) => {
       return {
         ...state,
         isFetching: false,
-        isError: false
+        isError: false,
       };
     },
     addUserSuccess: (state, action) => {
       return {
         ...state,
         isFetching: false,
-        isError: false
+        isError: false,
       };
     },
-    deleteUserSuccess: state => {
+    deleteUserSuccess: (state) => {
       return {
         ...state,
         isFetching: false,
-        isError: false
+        isError: false,
       };
     },
     selectUser: (state, action) => {
       return {
         ...state,
-        selectedUserId: action.payload
+        selectedUserId: action.payload,
       };
     },
     inoperable: (state, action) => {
       return {
         ...state,
-        inoperable: action.payload
+        inoperable: action.payload,
       };
     },
     reRenderUserList: (state, action) => {
       return {
         ...state,
-        userList: JSON.parse(JSON.stringify(action.payload))
+        userList: JSON.parse(JSON.stringify(action.payload)),
       };
-    }
-  }
+    },
+  },
 });
 
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
@@ -125,7 +125,7 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
 };
 
 // スリープ処理
-const _sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+const _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
 export class AsyncActionsUserList {
   static deleteUserAction = (userID: number) => {
@@ -134,7 +134,7 @@ export class AsyncActionsUserList {
       try {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
           method: 'DELETE',
-          headers: AUTH_REQUEST_HEADERS
+          headers: AUTH_REQUEST_HEADERS,
         });
 
         responseStatusCheck(dispatch, res.status);
@@ -161,7 +161,7 @@ export class AsyncActionsUserList {
         const res = await fetch(`${API_URL}/userList`, {
           method: 'POST',
           headers: AUTH_REQUEST_HEADERS,
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         });
 
         responseStatusCheck(dispatch, res.status);
@@ -189,7 +189,7 @@ export class AsyncActionsUserList {
         const startTime = Date.now();
         const res = await fetch(`${API_URL}/userList`, {
           method: 'GET',
-          headers: AUTH_REQUEST_HEADERS
+          headers: AUTH_REQUEST_HEADERS,
         });
         const lowestWaitTime = sleepMs - (Date.now() - startTime);
         if (Math.sign(lowestWaitTime) === 1) {
@@ -209,7 +209,7 @@ export class AsyncActionsUserList {
          * 無ければ新規登録画面へ遷移する
          */
         if (isMyUserIDCheck) {
-          const userInfo = json.filter(userInfo => {
+          const userInfo = json.filter((userInfo) => {
             return userInfo.id === myUserID;
           });
           if (userInfo.length === 0) {
@@ -217,7 +217,7 @@ export class AsyncActionsUserList {
               title: APP_NAME,
               type: 'info',
               buttons: ['OK'],
-              message: 'ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。'
+              message: 'ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。',
             });
             dispatch(AppModule.actions.setMyUserId(-1));
             dispatch(InitialStartupModalModule.actions.initializeState());
@@ -239,7 +239,7 @@ export class AsyncActionsUserList {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
           method: 'PATCH',
           headers: AUTH_REQUEST_HEADERS,
-          body: JSON.stringify(userInfo)
+          body: JSON.stringify(userInfo),
         });
 
         responseStatusCheck(dispatch, res.status);
@@ -262,7 +262,7 @@ export class AsyncActionsUserList {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
           method: 'PATCH',
           headers: AUTH_REQUEST_HEADERS,
-          body: JSON.stringify(userInfo)
+          body: JSON.stringify(userInfo),
         });
 
         responseStatusCheck(dispatch, res.status);

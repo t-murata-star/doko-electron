@@ -4,15 +4,15 @@ class _initialState {
   submitButtonsDisable = {
     user: {
       userChange: true,
-      email: true
-    }
+      email: true,
+    },
   };
   user = {
     userID: -1,
-    email: ''
+    email: '',
   };
   system = {
-    startupEnabled: false
+    startupEnabled: false,
   };
 }
 
@@ -29,8 +29,8 @@ const slice = createSlice({
         ...state,
         user: {
           ...state.user,
-          userID: action.payload
-        }
+          userID: action.payload,
+        },
       };
     },
     setEmail: (state, action) => {
@@ -38,8 +38,8 @@ const slice = createSlice({
         ...state,
         user: {
           ...state.user,
-          email: action.payload
-        }
+          email: action.payload,
+        },
       };
     },
     changeDisabledSubmitButtonUserChange: (state, action) => {
@@ -49,9 +49,9 @@ const slice = createSlice({
           ...state.submitButtonsDisable,
           user: {
             ...state.submitButtonsDisable.user,
-            userChange: action.payload
-          }
-        }
+            userChange: action.payload,
+          },
+        },
       };
     },
     changeDisabledSubmitButtonEmail: (state, action) => {
@@ -61,9 +61,9 @@ const slice = createSlice({
           ...state.submitButtonsDisable,
           user: {
             ...state.submitButtonsDisable.user,
-            email: action.payload
-          }
-        }
+            email: action.payload,
+          },
+        },
       };
     },
     changeEnabledStartup: (state, action) => {
@@ -71,11 +71,11 @@ const slice = createSlice({
         ...state,
         system: {
           ...state.system,
-          startupEnabled: action.payload
-        }
+          startupEnabled: action.payload,
+        },
       };
-    }
-  }
+    },
+  },
 });
 
 export default slice;

@@ -25,7 +25,7 @@ class _initialState {
     severity: 'info',
     message: '',
     timeoutMs: 5000,
-    queueMessages: new Array<string>()
+    queueMessages: new Array<string>(),
   };
 }
 
@@ -34,10 +34,10 @@ const slice = createSlice({
   name: 'app',
   initialState: new _initialState(),
   reducers: {
-    startApiRequest: state => {
+    startApiRequest: (state) => {
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     },
     loginSuccess: (state, action) => {
@@ -45,48 +45,48 @@ const slice = createSlice({
         ...state,
         token: action.payload.token,
         isAuthenticated: true,
-        isError: false
+        isError: false,
       };
     },
-    failRequest: state => {
+    failRequest: (state) => {
       return {
         ...state,
         isFetching: false,
-        isError: true
+        isError: true,
       };
     },
-    unauthorized: state => {
+    unauthorized: (state) => {
       /**
        * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
        * 画面をリロードして認証トークンを再取得する
        */
       window.location.reload();
       return {
-        ...state
+        ...state,
       };
     },
     getNotificationSuccess: (state, action) => {
       return {
         ...state,
-        notification: action.payload
+        notification: action.payload,
       };
     },
     setMyUserId: (state, action) => {
       return {
         ...state,
-        myUserID: action.payload
+        myUserID: action.payload,
       };
     },
     setProcessingStatus: (state, action) => {
       return {
         ...state,
-        isProcessing: action.payload
+        isProcessing: action.payload,
       };
     },
     setActiveIndex: (state, action) => {
       return {
         ...state,
-        activeIndex: action.payload
+        activeIndex: action.payload,
       };
     },
     changeEnabledSnackbar: (state, action) => {
@@ -97,8 +97,8 @@ const slice = createSlice({
           enabled: action.payload.enabled,
           severity: action.payload.severity ? action.payload.severity : state.snackbar.severity,
           message: action.payload.message ? action.payload.message : state.snackbar.message,
-          timeoutMs: action.payload.timeoutMs !== null ? action.payload.timeoutMs : null
-        }
+          timeoutMs: action.payload.timeoutMs !== null ? action.payload.timeoutMs : null,
+        },
       };
     },
     enqueueSnackbarMessages: (state, action) => {
@@ -108,22 +108,22 @@ const slice = createSlice({
         ...state,
         snackbar: {
           ...state.snackbar,
-          queueMessages
-        }
+          queueMessages,
+        },
       };
     },
-    dequeueSnackbarMessages: state => {
+    dequeueSnackbarMessages: (state) => {
       const queueMessages = [...state.snackbar.queueMessages];
       queueMessages.shift();
       return {
         ...state,
         snackbar: {
           ...state.snackbar,
-          queueMessages
-        }
+          queueMessages,
+        },
       };
-    }
-  }
+    },
+  },
 });
 
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
@@ -145,7 +145,7 @@ export class AsyncActionsApp {
         const res = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
           headers: LOGIN_REQUEST_HEADERS,
-          body: JSON.stringify(LOGIN_USER)
+          body: JSON.stringify(LOGIN_USER),
         });
 
         if (res.ok === false) {
@@ -166,7 +166,7 @@ export class AsyncActionsApp {
       try {
         const res = await fetch(`${API_URL}/notification`, {
           method: 'GET',
-          headers: AUTH_REQUEST_HEADERS
+          headers: AUTH_REQUEST_HEADERS,
         });
 
         responseStatusCheck(dispatch, res.status);
@@ -190,7 +190,7 @@ export class AsyncActionsApp {
       const res = await fetch(`${API_URL}/userList/${userID}`, {
         method: 'PATCH',
         headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
 
       responseStatusCheck(dispatch, res.status);
