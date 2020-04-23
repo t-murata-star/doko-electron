@@ -1,5 +1,5 @@
 import { Color } from '@material-ui/lab/Alert';
-import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
+import { Action, createSlice, Dispatch, createAction } from '@reduxjs/toolkit';
 import { API_URL, AUTH_REQUEST_HEADERS, LOGIN_REQUEST_HEADERS, LOGIN_USER } from '../define';
 import { ApiResponse, Notification, UserInfo } from '../define/model';
 
@@ -18,7 +18,6 @@ class _initialState {
   isError: boolean = false;
   myUserID: number = -1;
   notification: Notification = new Notification();
-  isProcessing: boolean = false;
   activeIndex: number = 0;
   snackbar: Snackbar = {
     enabled: false,
@@ -30,7 +29,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const slice = createSlice({
+const AppSlice = createSlice({
   name: 'app',
   initialState: new _initialState(),
   reducers: {
@@ -45,6 +44,7 @@ const slice = createSlice({
         ...state,
         token: action.payload.token,
         isAuthenticated: true,
+        isFetching: false,
         isError: false,
       };
     },
@@ -68,6 +68,7 @@ const slice = createSlice({
     getNotificationSuccess: (state, action) => {
       return {
         ...state,
+        isFetching: false,
         notification: action.payload,
       };
     },
@@ -77,10 +78,10 @@ const slice = createSlice({
         myUserID: action.payload,
       };
     },
-    setProcessingStatus: (state, action) => {
+    setFetchingStatus: (state, action) => {
       return {
         ...state,
-        isProcessing: action.payload,
+        isFetching: action.payload,
       };
     },
     setActiveIndex: (state, action) => {
@@ -129,7 +130,7 @@ const slice = createSlice({
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
   switch (statusCode) {
     case 401:
-      dispatch(slice.actions.unauthorized());
+      dispatch(AppSlice.actions.unauthorized());
       break;
 
     default:
@@ -138,9 +139,13 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
 };
 
 export class AsyncActionsApp {
+  static login = createAction(`${AppSlice.name}/login`);
+  static getNotification = createAction(`${AppSlice.name}/getNotification`);
+  static sendHealthCheck = createAction(`${AppSlice.name}/sendHealthCheck`);
+
   static loginAction = () => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
+      dispatch(AppSlice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
@@ -152,10 +157,10 @@ export class AsyncActionsApp {
           throw new Error();
         }
         const json = await res.json();
-        dispatch(slice.actions.loginSuccess(json));
+        dispatch(AppSlice.actions.loginSuccess(json));
         return new ApiResponse();
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(AppSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -175,10 +180,10 @@ export class AsyncActionsApp {
           throw new Error();
         }
         const json = await res.json();
-        dispatch(slice.actions.getNotificationSuccess(json));
+        dispatch(AppSlice.actions.getNotificationSuccess(json));
         return new ApiResponse();
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(AppSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -204,4 +209,4 @@ export class AsyncActionsApp {
   };
 }
 
-export default slice;
+export default AppSlice;

@@ -14,7 +14,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const slice = createSlice({
+const userListSlice = createSlice({
   name: 'userList',
   initialState: new _initialState(),
   reducers: {
@@ -130,7 +130,7 @@ const _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, ms
 export class AsyncActionsUserList {
   static deleteUserAction = (userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
+      dispatch(userListSlice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
           method: 'DELETE',
@@ -142,10 +142,10 @@ export class AsyncActionsUserList {
         if (res.ok === false) {
           throw new Error();
         }
-        dispatch(slice.actions.deleteUserSuccess());
+        dispatch(userListSlice.actions.deleteUserSuccess());
         return new ApiResponse();
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(userListSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -153,7 +153,7 @@ export class AsyncActionsUserList {
 
   static addUserAction = (userInfo: UserInfo) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
+      dispatch(userListSlice.actions.startApiRequest());
       const body = { ...userInfo };
       // id はAPIサーバで自動採番のため、キーを削除する
       delete body.id;
@@ -172,11 +172,11 @@ export class AsyncActionsUserList {
         const json: UserInfo = await res.json();
         const userID = json.id;
         dispatch(AppModule.actions.setMyUserId(json.id));
-        dispatch(slice.actions.addUserSuccess(userID));
+        dispatch(userListSlice.actions.addUserSuccess(userID));
         // return new ApiResponse(userID);
         return new ApiResponse(userID);
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(userListSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -184,7 +184,7 @@ export class AsyncActionsUserList {
 
   static getUserListAction = (myUserID: number, sleepMs: number = 0, isMyUserIDCheck: boolean = true) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
+      dispatch(userListSlice.actions.startApiRequest());
       try {
         const startTime = Date.now();
         const res = await fetch(`${API_URL}/userList`, {
@@ -202,7 +202,7 @@ export class AsyncActionsUserList {
           throw new Error();
         }
         const json: UserInfo[] = await res.json();
-        dispatch(slice.actions.getUserListSuccess({ userList: json, myUserID }));
+        dispatch(userListSlice.actions.getUserListSuccess({ userList: json, myUserID }));
 
         /**
          * サーバ上に自分の情報が存在するかどうかチェック
@@ -226,7 +226,7 @@ export class AsyncActionsUserList {
         }
         return new ApiResponse();
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(userListSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -234,7 +234,7 @@ export class AsyncActionsUserList {
 
   static changeOrderAction = (userInfo: UserInfoForUpdate, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
+      dispatch(userListSlice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
           method: 'PATCH',
@@ -249,7 +249,7 @@ export class AsyncActionsUserList {
         }
         return new ApiResponse();
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(userListSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -257,7 +257,7 @@ export class AsyncActionsUserList {
 
   static updateUserInfoAction = (userInfo: UserInfoForUpdate, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
+      dispatch(userListSlice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/userList/${userID}`, {
           method: 'PATCH',
@@ -270,14 +270,14 @@ export class AsyncActionsUserList {
         if (res.ok === false) {
           throw new Error();
         }
-        dispatch(slice.actions.updateUserInfoSuccess());
+        dispatch(userListSlice.actions.updateUserInfoSuccess());
         return new ApiResponse();
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(userListSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
   };
 }
 
-export default slice;
+export default userListSlice;

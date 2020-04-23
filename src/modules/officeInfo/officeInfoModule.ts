@@ -20,7 +20,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const slice = createSlice({
+const officeInfoSlice = createSlice({
   name: 'officeInfo',
   initialState: new _initialState(),
   reducers: {
@@ -98,7 +98,7 @@ function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
 export class AsyncActionsOfficeInfo {
   static getRestroomUsageAction = (sleepMs: number = 0) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
+      dispatch(officeInfoSlice.actions.startApiRequest());
       try {
         const startTime = Date.now();
         const res = await fetch(`${API_URL}/restrooms`, {
@@ -116,10 +116,10 @@ export class AsyncActionsOfficeInfo {
           throw new Error();
         }
         const json = await res.json();
-        dispatch(slice.actions.getRestroomUsageSuccess(json));
+        dispatch(officeInfoSlice.actions.getRestroomUsageSuccess(json));
         return new ApiResponse();
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(officeInfoSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -127,7 +127,7 @@ export class AsyncActionsOfficeInfo {
 
   static getOfficeInfoAction = (sleepMs: number = 0) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
+      dispatch(officeInfoSlice.actions.startApiRequest());
       try {
         const startTime = Date.now();
         const res = await fetch(`${API_URL}/officeInfo`, {
@@ -145,14 +145,14 @@ export class AsyncActionsOfficeInfo {
           throw new Error();
         }
         const json = await res.json();
-        dispatch(slice.actions.getOfficeInfoSuccess(json));
+        dispatch(officeInfoSlice.actions.getOfficeInfoSuccess(json));
         return new ApiResponse();
       } catch (error) {
-        dispatch(slice.actions.failRequest());
+        dispatch(officeInfoSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
   };
 }
 
-export default slice;
+export default officeInfoSlice;

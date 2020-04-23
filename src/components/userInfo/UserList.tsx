@@ -148,7 +148,7 @@ class UserList extends React.Component<Props, any> {
       return;
     }
 
-    dispatch(AppModule.actions.setProcessingStatus(true));
+    dispatch(AppModule.actions.setFetchingStatus(true));
 
     let response: ApiResponse;
     for (const row of rows) {
@@ -156,13 +156,13 @@ class UserList extends React.Component<Props, any> {
       response = await checkResponseError(dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id)));
       if (response.getIsError()) {
         dispatch(UserListModule.actions.reRenderUserList(this.props.state.userListState.userList));
-        dispatch(AppModule.actions.setProcessingStatus(false));
+        dispatch(AppModule.actions.setFetchingStatus(false));
         return;
       }
       await this._sleep(50);
     }
     dispatch(UserListModule.actions.changeOrderSuccess());
-    dispatch(AppModule.actions.setProcessingStatus(false));
+    dispatch(AppModule.actions.setFetchingStatus(false));
 
     const myUserID = this.props.state.appState.myUserID;
     checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID)));

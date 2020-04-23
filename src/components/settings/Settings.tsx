@@ -80,7 +80,7 @@ class Settings extends React.Component<Props, any> {
     const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo === null) {
-      showSnackBar('error', '設定の保存に失敗しました。', null);
+      showSnackBar('error');
       return;
     }
 

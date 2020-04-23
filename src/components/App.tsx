@@ -274,7 +274,7 @@ class App extends React.Component<Props, any> {
     return (
       <div>
         <Loading
-          isAppStateProcessing={this.props.state.appState.isProcessing}
+          isAppStateProcessing={this.props.state.appState.isFetching}
           isUserListProcessing={this.props.state.userListState.isFetching}
           officeInfoProcessing={this.props.state.officeInfoState.isFetching}
         />

@@ -4,6 +4,8 @@ import { APP_NAME, APP_VERSION } from '../../define';
 import { UserInfo, ApiResponse } from '../../define/model';
 import AppModule, { AsyncActionsApp } from '../../modules/appModule';
 import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
+import AppSlice from '../../modules/appModule';
+import { put, call } from 'redux-saga/effects';
 const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意
@@ -73,7 +75,7 @@ export const showMessageBoxSyncWithReturnValue = (
   }
 };
 
-export const showSnackBar = (severity: Color, message: string, timeoutMs: number | null = 5000) => {
+export const showSnackBar = (severity: Color, message: string = '通信に失敗しました。', timeoutMs: number = 5000) => {
   const dispatch: any = store.dispatch;
   const appState = store.getState().appState;
 
@@ -114,7 +116,7 @@ export const onSnackBarExited = () => {
 export const checkResponseError = async (promiseResponse: Promise<ApiResponse>) => {
   const response = await promiseResponse;
   if (response.getIsError()) {
-    showSnackBar('error', '通信に失敗しました。', null);
+    showSnackBar('error');
   }
   return response;
 };
@@ -129,8 +131,44 @@ export const getAllOfficeInfo = async () => {
 
   for (const response of responses) {
     if (response.getIsError()) {
-      showSnackBar('error', '通信に失敗しました。', null);
+      showSnackBar('error');
       break;
     }
   }
 };
+
+export const isAuthenticated = (statusCode: number): boolean => {
+  switch (statusCode) {
+    case 401:
+      return false;
+
+    default:
+      return true;
+  }
+};
+
+export function* callAPI(calledAPI: () => Promise<Response>) {
+  try {
+    yield put(AppSlice.actions.startApiRequest());
+
+    const response: Response = yield call(calledAPI);
+    if (response.ok === false) {
+      throw new Error(response.statusText);
+    }
+
+    if (isAuthenticated(response.status) === false) {
+      yield put(AppSlice.actions.unauthorized());
+      /**
+       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
+       * 画面をリロードして認証トークンを再取得する
+       */
+      window.location.reload();
+    }
+
+    return yield call(response.json.bind(response));
+  } catch (error) {
+    console.log(error);
+    yield put(AppSlice.actions.failRequest());
+    throw new Error(error);
+  }
+}

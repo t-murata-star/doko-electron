@@ -17,7 +17,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const slice = createSlice({
+const settingsSlice = createSlice({
   name: 'settings',
   initialState: new _initialState(),
   reducers: {
@@ -78,4 +78,4 @@ const slice = createSlice({
   },
 });
 
-export default slice;
+export default settingsSlice;
