@@ -1,6 +1,7 @@
 import { all } from 'redux-saga/effects';
-import { appSaga } from './appSaga';
+import { appSaga } from './logic/appSaga';
+import { InitialStartupModalSaga } from './logic/InitialStartupModalSaga';
 
 export default function* rootSaga() {
-  yield all([...appSaga]);
+  yield all([...appSaga, ...InitialStartupModalSaga]);
 }

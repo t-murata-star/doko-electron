@@ -1,0 +1,121 @@
+import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
+import { callAPI, getUserInfo, showMessageBoxSync } from '../../components/common/functions';
+import { put, delay } from 'redux-saga/effects';
+import { UserListAPI } from '../../api/userListAPI';
+import userListSlice from '../../modules/userInfo/userListModule';
+import AppSlice from '../../modules/appModule';
+import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M } from '../../define';
+import InitialStartupModalSlice from '../../modules/initialStartupModalModule';
+
+/**
+ * 全ユーザの退社チェック
+ * LEAVING_TIME_THRESHOLD_M 以上healthCheckAtが更新されていないユーザの状態を「退社」に変更する。
+ * ただし、この変更は画面表示のみであり、サーバ上の情報は更新しない。
+ */
+const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) => {
+  if (!userList) return [];
+
+  const nowDate: Date = new Date();
+  for (const userInfo of userList) {
+    if (userInfo.id === myUserID) {
+      continue;
+    }
+    if ([USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === true) {
+      const healthCheckAt: Date = new Date(userInfo.healthCheckAt);
+      const diffMin = Math.floor((nowDate.getTime() - healthCheckAt.getTime()) / (1000 * 60));
+      if (diffMin >= LEAVING_TIME_THRESHOLD_M) {
+        userInfo.status = USER_STATUS_INFO.s02.status;
+      }
+    }
+  }
+
+  return userList;
+};
+
+export class CallUserListAPI {
+  static deleteUser = function* () {
+    yield put(userListSlice.actions.startApiRequest());
+    const response: ApiResponse = yield callAPI(UserListAPI.deleteUser);
+    if (response.getIsError()) {
+      yield put(userListSlice.actions.failRequest());
+    } else {
+      yield put(userListSlice.actions.deleteUserSuccess());
+    }
+    return response;
+  };
+
+  static addUser = function* (userInfo: UserInfo) {
+    yield put(userListSlice.actions.startApiRequest());
+    delete userInfo.id;
+    const response: ApiResponse = yield callAPI(UserListAPI.addUser, userInfo);
+    if (response.getIsError()) {
+      yield put(userListSlice.actions.failRequest());
+    } else {
+      yield put(userListSlice.actions.addUserSuccess());
+    }
+    const userID = response.getPayload().id;
+    yield put(AppSlice.actions.setMyUserId(userID));
+    return response;
+  };
+
+  static getUserList = function* (myUserID: number) {
+    yield put(userListSlice.actions.startApiRequest());
+    const startTime = Date.now();
+    const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
+    if (response.getIsError()) {
+      yield put(userListSlice.actions.failRequest());
+    } else {
+      yield put(userListSlice.actions.getUserListSuccess(response.getPayload()));
+    }
+
+    updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
+
+    const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
+    if (Math.sign(lowestWaitTime) === 1) {
+      yield delay(lowestWaitTime);
+    }
+    return response;
+  };
+
+  static getUserListWithMyUserIDExists = function* (myUserID: number) {
+    yield put(userListSlice.actions.startApiRequest());
+    const startTime = Date.now();
+    const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
+    if (response.getIsError()) {
+      yield put(userListSlice.actions.failRequest());
+    } else {
+      yield put(userListSlice.actions.getUserListSuccess(response.getPayload()));
+    }
+
+    updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
+
+    const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
+    if (Math.sign(lowestWaitTime) === 1) {
+      yield delay(lowestWaitTime);
+    }
+
+    /**
+     * サーバ上に自分の情報が存在するかどうかチェック
+     * 無ければ新規登録画面へ遷移する
+     */
+    const userInfo = getUserInfo(response.getPayload(), myUserID);
+    if (userInfo === null) {
+      showMessageBoxSync('ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。');
+      yield put(AppSlice.actions.setMyUserId(-1));
+      yield put(InitialStartupModalSlice.actions.initializeState());
+      yield put(InitialStartupModalSlice.actions.showModal(true));
+    }
+    return response;
+  };
+
+  static updateUserInfo = function* (userInfo: UserInfoForUpdate, userID: number) {
+    yield put(userListSlice.actions.startApiRequest());
+    const response: ApiResponse = yield callAPI(UserListAPI.updateUserInfo, userInfo, userID);
+    if (response.getIsError()) {
+      yield put(userListSlice.actions.failRequest());
+    } else {
+      yield put(userListSlice.actions.updateUserInfoSuccess());
+    }
+    return response;
+  };
+}

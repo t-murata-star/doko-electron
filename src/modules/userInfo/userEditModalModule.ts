@@ -10,7 +10,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const slice = createSlice({
+const userEditModalSlice = createSlice({
   name: 'userEditModal',
   initialState: new _initialState(),
   reducers: {
@@ -65,4 +65,4 @@ const slice = createSlice({
   },
 });
 
-export default slice;
+export default userEditModalSlice;

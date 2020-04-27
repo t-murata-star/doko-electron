@@ -1,13 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAction } from '@reduxjs/toolkit';
+import { UserInfo } from '../define/model';
 
 class _initialState {
   onHide: boolean = false;
   isChangeUser: boolean = false;
   submitButtonDisabled: boolean = true;
+  userInfo: UserInfo = new UserInfo();
+  selectedUserId: number = -1;
 }
 
 // createSlice() で actions と reducers を一気に生成
-const slice = createSlice({
+const InitialStartupModalSlice = createSlice({
   name: 'initialStartupModal',
   initialState: new _initialState(),
   reducers: {
@@ -32,7 +35,33 @@ const slice = createSlice({
     initializeState: () => {
       return new _initialState();
     },
+    changeUserInfo: (state: any, action) => {
+      const targetName = action.payload.targetName;
+      const targetValue = action.payload.targetValue;
+      state.userInfo[targetName] = targetValue;
+      return {
+        ...state,
+      };
+    },
+    changeUserId: (state, action) => {
+      return {
+        ...state,
+        selectedUserId: action.payload,
+      };
+    },
+    initializeField: (state) => {
+      return {
+        ...state,
+        userInfo: new UserInfo(),
+        selectedUserId: -1,
+      };
+    },
   },
 });
 
-export default slice;
+export class InitialStartupModalActionsForAsync {
+  static addUser = createAction(`${InitialStartupModalSlice.name}/addUser`);
+  static changeUser = createAction(`${InitialStartupModalSlice.name}/changeUser`);
+}
+
+export default InitialStartupModalSlice;

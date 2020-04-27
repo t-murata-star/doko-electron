@@ -81,8 +81,3 @@ export class Restroom {
   place: string = '';
   isUsing: boolean = false;
 }
-
-export interface Action {
-  payload: any;
-  type: string;
-}

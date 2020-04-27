@@ -6,7 +6,7 @@ import 'react-tabulator/lib/styles.css';
 import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS_INFO } from '../../define';
 import AppModule from '../../modules/appModule';
 import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
-import UserListModule, { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
+import UserListModule, { UserListActionsForAsync } from '../../modules/userInfo/userListModule';
 import { getUserInfo, showMessageBoxSyncWithReturnValue, checkResponseError } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
@@ -153,7 +153,7 @@ class UserList extends React.Component<Props, any> {
     let response: ApiResponse;
     for (const row of rows) {
       const patchInfoUser = { order: row.getPosition(true) + 1 };
-      response = await checkResponseError(dispatch(AsyncActionsUserList.changeOrderAction(patchInfoUser, row.getData().id)));
+      response = await checkResponseError(dispatch(UserListActionsForAsync.changeOrderAction(patchInfoUser, row.getData().id)));
       if (response.getIsError()) {
         dispatch(UserListModule.actions.reRenderUserList(this.props.state.userListState.userList));
         dispatch(AppModule.actions.setFetchingStatus(false));
@@ -161,11 +161,10 @@ class UserList extends React.Component<Props, any> {
       }
       await this._sleep(50);
     }
-    dispatch(UserListModule.actions.changeOrderSuccess());
     dispatch(AppModule.actions.setFetchingStatus(false));
 
     const myUserID = this.props.state.appState.myUserID;
-    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID)));
+    checkResponseError(dispatch(UserListActionsForAsync.getUserListAction(myUserID)));
     return;
   };
 

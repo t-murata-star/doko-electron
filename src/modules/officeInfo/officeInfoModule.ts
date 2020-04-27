@@ -95,7 +95,7 @@ function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
   return filteredByUsing.length;
 }
 
-export class AsyncActionsOfficeInfo {
+export class OfficeInfoActionsForAsync {
   static getRestroomUsageAction = (sleepMs: number = 0) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(officeInfoSlice.actions.startApiRequest());

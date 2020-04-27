@@ -138,10 +138,8 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
   }
 };
 
-export class AsyncActionsApp {
+export class AppActionsForAsync {
   static login = createAction(`${AppSlice.name}/login`);
-  static getNotification = createAction(`${AppSlice.name}/getNotification`);
-  static sendHealthCheck = createAction(`${AppSlice.name}/sendHealthCheck`);
 
   static loginAction = () => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {

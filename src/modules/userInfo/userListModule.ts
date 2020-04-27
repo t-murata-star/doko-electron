@@ -1,5 +1,5 @@
 import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
-import { API_URL, AUTH_REQUEST_HEADERS, LEAVING_TIME_THRESHOLD_M, USER_STATUS_INFO, APP_NAME } from '../../define';
+import { API_URL, AUTH_REQUEST_HEADERS, APP_NAME } from '../../define';
 import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
 import AppModule from '../appModule';
 import InitialStartupModalModule from '../initialStartupModalModule';
@@ -34,7 +34,7 @@ const userListSlice = createSlice({
     getUserListSuccess: (state, action) => {
       return {
         ...state,
-        userList: updateLeavingTimeForUserList(action.payload.userList, action.payload.myUserID),
+        userList: action.payload,
         isFetching: false,
         isError: false,
       };
@@ -46,14 +46,7 @@ const userListSlice = createSlice({
         isError: false,
       };
     },
-    changeOrderSuccess: (state) => {
-      return {
-        ...state,
-        isFetching: false,
-        isError: false,
-      };
-    },
-    addUserSuccess: (state, action) => {
+    addUserSuccess: (state) => {
       return {
         ...state,
         isFetching: false,
@@ -99,35 +92,10 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
   }
 };
 
-/**
- * 全ユーザの退社チェック
- * LEAVING_TIME_THRESHOLD_M 以上healthCheckAtが更新されていないユーザの状態を「退社」に変更する。
- * ただし、この変更は画面表示のみであり、サーバ上の情報は更新しない。
- */
-const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) => {
-  if (!userList) return [];
-
-  const nowDate: Date = new Date();
-  for (const userInfo of userList) {
-    if (userInfo.id === myUserID) {
-      continue;
-    }
-    if ([USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === true) {
-      const healthCheckAt: Date = new Date(userInfo.healthCheckAt);
-      const diffMin = Math.floor((nowDate.getTime() - healthCheckAt.getTime()) / (1000 * 60));
-      if (diffMin >= LEAVING_TIME_THRESHOLD_M) {
-        userInfo.status = USER_STATUS_INFO.s02.status;
-      }
-    }
-  }
-
-  return userList;
-};
-
 // スリープ処理
 const _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
-export class AsyncActionsUserList {
+export class UserListActionsForAsync {
   static deleteUserAction = (userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(userListSlice.actions.startApiRequest());
@@ -172,7 +140,7 @@ export class AsyncActionsUserList {
         const json: UserInfo = await res.json();
         const userID = json.id;
         dispatch(AppModule.actions.setMyUserId(json.id));
-        dispatch(userListSlice.actions.addUserSuccess(userID));
+        dispatch(userListSlice.actions.addUserSuccess());
         // return new ApiResponse(userID);
         return new ApiResponse(userID);
       } catch (error) {
@@ -202,7 +170,7 @@ export class AsyncActionsUserList {
           throw new Error();
         }
         const json: UserInfo[] = await res.json();
-        dispatch(userListSlice.actions.getUserListSuccess({ userList: json, myUserID }));
+        dispatch(userListSlice.actions.getUserListSuccess(json));
 
         /**
          * サーバ上に自分の情報が存在するかどうかチェック

@@ -2,10 +2,11 @@ import { Color } from '@material-ui/lab/Alert';
 import store from '../../configureStore';
 import { APP_NAME, APP_VERSION } from '../../define';
 import { UserInfo, ApiResponse } from '../../define/model';
-import AppModule, { AsyncActionsApp } from '../../modules/appModule';
-import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
+import AppModule, { AppActionsForAsync } from '../../modules/appModule';
+import { OfficeInfoActionsForAsync } from '../../modules/officeInfo/officeInfoModule';
 import AppSlice from '../../modules/appModule';
-import { put, call } from 'redux-saga/effects';
+import { put, call, select, cancel } from 'redux-saga/effects';
+import { CallAppAPI } from '../../sagas/api/callAppAPISaga';
 const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意
@@ -31,7 +32,7 @@ export const sendHealthCheck = () => {
 
   const updatedUserInfo: any = {};
   updatedUserInfo.healthCheckAt = '';
-  dispatch(AsyncActionsApp.sendHealthCheckAction(updatedUserInfo, myUserID));
+  dispatch(AppActionsForAsync.sendHealthCheckAction(updatedUserInfo, myUserID));
 };
 
 export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'info') => {
@@ -125,8 +126,8 @@ export const getAllOfficeInfo = async () => {
   const dispatch: any = store.dispatch;
 
   const responses = await Promise.all([
-    dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350)),
-    dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350)),
+    dispatch(OfficeInfoActionsForAsync.getRestroomUsageAction(350)),
+    dispatch(OfficeInfoActionsForAsync.getOfficeInfoAction(350)),
   ]);
 
   for (const response of responses) {
@@ -147,11 +148,10 @@ export const isAuthenticated = (statusCode: number): boolean => {
   }
 };
 
-export function* callAPI(calledAPI: () => Promise<Response>) {
+// 通常のAPIリクエストのために用いる
+export function* callAPI(calledAPI: any, ...args: any) {
   try {
-    yield put(AppSlice.actions.startApiRequest());
-
-    const response: Response = yield call(calledAPI);
+    const response: Response = yield call(calledAPI, ...args);
     if (response.ok === false) {
       throw new Error(response.statusText);
     }
@@ -165,10 +165,55 @@ export function* callAPI(calledAPI: () => Promise<Response>) {
       window.location.reload();
     }
 
-    return yield call(response.json.bind(response));
+    const payload = yield call(response.json.bind(response));
+    return new ApiResponse(payload);
   } catch (error) {
     console.log(error);
-    yield put(AppSlice.actions.failRequest());
-    throw new Error(error);
+    showSnackBar('error');
+    return new ApiResponse(null, true);
+  }
+}
+
+// ローディングインジケータや、エラー時にポップアップを表示せずにAPIリクエストを行う
+export function* callAPIWithoutErrorSnackBar(calledAPI: any, ...args: any) {
+  try {
+    const response: Response = yield call(calledAPI, ...args);
+    if (response.ok === false) {
+      throw new Error(response.statusText);
+    }
+
+    if (isAuthenticated(response.status) === false) {
+      yield put(AppSlice.actions.unauthorized());
+      /**
+       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
+       * 画面をリロードして認証トークンを再取得する
+       */
+      window.location.reload();
+    }
+
+    const payload = yield call(response.json.bind(response));
+    return new ApiResponse(payload);
+  } catch (error) {
+    console.log(error);
+    return new ApiResponse(null, true);
+  }
+}
+
+// action: ReturnType<typeof AppActionsForAsync.sendHealthCheck>
+export function* sendHealthCheckSaga() {
+  const state = yield select();
+  const myUserID = state.appState.myUserID;
+  const userList = state.userListState.userList;
+  const userInfo = getUserInfo(userList, myUserID);
+  if (userInfo === null) {
+    yield cancel();
+  }
+
+  const updatedUserInfo: any = {};
+  updatedUserInfo.healthCheckAt = '';
+
+  const sendHealthCheckResponse: ApiResponse = yield call(CallAppAPI.sendHealthCheck, updatedUserInfo, myUserID);
+  if (sendHealthCheckResponse.getIsError() === false) {
+    console.log('Send healthCheck.');
   }
 }
