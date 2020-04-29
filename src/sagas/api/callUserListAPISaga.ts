@@ -3,9 +3,9 @@ import { callAPI, getUserInfo, showMessageBoxSync } from '../../components/commo
 import { put, delay } from 'redux-saga/effects';
 import { UserListAPI } from '../../api/userListAPI';
 import userListSlice from '../../modules/userInfo/userListModule';
-import AppSlice from '../../modules/appModule';
+import appSlice from '../../modules/appModule';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M } from '../../define';
-import InitialStartupModalSlice from '../../modules/initialStartupModalModule';
+import initialStartupModalSlice from '../../modules/initialStartupModalModule';
 
 /**
  * 全ユーザの退社チェック
@@ -54,7 +54,7 @@ export class CallUserListAPI {
       yield put(userListSlice.actions.addUserSuccess());
     }
     const userID = response.getPayload().id;
-    yield put(AppSlice.actions.setMyUserId(userID));
+    yield put(appSlice.actions.setMyUserId(userID));
     return response;
   };
 
@@ -101,9 +101,9 @@ export class CallUserListAPI {
     const userInfo = getUserInfo(response.getPayload(), myUserID);
     if (userInfo === null) {
       showMessageBoxSync('ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。');
-      yield put(AppSlice.actions.setMyUserId(-1));
-      yield put(InitialStartupModalSlice.actions.initializeState());
-      yield put(InitialStartupModalSlice.actions.showModal(true));
+      yield put(appSlice.actions.setMyUserId(-1));
+      yield put(initialStartupModalSlice.actions.initializeState());
+      yield put(initialStartupModalSlice.actions.showModal(true));
     }
     return response;
   };

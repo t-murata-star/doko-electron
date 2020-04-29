@@ -1,4 +1,4 @@
-import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
+import { Action, createSlice, Dispatch, createAction } from '@reduxjs/toolkit';
 import { API_URL, AUTH_REQUEST_HEADERS, APP_NAME } from '../../define';
 import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
 import AppModule from '../appModule';
@@ -72,10 +72,10 @@ const userListSlice = createSlice({
         inoperable: action.payload,
       };
     },
-    reRenderUserList: (state, action) => {
+    reRenderUserList: (state) => {
       return {
         ...state,
-        userList: JSON.parse(JSON.stringify(action.payload)),
+        userList: JSON.parse(JSON.stringify(state.userList)),
       };
     },
   },
@@ -96,6 +96,17 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
 const _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
 export class UserListActionsForAsync {
+  static updateUserInfoOrder = createAction(
+    `${userListSlice.name}/updateUserInfoOrder`,
+    (rowComponent: Tabulator.RowComponent) => {
+      return {
+        payload: {
+          rowComponent,
+        },
+      };
+    }
+  );
+
   static deleteUserAction = (userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(userListSlice.actions.startApiRequest());

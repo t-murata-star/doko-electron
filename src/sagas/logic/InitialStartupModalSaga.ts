@@ -1,12 +1,12 @@
 import { takeEvery, call, put, cancel, select } from 'redux-saga/effects';
-import InitialStartupModalSlice, { InitialStartupModalActionsForAsync } from '../../modules/initialStartupModalModule';
+import initialStartupModalSlice, { InitialStartupModalActionsForAsync } from '../../modules/initialStartupModalModule';
 import { CallUserListAPI } from '../api/callUserListAPISaga';
 import { ApiResponse, UserInfoForUpdate } from '../../define/model';
 // import { APP_VERSION, USER_STATUS_INFO } from '../../define';
 import { sendHealthCheckSaga, getUserInfo } from '../../components/common/functions';
 import { APP_VERSION, USER_STATUS_INFO } from '../../define';
 import { RootState } from '../../modules';
-import AppSlice from '../../modules/appModule';
+import appSlice from '../../modules/appModule';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -14,13 +14,13 @@ const electronStore = new Store();
 function* addUser() {
   const state: RootState = yield select();
   yield put(
-    InitialStartupModalSlice.actions.changeUserInfo({
+    initialStartupModalSlice.actions.changeUserInfo({
       targetName: 'version',
       targetValue: APP_VERSION,
     })
   );
   yield put(
-    InitialStartupModalSlice.actions.changeUserInfo({
+    initialStartupModalSlice.actions.changeUserInfo({
       targetName: 'status',
       targetValue: USER_STATUS_INFO.s01.status,
     })
@@ -29,7 +29,7 @@ function* addUser() {
   const userInfo = state.initialStartupModalState.userInfo;
   const addUserResponse: ApiResponse = yield call(CallUserListAPI.addUser, userInfo);
   if (addUserResponse.getIsError()) {
-    yield put(InitialStartupModalSlice.actions.disableSubmitButton(false));
+    yield put(initialStartupModalSlice.actions.disableSubmitButton(false));
     yield cancel();
   }
   yield closeModal();
@@ -46,7 +46,7 @@ function* addUser() {
   yield call(CallUserListAPI.updateUserInfo, addedUserInfo, myUserID);
   yield call(CallUserListAPI.getUserList, myUserID);
   yield sendHealthCheckSaga();
-  yield put(InitialStartupModalSlice.actions.initializeField());
+  yield put(initialStartupModalSlice.actions.initializeField());
 }
 
 function* changeUser() {
@@ -83,18 +83,18 @@ function* changeUser() {
   }
 
   electronStore.set('userID', myUserID);
-  yield put(AppSlice.actions.setMyUserId(myUserID));
+  yield put(appSlice.actions.setMyUserId(myUserID));
   yield closeModal();
   yield call(CallUserListAPI.getUserList, myUserID);
   yield sendHealthCheckSaga();
-  yield put(InitialStartupModalSlice.actions.initializeField());
+  yield put(initialStartupModalSlice.actions.initializeField());
 }
 
 function* closeModal() {
-  yield put(InitialStartupModalSlice.actions.showModal(false));
+  yield put(initialStartupModalSlice.actions.showModal(false));
 }
 
-export const InitialStartupModalSaga = [
+export const initialStartupModalSaga = [
   takeEvery(InitialStartupModalActionsForAsync.addUser.toString(), addUser),
   takeEvery(InitialStartupModalActionsForAsync.changeUser.toString(), changeUser),
 ];

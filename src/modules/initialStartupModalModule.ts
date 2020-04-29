@@ -10,7 +10,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const InitialStartupModalSlice = createSlice({
+const initialStartupModalSlice = createSlice({
   name: 'initialStartupModal',
   initialState: new _initialState(),
   reducers: {
@@ -60,8 +60,8 @@ const InitialStartupModalSlice = createSlice({
 });
 
 export class InitialStartupModalActionsForAsync {
-  static addUser = createAction(`${InitialStartupModalSlice.name}/addUser`);
-  static changeUser = createAction(`${InitialStartupModalSlice.name}/changeUser`);
+  static addUser = createAction(`${initialStartupModalSlice.name}/addUser`);
+  static changeUser = createAction(`${initialStartupModalSlice.name}/changeUser`);
 }
 
-export default InitialStartupModalSlice;
+export default initialStartupModalSlice;

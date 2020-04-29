@@ -4,7 +4,7 @@ import { APP_NAME, APP_VERSION } from '../../define';
 import { UserInfo, ApiResponse } from '../../define/model';
 import AppModule, { AppActionsForAsync } from '../../modules/appModule';
 import { OfficeInfoActionsForAsync } from '../../modules/officeInfo/officeInfoModule';
-import AppSlice from '../../modules/appModule';
+import appSlice from '../../modules/appModule';
 import { put, call, select, cancel } from 'redux-saga/effects';
 import { CallAppAPI } from '../../sagas/api/callAppAPISaga';
 const { remote } = window.require('electron');
@@ -157,7 +157,7 @@ export function* callAPI(calledAPI: any, ...args: any) {
     }
 
     if (isAuthenticated(response.status) === false) {
-      yield put(AppSlice.actions.unauthorized());
+      yield put(appSlice.actions.unauthorized());
       /**
        * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
        * 画面をリロードして認証トークンを再取得する
@@ -183,7 +183,7 @@ export function* callAPIWithoutErrorSnackBar(calledAPI: any, ...args: any) {
     }
 
     if (isAuthenticated(response.status) === false) {
-      yield put(AppSlice.actions.unauthorized());
+      yield put(appSlice.actions.unauthorized());
       /**
        * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
        * 画面をリロードして認証トークンを再取得する

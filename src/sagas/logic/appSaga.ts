@@ -1,5 +1,5 @@
 import { takeEvery, put, cancel, call } from 'redux-saga/effects';
-import AppSlice, { AppActionsForAsync } from '../../modules/appModule';
+import appSlice, { AppActionsForAsync } from '../../modules/appModule';
 import { CallAppAPI } from '../api/callAppAPISaga';
 import { CallUserListAPI } from '../api/callUserListAPISaga';
 import {
@@ -17,7 +17,7 @@ import {
   USER_STATUS_INFO,
 } from '../../define';
 import { ApiResponse, UserInfoForUpdate, UserInfo } from '../../define/model';
-import InitialStartupModalSlice from '../../modules/initialStartupModalModule';
+import initialStartupModalSlice from '../../modules/initialStartupModalModule';
 import userListSlice from '../../modules/userInfo/userListModule';
 
 const { remote, ipcRenderer } = window.require('electron');
@@ -113,7 +113,7 @@ function* login() {
    * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
    */
   if (userID === -1) {
-    yield put(InitialStartupModalSlice.actions.showModal(true));
+    yield put(initialStartupModalSlice.actions.showModal(true));
     yield cancel();
   }
 
@@ -153,8 +153,8 @@ function* login() {
     yield call(CallUserListAPI.updateUserInfo, updatedUserInfo, userID);
   }
 
-  yield put(userListSlice.actions.reRenderUserList(userList));
-  yield put(AppSlice.actions.setMyUserId(userID));
+  yield put(userListSlice.actions.reRenderUserList());
+  yield put(appSlice.actions.setMyUserId(userID));
 
   yield sendHealthCheckSaga();
 }

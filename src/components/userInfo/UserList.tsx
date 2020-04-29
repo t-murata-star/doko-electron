@@ -144,7 +144,7 @@ class UserList extends React.Component<Props, any> {
     );
 
     if (index !== 0) {
-      dispatch(UserListModule.actions.reRenderUserList(this.props.state.userListState.userList));
+      dispatch(UserListModule.actions.reRenderUserList());
       return;
     }
 
@@ -155,7 +155,7 @@ class UserList extends React.Component<Props, any> {
       const patchInfoUser = { order: row.getPosition(true) + 1 };
       response = await checkResponseError(dispatch(UserListActionsForAsync.changeOrderAction(patchInfoUser, row.getData().id)));
       if (response.getIsError()) {
-        dispatch(UserListModule.actions.reRenderUserList(this.props.state.userListState.userList));
+        dispatch(UserListModule.actions.reRenderUserList());
         dispatch(AppModule.actions.setFetchingStatus(false));
         return;
       }

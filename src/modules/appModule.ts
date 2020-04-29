@@ -29,7 +29,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const AppSlice = createSlice({
+const appSlice = createSlice({
   name: 'app',
   initialState: new _initialState(),
   reducers: {
@@ -130,7 +130,7 @@ const AppSlice = createSlice({
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
   switch (statusCode) {
     case 401:
-      dispatch(AppSlice.actions.unauthorized());
+      dispatch(appSlice.actions.unauthorized());
       break;
 
     default:
@@ -139,11 +139,11 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
 };
 
 export class AppActionsForAsync {
-  static login = createAction(`${AppSlice.name}/login`);
+  static login = createAction(`${appSlice.name}/login`);
 
   static loginAction = () => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(AppSlice.actions.startApiRequest());
+      dispatch(appSlice.actions.startApiRequest());
       try {
         const res = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
@@ -155,10 +155,10 @@ export class AppActionsForAsync {
           throw new Error();
         }
         const json = await res.json();
-        dispatch(AppSlice.actions.loginSuccess(json));
+        dispatch(appSlice.actions.loginSuccess(json));
         return new ApiResponse();
       } catch (error) {
-        dispatch(AppSlice.actions.failRequest());
+        dispatch(appSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -178,10 +178,10 @@ export class AppActionsForAsync {
           throw new Error();
         }
         const json = await res.json();
-        dispatch(AppSlice.actions.getNotificationSuccess(json));
+        dispatch(appSlice.actions.getNotificationSuccess(json));
         return new ApiResponse();
       } catch (error) {
-        dispatch(AppSlice.actions.failRequest());
+        dispatch(appSlice.actions.failRequest());
         return new ApiResponse(null, true);
       }
     };
@@ -207,4 +207,4 @@ export class AppActionsForAsync {
   };
 }
 
-export default AppSlice;
+export default appSlice;

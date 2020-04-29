@@ -1,17 +1,17 @@
 import { ApiResponse, UserInfo } from '../../define/model';
 import { callAPI, callAPIWithoutErrorSnackBar } from '../../components/common/functions';
-import AppSlice from '../../modules/appModule';
+import appSlice from '../../modules/appModule';
 import { put } from 'redux-saga/effects';
 import { AppAPI } from '../../api/appAPI';
 
 export class CallAppAPI {
   static login = function* () {
-    yield put(AppSlice.actions.startApiRequest());
+    yield put(appSlice.actions.startApiRequest());
     const response: ApiResponse = yield callAPI(AppAPI.login);
     if (response.getIsError()) {
-      yield put(AppSlice.actions.failRequest());
+      yield put(appSlice.actions.failRequest());
     } else {
-      yield put(AppSlice.actions.loginSuccess(response));
+      yield put(appSlice.actions.loginSuccess(response));
     }
     return response;
   };
@@ -19,9 +19,9 @@ export class CallAppAPI {
   static getNotification = function* () {
     const response = yield callAPI(AppAPI.getNotification);
     if (response.getIsError()) {
-      yield put(AppSlice.actions.failRequest());
+      yield put(appSlice.actions.failRequest());
     } else {
-      yield put(AppSlice.actions.getNotificationSuccess(response));
+      yield put(appSlice.actions.getNotificationSuccess(response));
     }
     return response;
   };
