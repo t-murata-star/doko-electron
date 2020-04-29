@@ -5,7 +5,7 @@ import { UserInfo, ApiResponse } from '../../define/model';
 import AppModule, { AppActionsForAsync } from '../../modules/appModule';
 import { OfficeInfoActionsForAsync } from '../../modules/officeInfo/officeInfoModule';
 import appSlice from '../../modules/appModule';
-import { put, call, select, cancel } from 'redux-saga/effects';
+import { put, call, select } from 'redux-saga/effects';
 import { CallAppAPI } from '../../sagas/api/callAppAPISaga';
 const { remote } = window.require('electron');
 
@@ -206,7 +206,7 @@ export function* sendHealthCheckSaga() {
   const userList = state.userListState.userList;
   const userInfo = getUserInfo(userList, myUserID);
   if (userInfo === null) {
-    yield cancel();
+    return;
   }
 
   const updatedUserInfo: any = {};

@@ -1,4 +1,4 @@
-import { takeEvery, call, put, cancel, select } from 'redux-saga/effects';
+import { takeEvery, call, put, select } from 'redux-saga/effects';
 import initialStartupModalSlice, { InitialStartupModalActionsForAsync } from '../../modules/initialStartupModalModule';
 import { CallUserListAPI } from '../api/callUserListAPISaga';
 import { ApiResponse, UserInfoForUpdate } from '../../define/model';
@@ -30,7 +30,7 @@ function* addUser() {
   const addUserResponse: ApiResponse = yield call(CallUserListAPI.addUser, userInfo);
   if (addUserResponse.getIsError()) {
     yield put(initialStartupModalSlice.actions.disableSubmitButton(false));
-    yield cancel();
+    return;
   }
   yield closeModal();
 
@@ -64,7 +64,7 @@ function* changeUser() {
     updatedUserInfo.version = APP_VERSION;
     const updateUserInfoResponse: ApiResponse = yield call(CallUserListAPI.updateUserInfo, updatedUserInfo, myUserID);
     if (updateUserInfoResponse.getIsError()) {
-      yield cancel();
+      return;
     }
   }
 
@@ -78,7 +78,7 @@ function* changeUser() {
     updatedUserInfo.name = userInfo.name;
     const updateUserInfoResponse: ApiResponse = yield call(CallUserListAPI.updateUserInfo, updatedUserInfo, myUserID);
     if (updateUserInfoResponse.getIsError()) {
-      yield cancel();
+      return;
     }
   }
 

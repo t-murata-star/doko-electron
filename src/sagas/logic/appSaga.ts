@@ -1,4 +1,4 @@
-import { takeEvery, put, cancel, call } from 'redux-saga/effects';
+import { takeEvery, put, call } from 'redux-saga/effects';
 import appSlice, { AppActionsForAsync } from '../../modules/appModule';
 import { CallAppAPI } from '../api/callAppAPISaga';
 import { CallUserListAPI } from '../api/callUserListAPISaga';
@@ -35,7 +35,7 @@ function* login() {
   if (loginResponse.getIsError()) {
     ipcRenderer.send('connected', false);
     remote.getCurrentWindow().loadFile(remote.getGlobal('errorPageFilepath'));
-    yield cancel();
+    return;
   }
 
   // APIリクエストヘッダに認証トークンを設定する
@@ -56,7 +56,7 @@ function* login() {
     showMessageBoxSync(updateNotificationMessage);
     remote.shell.openExternal(APP_DOWNLOAD_URL);
     closeApp();
-    yield cancel();
+    return;
   }
 
   /**
@@ -114,12 +114,12 @@ function* login() {
    */
   if (userID === -1) {
     yield put(initialStartupModalSlice.actions.showModal(true));
-    yield cancel();
+    return;
   }
 
   const getUserListResponse: ApiResponse = yield call(CallUserListAPI.getUserListWithMyUserIDExists, userID);
   if (getUserListResponse.getIsError()) {
-    yield cancel();
+    return;
   }
 
   const userList: UserInfo[] = JSON.parse(JSON.stringify(getUserListResponse.getPayload()));
@@ -130,7 +130,7 @@ function* login() {
    * 無ければ新規登録画面へ遷移する
    */
   if (userInfo === null) {
-    yield cancel();
+    return;
     return;
   }
 
