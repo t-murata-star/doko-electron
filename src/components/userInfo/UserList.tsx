@@ -4,13 +4,12 @@ import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
 import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS_INFO } from '../../define';
-import AppModule from '../../modules/appModule';
-import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
-import UserListModule, { UserListActionsForAsync } from '../../modules/userInfo/userListModule';
-import { getUserInfo, showMessageBoxSyncWithReturnValue, checkResponseError } from '../common/functions';
+import { userEditModalSlice } from '../../modules/userInfo/userEditModalModule';
+import { userListSlice, UserListActionsForAsync } from '../../modules/userInfo/userListModule';
+import { getUserInfo } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
-import { Props, ApiResponse } from '../../define/model';
+import { Props } from '../../define/model';
 import MenuButtonGroupForUserList from './MenuButtonGroupForUserList';
 
 const { remote } = window.require('electron');
@@ -41,7 +40,7 @@ class UserList extends React.Component<Props, any> {
     }
 
     // 親ウインドウを操作不可にする
-    dispatch(UserListModule.actions.inoperable(true));
+    dispatch(userListSlice.actions.inoperable(true));
 
     const encodedEmail = encodeURI(email);
     // カレンダー表示のための子ウインドウを表示
@@ -60,7 +59,7 @@ class UserList extends React.Component<Props, any> {
 
     calendarWindow.on('closed', () => {
       calendarWindow = null;
-      dispatch(UserListModule.actions.inoperable(false));
+      dispatch(userListSlice.actions.inoperable(false));
     });
   };
 
@@ -107,8 +106,9 @@ class UserList extends React.Component<Props, any> {
       return;
     }
 
-    dispatch(UserEditModalMdule.actions.disableSubmitButton());
-    dispatch(UserEditModalMdule.actions.showUserEditModal({ userID: selectedUserId, userInfo: userInfo }));
+    dispatch(userEditModalSlice.actions.setUserInfo(userInfo));
+    dispatch(userEditModalSlice.actions.disableSubmitButton());
+    dispatch(userEditModalSlice.actions.showUserEditModal(selectedUserId));
   };
 
   _rowFormatter = (row: Tabulator.RowComponent) => {
@@ -134,42 +134,9 @@ class UserList extends React.Component<Props, any> {
   };
 
   // 各ユーザの「order」パラメータをユーザ一覧の表示順序を元に更新する
-  _updateUserInfoOrder = async (rowComponent: Tabulator.RowComponent) => {
-    const { dispatch } = this.props;
-    const rows = rowComponent.getTable().getRows();
-    const index = showMessageBoxSyncWithReturnValue(
-      'OK',
-      'Cancel',
-      `並べ替えてよろしいですか？\n※表示順序は全てのユーザで共通です。`
-    );
-
-    if (index !== 0) {
-      dispatch(UserListModule.actions.reRenderUserList());
-      return;
-    }
-
-    dispatch(AppModule.actions.setFetchingStatus(true));
-
-    let response: ApiResponse;
-    for (const row of rows) {
-      const patchInfoUser = { order: row.getPosition(true) + 1 };
-      response = await checkResponseError(dispatch(UserListActionsForAsync.changeOrderAction(patchInfoUser, row.getData().id)));
-      if (response.getIsError()) {
-        dispatch(UserListModule.actions.reRenderUserList());
-        dispatch(AppModule.actions.setFetchingStatus(false));
-        return;
-      }
-      await this._sleep(50);
-    }
-    dispatch(AppModule.actions.setFetchingStatus(false));
-
-    const myUserID = this.props.state.appState.myUserID;
-    checkResponseError(dispatch(UserListActionsForAsync.getUserListAction(myUserID)));
-    return;
-  };
-
   _rowMovedCallback = (row: Tabulator.RowComponent) => {
-    this._updateUserInfoOrder(row);
+    const { dispatch } = this.props;
+    dispatch(UserListActionsForAsync.updateUserInfoOrder(row));
   };
 
   _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));

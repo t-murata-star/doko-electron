@@ -1,105 +1,53 @@
 import { Fade, Tooltip, Button, TextField } from '@material-ui/core';
-import $ from 'jquery';
 import React from 'react';
 import { Modal, Backdrop } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { ApiResponse, Props, UserInfo, UserInfoForUpdate } from '../../define/model';
-import UserEditModalModule from '../../modules/userInfo/userEditModalModule';
-import { UserListActionsForAsync } from '../../modules/userInfo/userListModule';
-import { showMessageBoxSyncWithReturnValue, checkResponseError } from '../common/functions';
+import { Props } from '../../define/model';
+import { userEditModalSlice, UserEditModalActionsForAsync } from '../../modules/userInfo/userEditModalModule';
 import './UserEditModal.css';
 import { Container, Form, Col } from 'react-bootstrap';
 import { STATUS_LIST } from '../../define';
 
 class UserEditModal extends React.Component<Props, any> {
-  userInfo: any = new UserInfo();
-
-  componentDidUpdate() {
-    this.userInfo = { ...this.props.state.userEditModalState.userInfo };
-  }
-
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(UserEditModalModule.actions.closeUserEditModal());
+    dispatch(userEditModalSlice.actions.closeUserEditModal());
   };
 
-  _updateUserInfo = async (userInfo: UserInfo) => {
+  _updateUserInfo = async () => {
     const { dispatch } = this.props;
-    const userID = this.props.state.userEditModalState.userID;
-    let response: ApiResponse;
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo.name = userInfo.name;
-    updatedUserInfo.status = userInfo.status;
-    updatedUserInfo.destination = userInfo.destination;
-    updatedUserInfo.return = userInfo.return;
-    updatedUserInfo.message = userInfo.message;
-    response = await checkResponseError(dispatch(UserListActionsForAsync.updateUserInfoAction(updatedUserInfo, userID)));
-    if (response.getIsError()) {
-      dispatch(UserEditModalModule.actions.enableSubmitButton());
-      return;
-    }
-    this.closeModal();
-
-    const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
-    const myUserID = this.props.state.appState.myUserID;
-    await checkResponseError(dispatch(UserListActionsForAsync.getUserListAction(myUserID, 350)));
-    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
+    dispatch(UserEditModalActionsForAsync.updateUserInfo());
   };
 
   onUserInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
     dispatch(
-      UserEditModalModule.actions.changeUserInfo({
-        userInfo: this.userInfo,
+      userEditModalSlice.actions.changeUserInfo({
         targetName: event.target.name,
         targetValue: event.target.value,
       })
     );
     if (this.props.state.userEditModalState.submitButtonDisabled) {
-      dispatch(UserEditModalModule.actions.enableSubmitButton());
+      dispatch(userEditModalSlice.actions.enableSubmitButton());
     }
   };
 
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { dispatch } = this.props;
-    dispatch(UserEditModalModule.actions.disableSubmitButton());
-    this._updateUserInfo(this.userInfo);
+    dispatch(userEditModalSlice.actions.disableSubmitButton());
+    this._updateUserInfo();
   };
 
   deleteUser = async () => {
     const { dispatch } = this.props;
-    let response: ApiResponse;
-
-    const index = showMessageBoxSyncWithReturnValue(
-      'OK',
-      'Cancel',
-      '以下のユーザを一覧から削除しますか？\n\n' + this.userInfo.name
-    );
-
-    if (index !== 0) {
-      return;
-    }
-
-    const selectedUserId = this.props.state.userEditModalState.userInfo.id;
-    response = await checkResponseError(dispatch(UserListActionsForAsync.deleteUserAction(selectedUserId)));
-    if (response.getIsError()) {
-      return;
-    }
-
-    this.closeModal();
-
-    const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
-    const myUserID = this.props.state.appState.myUserID;
-    await checkResponseError(dispatch(UserListActionsForAsync.getUserListAction(myUserID, 350)));
-    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
+    dispatch(UserEditModalActionsForAsync.deleteUser());
   };
 
   inputClear = () => {
     const { dispatch } = this.props;
-    dispatch(UserEditModalModule.actions.inputClear(this.userInfo));
-    dispatch(UserEditModalModule.actions.enableSubmitButton());
+    dispatch(userEditModalSlice.actions.inputClear());
+    dispatch(userEditModalSlice.actions.enableSubmitButton());
   };
 
   render() {

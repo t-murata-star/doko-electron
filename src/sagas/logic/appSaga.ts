@@ -17,8 +17,8 @@ import {
   USER_STATUS_INFO,
 } from '../../define';
 import { ApiResponse, UserInfoForUpdate, UserInfo } from '../../define/model';
-import initialStartupModalSlice from '../../modules/initialStartupModalModule';
-import userListSlice from '../../modules/userInfo/userListModule';
+import { initialStartupModalSlice } from '../../modules/initialStartupModalModule';
+import { userListSlice } from '../../modules/userInfo/userListModule';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');

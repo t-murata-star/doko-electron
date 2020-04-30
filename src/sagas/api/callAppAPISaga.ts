@@ -26,7 +26,6 @@ export class CallAppAPI {
     return response;
   };
 
-  // action: ReturnType<typeof AppActionsForAsync.sendHealthCheck>
   static sendHealthCheck = function* (userInfo: UserInfo, userID: number) {
     const response: ApiResponse = yield callAPIWithoutErrorSnackBar(AppAPI.sendHealthCheck, userInfo, userID);
     if (!response.getIsError()) {

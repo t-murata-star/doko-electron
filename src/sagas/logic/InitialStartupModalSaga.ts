@@ -1,5 +1,5 @@
 import { takeEvery, call, put, select } from 'redux-saga/effects';
-import initialStartupModalSlice, { InitialStartupModalActionsForAsync } from '../../modules/initialStartupModalModule';
+import { initialStartupModalSlice, InitialStartupModalActionsForAsync } from '../../modules/initialStartupModalModule';
 import { CallUserListAPI } from '../api/callUserListAPISaga';
 import { ApiResponse, UserInfoForUpdate } from '../../define/model';
 // import { APP_VERSION, USER_STATUS_INFO } from '../../define';

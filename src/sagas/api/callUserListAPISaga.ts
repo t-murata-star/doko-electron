@@ -2,10 +2,10 @@ import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
 import { callAPI, getUserInfo, showMessageBoxSync } from '../../components/common/functions';
 import { put, delay } from 'redux-saga/effects';
 import { UserListAPI } from '../../api/userListAPI';
-import userListSlice from '../../modules/userInfo/userListModule';
+import { userListSlice } from '../../modules/userInfo/userListModule';
 import appSlice from '../../modules/appModule';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M } from '../../define';
-import initialStartupModalSlice from '../../modules/initialStartupModalModule';
+import { initialStartupModalSlice } from '../../modules/initialStartupModalModule';
 
 /**
  * 全ユーザの退社チェック
@@ -33,9 +33,9 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
 };
 
 export class CallUserListAPI {
-  static deleteUser = function* () {
+  static deleteUser = function* (userID: number) {
     yield put(userListSlice.actions.startApiRequest());
-    const response: ApiResponse = yield callAPI(UserListAPI.deleteUser);
+    const response: ApiResponse = yield callAPI(UserListAPI.deleteUser, userID);
     if (response.getIsError()) {
       yield put(userListSlice.actions.failRequest());
     } else {
@@ -62,6 +62,12 @@ export class CallUserListAPI {
     yield put(userListSlice.actions.startApiRequest());
     const startTime = Date.now();
     const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
+
+    const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
+    if (Math.sign(lowestWaitTime) === 1) {
+      yield delay(lowestWaitTime);
+    }
+
     if (response.getIsError()) {
       yield put(userListSlice.actions.failRequest());
     } else {
@@ -70,10 +76,6 @@ export class CallUserListAPI {
 
     updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
 
-    const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
-    if (Math.sign(lowestWaitTime) === 1) {
-      yield delay(lowestWaitTime);
-    }
     return response;
   };
 
@@ -81,6 +83,12 @@ export class CallUserListAPI {
     yield put(userListSlice.actions.startApiRequest());
     const startTime = Date.now();
     const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
+
+    const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
+    if (Math.sign(lowestWaitTime) === 1) {
+      yield delay(lowestWaitTime);
+    }
+
     if (response.getIsError()) {
       yield put(userListSlice.actions.failRequest());
     } else {
@@ -88,11 +96,6 @@ export class CallUserListAPI {
     }
 
     updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
-
-    const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
-    if (Math.sign(lowestWaitTime) === 1) {
-      yield delay(lowestWaitTime);
-    }
 
     /**
      * サーバ上に自分の情報が存在するかどうかチェック

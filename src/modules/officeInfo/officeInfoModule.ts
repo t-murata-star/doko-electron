@@ -20,7 +20,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const officeInfoSlice = createSlice({
+export const officeInfoSlice = createSlice({
   name: 'officeInfo',
   initialState: new _initialState(),
   reducers: {
@@ -154,5 +154,3 @@ export class OfficeInfoActionsForAsync {
     };
   };
 }
-
-export default officeInfoSlice;

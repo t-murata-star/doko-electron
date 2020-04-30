@@ -2,7 +2,7 @@ import { Action, createSlice, Dispatch, createAction } from '@reduxjs/toolkit';
 import { API_URL, AUTH_REQUEST_HEADERS, APP_NAME } from '../../define';
 import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
 import AppModule from '../appModule';
-import InitialStartupModalModule from '../initialStartupModalModule';
+import { initialStartupModalSlice } from '../initialStartupModalModule';
 const { remote } = window.require('electron');
 
 class _initialState {
@@ -14,7 +14,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const userListSlice = createSlice({
+export const userListSlice = createSlice({
   name: 'userList',
   initialState: new _initialState(),
   reducers: {
@@ -199,8 +199,8 @@ export class UserListActionsForAsync {
               message: 'ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。',
             });
             dispatch(AppModule.actions.setMyUserId(-1));
-            dispatch(InitialStartupModalModule.actions.initializeState());
-            dispatch(InitialStartupModalModule.actions.showModal(true));
+            dispatch(initialStartupModalSlice.actions.initializeState());
+            dispatch(initialStartupModalSlice.actions.showModal(true));
           }
         }
         return new ApiResponse();
@@ -258,5 +258,3 @@ export class UserListActionsForAsync {
     };
   };
 }
-
-export default userListSlice;

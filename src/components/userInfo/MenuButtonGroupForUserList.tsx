@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { connect } from 'react-redux';
-import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
+import { userEditModalSlice } from '../../modules/userInfo/userEditModalModule';
 import { UserListActionsForAsync } from '../../modules/userInfo/userListModule';
 import { getUserInfo, checkResponseError } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
@@ -34,8 +34,8 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
       return;
     }
 
-    dispatch(UserEditModalMdule.actions.disableSubmitButton());
-    dispatch(UserEditModalMdule.actions.showUserEditModal({ userID: myUserID, userInfo: userInfo }));
+    dispatch(userEditModalSlice.actions.disableSubmitButton());
+    dispatch(userEditModalSlice.actions.showUserEditModal({ userID: myUserID, userInfo: userInfo }));
     // 自分編集ボタンのフォーカスを外す
     $('.menu-button-group-for-user-list-base-button').blur();
   };

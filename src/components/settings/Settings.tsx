@@ -5,11 +5,10 @@ import React from 'react';
 import { Col, Form, ListGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
-import { ApiResponse, Props, UserInfo, UserInfoForUpdate } from '../../define/model';
+import { Props, UserInfo } from '../../define/model';
 import AppModule from '../../modules/appModule';
-import SettingsModule from '../../modules/settings/settingsModule';
-import { UserListActionsForAsync } from '../../modules/userInfo/userListModule';
-import { getUserInfo, sendHealthCheck, showSnackBar, checkResponseError } from '../common/functions';
+import { settingsSlice, SettingActionsForAsync } from '../../modules/settings/settingsModule';
+import { getUserInfo, sendHealthCheck, showSnackBar } from '../common/functions';
 import './Settings.css';
 
 const { remote } = window.require('electron');
@@ -21,26 +20,26 @@ class Settings extends React.Component<Props, any> {
     const { dispatch } = this.props;
 
     // state を初期化
-    dispatch(SettingsModule.actions.initializeState());
+    dispatch(settingsSlice.actions.initializeState());
 
     const myUserID = this.props.state.appState.myUserID;
 
     // ユーザ変更(プルダウンの初期選択で自分を選択する)
-    dispatch(SettingsModule.actions.setUserId(myUserID));
+    dispatch(settingsSlice.actions.setUserId(myUserID));
 
     // メールアドレス
     const userList = this.props.state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserID);
     if (userInfo !== null) {
-      dispatch(SettingsModule.actions.setEmail(userInfo.email));
+      dispatch(settingsSlice.actions.setEmail(userInfo.email));
     }
 
     // スタートアップ
     const loginItemSettingsOptions = remote.app.getLoginItemSettings({ path: remote.app.getPath('exe') });
     if (loginItemSettingsOptions.openAtLogin) {
-      dispatch(SettingsModule.actions.changeEnabledStartup(true));
+      dispatch(settingsSlice.actions.changeEnabledStartup(true));
     } else {
-      dispatch(SettingsModule.actions.changeEnabledStartup(false));
+      dispatch(settingsSlice.actions.changeEnabledStartup(false));
     }
   }
 
@@ -56,16 +55,15 @@ class Settings extends React.Component<Props, any> {
       return;
     }
 
-    dispatch(SettingsModule.actions.setUserId(changedUserID));
+    dispatch(settingsSlice.actions.setUserId(changedUserID));
 
     if (changedUserID !== -1 && changedUserID !== myUserID) {
-      dispatch(SettingsModule.actions.changeDisabledSubmitButtonUserChange(false));
+      dispatch(settingsSlice.actions.changeDisabledSubmitButtonUserChange(false));
     }
   };
 
   // ユーザ変更の保存
-  onSaveSettingsForUserChange = async (event: React.MouseEvent<{}>) => {
-    event.preventDefault();
+  onSaveSettingsForUserChange = async () => {
     const { dispatch } = this.props;
     const settingState = this.props.state.settingsState;
     const oldMyUserID = this.props.state.appState.myUserID;
@@ -85,10 +83,10 @@ class Settings extends React.Component<Props, any> {
     }
 
     electronStore.set('userID', changedUserID);
-    dispatch(SettingsModule.actions.setEmail(userInfo.email));
+    dispatch(settingsSlice.actions.setEmail(userInfo.email));
     dispatch(AppModule.actions.setMyUserId(myUserID));
     showSnackBar('success', '設定を保存しました。');
-    dispatch(SettingsModule.actions.changeDisabledSubmitButtonUserChange(true));
+    dispatch(settingsSlice.actions.changeDisabledSubmitButtonUserChange(true));
 
     sendHealthCheck();
   };
@@ -96,35 +94,24 @@ class Settings extends React.Component<Props, any> {
   // メールアドレスの変更
   onUserEmailInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
-    dispatch(SettingsModule.actions.setEmail(event.currentTarget.value));
+    dispatch(settingsSlice.actions.setEmail(event.currentTarget.value));
 
     if (this.props.state.settingsState.submitButtonsDisable.user.email) {
-      dispatch(SettingsModule.actions.changeDisabledSubmitButtonEmail(false));
+      dispatch(settingsSlice.actions.changeDisabledSubmitButtonEmail(false));
     }
   };
 
   // メールアドレスの保存
-  onSaveSettingsForEmail = async (event: React.MouseEvent<{}>) => {
-    event.preventDefault();
+  onSaveSettingsForEmail = () => {
     const { dispatch } = this.props;
-    const settingState = this.props.state.settingsState;
-    const myUserID = this.props.state.appState.myUserID;
-    let response: ApiResponse;
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo['email'] = settingState.user.email;
-    response = await checkResponseError(dispatch(UserListActionsForAsync.updateUserInfoAction(updatedUserInfo, myUserID)));
-    if (response.getIsError() === false) {
-      showSnackBar('success', '設定を保存しました。');
-      dispatch(SettingsModule.actions.changeDisabledSubmitButtonEmail(true));
-    }
+    dispatch(SettingActionsForAsync.saveSettingsForEmail());
   };
 
   // スタートアップの変更と保存
-  changeAndSaveStartup = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  changeStartup = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
 
-    await dispatch(SettingsModule.actions.changeEnabledStartup(event.target.checked));
+    await dispatch(settingsSlice.actions.changeEnabledStartup(event.target.checked));
     const settingState = this.props.state.settingsState;
     let openAtLogin: boolean;
     if (settingState.system.startupEnabled) {
@@ -244,7 +231,7 @@ class Settings extends React.Component<Props, any> {
                     </p>
                     <Switch
                       checked={settingState.system.startupEnabled}
-                      onChange={this.changeAndSaveStartup}
+                      onChange={this.changeStartup}
                       color='primary'
                       className='settings-switch'
                     />

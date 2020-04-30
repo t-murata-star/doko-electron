@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAction } from '@reduxjs/toolkit';
 
 class _initialState {
   submitButtonsDisable = {
@@ -17,7 +17,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const settingsSlice = createSlice({
+export const settingsSlice = createSlice({
   name: 'settings',
   initialState: new _initialState(),
   reducers: {
@@ -78,4 +78,6 @@ const settingsSlice = createSlice({
   },
 });
 
-export default settingsSlice;
+export class SettingActionsForAsync {
+  static saveSettingsForEmail = createAction(`${settingsSlice.name}/saveSettingsForEmail`);
+}

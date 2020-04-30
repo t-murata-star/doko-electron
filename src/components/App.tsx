@@ -7,7 +7,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { USER_STATUS_INFO } from '../define';
 import { Props, UserInfoForUpdate } from '../define/model';
-import AppModule, { AppActionsForAsync } from '../modules/appModule';
+import appSlice, { AppActionsForAsync } from '../modules/appModule';
 import { UserListActionsForAsync } from '../modules/userInfo/userListModule';
 import './App.scss';
 import {
@@ -95,7 +95,7 @@ class App extends React.Component<Props, any> {
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     const myUserID = this.props.state.appState.myUserID;
-    dispatch(AppModule.actions.setActiveIndex(activeIndex));
+    dispatch(appSlice.actions.setActiveIndex(activeIndex));
 
     // 同じタブを複数押下した場合
     if (this.props.state.appState.activeIndex === activeIndex) {

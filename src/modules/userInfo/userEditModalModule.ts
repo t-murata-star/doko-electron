@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAction } from '@reduxjs/toolkit';
 import { UserInfo } from '../../define/model';
 import { USER_STATUS_INFO } from '../../define';
 
@@ -10,7 +10,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const userEditModalSlice = createSlice({
+export const userEditModalSlice = createSlice({
   name: 'userEditModal',
   initialState: new _initialState(),
   reducers: {
@@ -18,8 +18,7 @@ const userEditModalSlice = createSlice({
       return {
         ...state,
         onHide: true,
-        userID: action.payload.userID,
-        userInfo: action.payload.userInfo,
+        userID: action.payload,
       };
     },
     closeUserEditModal: (state) => {
@@ -46,23 +45,38 @@ const userEditModalSlice = createSlice({
         submitButtonDisabled: true,
       };
     },
-    inputClear: (state, action) => {
-      action.payload.status = USER_STATUS_INFO.s01.status;
-      action.payload.destination = '';
-      action.payload.return = '';
+    inputClear: (state) => {
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          status: USER_STATUS_INFO.s01.status,
+          destination: '',
+          return: '',
+        },
+      };
+    },
+    changeUserInfo: (state: any, action) => {
+      const targetName = action.payload.targetName;
+      const targetValue = action.payload.targetValue;
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          [targetName]: targetValue,
+        },
+      };
+    },
+    setUserInfo: (state, action) => {
       return {
         ...state,
         userInfo: action.payload,
       };
     },
-    changeUserInfo: (state, action) => {
-      action.payload.userInfo[action.payload.targetName] = action.payload.targetValue;
-      return {
-        ...state,
-        userInfo: action.payload.userInfo,
-      };
-    },
   },
 });
 
-export default userEditModalSlice;
+export class UserEditModalActionsForAsync {
+  static updateUserInfo = createAction(`${userEditModalSlice.name}/updateUserInfo`);
+  static deleteUser = createAction(`${userEditModalSlice.name}/deleteUser`);
+}
