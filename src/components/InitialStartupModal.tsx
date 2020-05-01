@@ -3,8 +3,8 @@ import React from 'react';
 import { Button, Col, Container, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { UserInfo, Props } from '../define/model';
-import { initialStartupModalSlice, InitialStartupModalActionsForAsync } from '../modules/initialStartupModalModule';
-import { UserListActionsForAsync } from '../modules/userInfo/userListModule';
+import { initialStartupModalSlice, initialStartupModalActionsAsyncLogic } from '../modules/initialStartupModalModule';
+import { userListActionsAsyncLogic } from '../modules/userInfo/userListModule';
 import { checkResponseError } from './common/functions';
 import './InitialStartupModal.css';
 import { Backdrop, Fade, Modal, TextField } from '@material-ui/core';
@@ -17,12 +17,12 @@ class InitialStartupModal extends React.Component<Props, any> {
 
   addUser = () => {
     const { dispatch } = this.props;
-    dispatch(InitialStartupModalActionsForAsync.addUser());
+    dispatch(initialStartupModalActionsAsyncLogic.addUser());
   };
 
   changeUser = async () => {
     const { dispatch } = this.props;
-    dispatch(InitialStartupModalActionsForAsync.changeUser());
+    dispatch(initialStartupModalActionsAsyncLogic.changeUser());
   };
 
   onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +67,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     dispatch(initialStartupModalSlice.actions.disableSubmitButton(true));
     dispatch(initialStartupModalSlice.actions.changeSubmitMode(true));
     // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
-    checkResponseError(dispatch(UserListActionsForAsync.getUserListAction(-1, 350, false)));
+    checkResponseError(dispatch(userListActionsAsyncLogic.getUserListAction(-1, 350, false)));
   };
 
   registUserInput = () => {

@@ -1,15 +1,15 @@
 import { ApiResponse } from '../../define/model';
 import { callAPI } from '../../components/common/functions';
-import { put, delay } from 'redux-saga/effects';
+import { put, delay, takeEvery } from 'redux-saga/effects';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS } from '../../define';
 import { officeInfoSlice } from '../../modules/officeInfo/officeInfoModule';
-import { OfficeInfoAPI } from '../../api/officeInfoAPI';
+import { officeInfoAPI } from '../../api/officeInfoAPI';
 
-export class CallOfficeInfoAPI {
-  static getRestroomUsage = function* () {
+export const callOfficeInfoAPI = {
+  getRestroomUsage: function* () {
     yield put(officeInfoSlice.actions.startApiRequest());
     const startTime = Date.now();
-    const response: ApiResponse = yield callAPI(OfficeInfoAPI.getRestroomUsage);
+    const response: ApiResponse = yield callAPI(officeInfoAPI.getRestroomUsage);
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
     if (Math.sign(lowestWaitTime) === 1) {
@@ -22,12 +22,12 @@ export class CallOfficeInfoAPI {
       yield put(officeInfoSlice.actions.getRestroomUsageSuccess(response));
     }
     return response;
-  };
+  },
 
-  static getOfficeInfo = function* () {
+  getOfficeInfo: function* () {
     yield put(officeInfoSlice.actions.startApiRequest());
     const startTime = Date.now();
-    const response: ApiResponse = yield callAPI(OfficeInfoAPI.getOfficeInfo);
+    const response: ApiResponse = yield callAPI(officeInfoAPI.getOfficeInfo);
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
     if (Math.sign(lowestWaitTime) === 1) {
@@ -40,5 +40,9 @@ export class CallOfficeInfoAPI {
       yield put(officeInfoSlice.actions.getOfficeInfoSuccess(response));
     }
     return response;
-  };
-}
+  },
+};
+
+export const callOfficeInfoAPISaga = Object.entries(callOfficeInfoAPI).map((value: [string, any]) => {
+  return takeEvery(`${officeInfoSlice.name}/api/${value[0]}`, value[1]);
+});

@@ -1,7 +1,7 @@
-import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
+import { Action, createSlice, Dispatch, createAction } from '@reduxjs/toolkit';
 import { API_URL, AUTH_REQUEST_HEADERS } from '../../define';
 import { ApiResponse, Restroom } from '../../define/model';
-import AppModule from '../appModule';
+import { appSlice } from '../appModule';
 
 class _initialState {
   isFetching: boolean = false;
@@ -66,7 +66,7 @@ export const officeInfoSlice = createSlice({
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
   switch (statusCode) {
     case 401:
-      dispatch(AppModule.actions.unauthorized());
+      dispatch(appSlice.actions.unauthorized());
       break;
 
     default:
@@ -95,8 +95,8 @@ function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
   return filteredByUsing.length;
 }
 
-export class OfficeInfoActionsForAsync {
-  static getRestroomUsageAction = (sleepMs: number = 0) => {
+export const officeInfoActionsAsyncLogic = {
+  getRestroomUsageAction: (sleepMs: number = 0) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(officeInfoSlice.actions.startApiRequest());
       try {
@@ -123,9 +123,9 @@ export class OfficeInfoActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
+  },
 
-  static getOfficeInfoAction = (sleepMs: number = 0) => {
+  getOfficeInfoAction: (sleepMs: number = 0) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(officeInfoSlice.actions.startApiRequest());
       try {
@@ -152,5 +152,10 @@ export class OfficeInfoActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
-}
+  },
+};
+
+export const officeInfoActionsAsyncAPI = {
+  getRestroomUsage: createAction(`${officeInfoSlice.name}/api/getRestroomUsage`),
+  getOfficeInfo: createAction(`${officeInfoSlice.name}/api/getOfficeInfo`),
+};

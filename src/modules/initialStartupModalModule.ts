@@ -59,7 +59,7 @@ export const initialStartupModalSlice = createSlice({
   },
 });
 
-export class InitialStartupModalActionsForAsync {
-  static addUser = createAction(`${initialStartupModalSlice.name}/addUser`);
-  static changeUser = createAction(`${initialStartupModalSlice.name}/changeUser`);
-}
+export const initialStartupModalActionsAsyncLogic = {
+  addUser: createAction(`${initialStartupModalSlice.name}/logic/addUser`),
+  changeUser: createAction(`${initialStartupModalSlice.name}/logic/changeUser`),
+};

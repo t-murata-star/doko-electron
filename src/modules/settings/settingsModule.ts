@@ -78,6 +78,6 @@ export const settingsSlice = createSlice({
   },
 });
 
-export class SettingActionsForAsync {
-  static saveSettingsForEmail = createAction(`${settingsSlice.name}/saveSettingsForEmail`);
-}
+export const settingActionsAsyncLogic = {
+  saveSettingsForEmail: createAction(`${settingsSlice.name}/logic/saveSettingsForEmail`),
+};

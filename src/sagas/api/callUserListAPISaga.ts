@@ -1,9 +1,9 @@
 import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
 import { callAPI, getUserInfo, showMessageBoxSync } from '../../components/common/functions';
-import { put, delay } from 'redux-saga/effects';
+import { put, delay, takeEvery } from 'redux-saga/effects';
 import { UserListAPI } from '../../api/userListAPI';
 import { userListSlice } from '../../modules/userInfo/userListModule';
-import appSlice from '../../modules/appModule';
+import { appSlice } from '../../modules/appModule';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M } from '../../define';
 import { initialStartupModalSlice } from '../../modules/initialStartupModalModule';
 
@@ -32,8 +32,8 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
   return userList;
 };
 
-export class CallUserListAPI {
-  static deleteUser = function* (userID: number) {
+export const callUserListAPI = {
+  deleteUser: function* (userID: number) {
     yield put(userListSlice.actions.startApiRequest());
     const response: ApiResponse = yield callAPI(UserListAPI.deleteUser, userID);
     if (response.getIsError()) {
@@ -42,9 +42,9 @@ export class CallUserListAPI {
       yield put(userListSlice.actions.deleteUserSuccess());
     }
     return response;
-  };
+  },
 
-  static addUser = function* (userInfo: UserInfo) {
+  addUser: function* (userInfo: UserInfo) {
     yield put(userListSlice.actions.startApiRequest());
     delete userInfo.id;
     const response: ApiResponse = yield callAPI(UserListAPI.addUser, userInfo);
@@ -56,9 +56,9 @@ export class CallUserListAPI {
     const userID = response.getPayload().id;
     yield put(appSlice.actions.setMyUserId(userID));
     return response;
-  };
+  },
 
-  static getUserList = function* (myUserID: number) {
+  getUserList: function* (myUserID: number) {
     yield put(userListSlice.actions.startApiRequest());
     const startTime = Date.now();
     const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
@@ -77,9 +77,9 @@ export class CallUserListAPI {
     updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
 
     return response;
-  };
+  },
 
-  static getUserListWithMyUserIDExists = function* (myUserID: number) {
+  getUserListWithMyUserIDExists: function* (myUserID: number) {
     yield put(userListSlice.actions.startApiRequest());
     const startTime = Date.now();
     const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
@@ -109,9 +109,9 @@ export class CallUserListAPI {
       yield put(initialStartupModalSlice.actions.showModal(true));
     }
     return response;
-  };
+  },
 
-  static updateUserInfo = function* (userInfo: UserInfoForUpdate, userID: number) {
+  updateUserInfo: function* (userInfo: UserInfoForUpdate, userID: number) {
     yield put(userListSlice.actions.startApiRequest());
     const response: ApiResponse = yield callAPI(UserListAPI.updateUserInfo, userInfo, userID);
     if (response.getIsError()) {
@@ -120,5 +120,9 @@ export class CallUserListAPI {
       yield put(userListSlice.actions.updateUserInfoSuccess());
     }
     return response;
-  };
-}
+  },
+};
+
+export const callUserListAPISaga = Object.entries(callUserListAPI).map((value: [string, any]) => {
+  return takeEvery(`${userListSlice.name}/api/${value[0]}`, value[1]);
+});

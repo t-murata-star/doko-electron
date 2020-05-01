@@ -2,11 +2,10 @@ import { Color } from '@material-ui/lab/Alert';
 import store from '../../configureStore';
 import { APP_NAME, APP_VERSION } from '../../define';
 import { UserInfo, ApiResponse } from '../../define/model';
-import AppModule, { AppActionsForAsync } from '../../modules/appModule';
-import { OfficeInfoActionsForAsync } from '../../modules/officeInfo/officeInfoModule';
-import appSlice from '../../modules/appModule';
+import { appSlice, appActionsAsyncLogic } from '../../modules/appModule';
+import { officeInfoActionsAsyncLogic } from '../../modules/officeInfo/officeInfoModule';
 import { put, call, select } from 'redux-saga/effects';
-import { CallAppAPI } from '../../sagas/api/callAppAPISaga';
+import { callAppAPI } from '../../sagas/api/callAppAPISaga';
 const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意
@@ -32,7 +31,7 @@ export const sendHealthCheck = () => {
 
   const updatedUserInfo: any = {};
   updatedUserInfo.healthCheckAt = '';
-  dispatch(AppActionsForAsync.sendHealthCheckAction(updatedUserInfo, myUserID));
+  dispatch(appActionsAsyncLogic.sendHealthCheckAction(updatedUserInfo, myUserID));
 };
 
 export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'info') => {
@@ -86,10 +85,10 @@ export const showSnackBar = (severity: Color, message: string = '通信に失敗
 
   if (appState.snackbar.enabled) {
     // 現在表示されているsnackbarを破棄して、新しいsnackbarを表示する
-    dispatch(AppModule.actions.enqueueSnackbarMessages(message));
-    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: false }));
+    dispatch(appSlice.actions.enqueueSnackbarMessages(message));
+    dispatch(appSlice.actions.changeEnabledSnackbar({ enabled: false }));
   } else {
-    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: true, severity, message, timeoutMs }));
+    dispatch(appSlice.actions.changeEnabledSnackbar({ enabled: true, severity, message, timeoutMs }));
   }
 };
 
@@ -99,7 +98,7 @@ export const onSnackBarClose = (event: React.SyntheticEvent, reason?: string) =>
   // if (reason === 'clickaway') {
   //   return;
   // }
-  dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: false }));
+  dispatch(appSlice.actions.changeEnabledSnackbar({ enabled: false }));
 };
 
 export const onSnackBarExited = () => {
@@ -109,8 +108,8 @@ export const onSnackBarExited = () => {
 
   if (queueMessages.length > 0) {
     const message = queueMessages.shift();
-    dispatch(AppModule.actions.dequeueSnackbarMessages());
-    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: true, severity: appState.snackbar.severity, message }));
+    dispatch(appSlice.actions.dequeueSnackbarMessages());
+    dispatch(appSlice.actions.changeEnabledSnackbar({ enabled: true, severity: appState.snackbar.severity, message }));
   }
 };
 
@@ -126,8 +125,8 @@ export const getAllOfficeInfo = async () => {
   const dispatch: any = store.dispatch;
 
   const responses = await Promise.all([
-    dispatch(OfficeInfoActionsForAsync.getRestroomUsageAction(350)),
-    dispatch(OfficeInfoActionsForAsync.getOfficeInfoAction(350)),
+    dispatch(officeInfoActionsAsyncLogic.getRestroomUsageAction(350)),
+    dispatch(officeInfoActionsAsyncLogic.getOfficeInfoAction(350)),
   ]);
 
   for (const response of responses) {
@@ -212,7 +211,7 @@ export function* sendHealthCheckSaga() {
   const updatedUserInfo: any = {};
   updatedUserInfo.healthCheckAt = '';
 
-  const sendHealthCheckResponse: ApiResponse = yield call(CallAppAPI.sendHealthCheck, updatedUserInfo, myUserID);
+  const sendHealthCheckResponse: ApiResponse = yield call(callAppAPI.sendHealthCheck, updatedUserInfo, myUserID);
   if (sendHealthCheckResponse.getIsError() === false) {
     console.log('Send healthCheck.');
   }

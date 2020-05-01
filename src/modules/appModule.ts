@@ -29,7 +29,7 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const appSlice = createSlice({
+export const appSlice = createSlice({
   name: 'app',
   initialState: new _initialState(),
   reducers: {
@@ -138,10 +138,10 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
   }
 };
 
-export class AppActionsForAsync {
-  static login = createAction(`${appSlice.name}/login`);
+export const appActionsAsyncLogic = {
+  login: createAction(`${appSlice.name}/logic/login`),
 
-  static loginAction = () => {
+  loginAction: () => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(appSlice.actions.startApiRequest());
       try {
@@ -162,9 +162,9 @@ export class AppActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
+  },
 
-  static getNotificationAction = () => {
+  getNotificationAction: () => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       try {
         const res = await fetch(`${API_URL}/notification`, {
@@ -185,9 +185,9 @@ export class AppActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
+  },
 
-  static sendHealthCheckAction = (userInfo: UserInfo, userID: number) => {
+  sendHealthCheckAction: (userInfo: UserInfo, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       const body = { ...userInfo };
       const res = await fetch(`${API_URL}/userList/${userID}`, {
@@ -204,7 +204,11 @@ export class AppActionsForAsync {
       console.log('Send healthCheck.');
       return new ApiResponse();
     };
-  };
-}
+  },
+};
 
-export default appSlice;
+export const appActionsAsyncAPI = {
+  login: createAction(`${appSlice.name}/api/login`),
+  getNotification: createAction(`${appSlice.name}/api/getNotification`),
+  sendHealthCheck: createAction(`${appSlice.name}/api/sendHealthCheck`),
+};

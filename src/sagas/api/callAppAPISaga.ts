@@ -1,36 +1,40 @@
 import { ApiResponse, UserInfo } from '../../define/model';
 import { callAPI, callAPIWithoutErrorSnackBar } from '../../components/common/functions';
-import appSlice from '../../modules/appModule';
-import { put } from 'redux-saga/effects';
-import { AppAPI } from '../../api/appAPI';
+import { appSlice } from '../../modules/appModule';
+import { put, takeEvery } from 'redux-saga/effects';
+import { appAPI } from '../../api/appAPI';
 
-export class CallAppAPI {
-  static login = function* () {
+export const callAppAPI = {
+  login: function* () {
     yield put(appSlice.actions.startApiRequest());
-    const response: ApiResponse = yield callAPI(AppAPI.login);
+    const response: ApiResponse = yield callAPI(appAPI.login);
     if (response.getIsError()) {
       yield put(appSlice.actions.failRequest());
     } else {
       yield put(appSlice.actions.loginSuccess(response));
     }
     return response;
-  };
+  },
 
-  static getNotification = function* () {
-    const response = yield callAPI(AppAPI.getNotification);
+  getNotification: function* () {
+    const response = yield callAPI(appAPI.getNotification);
     if (response.getIsError()) {
       yield put(appSlice.actions.failRequest());
     } else {
       yield put(appSlice.actions.getNotificationSuccess(response));
     }
     return response;
-  };
+  },
 
-  static sendHealthCheck = function* (userInfo: UserInfo, userID: number) {
-    const response: ApiResponse = yield callAPIWithoutErrorSnackBar(AppAPI.sendHealthCheck, userInfo, userID);
+  sendHealthCheck: function* (userInfo: UserInfo, userID: number) {
+    const response: ApiResponse = yield callAPIWithoutErrorSnackBar(appAPI.sendHealthCheck, userInfo, userID);
     if (!response.getIsError()) {
       console.log('Send healthCheck.');
     }
     return response;
-  };
-}
+  },
+};
+
+export const callAppAPISaga = Object.entries(callAppAPI).map((value: [string, any]) => {
+  return takeEvery(`${appSlice.name}/api/${value[0]}`, value[1]);
+});

@@ -6,7 +6,7 @@ import $ from 'jquery';
 import React from 'react';
 import { connect } from 'react-redux';
 import { userEditModalSlice } from '../../modules/userInfo/userEditModalModule';
-import { UserListActionsForAsync } from '../../modules/userInfo/userListModule';
+import { userListActionsAsyncLogic } from '../../modules/userInfo/userListModule';
 import { getUserInfo, checkResponseError } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
 import UserEditModal from './UserEditModal';
@@ -20,7 +20,7 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
     const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
     // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
     const myUserID = this.props.state.appState.myUserID;
-    await checkResponseError(dispatch(UserListActionsForAsync.getUserListAction(myUserID, 350)));
+    await checkResponseError(dispatch(userListActionsAsyncLogic.getUserListAction(myUserID, 350)));
     $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
   };
 

@@ -1,7 +1,7 @@
 import { Action, createSlice, Dispatch, createAction } from '@reduxjs/toolkit';
 import { API_URL, AUTH_REQUEST_HEADERS, APP_NAME } from '../../define';
 import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
-import AppModule from '../appModule';
+import { appSlice } from '../appModule';
 import { initialStartupModalSlice } from '../initialStartupModalModule';
 const { remote } = window.require('electron');
 
@@ -84,7 +84,7 @@ export const userListSlice = createSlice({
 const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
   switch (statusCode) {
     case 401:
-      dispatch(AppModule.actions.unauthorized());
+      dispatch(appSlice.actions.unauthorized());
       break;
 
     default:
@@ -95,19 +95,16 @@ const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number
 // スリープ処理
 const _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
-export class UserListActionsForAsync {
-  static updateUserInfoOrder = createAction(
-    `${userListSlice.name}/updateUserInfoOrder`,
-    (rowComponent: Tabulator.RowComponent) => {
-      return {
-        payload: {
-          rowComponent,
-        },
-      };
-    }
-  );
+export const userListActionsAsyncLogic = {
+  updateUserInfoOrder: createAction(`${userListSlice.name}/logic/updateUserInfoOrder`, (rowComponent: Tabulator.RowComponent) => {
+    return {
+      payload: {
+        rowComponent,
+      },
+    };
+  }),
 
-  static deleteUserAction = (userID: number) => {
+  deleteUserAction: (userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(userListSlice.actions.startApiRequest());
       try {
@@ -128,9 +125,9 @@ export class UserListActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
+  },
 
-  static addUserAction = (userInfo: UserInfo) => {
+  addUserAction: (userInfo: UserInfo) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(userListSlice.actions.startApiRequest());
       const body = { ...userInfo };
@@ -150,7 +147,7 @@ export class UserListActionsForAsync {
         }
         const json: UserInfo = await res.json();
         const userID = json.id;
-        dispatch(AppModule.actions.setMyUserId(json.id));
+        dispatch(appSlice.actions.setMyUserId(json.id));
         dispatch(userListSlice.actions.addUserSuccess());
         // return new ApiResponse(userID);
         return new ApiResponse(userID);
@@ -159,9 +156,9 @@ export class UserListActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
+  },
 
-  static getUserListAction = (myUserID: number, sleepMs: number = 0, isMyUserIDCheck: boolean = true) => {
+  getUserListAction: (myUserID: number, sleepMs: number = 0, isMyUserIDCheck: boolean = true) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(userListSlice.actions.startApiRequest());
       try {
@@ -198,7 +195,7 @@ export class UserListActionsForAsync {
               buttons: ['OK'],
               message: 'ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。',
             });
-            dispatch(AppModule.actions.setMyUserId(-1));
+            dispatch(appSlice.actions.setMyUserId(-1));
             dispatch(initialStartupModalSlice.actions.initializeState());
             dispatch(initialStartupModalSlice.actions.showModal(true));
           }
@@ -209,9 +206,9 @@ export class UserListActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
+  },
 
-  static changeOrderAction = (userInfo: UserInfoForUpdate, userID: number) => {
+  changeOrderAction: (userInfo: UserInfoForUpdate, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(userListSlice.actions.startApiRequest());
       try {
@@ -232,9 +229,9 @@ export class UserListActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
+  },
 
-  static updateUserInfoAction = (userInfo: UserInfoForUpdate, userID: number) => {
+  updateUserInfoAction: (userInfo: UserInfoForUpdate, userID: number) => {
     return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
       dispatch(userListSlice.actions.startApiRequest());
       try {
@@ -256,5 +253,13 @@ export class UserListActionsForAsync {
         return new ApiResponse(null, true);
       }
     };
-  };
-}
+  },
+};
+
+export const userListActionsAsyncAPI = {
+  deleteUser: createAction(`${userListSlice.name}/api/deleteUser`),
+  addUser: createAction(`${userListSlice.name}/api/addUser`),
+  getUserList: createAction(`${userListSlice.name}/api/getUserList`),
+  getUserListWithMyUserIDExists: createAction(`${userListSlice.name}/api/getUserListWithMyUserIDExists`),
+  updateUserInfo: createAction(`${userListSlice.name}/api/updateUserInfo`),
+};

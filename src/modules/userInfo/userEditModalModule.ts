@@ -76,7 +76,7 @@ export const userEditModalSlice = createSlice({
   },
 });
 
-export class UserEditModalActionsForAsync {
-  static updateUserInfo = createAction(`${userEditModalSlice.name}/updateUserInfo`);
-  static deleteUser = createAction(`${userEditModalSlice.name}/deleteUser`);
-}
+export const userEditModalActionsAsyncLogic = {
+  updateUserInfo: createAction(`${userEditModalSlice.name}/logic/updateUserInfo`),
+  deleteUser: createAction(`${userEditModalSlice.name}/logic/deleteUser`),
+};

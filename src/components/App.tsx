@@ -7,8 +7,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { USER_STATUS_INFO } from '../define';
 import { Props, UserInfoForUpdate } from '../define/model';
-import appSlice, { AppActionsForAsync } from '../modules/appModule';
-import { UserListActionsForAsync } from '../modules/userInfo/userListModule';
+import { appSlice, appActionsAsyncLogic } from '../modules/appModule';
+import { userListActionsAsyncLogic } from '../modules/userInfo/userListModule';
 import './App.scss';
 import {
   getUserInfo,
@@ -34,7 +34,7 @@ const Alert = (props: AlertProps) => {
 class App extends React.Component<Props, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
-    dispatch(AppActionsForAsync.login());
+    dispatch(appActionsAsyncLogic.login());
   }
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
@@ -54,7 +54,7 @@ class App extends React.Component<Props, any> {
     const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo.name = userInfo.name;
     updatedUserInfo.status = USER_STATUS_INFO.s13.status;
-    dispatch(UserListActionsForAsync.updateUserInfoAction(updatedUserInfo, myUserID));
+    dispatch(userListActionsAsyncLogic.updateUserInfoAction(updatedUserInfo, myUserID));
   });
 
   // 状態を「在席」に更新する
@@ -70,7 +70,7 @@ class App extends React.Component<Props, any> {
     const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo.name = userInfo.name;
     updatedUserInfo.status = USER_STATUS_INFO.s01.status;
-    dispatch(UserListActionsForAsync.updateUserInfoAction(updatedUserInfo, myUserID));
+    dispatch(userListActionsAsyncLogic.updateUserInfoAction(updatedUserInfo, myUserID));
 
     sendHealthCheck();
   });
@@ -88,7 +88,7 @@ class App extends React.Component<Props, any> {
     const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo.status = USER_STATUS_INFO.s02.status;
     updatedUserInfo.name = userInfo.name;
-    await dispatch(UserListActionsForAsync.updateUserInfoAction(updatedUserInfo, myUserID));
+    await dispatch(userListActionsAsyncLogic.updateUserInfoAction(updatedUserInfo, myUserID));
     this._closeApp();
   });
 
@@ -105,7 +105,7 @@ class App extends React.Component<Props, any> {
     switch (activeIndex) {
       // 社内情報タブを選択
       case 0:
-        checkResponseError(dispatch(UserListActionsForAsync.getUserListAction(myUserID, 350)));
+        checkResponseError(dispatch(userListActionsAsyncLogic.getUserListAction(myUserID, 350)));
         break;
 
       // 社員情報タブを選択

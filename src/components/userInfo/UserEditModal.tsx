@@ -3,7 +3,7 @@ import React from 'react';
 import { Modal, Backdrop } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Props } from '../../define/model';
-import { userEditModalSlice, UserEditModalActionsForAsync } from '../../modules/userInfo/userEditModalModule';
+import { userEditModalSlice, userEditModalActionsAsyncLogic } from '../../modules/userInfo/userEditModalModule';
 import './UserEditModal.css';
 import { Container, Form, Col } from 'react-bootstrap';
 import { STATUS_LIST } from '../../define';
@@ -16,7 +16,7 @@ class UserEditModal extends React.Component<Props, any> {
 
   _updateUserInfo = async () => {
     const { dispatch } = this.props;
-    dispatch(UserEditModalActionsForAsync.updateUserInfo());
+    dispatch(userEditModalActionsAsyncLogic.updateUserInfo());
   };
 
   onUserInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +41,7 @@ class UserEditModal extends React.Component<Props, any> {
 
   deleteUser = async () => {
     const { dispatch } = this.props;
-    dispatch(UserEditModalActionsForAsync.deleteUser());
+    dispatch(userEditModalActionsAsyncLogic.deleteUser());
   };
 
   inputClear = () => {

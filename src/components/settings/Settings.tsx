@@ -6,8 +6,8 @@ import { Col, Form, ListGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { Props, UserInfo } from '../../define/model';
-import AppModule from '../../modules/appModule';
-import { settingsSlice, SettingActionsForAsync } from '../../modules/settings/settingsModule';
+import { appSlice } from '../../modules/appModule';
+import { settingsSlice, settingActionsAsyncLogic } from '../../modules/settings/settingsModule';
 import { getUserInfo, sendHealthCheck, showSnackBar } from '../common/functions';
 import './Settings.css';
 
@@ -84,7 +84,7 @@ class Settings extends React.Component<Props, any> {
 
     electronStore.set('userID', changedUserID);
     dispatch(settingsSlice.actions.setEmail(userInfo.email));
-    dispatch(AppModule.actions.setMyUserId(myUserID));
+    dispatch(appSlice.actions.setMyUserId(myUserID));
     showSnackBar('success', '設定を保存しました。');
     dispatch(settingsSlice.actions.changeDisabledSubmitButtonUserChange(true));
 
@@ -104,7 +104,7 @@ class Settings extends React.Component<Props, any> {
   // メールアドレスの保存
   onSaveSettingsForEmail = () => {
     const { dispatch } = this.props;
-    dispatch(SettingActionsForAsync.saveSettingsForEmail());
+    dispatch(settingActionsAsyncLogic.saveSettingsForEmail());
   };
 
   // スタートアップの変更と保存

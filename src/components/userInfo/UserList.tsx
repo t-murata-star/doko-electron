@@ -5,7 +5,7 @@ import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
 import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS_INFO } from '../../define';
 import { userEditModalSlice } from '../../modules/userInfo/userEditModalModule';
-import { userListSlice, UserListActionsForAsync } from '../../modules/userInfo/userListModule';
+import { userListSlice, userListActionsAsyncLogic } from '../../modules/userInfo/userListModule';
 import { getUserInfo } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
@@ -136,7 +136,7 @@ class UserList extends React.Component<Props, any> {
   // 各ユーザの「order」パラメータをユーザ一覧の表示順序を元に更新する
   _rowMovedCallback = (row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
-    dispatch(UserListActionsForAsync.updateUserInfoOrder(row));
+    dispatch(userListActionsAsyncLogic.updateUserInfoOrder(row));
   };
 
   _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
