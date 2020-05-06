@@ -5,23 +5,19 @@ import Button from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { connect } from 'react-redux';
-import UserEditModalMdule from '../../modules/userInfo/userEditModalModule';
-import { AsyncActionsUserList } from '../../modules/userInfo/userListModule';
-import { getUserInfo, checkResponseError } from '../common/functions';
+import { menuButtonGroupForUserListActionsAsyncLogic } from '../../actions/userInfo/menuButtonGroupForUserListActions';
+import { getUserInfo } from '../common/functions';
 import './MenuButtonGroupForUserList.css';
 import UserEditModal from './UserEditModal';
 import { Props } from '../../define/model';
 import { Grid } from '@material-ui/core';
+import { userEditModalActions } from '../../actions/userInfo/userEditModalActions';
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForUserList extends React.Component<Props, any> {
   reload = async () => {
     const { dispatch } = this.props;
-    const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
-    // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
-    const myUserID = this.props.state.appState.myUserID;
-    await checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350)));
-    $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
+    dispatch(menuButtonGroupForUserListActionsAsyncLogic.reload());
   };
 
   showUserEditModal = () => {
@@ -34,17 +30,18 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
       return;
     }
 
-    dispatch(UserEditModalMdule.actions.disableSubmitButton());
-    dispatch(UserEditModalMdule.actions.showUserEditModal({ userID: myUserID, userInfo: userInfo }));
+    dispatch(userEditModalActions.disableSubmitButton());
+    dispatch(userEditModalActions.showUserEditModal(myUserID));
     // 自分編集ボタンのフォーカスを外す
     $('.menu-button-group-for-user-list-base-button').blur();
   };
 
   render() {
-    const userList = this.props.state.userListState;
+    const userList = this.props.state.userListState.userList;
     const appState = this.props.state.appState;
     const myUserID = appState.myUserID;
-    const userInfo = getUserInfo(userList.userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserID);
+    const isFetching = this.props.state.appState.isFetching;
 
     return (
       <div className='menu-button-group-for-user-list'>
@@ -54,7 +51,7 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
               variant='outlined'
               color='default'
               onClick={this.reload}
-              disabled={userList.isFetching === true}
+              disabled={isFetching === true}
               fullWidth
               style={{ boxShadow: 'none' }}>
               <FontAwesomeIcon icon='sync' />

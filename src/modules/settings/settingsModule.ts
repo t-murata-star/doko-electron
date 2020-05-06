@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { settingActions } from '../../actions/settings/settingsActions';
 
 class _initialState {
   submitButtonsDisable = {
@@ -17,65 +18,56 @@ class _initialState {
 }
 
 // createSlice() で actions と reducers を一気に生成
-const slice = createSlice({
+export const settingsSlice = createSlice({
   name: 'settings',
   initialState: new _initialState(),
-  reducers: {
-    initializeState: () => {
-      return new _initialState();
-    },
-    setUserId: (state, action) => {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          userID: action.payload,
-        },
-      };
-    },
-    setEmail: (state, action) => {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          email: action.payload,
-        },
-      };
-    },
-    changeDisabledSubmitButtonUserChange: (state, action) => {
-      return {
-        ...state,
-        submitButtonsDisable: {
-          ...state.submitButtonsDisable,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(settingActions.initializeState, () => {
+        return new _initialState();
+      })
+      .addCase(settingActions.setUserId, (state, action) => {
+        return {
+          ...state,
           user: {
-            ...state.submitButtonsDisable.user,
-            userChange: action.payload,
+            ...state.user,
+            userID: action.payload.userID,
           },
-        },
-      };
-    },
-    changeDisabledSubmitButtonEmail: (state, action) => {
-      return {
-        ...state,
-        submitButtonsDisable: {
-          ...state.submitButtonsDisable,
-          user: {
-            ...state.submitButtonsDisable.user,
-            email: action.payload,
+        };
+      })
+      .addCase(settingActions.changeDisabledSubmitButtonUserChange, (state, action) => {
+        return {
+          ...state,
+          submitButtonsDisable: {
+            ...state.submitButtonsDisable,
+            user: {
+              ...state.submitButtonsDisable.user,
+              userChange: action.payload.disable,
+            },
           },
-        },
-      };
-    },
-    changeEnabledStartup: (state, action) => {
-      return {
-        ...state,
-        system: {
-          ...state.system,
-          startupEnabled: action.payload,
-        },
-      };
-    },
+        };
+      })
+      .addCase(settingActions.changeDisabledSubmitButtonEmail, (state, action) => {
+        return {
+          ...state,
+          submitButtonsDisable: {
+            ...state.submitButtonsDisable,
+            user: {
+              ...state.submitButtonsDisable.user,
+              email: action.payload.disable,
+            },
+          },
+        };
+      })
+      .addCase(settingActions.changeEnabledStartup, (state, action) => {
+        return {
+          ...state,
+          system: {
+            ...state.system,
+            startupEnabled: action.payload.startupEnabled,
+          },
+        };
+      });
   },
 });
-
-export default slice;

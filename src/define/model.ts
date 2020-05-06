@@ -82,7 +82,7 @@ export class Restroom {
   isUsing: boolean = false;
 }
 
-export interface Action {
-  payload: any;
-  type: string;
+export class Info {
+  tempreture: number = -1;
+  humidity: number = -1;
 }

@@ -5,39 +5,19 @@ import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  APP_DOWNLOAD_URL,
-  APP_NAME,
-  APP_VERSION,
-  AUTH_REQUEST_HEADERS,
-  HEALTH_CHECK_INTERVAL_MS,
-  USER_STATUS_INFO,
-} from '../define';
-import { ApiResponse, Notification, Props, UserInfo, UserInfoForUpdate } from '../define/model';
-import AppModule, { AsyncActionsApp } from '../modules/appModule';
-import InitialStartupModalModule from '../modules/initialStartupModalModule';
-import UserListModule, { AsyncActionsUserList } from '../modules/userInfo/userListModule';
+import { Props } from '../define/model';
+import { appActionsAsyncLogic } from '../actions/appActions';
 import './App.scss';
-import {
-  getUserInfo,
-  onSnackBarClose,
-  onSnackBarExited,
-  sendHealthCheck,
-  showMessageBoxSync,
-  showMessageBoxSyncWithReturnValue,
-  getAllOfficeInfo,
-  checkResponseError,
-} from './common/functions';
+import { onSnackBarClose, onSnackBarExited } from './common/functions';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
 import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
 import UserList from './userInfo/UserList';
+import { electronActionsAsyncLogic } from '../actions/electronActions';
 
 const { remote, ipcRenderer } = window.require('electron');
-const Store = window.require('electron-store');
-const electronStore = new Store();
 
 const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -46,138 +26,7 @@ const Alert = (props: AlertProps) => {
 class App extends React.Component<Props, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
-    const userID: number = (electronStore.get('userID') as number | undefined) || -1;
-    let response: ApiResponse;
-
-    // メインプロセスに、レンダラープロセスに接続できたことを伝える
-    ipcRenderer.send('connected', true);
-
-    response = await dispatch(AsyncActionsApp.loginAction());
-
-    if (response.getIsError()) {
-      ipcRenderer.send('connected', false);
-      remote.getCurrentWindow().loadFile(remote.getGlobal('errorPageFilepath'));
-      return;
-    }
-
-    // APIリクエストヘッダに認証トークンを設定する
-    AUTH_REQUEST_HEADERS.Authorization = 'Bearer ' + this.props.state.appState.token;
-
-    // お知らせチェック
-    await dispatch(AsyncActionsApp.getNotificationAction());
-
-    const notification: Notification = this.props.state.appState.notification;
-    const updateNotificationMessage: string = `新しい${APP_NAME}が公開されました。\nVersion ${notification.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
-
-    /**
-     * バージョンチェック
-     * 実行しているアプリケーションのバージョンが最新ではない場合、
-     * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
-     */
-    if (notification.latestAppVersion !== APP_VERSION) {
-      showMessageBoxSync(updateNotificationMessage);
-      remote.shell.openExternal(APP_DOWNLOAD_URL);
-      this._closeApp();
-      return;
-    }
-
-    /**
-     * スタートアップ登録処理。
-     * スタートアップ登録のダイアログを表示する（ダイアログ表示は1度きり）
-     */
-    if (!electronStore.get('startup.notified')) {
-      const index = showMessageBoxSyncWithReturnValue(
-        'YES',
-        'NO',
-        `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
-      );
-      let openAtLogin;
-
-      switch (index) {
-        // ダイアログで「OK」を選択した場合
-        case 0:
-          openAtLogin = true;
-          break;
-
-        // ダイアログで「OK」以外を選択した場合
-        default:
-          openAtLogin = false;
-          break;
-      }
-
-      electronStore.set('startup.notified', 1);
-
-      remote.app.setLoginItemSettings({
-        openAtLogin,
-        path: remote.app.getPath('exe'),
-      });
-    }
-
-    /**
-     * お知らせチェック
-     * appVersion が latestAppVersion と異なる場合、アップデート後の初回起動と判断し、
-     * 一度だけお知らせを表示する。
-     */
-    if (electronStore.get('appVersion') !== APP_VERSION) {
-      showMessageBoxSync(notification.content);
-      electronStore.set('appVersion', APP_VERSION);
-    }
-
-    /**
-     * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
-     */
-    setInterval(() => {
-      sendHealthCheck();
-    }, HEALTH_CHECK_INTERVAL_MS);
-
-    /**
-     * 初回起動チェック
-     * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
-     */
-    if (userID === -1) {
-      dispatch(InitialStartupModalModule.actions.showModal(true));
-      return;
-    }
-
-    response = await dispatch(AsyncActionsUserList.getUserListAction(userID));
-    if (response.getIsError()) {
-      return;
-    }
-
-    const userList: UserInfo[] = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
-    const userInfo = getUserInfo(userList, userID);
-
-    /**
-     * サーバ上に自分の情報が存在するかどうかチェック
-     * 無ければ新規登録画面へ遷移する
-     */
-    if (userInfo === null) {
-      return;
-    }
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    if (userInfo.version !== APP_VERSION) {
-      updatedUserInfo.version = APP_VERSION;
-      // アプリバージョンのみ更新（更新日時も更新されない）
-      dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
-    }
-
-    // 状態を「在席」に更新する（更新日時も更新される）
-    if (
-      userInfo.status === USER_STATUS_INFO.s02.status ||
-      userInfo.status === USER_STATUS_INFO.s01.status ||
-      userInfo.status === USER_STATUS_INFO.s13.status
-    ) {
-      userInfo.status = USER_STATUS_INFO.s01.status;
-      updatedUserInfo.status = userInfo.status;
-      updatedUserInfo.name = userInfo.name;
-      dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, userID));
-    }
-
-    dispatch(UserListModule.actions.reRenderUserList(userList));
-    dispatch(AppModule.actions.setMyUserId(userID));
-
-    sendHealthCheck();
+    dispatch(appActionsAsyncLogic.login());
   }
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
@@ -187,85 +36,23 @@ class App extends React.Component<Props, any> {
   // 状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
-      return;
-    }
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo.name = userInfo.name;
-    updatedUserInfo.status = USER_STATUS_INFO.s13.status;
-    dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
+    dispatch(electronActionsAsyncLogic.electronLockScreenEvent());
   });
 
   // 状態を「在席」に更新する
   electronUnlockScreenEvent = ipcRenderer.on('electronUnlockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
-      return;
-    }
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo.name = userInfo.name;
-    updatedUserInfo.status = USER_STATUS_INFO.s01.status;
-    dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
-
-    sendHealthCheck();
+    dispatch(electronActionsAsyncLogic.electronUnlockScreenEvent());
   });
 
   closeApp = ipcRenderer.on('closeApp', async () => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
-      this._closeApp();
-      return;
-    }
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo.status = USER_STATUS_INFO.s02.status;
-    updatedUserInfo.name = userInfo.name;
-    await dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID));
-    this._closeApp();
+    dispatch(electronActionsAsyncLogic.closeApp());
   });
 
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    dispatch(AppModule.actions.setActiveIndex(activeIndex));
-
-    // 同じタブを複数押下した場合
-    if (this.props.state.appState.activeIndex === activeIndex) {
-      return;
-    }
-
-    switch (activeIndex) {
-      // 社内情報タブを選択
-      case 0:
-        checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350)));
-        break;
-
-      // 社員情報タブを選択
-      case 1:
-        getAllOfficeInfo();
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  _closeApp = () => {
-    if (remote.getCurrentWindow().isDestroyed() === false) {
-      remote.getCurrentWindow().destroy();
-      // ipcRenderer.send('closeApp');
-    }
+    dispatch(appActionsAsyncLogic.clickTabbar(activeIndex));
   };
 
   render() {
@@ -273,11 +60,7 @@ class App extends React.Component<Props, any> {
     const appState = this.props.state.appState;
     return (
       <div>
-        <Loading
-          isAppStateProcessing={this.props.state.appState.isProcessing}
-          isUserListProcessing={this.props.state.userListState.isFetching}
-          officeInfoProcessing={this.props.state.officeInfoState.isFetching}
-        />
+        <Loading isShowLoadingPopup={this.props.state.appState.isShowLoadingPopup} />
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           autoHideDuration={appState.snackbar.timeoutMs}

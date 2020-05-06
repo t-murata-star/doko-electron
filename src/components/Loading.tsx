@@ -7,13 +7,11 @@ import './Loading.css';
 library.add(faSpinner); //あらかじめ使用するアイコンを追加しておく
 
 type ContentProps = {
-  isAppStateProcessing: boolean;
-  isUserListProcessing: boolean;
-  officeInfoProcessing: boolean;
+  isShowLoadingPopup: boolean;
 };
 
 const MemoComponent = (props: ContentProps) => {
-  if (props.isAppStateProcessing || props.isUserListProcessing || props.officeInfoProcessing) {
+  if (props.isShowLoadingPopup) {
     return (
       <div className='mx-auto'>
         <div className='loading-background'></div>

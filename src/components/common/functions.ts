@@ -2,8 +2,8 @@ import { Color } from '@material-ui/lab/Alert';
 import store from '../../configureStore';
 import { APP_NAME, APP_VERSION } from '../../define';
 import { UserInfo, ApiResponse } from '../../define/model';
-import AppModule, { AsyncActionsApp } from '../../modules/appModule';
-import { AsyncActionsOfficeInfo } from '../../modules/officeInfo/officeInfoModule';
+import { put, call } from 'redux-saga/effects';
+import { appActions } from '../../actions/appActions';
 const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意
@@ -15,21 +15,6 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
     return userInfo.id === userID;
   })[0];
   return userInfo || null;
-};
-
-export const sendHealthCheck = () => {
-  const dispatch: any = store.dispatch;
-  const myUserID = store.getState().appState.myUserID;
-  const userList = store.getState().userListState.userList;
-  const userInfo = getUserInfo(userList, myUserID);
-
-  if (userInfo === null) {
-    return;
-  }
-
-  const updatedUserInfo: any = {};
-  updatedUserInfo.healthCheckAt = '';
-  dispatch(AsyncActionsApp.sendHealthCheckAction(updatedUserInfo, myUserID));
 };
 
 export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'info') => {
@@ -73,7 +58,7 @@ export const showMessageBoxSyncWithReturnValue = (
   }
 };
 
-export const showSnackBar = (severity: Color, message: string, timeoutMs: number | null = 5000) => {
+export const showSnackBar = (severity: Color, message: string = '', timeoutMs: number | null = 5000) => {
   const dispatch: any = store.dispatch;
   const appState = store.getState().appState;
 
@@ -83,10 +68,10 @@ export const showSnackBar = (severity: Color, message: string, timeoutMs: number
 
   if (appState.snackbar.enabled) {
     // 現在表示されているsnackbarを破棄して、新しいsnackbarを表示する
-    dispatch(AppModule.actions.enqueueSnackbarMessages(message));
-    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: false }));
+    dispatch(appActions.enqueueSnackbarMessages(message));
+    dispatch(appActions.changeEnabledSnackbar(false, null, null, null));
   } else {
-    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: true, severity, message, timeoutMs }));
+    dispatch(appActions.changeEnabledSnackbar(true, severity, message, timeoutMs));
   }
 };
 
@@ -96,7 +81,7 @@ export const onSnackBarClose = (event: React.SyntheticEvent, reason?: string) =>
   // if (reason === 'clickaway') {
   //   return;
   // }
-  dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: false }));
+  dispatch(appActions.changeEnabledSnackbar(false, null, null, null));
 };
 
 export const onSnackBarExited = () => {
@@ -105,32 +90,48 @@ export const onSnackBarExited = () => {
   const queueMessages = [...appState.snackbar.queueMessages];
 
   if (queueMessages.length > 0) {
-    const message = queueMessages.shift();
-    dispatch(AppModule.actions.dequeueSnackbarMessages());
-    dispatch(AppModule.actions.changeEnabledSnackbar({ enabled: true, severity: appState.snackbar.severity, message }));
+    const message = queueMessages.shift() as string;
+    dispatch(appActions.dequeueSnackbarMessages());
+    dispatch(appActions.changeEnabledSnackbar(true, appState.snackbar.severity, message, null));
   }
 };
 
-export const checkResponseError = async (promiseResponse: Promise<ApiResponse>) => {
-  const response = await promiseResponse;
-  if (response.getIsError()) {
-    showSnackBar('error', '通信に失敗しました。', null);
+export const isAuthenticated = (statusCode: number): boolean => {
+  switch (statusCode) {
+    case 401:
+      return false;
+
+    default:
+      return true;
   }
-  return response;
 };
 
-export const getAllOfficeInfo = async () => {
-  const dispatch: any = store.dispatch;
-
-  const responses = await Promise.all([
-    dispatch(AsyncActionsOfficeInfo.getRestroomUsageAction(350)),
-    dispatch(AsyncActionsOfficeInfo.getOfficeInfoAction(350)),
-  ]);
-
-  for (const response of responses) {
-    if (response.getIsError()) {
-      showSnackBar('error', '通信に失敗しました。', null);
-      break;
+// 通常のAPIリクエストのために用いる
+export function* callAPI(calledAPI: any, ...args: any) {
+  yield put(appActions.startFetching());
+  try {
+    const response: Response = yield call(calledAPI, ...args);
+    if (response.ok === false) {
+      throw new Error(response.statusText);
     }
+
+    if (isAuthenticated(response.status) === false) {
+      yield put(appActions.unauthorized());
+      /**
+       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
+       * 画面をリロードして認証トークンを再取得する
+       */
+      window.location.reload();
+    }
+
+    const payload = yield call(response.json.bind(response));
+    yield put(appActions.fetchingSuccess());
+    return new ApiResponse(payload);
+  } catch (error) {
+    console.error(error);
+    yield put(appActions.failRequest());
+    return new ApiResponse(null, true);
+  } finally {
+    yield put(appActions.endFetching());
   }
-};
+}

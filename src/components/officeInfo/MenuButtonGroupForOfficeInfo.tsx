@@ -6,17 +6,18 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './MenuButtonGroupForOfficeInfo.css';
 import { Props } from '../../define/model';
-import { getAllOfficeInfo } from '../common/functions';
+import { menuButtonGroupForOfficeInfoActionsAsyncLogic } from '../../actions/officeInfo/menuButtonGroupForOfficeInfoActions';
 
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
   reload = async () => {
-    getAllOfficeInfo();
+    const { dispatch } = this.props;
+    dispatch(menuButtonGroupForOfficeInfoActionsAsyncLogic.getAllOfficeInfo());
   };
 
   render() {
-    const officeInfo = this.props.state.officeInfoState;
+    const isFetching = this.props.state.appState.isFetching;
 
     return (
       <div className='menu-button-group-for-office-info'>
@@ -24,7 +25,7 @@ class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
           variant='outlined'
           color='default'
           onClick={this.reload}
-          disabled={officeInfo.isFetching === true}
+          disabled={isFetching === true}
           fullWidth
           style={{ boxShadow: 'none' }}>
           <FontAwesomeIcon icon='sync' />

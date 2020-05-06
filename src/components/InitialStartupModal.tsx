@@ -2,159 +2,74 @@ import MaterialUiButton from '@material-ui/core/Button';
 import React from 'react';
 import { Button, Col, Container, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { APP_VERSION, USER_STATUS_INFO } from '../define';
-import { ApiResponse, UserInfo, Props, UserInfoForUpdate } from '../define/model';
-import AppModule from '../modules/appModule';
-import initialStartupModalModule from '../modules/initialStartupModalModule';
-import { AsyncActionsUserList } from '../modules/userInfo/userListModule';
-import { getUserInfo, sendHealthCheck, checkResponseError } from './common/functions';
+import { UserInfo, Props } from '../define/model';
+import { initialStartupModalActionsAsyncLogic, initialStartupModalActions } from '../actions/initialStartupModalActions';
 import './InitialStartupModal.css';
 import { Backdrop, Fade, Modal, TextField } from '@material-ui/core';
 
-const Store = window.require('electron-store');
-const electronStore = new Store();
-
 class InitialStartupModal extends React.Component<Props, any> {
-  userID: number = -1;
-  userInfo: any = new UserInfo();
-
-  initializeField() {
-    this.userID = -1;
-    this.userInfo = new UserInfo();
-  }
-
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModalModule.actions.showModal(false));
+    dispatch(initialStartupModalActions.showModal(false));
   };
 
-  _addUser = async () => {
+  addUser = () => {
     const { dispatch } = this.props;
-    let response: ApiResponse;
-
-    this.userInfo.version = APP_VERSION;
-    this.userInfo.status = USER_STATUS_INFO.s01.status;
-
-    // addUserAction で appState の myUserID に新規ユーザIDが設定される
-    response = await checkResponseError(dispatch(AsyncActionsUserList.addUserAction(this.userInfo)));
-    if (response.getIsError()) {
-      dispatch(initialStartupModalModule.actions.disableSubmitButton(false));
-      return;
-    }
-
-    const myUserID = response.getPayload();
-    dispatch(AppModule.actions.setMyUserId(myUserID));
-
-    // userIDを設定ファイルに登録（既に存在する場合は上書き）
-    electronStore.set('userID', myUserID);
-
-    // orderパラメータをidと同じ値に更新する
-    const addedUserInfo: UserInfoForUpdate = {};
-    addedUserInfo.order = myUserID;
-
-    await dispatch(AsyncActionsUserList.updateUserInfoAction(addedUserInfo, myUserID));
-    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID)));
-
-    sendHealthCheck();
-
-    this.closeModal();
-    this.initializeField();
+    dispatch(initialStartupModalActionsAsyncLogic.addUser());
   };
 
-  _changeUser = async () => {
+  changeUser = async () => {
     const { dispatch } = this.props;
-    const myUserID = this.userID;
-    const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
-    let response: ApiResponse;
-
-    if (userInfo === null) {
-      return;
-    }
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    if (userInfo.version !== APP_VERSION) {
-      updatedUserInfo.version = APP_VERSION;
-      response = await checkResponseError(dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID)));
-      if (response.getIsError()) {
-        return;
-      }
-    }
-
-    // 状態を「在席」に更新する（更新日時も更新される）
-    if (
-      userInfo.status === USER_STATUS_INFO.s02.status ||
-      userInfo.status === USER_STATUS_INFO.s01.status ||
-      userInfo.status === USER_STATUS_INFO.s13.status
-    ) {
-      updatedUserInfo.status = USER_STATUS_INFO.s01.status;
-      updatedUserInfo.name = userInfo.name;
-      response = await checkResponseError(dispatch(AsyncActionsUserList.updateUserInfoAction(updatedUserInfo, myUserID)));
-      if (response.getIsError()) {
-        return;
-      }
-    }
-
-    electronStore.set('userID', myUserID);
-    dispatch(AppModule.actions.setMyUserId(myUserID));
-
-    this.closeModal();
-
-    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(myUserID, 350)));
-    sendHealthCheck();
-    this.initializeField();
+    dispatch(initialStartupModalActionsAsyncLogic.changeUser());
   };
 
   onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
-    this.userInfo[event.target.name] = event.target.value;
-    if (event.target.value.length > 0 && this.props.state.initialStartupModalState.submitButtonDisabled === true) {
-      dispatch(initialStartupModalModule.actions.disableSubmitButton(false));
+    dispatch(initialStartupModalActions.changeUserInfo(event.target.name, event.target.value));
+    if (event.target.value.length > 0 && this.props.state.initialStartupModalState.disabled === true) {
+      dispatch(initialStartupModalActions.disableSubmitButton(false));
       return;
     }
-    if (event.target.value.length === 0 && this.props.state.initialStartupModalState.submitButtonDisabled === false) {
-      dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
+    if (event.target.value.length === 0 && this.props.state.initialStartupModalState.disabled === false) {
+      dispatch(initialStartupModalActions.disableSubmitButton(true));
       return;
     }
   };
 
   onUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
-    this.userID = parseInt(event.target.value);
-    dispatch(initialStartupModalModule.actions.disableSubmitButton(false));
+    dispatch(initialStartupModalActions.changeUserId(parseInt(event.target.value)));
+    dispatch(initialStartupModalActions.disableSubmitButton(false));
   };
 
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
+    dispatch(initialStartupModalActions.disableSubmitButton(true));
     event.preventDefault();
 
     if (this.props.state.initialStartupModalState.isChangeUser) {
-      this._changeUser();
+      this.changeUser();
     } else {
-      this._addUser();
+      this.addUser();
     }
   };
 
-  changeUserInput = () => {
+  selectFromExistingUsers = () => {
     const { dispatch } = this.props;
-    this.initializeField();
-    dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
-    dispatch(initialStartupModalModule.actions.changeSubmitMode(true));
-    // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
-    checkResponseError(dispatch(AsyncActionsUserList.getUserListAction(-1, 350, false)));
+    dispatch(initialStartupModalActionsAsyncLogic.selectFromExistingUsers());
   };
 
   registUserInput = () => {
     const { dispatch } = this.props;
-    this.initializeField();
-    dispatch(initialStartupModalModule.actions.disableSubmitButton(true));
-    dispatch(initialStartupModalModule.actions.changeSubmitMode(false));
+    dispatch(initialStartupModalActions.initializeField());
+    dispatch(initialStartupModalActions.disableSubmitButton(true));
+    dispatch(initialStartupModalActions.changeSubmitMode(false));
   };
 
   render() {
     const onHide = this.props.state.initialStartupModalState.onHide;
     const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
+    const myUserID = this.props.state.initialStartupModalState.selectedUserId;
 
     return (
       <Modal
@@ -181,7 +96,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                       <div>
                         <TextField
                           select
-                          value={this.userID}
+                          value={myUserID}
                           onChange={this.onUserChange}
                           fullWidth
                           size={'small'}
@@ -233,7 +148,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                         />
                         <Form.Text>
                           <span>登録済みの場合は</span>
-                          <Button variant='link' className='userChange' onClick={this.changeUserInput}>
+                          <Button variant='link' className='userChange' onClick={this.selectFromExistingUsers}>
                             こちら
                           </Button>
                         </Form.Text>
@@ -248,7 +163,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                 type='submit'
                 variant='contained'
                 color='primary'
-                disabled={this.props.state.initialStartupModalState.submitButtonDisabled}
+                disabled={this.props.state.initialStartupModalState.disabled}
                 style={{ float: 'right', boxShadow: 'none' }}
                 className='initial-startup-modal-base-button'>
                 登録

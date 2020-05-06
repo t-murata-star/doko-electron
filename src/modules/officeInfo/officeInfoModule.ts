@@ -1,81 +1,47 @@
-import { Action, createSlice, Dispatch } from '@reduxjs/toolkit';
-import { API_URL, AUTH_REQUEST_HEADERS } from '../../define';
-import { ApiResponse, Restroom } from '../../define/model';
-import AppModule from '../appModule';
+import { createSlice } from '@reduxjs/toolkit';
+import { Restroom, Info } from '../../define/model';
+import { menuButtonGroupForOfficeInfoActions } from '../../actions/officeInfo/menuButtonGroupForOfficeInfoActions';
 
 class _initialState {
-  isFetching: boolean = false;
-  isError: boolean = false;
   restrooms = {
-    rooms: new Restroom(),
+    rooms: [new Restroom()],
     isNoVacancyForMen: false,
     isNoVacancyForWomen: false,
     vacancyForMen: -1,
     vacancyForWomen: -1,
   };
-  info = {
-    tempreture: -1,
-    humidity: -1,
-  };
+  info = new Info();
 }
 
 // createSlice() で actions と reducers を一気に生成
-const slice = createSlice({
+export const officeInfoSlice = createSlice({
   name: 'officeInfo',
   initialState: new _initialState(),
-  reducers: {
-    startApiRequest: (state) => {
-      return {
-        ...state,
-        isFetching: true,
-      };
-    },
-    failRequest: (state) => {
-      return {
-        ...state,
-        isFetching: false,
-        isError: true,
-      };
-    },
-    getRestroomUsageSuccess: (state, action) => {
-      return {
-        ...state,
-        restrooms: {
-          ...state.restrooms,
-          rooms: action.payload,
-          isNoVacancyForMen: checkNoVacantForRestroom(action.payload, 'men'),
-          isNoVacancyForWomen: checkNoVacantForRestroom(action.payload, 'women'),
-          vacancyForMen: getVacantCountForRestroom(action.payload, 'men'),
-          vacancyForWomen: getVacantCountForRestroom(action.payload, 'women'),
-        },
-        isFetching: false,
-        isError: false,
-      };
-    },
-    getOfficeInfoSuccess: (state, action) => {
-      return {
-        ...state,
-        info: action.payload,
-        isFetching: false,
-        isError: false,
-      };
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(menuButtonGroupForOfficeInfoActions.getRestroomUsageSuccess, (state, action) => {
+        const rooms = action.payload.rooms;
+        return {
+          ...state,
+          restrooms: {
+            ...state.restrooms,
+            rooms: rooms,
+            isNoVacancyForMen: checkNoVacantForRestroom(rooms, 'men'),
+            isNoVacancyForWomen: checkNoVacantForRestroom(rooms, 'women'),
+            vacancyForMen: getVacantCountForRestroom(rooms, 'men'),
+            vacancyForWomen: getVacantCountForRestroom(rooms, 'women'),
+          },
+        };
+      })
+      .addCase(menuButtonGroupForOfficeInfoActions.getOfficeInfoSuccess, (state, action) => {
+        return {
+          ...state,
+          info: action.payload.info,
+        };
+      });
   },
 });
-
-const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
-  switch (statusCode) {
-    case 401:
-      dispatch(AppModule.actions.unauthorized());
-      break;
-
-    default:
-      break;
-  }
-};
-
-// スリープ処理
-const _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
 // トイレの満席チェック
 function checkNoVacantForRestroom(rooms: Restroom[], gender: string) {
@@ -94,65 +60,3 @@ function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
   const filteredByUsing = filteredByGender.filter((room) => room.isUsing === false);
   return filteredByUsing.length;
 }
-
-export class AsyncActionsOfficeInfo {
-  static getRestroomUsageAction = (sleepMs: number = 0) => {
-    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
-      try {
-        const startTime = Date.now();
-        const res = await fetch(`${API_URL}/restrooms`, {
-          method: 'GET',
-          headers: AUTH_REQUEST_HEADERS,
-        });
-        const lowestWaitTime = sleepMs - (Date.now() - startTime);
-        if (Math.sign(lowestWaitTime) === 1) {
-          await _sleep(lowestWaitTime);
-        }
-
-        responseStatusCheck(dispatch, res.status);
-
-        if (res.ok === false) {
-          throw new Error();
-        }
-        const json = await res.json();
-        dispatch(slice.actions.getRestroomUsageSuccess(json));
-        return new ApiResponse();
-      } catch (error) {
-        dispatch(slice.actions.failRequest());
-        return new ApiResponse(null, true);
-      }
-    };
-  };
-
-  static getOfficeInfoAction = (sleepMs: number = 0) => {
-    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(slice.actions.startApiRequest());
-      try {
-        const startTime = Date.now();
-        const res = await fetch(`${API_URL}/officeInfo`, {
-          method: 'GET',
-          headers: AUTH_REQUEST_HEADERS,
-        });
-        const lowestWaitTime = sleepMs - (Date.now() - startTime);
-        if (Math.sign(lowestWaitTime) === 1) {
-          await _sleep(lowestWaitTime);
-        }
-
-        responseStatusCheck(dispatch, res.status);
-
-        if (res.ok === false) {
-          throw new Error();
-        }
-        const json = await res.json();
-        dispatch(slice.actions.getOfficeInfoSuccess(json));
-        return new ApiResponse();
-      } catch (error) {
-        dispatch(slice.actions.failRequest());
-        return new ApiResponse(null, true);
-      }
-    };
-  };
-}
-
-export default slice;

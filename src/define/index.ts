@@ -27,3 +27,4 @@ export const HEALTH_CHECK_INTERVAL_MS: number = parseInt(process.env.REACT_APP_H
 export const LEAVING_TIME_THRESHOLD_M: number = parseInt(process.env.REACT_APP_LEAVING_TIME_THRESHOLD_M || '10');
 export const CALENDAR_URL: string = process.env.REACT_APP_CALENDAR_URL || '';
 export const EMAIL_DOMAIN: string = process.env.REACT_APP_EMAIL_DOMAIN || '';
+export const API_REQUEST_LOWEST_WAIT_TIME_MS = 350;
