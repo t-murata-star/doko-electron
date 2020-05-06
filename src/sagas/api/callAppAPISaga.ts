@@ -15,12 +15,12 @@ export const callAppAPI = {
     return response;
   },
 
-  getNotification: function* () {
-    const response: ApiResponse = yield callAPI(appAPI.getNotification);
+  getAppInfo: function* () {
+    const response: ApiResponse = yield callAPI(appAPI.getAppInfo);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(appActions.getNotificationSuccess(response.getPayload()));
+      yield put(appActions.getAppInfoSuccess(response.getPayload()));
     }
     return response;
   },

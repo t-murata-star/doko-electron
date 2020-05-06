@@ -70,7 +70,7 @@ export class UserStatusInfo {
   s13 = { status: '在席 (離席中)', color: '#333333' };
 }
 
-export class Notification {
+export class AppInfo {
   content: string = '';
   latestAppVersion: string = '';
 }

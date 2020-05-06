@@ -10,8 +10,8 @@ export const appAPI = {
     });
   },
 
-  getNotification: async () => {
-    return await fetch(`${API_URL}/notification`, {
+  getAppInfo: async () => {
+    return await fetch(`${API_URL}/appInfo`, {
       method: 'GET',
       headers: AUTH_REQUEST_HEADERS,
     });

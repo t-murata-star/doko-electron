@@ -43,9 +43,9 @@ const app = {
       AUTH_REQUEST_HEADERS.Authorization = 'Bearer ' + loginResponse.getPayload().token;
 
       // お知らせチェック
-      const getNotificationResponse: ApiResponse = yield call(callAppAPI.getNotification);
-      const updateNotificationMessage = `新しい${APP_NAME}が公開されました。\nVersion ${
-        getNotificationResponse.getPayload().latestAppVersion
+      const getAppInfoResponse: ApiResponse = yield call(callAppAPI.getAppInfo);
+      const updateAppInfoMessage = `新しい${APP_NAME}が公開されました。\nVersion ${
+        getAppInfoResponse.getPayload().latestAppVersion
       }\nお手数ですがアップデートをお願いします。`;
 
       /**
@@ -53,8 +53,8 @@ const app = {
        * 実行しているアプリケーションのバージョンが最新ではない場合、
        * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
        */
-      if (getNotificationResponse.getPayload().latestAppVersion !== APP_VERSION) {
-        showMessageBoxSync(updateNotificationMessage);
+      if (getAppInfoResponse.getPayload().latestAppVersion !== APP_VERSION) {
+        showMessageBoxSync(updateAppInfoMessage);
         remote.shell.openExternal(APP_DOWNLOAD_URL);
         closeApp();
         return;
@@ -98,7 +98,7 @@ const app = {
        * 一度だけお知らせを表示する。
        */
       if (electronStore.get('appVersion') !== APP_VERSION) {
-        showMessageBoxSync(getNotificationResponse.getPayload().content);
+        showMessageBoxSync(getAppInfoResponse.getPayload().content);
         electronStore.set('appVersion', APP_VERSION);
       }
 

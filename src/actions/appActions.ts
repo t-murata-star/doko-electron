@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Notification } from '../define/model';
+import { AppInfo } from '../define/model';
 import { Color } from '@material-ui/lab/Alert';
 
 export const appActions = {
@@ -15,10 +15,10 @@ export const appActions = {
     };
   }),
   unauthorized: createAction(`app/unauthorized`),
-  getNotificationSuccess: createAction(`app/getNotificationSuccess`, (notification: Notification) => {
+  getAppInfoSuccess: createAction(`app/getAppInfoSuccess`, (appInfo: AppInfo) => {
     return {
       payload: {
-        notification,
+        appInfo,
       },
     };
   }),

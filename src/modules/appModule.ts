@@ -1,6 +1,6 @@
 import { Color } from '@material-ui/lab/Alert';
 import { createSlice } from '@reduxjs/toolkit';
-import { Notification } from '../define/model';
+import { AppInfo } from '../define/model';
 import { appActions } from '../actions/appActions';
 
 interface Snackbar {
@@ -17,7 +17,7 @@ class _initialState {
   isFetching: boolean = false;
   isError: boolean = false;
   myUserID: number = -1;
-  notification: Notification = new Notification();
+  appInfo: AppInfo = new AppInfo();
   activeIndex: number = 0;
   snackbar: Snackbar = {
     enabled: false,
@@ -79,10 +79,10 @@ export const appSlice = createSlice({
           ...state,
         };
       })
-      .addCase(appActions.getNotificationSuccess, (state, action) => {
+      .addCase(appActions.getAppInfoSuccess, (state, action) => {
         return {
           ...state,
-          notification: action.payload.notification,
+          appInfo: action.payload.appInfo,
         };
       })
       .addCase(appActions.setMyUserId, (state, action) => {
