@@ -42,7 +42,7 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
     const appState = this.props.state.appState;
     const myUserID = appState.myUserID;
     const userInfo = getUserInfo(userList, myUserID);
-    const isFetching = this.props.state.appState.isFetching;
+    const isShowLoadingPopup = this.props.state.appState.isShowLoadingPopup;
 
     return (
       <div className='menu-button-group-for-user-list'>
@@ -52,7 +52,7 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
               variant='outlined'
               color='default'
               onClick={this.reload}
-              disabled={isFetching === true}
+              disabled={isShowLoadingPopup === true}
               fullWidth
               style={{ boxShadow: 'none' }}>
               <FontAwesomeIcon icon='sync' />

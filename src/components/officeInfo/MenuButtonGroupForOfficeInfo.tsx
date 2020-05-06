@@ -17,7 +17,7 @@ class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
   };
 
   render() {
-    const isFetching = this.props.state.appState.isFetching;
+    const isShowLoadingPopup = this.props.state.appState.isShowLoadingPopup;
 
     return (
       <div className='menu-button-group-for-office-info'>
@@ -25,7 +25,7 @@ class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
           variant='outlined'
           color='default'
           onClick={this.reload}
-          disabled={isFetching === true}
+          disabled={isShowLoadingPopup === true}
           fullWidth
           style={{ boxShadow: 'none' }}>
           <FontAwesomeIcon icon='sync' />
