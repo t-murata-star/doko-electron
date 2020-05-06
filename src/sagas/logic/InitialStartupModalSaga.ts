@@ -1,6 +1,6 @@
 import { takeEvery, call, put, select } from 'redux-saga/effects';
 import { callUserListAPI } from '../api/callUserListAPISaga';
-import { ApiResponse, UserInfoForUpdate } from '../../define/model';
+import { ApiResponse, UserInfoForUpdate, UserInfo } from '../../define/model';
 // import { APP_VERSION, USER_STATUS_INFO } from '../../define';
 import { getUserInfo } from '../../components/common/utils';
 import { APP_VERSION, USER_STATUS_INFO } from '../../define';
@@ -17,11 +17,11 @@ const initialStartupModal = {
     try {
       yield put(appActions.isShowLoadingPopup(true));
       const state: RootState = yield select();
-      yield put(initialStartupModalActions.changeUserInfo('version', APP_VERSION));
-      yield put(initialStartupModalActions.changeUserInfo('status', USER_STATUS_INFO.s01.status));
 
-      const userInfo = state.initialStartupModalState.userInfo;
-      const addUserResponse: ApiResponse = yield call(callUserListAPI.addUser, userInfo);
+      const updatedUserInfo: UserInfo = { ...state.initialStartupModalState.userInfo };
+      updatedUserInfo.version = APP_VERSION;
+      updatedUserInfo.status = USER_STATUS_INFO.s01.status;
+      const addUserResponse: ApiResponse = yield call(callUserListAPI.addUser, updatedUserInfo);
       if (addUserResponse.getIsError()) {
         yield put(initialStartupModalActions.disableSubmitButton(false));
         return;
