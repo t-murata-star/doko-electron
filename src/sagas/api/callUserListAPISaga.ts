@@ -1,11 +1,11 @@
 import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
-import { callAPI, getUserInfo, showMessageBoxSync } from '../../components/common/functions';
-import { put, delay, takeEvery } from 'redux-saga/effects';
+import { callAPI, getUserInfo, showMessageBoxSync, showSnackBar } from '../../components/common/functions';
+import { put, delay } from 'redux-saga/effects';
 import { UserListAPI } from '../../api/userListAPI';
-import { userListSlice } from '../../modules/userInfo/userListModule';
-import { appSlice } from '../../modules/appModule';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M } from '../../define';
-import { initialStartupModalSlice } from '../../modules/initialStartupModalModule';
+import { appActions } from '../../actions/appActions';
+import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
+import { userListActions } from '../../actions/userInfo/userListActions';
 
 /**
  * 全ユーザの退社チェック
@@ -34,32 +34,29 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
 
 export const callUserListAPI = {
   deleteUser: function* (userID: number) {
-    yield put(userListSlice.actions.startApiRequest());
     const response: ApiResponse = yield callAPI(UserListAPI.deleteUser, userID);
     if (response.getIsError()) {
-      yield put(userListSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(userListSlice.actions.deleteUserSuccess());
+      yield put(userListActions.deleteUserSuccess());
     }
     return response;
   },
 
   addUser: function* (userInfo: UserInfo) {
-    yield put(userListSlice.actions.startApiRequest());
-    delete userInfo.id;
-    const response: ApiResponse = yield callAPI(UserListAPI.addUser, userInfo);
+    const _userInfo = { ...userInfo };
+    delete _userInfo.id;
+
+    const response: ApiResponse = yield callAPI(UserListAPI.addUser, _userInfo);
     if (response.getIsError()) {
-      yield put(userListSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(userListSlice.actions.addUserSuccess());
+      yield put(userListActions.addUserSuccess());
     }
-    const userID = response.getPayload().id;
-    yield put(appSlice.actions.setMyUserId(userID));
     return response;
   },
 
   getUserList: function* (myUserID: number) {
-    yield put(userListSlice.actions.startApiRequest());
     const startTime = Date.now();
     const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
 
@@ -69,9 +66,9 @@ export const callUserListAPI = {
     }
 
     if (response.getIsError()) {
-      yield put(userListSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(userListSlice.actions.getUserListSuccess(response.getPayload()));
+      yield put(userListActions.getUserListSuccess(response.getPayload()));
     }
 
     updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
@@ -80,7 +77,6 @@ export const callUserListAPI = {
   },
 
   getUserListWithMyUserIDExists: function* (myUserID: number) {
-    yield put(userListSlice.actions.startApiRequest());
     const startTime = Date.now();
     const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
 
@@ -90,9 +86,9 @@ export const callUserListAPI = {
     }
 
     if (response.getIsError()) {
-      yield put(userListSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(userListSlice.actions.getUserListSuccess(response.getPayload()));
+      yield put(userListActions.getUserListSuccess(response.getPayload()));
     }
 
     updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
@@ -104,25 +100,20 @@ export const callUserListAPI = {
     const userInfo = getUserInfo(response.getPayload(), myUserID);
     if (userInfo === null) {
       showMessageBoxSync('ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。');
-      yield put(appSlice.actions.setMyUserId(-1));
-      yield put(initialStartupModalSlice.actions.initializeState());
-      yield put(initialStartupModalSlice.actions.showModal(true));
+      yield put(appActions.setMyUserId(-1));
+      yield put(initialStartupModalActions.initializeState());
+      yield put(initialStartupModalActions.showModal(true));
     }
     return response;
   },
 
   updateUserInfo: function* (userInfo: UserInfoForUpdate, userID: number) {
-    yield put(userListSlice.actions.startApiRequest());
     const response: ApiResponse = yield callAPI(UserListAPI.updateUserInfo, userInfo, userID);
     if (response.getIsError()) {
-      yield put(userListSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(userListSlice.actions.updateUserInfoSuccess());
+      yield put(userListActions.updateUserInfoSuccess());
     }
     return response;
   },
 };
-
-export const callUserListAPISaga = Object.entries(callUserListAPI).map((value: [string, any]) => {
-  return takeEvery(`${userListSlice.name}/api/${value[0]}`, value[1]);
-});

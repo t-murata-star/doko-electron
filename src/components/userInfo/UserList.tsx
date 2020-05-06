@@ -4,13 +4,13 @@ import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
 import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS_INFO } from '../../define';
-import { userEditModalSlice } from '../../modules/userInfo/userEditModalModule';
-import { userListSlice, userListActionsAsyncLogic } from '../../modules/userInfo/userListModule';
+import { userListActionsAsyncLogic, userListActions } from '../../actions/userInfo/userListActions';
 import { getUserInfo } from '../common/functions';
 import Inoperable from '../Inoperable';
 import './UserList.css';
 import { Props } from '../../define/model';
 import MenuButtonGroupForUserList from './MenuButtonGroupForUserList';
+import { userEditModalActions } from '../../actions/userInfo/userEditModalActions';
 
 const { remote } = window.require('electron');
 
@@ -40,7 +40,7 @@ class UserList extends React.Component<Props, any> {
     }
 
     // 親ウインドウを操作不可にする
-    dispatch(userListSlice.actions.inoperable(true));
+    dispatch(userListActions.inoperable(true));
 
     const encodedEmail = encodeURI(email);
     // カレンダー表示のための子ウインドウを表示
@@ -59,7 +59,7 @@ class UserList extends React.Component<Props, any> {
 
     calendarWindow.on('closed', () => {
       calendarWindow = null;
-      dispatch(userListSlice.actions.inoperable(false));
+      dispatch(userListActions.inoperable(false));
     });
   };
 
@@ -106,9 +106,9 @@ class UserList extends React.Component<Props, any> {
       return;
     }
 
-    dispatch(userEditModalSlice.actions.setUserInfo(userInfo));
-    dispatch(userEditModalSlice.actions.disableSubmitButton());
-    dispatch(userEditModalSlice.actions.showUserEditModal(selectedUserId));
+    dispatch(userEditModalActions.setUserInfo(userInfo));
+    dispatch(userEditModalActions.disableSubmitButton());
+    dispatch(userEditModalActions.showUserEditModal(selectedUserId));
   };
 
   _rowFormatter = (row: Tabulator.RowComponent) => {
@@ -138,8 +138,6 @@ class UserList extends React.Component<Props, any> {
     const { dispatch } = this.props;
     dispatch(userListActionsAsyncLogic.updateUserInfoOrder(row));
   };
-
-  _sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
   render() {
     const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));

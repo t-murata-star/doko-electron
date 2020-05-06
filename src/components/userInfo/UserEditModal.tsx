@@ -3,7 +3,7 @@ import React from 'react';
 import { Modal, Backdrop } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Props } from '../../define/model';
-import { userEditModalSlice, userEditModalActionsAsyncLogic } from '../../modules/userInfo/userEditModalModule';
+import { userEditModalActionsAsyncLogic, userEditModalActions } from '../../actions/userInfo/userEditModalActions';
 import './UserEditModal.css';
 import { Container, Form, Col } from 'react-bootstrap';
 import { STATUS_LIST } from '../../define';
@@ -11,32 +11,23 @@ import { STATUS_LIST } from '../../define';
 class UserEditModal extends React.Component<Props, any> {
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(userEditModalSlice.actions.closeUserEditModal());
-  };
-
-  _updateUserInfo = async () => {
-    const { dispatch } = this.props;
-    dispatch(userEditModalActionsAsyncLogic.updateUserInfo());
+    dispatch(userEditModalActions.closeUserEditModal());
   };
 
   onUserInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
-    dispatch(
-      userEditModalSlice.actions.changeUserInfo({
-        targetName: event.target.name,
-        targetValue: event.target.value,
-      })
-    );
-    if (this.props.state.userEditModalState.submitButtonDisabled) {
-      dispatch(userEditModalSlice.actions.enableSubmitButton());
+    dispatch(userEditModalActions.changeUserInfo(event.target.name, event.target.value));
+    if (this.props.state.userEditModalState.disabled) {
+      dispatch(userEditModalActions.enableSubmitButton());
     }
   };
 
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // 画面がリロードされるのを防ぐ
     event.preventDefault();
     const { dispatch } = this.props;
-    dispatch(userEditModalSlice.actions.disableSubmitButton());
-    this._updateUserInfo();
+    dispatch(userEditModalActions.disableSubmitButton());
+    dispatch(userEditModalActionsAsyncLogic.updateUserInfo());
   };
 
   deleteUser = async () => {
@@ -46,8 +37,8 @@ class UserEditModal extends React.Component<Props, any> {
 
   inputClear = () => {
     const { dispatch } = this.props;
-    dispatch(userEditModalSlice.actions.inputClear());
-    dispatch(userEditModalSlice.actions.enableSubmitButton());
+    dispatch(userEditModalActions.inputClear());
+    dispatch(userEditModalActions.enableSubmitButton());
   };
 
   render() {
@@ -189,7 +180,7 @@ class UserEditModal extends React.Component<Props, any> {
                   variant='contained'
                   color='primary'
                   type='submit'
-                  disabled={this.props.state.userEditModalState.submitButtonDisabled}
+                  disabled={this.props.state.userEditModalState.disabled}
                   style={{ boxShadow: 'none' }}
                   className='user-edit-modal-base-button'>
                   登録

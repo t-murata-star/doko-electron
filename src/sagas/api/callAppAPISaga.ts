@@ -1,40 +1,46 @@
-import { ApiResponse, UserInfo } from '../../define/model';
-import { callAPI, callAPIWithoutErrorSnackBar } from '../../components/common/functions';
-import { appSlice } from '../../modules/appModule';
-import { put, takeEvery } from 'redux-saga/effects';
+import { ApiResponse } from '../../define/model';
+import { callAPI, getUserInfo, showSnackBar } from '../../components/common/functions';
+import { put, select } from 'redux-saga/effects';
 import { appAPI } from '../../api/appAPI';
+import { appActions } from '../../actions/appActions';
 
 export const callAppAPI = {
   login: function* () {
-    yield put(appSlice.actions.startApiRequest());
     const response: ApiResponse = yield callAPI(appAPI.login);
     if (response.getIsError()) {
-      yield put(appSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(appSlice.actions.loginSuccess(response));
+      yield put(appActions.loginSuccess(response.getPayload()));
     }
     return response;
   },
 
   getNotification: function* () {
-    const response = yield callAPI(appAPI.getNotification);
+    const response: ApiResponse = yield callAPI(appAPI.getNotification);
     if (response.getIsError()) {
-      yield put(appSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(appSlice.actions.getNotificationSuccess(response));
+      yield put(appActions.getNotificationSuccess(response.getPayload()));
     }
     return response;
   },
 
-  sendHealthCheck: function* (userInfo: UserInfo, userID: number) {
-    const response: ApiResponse = yield callAPIWithoutErrorSnackBar(appAPI.sendHealthCheck, userInfo, userID);
+  sendHealthCheck: function* () {
+    const state = yield select();
+    const myUserID = state.appState.myUserID;
+    const userList = state.userListState.userList;
+    const userInfo = getUserInfo(userList, myUserID);
+    if (userInfo === null) {
+      return;
+    }
+
+    const updatedUserInfo: any = {};
+    updatedUserInfo.healthCheckAt = '';
+
+    const response: ApiResponse = yield callAPI(appAPI.sendHealthCheck, updatedUserInfo, myUserID);
     if (!response.getIsError()) {
       console.log('Send healthCheck.');
     }
     return response;
   },
 };
-
-export const callAppAPISaga = Object.entries(callAppAPI).map((value: [string, any]) => {
-  return takeEvery(`${appSlice.name}/api/${value[0]}`, value[1]);
-});

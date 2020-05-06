@@ -1,10 +1,10 @@
 import { Color } from '@material-ui/lab/Alert';
-import { Action, createSlice, Dispatch, createAction } from '@reduxjs/toolkit';
-import { API_URL, AUTH_REQUEST_HEADERS, LOGIN_REQUEST_HEADERS, LOGIN_USER } from '../define';
-import { ApiResponse, Notification, UserInfo } from '../define/model';
+import { createSlice } from '@reduxjs/toolkit';
+import { Notification } from '../define/model';
+import { appActions } from '../actions/appActions';
 
 interface Snackbar {
-  enabled: false;
+  enabled: boolean;
   severity: Color;
   message: string;
   timeoutMs: number | null;
@@ -26,189 +26,122 @@ class _initialState {
     timeoutMs: 5000,
     queueMessages: new Array<string>(),
   };
+  isShowLoadingPopup: boolean = false;
 }
 
 // createSlice() で actions と reducers を一気に生成
 export const appSlice = createSlice({
   name: 'app',
   initialState: new _initialState(),
-  reducers: {
-    startApiRequest: (state) => {
-      return {
-        ...state,
-        isFetching: true,
-      };
-    },
-    loginSuccess: (state, action) => {
-      return {
-        ...state,
-        token: action.payload.token,
-        isAuthenticated: true,
-        isFetching: false,
-        isError: false,
-      };
-    },
-    failRequest: (state) => {
-      return {
-        ...state,
-        isFetching: false,
-        isError: true,
-      };
-    },
-    unauthorized: (state) => {
-      /**
-       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
-       * 画面をリロードして認証トークンを再取得する
-       */
-      window.location.reload();
-      return {
-        ...state,
-      };
-    },
-    getNotificationSuccess: (state, action) => {
-      return {
-        ...state,
-        isFetching: false,
-        notification: action.payload,
-      };
-    },
-    setMyUserId: (state, action) => {
-      return {
-        ...state,
-        myUserID: action.payload,
-      };
-    },
-    setFetchingStatus: (state, action) => {
-      return {
-        ...state,
-        isFetching: action.payload,
-      };
-    },
-    setActiveIndex: (state, action) => {
-      return {
-        ...state,
-        activeIndex: action.payload,
-      };
-    },
-    changeEnabledSnackbar: (state, action) => {
-      return {
-        ...state,
-        snackbar: {
-          ...state.snackbar,
-          enabled: action.payload.enabled,
-          severity: action.payload.severity ? action.payload.severity : state.snackbar.severity,
-          message: action.payload.message ? action.payload.message : state.snackbar.message,
-          timeoutMs: action.payload.timeoutMs !== null ? action.payload.timeoutMs : null,
-        },
-      };
-    },
-    enqueueSnackbarMessages: (state, action) => {
-      const queueMessages = [...state.snackbar.queueMessages];
-      queueMessages.push(action.payload);
-      return {
-        ...state,
-        snackbar: {
-          ...state.snackbar,
-          queueMessages,
-        },
-      };
-    },
-    dequeueSnackbarMessages: (state) => {
-      const queueMessages = [...state.snackbar.queueMessages];
-      queueMessages.shift();
-      return {
-        ...state,
-        snackbar: {
-          ...state.snackbar,
-          queueMessages,
-        },
-      };
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(appActions.startFetching, (state) => {
+        return {
+          ...state,
+          isFetching: true,
+        };
+      })
+      .addCase(appActions.endFetching, (state) => {
+        return {
+          ...state,
+          isFetching: false,
+        };
+      })
+      .addCase(appActions.fetchingSuccess, (state) => {
+        return {
+          ...state,
+          isError: false,
+        };
+      })
+      .addCase(appActions.failRequest, (state) => {
+        return {
+          ...state,
+          isFetching: false,
+          isError: true,
+        };
+      })
+      .addCase(appActions.loginSuccess, (state, action) => {
+        return {
+          ...state,
+          token: action.payload.token,
+          isAuthenticated: true,
+          isError: false,
+        };
+      })
+      .addCase(appActions.unauthorized, (state) => {
+        /**
+         * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
+         * 画面をリロードして認証トークンを再取得する
+         */
+        window.location.reload();
+        return {
+          ...state,
+        };
+      })
+      .addCase(appActions.getNotificationSuccess, (state, action) => {
+        return {
+          ...state,
+          notification: action.payload.notification,
+        };
+      })
+      .addCase(appActions.setMyUserId, (state, action) => {
+        return {
+          ...state,
+          myUserID: action.payload.myUserID,
+        };
+      })
+      .addCase(appActions.setFetchingStatus, (state, action) => {
+        return {
+          ...state,
+          isFetching: action.payload.isFetching,
+        };
+      })
+      .addCase(appActions.setActiveIndex, (state, action) => {
+        return {
+          ...state,
+          activeIndex: action.payload.activeIndex,
+        };
+      })
+      .addCase(appActions.changeEnabledSnackbar, (state, action) => {
+        return {
+          ...state,
+          snackbar: {
+            ...state.snackbar,
+            enabled: action.payload.enabled,
+            severity: action.payload.severity ? action.payload.severity : state.snackbar.severity,
+            message: action.payload.message ? action.payload.message : state.snackbar.message,
+            timeoutMs: action.payload.timeoutMs !== null ? action.payload.timeoutMs : null,
+          },
+        };
+      })
+      .addCase(appActions.enqueueSnackbarMessages, (state, action) => {
+        const queueMessages = [...state.snackbar.queueMessages];
+        queueMessages.push(action.payload.message);
+        return {
+          ...state,
+          snackbar: {
+            ...state.snackbar,
+            queueMessages,
+          },
+        };
+      })
+      .addCase(appActions.dequeueSnackbarMessages, (state) => {
+        const queueMessages = [...state.snackbar.queueMessages];
+        queueMessages.shift();
+        return {
+          ...state,
+          snackbar: {
+            ...state.snackbar,
+            queueMessages,
+          },
+        };
+      })
+      .addCase(appActions.isShowLoadingPopup, (state, action) => {
+        return {
+          ...state,
+          isShowLoadingPopup: action.payload.isShowLoadingPopup,
+        };
+      });
   },
 });
-
-const responseStatusCheck = (dispatch: Dispatch<Action<any>>, statusCode: number) => {
-  switch (statusCode) {
-    case 401:
-      dispatch(appSlice.actions.unauthorized());
-      break;
-
-    default:
-      break;
-  }
-};
-
-export const appActionsAsyncLogic = {
-  login: createAction(`${appSlice.name}/logic/login`),
-
-  loginAction: () => {
-    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      dispatch(appSlice.actions.startApiRequest());
-      try {
-        const res = await fetch(`${API_URL}/auth/login`, {
-          method: 'POST',
-          headers: LOGIN_REQUEST_HEADERS,
-          body: JSON.stringify(LOGIN_USER),
-        });
-
-        if (res.ok === false) {
-          throw new Error();
-        }
-        const json = await res.json();
-        dispatch(appSlice.actions.loginSuccess(json));
-        return new ApiResponse();
-      } catch (error) {
-        dispatch(appSlice.actions.failRequest());
-        return new ApiResponse(null, true);
-      }
-    };
-  },
-
-  getNotificationAction: () => {
-    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      try {
-        const res = await fetch(`${API_URL}/notification`, {
-          method: 'GET',
-          headers: AUTH_REQUEST_HEADERS,
-        });
-
-        responseStatusCheck(dispatch, res.status);
-
-        if (res.ok === false) {
-          throw new Error();
-        }
-        const json = await res.json();
-        dispatch(appSlice.actions.getNotificationSuccess(json));
-        return new ApiResponse();
-      } catch (error) {
-        dispatch(appSlice.actions.failRequest());
-        return new ApiResponse(null, true);
-      }
-    };
-  },
-
-  sendHealthCheckAction: (userInfo: UserInfo, userID: number) => {
-    return async (dispatch: Dispatch<Action<any>>): Promise<ApiResponse> => {
-      const body = { ...userInfo };
-      const res = await fetch(`${API_URL}/userList/${userID}`, {
-        method: 'PATCH',
-        headers: AUTH_REQUEST_HEADERS,
-        body: JSON.stringify(body),
-      });
-
-      responseStatusCheck(dispatch, res.status);
-
-      if (res.ok === false) {
-        return new ApiResponse(null, true);
-      }
-      console.log('Send healthCheck.');
-      return new ApiResponse();
-    };
-  },
-};
-
-export const appActionsAsyncAPI = {
-  login: createAction(`${appSlice.name}/api/login`),
-  getNotification: createAction(`${appSlice.name}/api/getNotification`),
-  sendHealthCheck: createAction(`${appSlice.name}/api/sendHealthCheck`),
-};

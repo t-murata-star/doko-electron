@@ -5,25 +5,17 @@ import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
 import { connect } from 'react-redux';
-import { USER_STATUS_INFO } from '../define';
-import { Props, UserInfoForUpdate } from '../define/model';
-import { appSlice, appActionsAsyncLogic } from '../modules/appModule';
-import { userListActionsAsyncLogic } from '../modules/userInfo/userListModule';
+import { Props } from '../define/model';
+import { appActionsAsyncLogic } from '../actions/appActions';
 import './App.scss';
-import {
-  getUserInfo,
-  onSnackBarClose,
-  onSnackBarExited,
-  sendHealthCheck,
-  getAllOfficeInfo,
-  checkResponseError,
-} from './common/functions';
+import { onSnackBarClose, onSnackBarExited } from './common/functions';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';
 import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
 import UserList from './userInfo/UserList';
+import { electronActionsAsyncLogic } from '../actions/electronActions';
 
 const { remote, ipcRenderer } = window.require('electron');
 
@@ -44,85 +36,23 @@ class App extends React.Component<Props, any> {
   // 状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
-      return;
-    }
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo.name = userInfo.name;
-    updatedUserInfo.status = USER_STATUS_INFO.s13.status;
-    dispatch(userListActionsAsyncLogic.updateUserInfoAction(updatedUserInfo, myUserID));
+    dispatch(electronActionsAsyncLogic.electronLockScreenEvent());
   });
 
   // 状態を「在席」に更新する
   electronUnlockScreenEvent = ipcRenderer.on('electronUnlockScreenEvent', () => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
-      return;
-    }
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo.name = userInfo.name;
-    updatedUserInfo.status = USER_STATUS_INFO.s01.status;
-    dispatch(userListActionsAsyncLogic.updateUserInfoAction(updatedUserInfo, myUserID));
-
-    sendHealthCheck();
+    dispatch(electronActionsAsyncLogic.electronUnlockScreenEvent());
   });
 
   closeApp = ipcRenderer.on('closeApp', async () => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
-    if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
-      this._closeApp();
-      return;
-    }
-
-    const updatedUserInfo: UserInfoForUpdate = {};
-    updatedUserInfo.status = USER_STATUS_INFO.s02.status;
-    updatedUserInfo.name = userInfo.name;
-    await dispatch(userListActionsAsyncLogic.updateUserInfoAction(updatedUserInfo, myUserID));
-    this._closeApp();
+    dispatch(electronActionsAsyncLogic.closeApp());
   });
 
   handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    dispatch(appSlice.actions.setActiveIndex(activeIndex));
-
-    // 同じタブを複数押下した場合
-    if (this.props.state.appState.activeIndex === activeIndex) {
-      return;
-    }
-
-    switch (activeIndex) {
-      // 社内情報タブを選択
-      case 0:
-        checkResponseError(dispatch(userListActionsAsyncLogic.getUserListAction(myUserID, 350)));
-        break;
-
-      // 社員情報タブを選択
-      case 1:
-        getAllOfficeInfo();
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  _closeApp = () => {
-    if (remote.getCurrentWindow().isDestroyed() === false) {
-      remote.getCurrentWindow().destroy();
-      // ipcRenderer.send('closeApp');
-    }
+    dispatch(appActionsAsyncLogic.clickTabbar(activeIndex));
   };
 
   render() {
@@ -130,11 +60,7 @@ class App extends React.Component<Props, any> {
     const appState = this.props.state.appState;
     return (
       <div>
-        <Loading
-          isAppStateProcessing={this.props.state.appState.isFetching}
-          isUserListProcessing={this.props.state.userListState.isFetching}
-          officeInfoProcessing={this.props.state.officeInfoState.isFetching}
-        />
+        <Loading isShowLoadingPopup={this.props.state.appState.isShowLoadingPopup} />
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           autoHideDuration={appState.snackbar.timeoutMs}

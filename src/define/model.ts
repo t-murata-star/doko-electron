@@ -81,3 +81,8 @@ export class Restroom {
   place: string = '';
   isUsing: boolean = false;
 }
+
+export class Info {
+  tempreture: number = -1;
+  humidity: number = -1;
+}

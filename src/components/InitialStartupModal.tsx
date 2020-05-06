@@ -3,16 +3,14 @@ import React from 'react';
 import { Button, Col, Container, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { UserInfo, Props } from '../define/model';
-import { initialStartupModalSlice, initialStartupModalActionsAsyncLogic } from '../modules/initialStartupModalModule';
-import { userListActionsAsyncLogic } from '../modules/userInfo/userListModule';
-import { checkResponseError } from './common/functions';
+import { initialStartupModalActionsAsyncLogic, initialStartupModalActions } from '../actions/initialStartupModalActions';
 import './InitialStartupModal.css';
 import { Backdrop, Fade, Modal, TextField } from '@material-ui/core';
 
 class InitialStartupModal extends React.Component<Props, any> {
   closeModal = () => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModalSlice.actions.showModal(false));
+    dispatch(initialStartupModalActions.showModal(false));
   };
 
   addUser = () => {
@@ -27,31 +25,26 @@ class InitialStartupModal extends React.Component<Props, any> {
 
   onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
-    dispatch(
-      initialStartupModalSlice.actions.changeUserInfo({
-        targetName: event.target.name,
-        targetValue: event.target.value,
-      })
-    );
-    if (event.target.value.length > 0 && this.props.state.initialStartupModalState.submitButtonDisabled === true) {
-      dispatch(initialStartupModalSlice.actions.disableSubmitButton(false));
+    dispatch(initialStartupModalActions.changeUserInfo(event.target.name, event.target.value));
+    if (event.target.value.length > 0 && this.props.state.initialStartupModalState.disabled === true) {
+      dispatch(initialStartupModalActions.disableSubmitButton(false));
       return;
     }
-    if (event.target.value.length === 0 && this.props.state.initialStartupModalState.submitButtonDisabled === false) {
-      dispatch(initialStartupModalSlice.actions.disableSubmitButton(true));
+    if (event.target.value.length === 0 && this.props.state.initialStartupModalState.disabled === false) {
+      dispatch(initialStartupModalActions.disableSubmitButton(true));
       return;
     }
   };
 
   onUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModalSlice.actions.changeUserId(parseInt(event.target.value)));
-    dispatch(initialStartupModalSlice.actions.disableSubmitButton(false));
+    dispatch(initialStartupModalActions.changeUserId(parseInt(event.target.value)));
+    dispatch(initialStartupModalActions.disableSubmitButton(false));
   };
 
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModalSlice.actions.disableSubmitButton(true));
+    dispatch(initialStartupModalActions.disableSubmitButton(true));
     event.preventDefault();
 
     if (this.props.state.initialStartupModalState.isChangeUser) {
@@ -61,20 +54,16 @@ class InitialStartupModal extends React.Component<Props, any> {
     }
   };
 
-  changeUserInput = () => {
+  selectFromExistingUsers = () => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModalSlice.actions.initializeField());
-    dispatch(initialStartupModalSlice.actions.disableSubmitButton(true));
-    dispatch(initialStartupModalSlice.actions.changeSubmitMode(true));
-    // ユーザ一覧は表示されていないため退社チェックは実行されなくても問題ない
-    checkResponseError(dispatch(userListActionsAsyncLogic.getUserListAction(-1, 350, false)));
+    dispatch(initialStartupModalActionsAsyncLogic.selectFromExistingUsers());
   };
 
   registUserInput = () => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModalSlice.actions.initializeField());
-    dispatch(initialStartupModalSlice.actions.disableSubmitButton(true));
-    dispatch(initialStartupModalSlice.actions.changeSubmitMode(false));
+    dispatch(initialStartupModalActions.initializeField());
+    dispatch(initialStartupModalActions.disableSubmitButton(true));
+    dispatch(initialStartupModalActions.changeSubmitMode(false));
   };
 
   render() {
@@ -159,7 +148,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                         />
                         <Form.Text>
                           <span>登録済みの場合は</span>
-                          <Button variant='link' className='userChange' onClick={this.changeUserInput}>
+                          <Button variant='link' className='userChange' onClick={this.selectFromExistingUsers}>
                             こちら
                           </Button>
                         </Form.Text>
@@ -174,7 +163,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                 type='submit'
                 variant='contained'
                 color='primary'
-                disabled={this.props.state.initialStartupModalState.submitButtonDisabled}
+                disabled={this.props.state.initialStartupModalState.disabled}
                 style={{ float: 'right', boxShadow: 'none' }}
                 className='initial-startup-modal-base-button'>
                 登録

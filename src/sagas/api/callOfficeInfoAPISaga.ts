@@ -1,13 +1,12 @@
 import { ApiResponse } from '../../define/model';
-import { callAPI } from '../../components/common/functions';
-import { put, delay, takeEvery } from 'redux-saga/effects';
+import { callAPI, showSnackBar } from '../../components/common/functions';
+import { put, delay } from 'redux-saga/effects';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS } from '../../define';
-import { officeInfoSlice } from '../../modules/officeInfo/officeInfoModule';
 import { officeInfoAPI } from '../../api/officeInfoAPI';
+import { menuButtonGroupForOfficeInfoActions } from '../../actions/officeInfo/menuButtonGroupForOfficeInfoActions';
 
 export const callOfficeInfoAPI = {
   getRestroomUsage: function* () {
-    yield put(officeInfoSlice.actions.startApiRequest());
     const startTime = Date.now();
     const response: ApiResponse = yield callAPI(officeInfoAPI.getRestroomUsage);
 
@@ -17,15 +16,14 @@ export const callOfficeInfoAPI = {
     }
 
     if (response.getIsError()) {
-      yield put(officeInfoSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(officeInfoSlice.actions.getRestroomUsageSuccess(response));
+      yield put(menuButtonGroupForOfficeInfoActions.getRestroomUsageSuccess(response.getPayload()));
     }
     return response;
   },
 
   getOfficeInfo: function* () {
-    yield put(officeInfoSlice.actions.startApiRequest());
     const startTime = Date.now();
     const response: ApiResponse = yield callAPI(officeInfoAPI.getOfficeInfo);
 
@@ -35,14 +33,10 @@ export const callOfficeInfoAPI = {
     }
 
     if (response.getIsError()) {
-      yield put(officeInfoSlice.actions.failRequest());
+      showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(officeInfoSlice.actions.getOfficeInfoSuccess(response));
+      yield put(menuButtonGroupForOfficeInfoActions.getOfficeInfoSuccess(response.getPayload()));
     }
     return response;
   },
 };
-
-export const callOfficeInfoAPISaga = Object.entries(callOfficeInfoAPI).map((value: [string, any]) => {
-  return takeEvery(`${officeInfoSlice.name}/api/${value[0]}`, value[1]);
-});
