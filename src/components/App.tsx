@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { Props } from '../define/model';
 import { appActionsAsyncLogic } from '../actions/appActions';
 import './App.scss';
-import { onSnackBarClose, onSnackBarExited } from './common/functions';
+import { onSnackBarClose, onSnackBarExited } from './common/utils';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import { tabTheme } from './materialui/theme';

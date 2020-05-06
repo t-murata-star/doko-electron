@@ -1,11 +1,12 @@
 import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
-import { callAPI, getUserInfo, showMessageBoxSync, showSnackBar } from '../../components/common/functions';
+import { getUserInfo, showMessageBoxSync, showSnackBar } from '../../components/common/utils';
 import { put, delay } from 'redux-saga/effects';
 import { UserListAPI } from '../../api/userListAPI';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M } from '../../define';
 import { appActions } from '../../actions/appActions';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
 import { userListActions } from '../../actions/userInfo/userListActions';
+import { callAPI } from '../common/utils';
 
 /**
  * 全ユーザの退社チェック

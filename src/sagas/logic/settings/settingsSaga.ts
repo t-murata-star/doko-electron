@@ -2,7 +2,7 @@ import { takeEvery, select, put, call } from 'redux-saga/effects';
 import { RootState } from '../../../modules';
 import { ApiResponse, UserInfoForUpdate } from '../../../define/model';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
-import { showSnackBar } from '../../../components/common/functions';
+import { showSnackBar } from '../../../components/common/utils';
 import { appActions } from '../../../actions/appActions';
 import { settingActions } from '../../../actions/settings/settingsActions';
 

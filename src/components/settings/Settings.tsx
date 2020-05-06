@@ -8,7 +8,7 @@ import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { Props, UserInfo } from '../../define/model';
 import { appActionsAsyncLogic, appActions } from '../../actions/appActions';
 import { settingActionsAsyncLogic, settingActions } from '../../actions/settings/settingsActions';
-import { getUserInfo, showSnackBar } from '../common/functions';
+import { getUserInfo, showSnackBar } from '../common/utils';
 import './Settings.css';
 
 const { remote } = window.require('electron');

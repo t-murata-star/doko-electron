@@ -5,7 +5,7 @@ import 'react-tabulator/lib/css/tabulator.min.css';
 import 'react-tabulator/lib/styles.css';
 import { CALENDAR_URL, EMAIL_DOMAIN, USER_STATUS_INFO } from '../../define';
 import { userListActionsAsyncLogic, userListActions } from '../../actions/userInfo/userListActions';
-import { getUserInfo } from '../common/functions';
+import { getUserInfo } from '../common/utils';
 import Inoperable from '../Inoperable';
 import './UserList.css';
 import { Props } from '../../define/model';

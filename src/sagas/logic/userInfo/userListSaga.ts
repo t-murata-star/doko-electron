@@ -1,7 +1,7 @@
 import { takeEvery, select, put, call, delay } from 'redux-saga/effects';
 import { userListActionsAsyncLogic, userListActions } from '../../../actions/userInfo/userListActions';
 import { RootState } from '../../../modules';
-import { showMessageBoxSyncWithReturnValue } from '../../../components/common/functions';
+import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
 import { ApiResponse } from '../../../define/model';
 import { appActions } from '../../../actions/appActions';

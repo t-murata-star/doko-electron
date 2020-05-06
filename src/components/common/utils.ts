@@ -1,8 +1,7 @@
 import { Color } from '@material-ui/lab/Alert';
 import store from '../../configureStore';
 import { APP_NAME } from '../../define';
-import { UserInfo, ApiResponse } from '../../define/model';
-import { put, call } from 'redux-saga/effects';
+import { UserInfo } from '../../define/model';
 import { appActions } from '../../actions/appActions';
 const { remote } = window.require('electron');
 
@@ -17,7 +16,7 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
   return userInfo || null;
 };
 
-export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'info') => {
+export const showMessageBoxSync = (message: string, type: 'info' | 'warning' = 'info') => {
   remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
     title: APP_NAME,
     type,
@@ -29,7 +28,7 @@ export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'inf
 export const showMessageBoxSyncWithReturnValue = (
   OKButtonText: string,
   cancelButtonText: string,
-  message: any,
+  message: string,
   type: 'info' | 'warning' = 'info'
 ): any => {
   return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
@@ -57,8 +56,9 @@ export const showSnackBar = (severity: Color, message: string = '', timeoutMs: n
   }
 };
 
-export const onSnackBarClose = (event: React.SyntheticEvent, reason?: string) => {
+export const onSnackBarClose = () => {
   const dispatch: any = store.dispatch;
+  // ※いつか使うかもしれない & 分からなくなりそうなのであえて残しておく
   // 画面クリックでsnackbarを閉じない
   // if (reason === 'clickaway') {
   //   return;
@@ -87,33 +87,3 @@ export const isAuthenticated = (statusCode: number): boolean => {
       return true;
   }
 };
-
-// 通常のAPIリクエストのために用いる
-export function* callAPI(calledAPI: any, ...args: any) {
-  yield put(appActions.startFetching());
-  try {
-    const response: Response = yield call(calledAPI, ...args);
-    if (response.ok === false) {
-      throw new Error(response.statusText);
-    }
-
-    if (isAuthenticated(response.status) === false) {
-      yield put(appActions.unauthorized());
-      /**
-       * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
-       * 画面をリロードして認証トークンを再取得する
-       */
-      window.location.reload();
-    }
-
-    const payload = yield call(response.json.bind(response));
-    yield put(appActions.fetchingSuccess());
-    return new ApiResponse(payload);
-  } catch (error) {
-    console.error(error);
-    yield put(appActions.failRequest());
-    return new ApiResponse(null, true);
-  } finally {
-    yield put(appActions.endFetching());
-  }
-}

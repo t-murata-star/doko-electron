@@ -2,7 +2,7 @@ import { takeEvery, put, call, select } from 'redux-saga/effects';
 import { appActionsAsyncLogic, appActions } from '../../actions/appActions';
 import { callAppAPI } from '../api/callAppAPISaga';
 import { callUserListAPI } from '../api/callUserListAPISaga';
-import { showMessageBoxSync, showMessageBoxSyncWithReturnValue, getUserInfo } from '../../components/common/functions';
+import { showMessageBoxSync, showMessageBoxSyncWithReturnValue, getUserInfo } from '../../components/common/utils';
 import { AUTH_REQUEST_HEADERS, APP_NAME, APP_VERSION, APP_DOWNLOAD_URL, USER_STATUS_INFO } from '../../define';
 import { ApiResponse, UserInfoForUpdate, UserInfo } from '../../define/model';
 import { RootState } from '../../modules';

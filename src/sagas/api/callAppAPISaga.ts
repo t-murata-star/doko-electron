@@ -1,8 +1,9 @@
 import { ApiResponse } from '../../define/model';
-import { callAPI, getUserInfo, showSnackBar } from '../../components/common/functions';
+import { getUserInfo, showSnackBar } from '../../components/common/utils';
 import { put, select } from 'redux-saga/effects';
 import { appAPI } from '../../api/appAPI';
 import { appActions } from '../../actions/appActions';
+import { callAPI } from '../common/utils';
 
 export const callAppAPI = {
   login: function* () {

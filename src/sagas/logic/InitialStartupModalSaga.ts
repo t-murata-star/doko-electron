@@ -2,7 +2,7 @@ import { takeEvery, call, put, select } from 'redux-saga/effects';
 import { callUserListAPI } from '../api/callUserListAPISaga';
 import { ApiResponse, UserInfoForUpdate } from '../../define/model';
 // import { APP_VERSION, USER_STATUS_INFO } from '../../define';
-import { getUserInfo } from '../../components/common/functions';
+import { getUserInfo } from '../../components/common/utils';
 import { APP_VERSION, USER_STATUS_INFO } from '../../define';
 import { RootState } from '../../modules';
 import { callAppAPI } from '../api/callAppAPISaga';

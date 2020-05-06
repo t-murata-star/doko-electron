@@ -3,7 +3,7 @@ import { RootState } from '../../../modules';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
 import { ApiResponse, UserInfoForUpdate } from '../../../define/model';
 import $ from 'jquery';
-import { showMessageBoxSyncWithReturnValue } from '../../../components/common/functions';
+import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { appActions } from '../../../actions/appActions';
 import { userEditModalActions } from '../../../actions/userInfo/userEditModalActions';
 

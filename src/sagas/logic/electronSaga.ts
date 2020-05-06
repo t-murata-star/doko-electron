@@ -1,6 +1,6 @@
 import { takeEvery, call, select, put } from 'redux-saga/effects';
 import { callUserListAPI } from '../../sagas/api/callUserListAPISaga';
-import { getUserInfo } from '../../components/common/functions';
+import { getUserInfo } from '../../components/common/utils';
 import { USER_STATUS_INFO } from '../../define';
 import { UserInfoForUpdate } from '../../define/model';
 import { RootState } from '../../modules';

@@ -6,7 +6,7 @@ import $ from 'jquery';
 import React from 'react';
 import { connect } from 'react-redux';
 import { menuButtonGroupForUserListActionsAsyncLogic } from '../../actions/userInfo/menuButtonGroupForUserListActions';
-import { getUserInfo } from '../common/functions';
+import { getUserInfo } from '../common/utils';
 import './MenuButtonGroupForUserList.css';
 import UserEditModal from './UserEditModal';
 import { Props } from '../../define/model';
