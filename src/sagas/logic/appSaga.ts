@@ -3,14 +3,7 @@ import { appActionsAsyncLogic, appActions } from '../../actions/appActions';
 import { callAppAPI } from '../api/callAppAPISaga';
 import { callUserListAPI } from '../api/callUserListAPISaga';
 import { showMessageBoxSync, showMessageBoxSyncWithReturnValue, getUserInfo } from '../../components/common/functions';
-import {
-  AUTH_REQUEST_HEADERS,
-  APP_NAME,
-  APP_VERSION,
-  APP_DOWNLOAD_URL,
-  HEALTH_CHECK_INTERVAL_MS,
-  USER_STATUS_INFO,
-} from '../../define';
+import { AUTH_REQUEST_HEADERS, APP_NAME, APP_VERSION, APP_DOWNLOAD_URL, USER_STATUS_INFO } from '../../define';
 import { ApiResponse, UserInfoForUpdate, UserInfo } from '../../define/model';
 import { RootState } from '../../modules';
 import { callOfficeInfoAPI } from '../api/callOfficeInfoAPISaga';
@@ -101,13 +94,6 @@ const app = {
         showMessageBoxSync(getAppInfoResponse.getPayload().content);
         electronStore.set('appVersion', APP_VERSION);
       }
-
-      /**
-       * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
-       */
-      setInterval(function* () {
-        yield call(callAppAPI.sendHealthCheck);
-      }, HEALTH_CHECK_INTERVAL_MS);
 
       /**
        * 初回起動チェック
