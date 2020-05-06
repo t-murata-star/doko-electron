@@ -1,6 +1,6 @@
 import { Color } from '@material-ui/lab/Alert';
 import store from '../../configureStore';
-import { APP_NAME, APP_VERSION } from '../../define';
+import { APP_NAME } from '../../define';
 import { UserInfo, ApiResponse } from '../../define/model';
 import { put, call } from 'redux-saga/effects';
 import { appActions } from '../../actions/appActions';
@@ -18,21 +18,12 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
 };
 
 export const showMessageBoxSync = (message: any, type: 'info' | 'warning' = 'info') => {
-  if (APP_VERSION === '3.0.0') {
-    remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-      title: APP_NAME,
-      type,
-      buttons: ['OK'],
-      message,
-    });
-  } else {
-    remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
-      title: APP_NAME,
-      type,
-      buttons: ['OK'],
-      message,
-    });
-  }
+  remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
+    title: APP_NAME,
+    type,
+    buttons: ['OK'],
+    message,
+  });
 };
 
 export const showMessageBoxSyncWithReturnValue = (
@@ -41,21 +32,12 @@ export const showMessageBoxSyncWithReturnValue = (
   message: any,
   type: 'info' | 'warning' = 'info'
 ): any => {
-  if (APP_VERSION === '3.0.0') {
-    return remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-      title: APP_NAME,
-      type: 'info',
-      buttons: [OKButtonText, cancelButtonText],
-      message,
-    });
-  } else {
-    return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
-      title: APP_NAME,
-      type: 'info',
-      buttons: [OKButtonText, cancelButtonText],
-      message,
-    });
-  }
+  return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
+    title: APP_NAME,
+    type,
+    buttons: [OKButtonText, cancelButtonText],
+    message,
+  });
 };
 
 export const showSnackBar = (severity: Color, message: string = '', timeoutMs: number | null = 5000) => {
