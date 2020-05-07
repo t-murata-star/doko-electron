@@ -27,6 +27,14 @@ export const userListActions = {
     };
   }),
   reRenderUserList: createAction(`userList/reRenderUserList`),
+  updateUserInfoState: createAction(`userList/updateUserInfoState`, (userID: number, userInfo: UserInfo) => {
+    return {
+      payload: {
+        userID,
+        userInfo,
+      },
+    };
+  }),
 };
 
 export const userListActionsAsyncLogic = {

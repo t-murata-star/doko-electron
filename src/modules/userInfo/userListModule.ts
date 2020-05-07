@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { UserInfo } from '../../define/model';
 import { userListActions } from '../../actions/userInfo/userListActions';
+import { getUserListIndexBasedOnUserID } from '../../components/common/utils';
+import { UserInfo } from '../../define/model';
 
 class _initialState {
   userList: UserInfo[] = [];
@@ -52,6 +53,15 @@ export const userListSlice = createSlice({
         return {
           ...state,
           userList: JSON.parse(JSON.stringify(state.userList)),
+        };
+      })
+      .addCase(userListActions.updateUserInfoState, (state, action) => {
+        const userList: UserInfo[] = [...state.userList];
+        const index = getUserListIndexBasedOnUserID(userList, action.payload.userID);
+        userList[index] = action.payload.userInfo;
+        return {
+          ...state,
+          userList,
         };
       });
   },

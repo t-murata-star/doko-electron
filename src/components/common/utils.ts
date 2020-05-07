@@ -16,6 +16,17 @@ export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | nu
   return userInfo || null;
 };
 
+export const getUserListIndexBasedOnUserID = (userList: UserInfo[], userID: number): number => {
+  if (!userList) {
+    return -1;
+  }
+  const userInfo = userList.filter((userInfo) => {
+    return userInfo.id === userID;
+  })[0];
+
+  return userList.indexOf(userInfo);
+};
+
 export const showMessageBoxSync = (message: string, type: 'info' | 'warning' = 'info') => {
   remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
     title: APP_NAME,

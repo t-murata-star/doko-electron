@@ -109,7 +109,7 @@ const app = {
         return;
       }
 
-      const userList: UserInfo[] = JSON.parse(JSON.stringify(getUserListResponse.getPayload()));
+      const userList: UserInfo[] = getUserListResponse.getPayload();
       const userInfo = getUserInfo(userList, userID);
 
       /**
@@ -120,11 +120,18 @@ const app = {
         return;
       }
 
+      // 変更対象のキーのみをリクエストパラメータに付与するために用いる（通信パケット削減）
       const updatedUserInfo: UserInfoForUpdate = {};
+      // ローカルのstate（userList）を更新するために用いる
+      let updatedUserInfoState: UserInfo = { ...userInfo };
       if (userInfo.version !== APP_VERSION) {
         updatedUserInfo.version = APP_VERSION;
         // アプリバージョンのみ更新（更新日時も更新されない）
         yield call(callUserListAPI.updateUserInfo, updatedUserInfo, userID);
+
+        // ローカルのstate（userList）を更新する
+        updatedUserInfoState.version = updatedUserInfo.version;
+        yield put(userListActions.updateUserInfoState(userID, updatedUserInfoState));
       }
 
       // 状態を「在席」に更新する（更新日時も更新される）
@@ -133,13 +140,17 @@ const app = {
         userInfo.status === USER_STATUS_INFO.s01.status ||
         userInfo.status === USER_STATUS_INFO.s13.status
       ) {
-        userInfo.status = USER_STATUS_INFO.s01.status;
-        updatedUserInfo.status = userInfo.status;
+        updatedUserInfo.status = USER_STATUS_INFO.s01.status;
         updatedUserInfo.name = userInfo.name;
         yield call(callUserListAPI.updateUserInfo, updatedUserInfo, userID);
+
+        // ローカルのstate（userList）を更新する
+        updatedUserInfoState.status = updatedUserInfo.status;
+        yield put(userListActions.updateUserInfoState(userID, updatedUserInfoState));
       }
 
-      yield put(userListActions.reRenderUserList());
+      // TODO ユーザIDとkey,valueを引数に、stateのuserInfoを更新する reducerを追加する
+
       yield put(appActions.setMyUserId(userID));
 
       yield call(callAppAPI.sendHealthCheck);
