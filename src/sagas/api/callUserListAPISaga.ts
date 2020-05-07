@@ -15,9 +15,9 @@ import { callAPI } from '../common/utils';
  */
 const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) => {
   if (!userList) return [];
-
+  const _userList = JSON.parse(JSON.stringify(userList));
   const nowDate: Date = new Date();
-  for (const userInfo of userList) {
+  for (const userInfo of _userList) {
     if (userInfo.id === myUserID) {
       continue;
     }
@@ -30,7 +30,7 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
     }
   }
 
-  return userList;
+  return _userList;
 };
 
 export const callUserListAPI = {
