@@ -9,7 +9,7 @@ export const settingActions = {
       },
     };
   }),
-  setEmail: createAction(`settings/saveSettingsForEmail`, (email: string) => {
+  setEmail: createAction(`settings/setEmail`, (email: string) => {
     return {
       payload: {
         email,

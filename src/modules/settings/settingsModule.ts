@@ -36,6 +36,15 @@ export const settingsSlice = createSlice({
           },
         };
       })
+      .addCase(settingActions.setEmail, (state, action) => {
+        return {
+          ...state,
+          user: {
+            ...state.user,
+            email: action.payload.email,
+          },
+        };
+      })
       .addCase(settingActions.changeDisabledSubmitButtonUserChange, (state, action) => {
         return {
           ...state,
