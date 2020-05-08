@@ -126,7 +126,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                         </TextField>
                         <Form.Text>
                           <span>新規登録は</span>
-                          <Button variant='link' className='userChange' onClick={this.registUserInput}>
+                          <Button variant='link' className='change-user-entry-type' onClick={this.registUserInput}>
                             こちら
                           </Button>
                         </Form.Text>
@@ -148,7 +148,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                         />
                         <Form.Text>
                           <span>登録済みの場合は</span>
-                          <Button variant='link' className='userChange' onClick={this.selectFromExistingUsers}>
+                          <Button variant='link' className='change-user-entry-type' onClick={this.selectFromExistingUsers}>
                             こちら
                           </Button>
                         </Form.Text>

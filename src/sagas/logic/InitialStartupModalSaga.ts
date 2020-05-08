@@ -36,10 +36,8 @@ const initialStartupModal = {
 
       yield call(callUserListAPI.updateUserInfo, addedUserInfo, myUserID);
       yield call(callUserListAPI.getUserList, myUserID);
-
-      yield put(appActions.setMyUserId(myUserID));
       yield closeModal();
-
+      yield put(appActions.setMyUserId(myUserID));
       yield call(callAppAPI.sendHealthCheck);
       yield put(initialStartupModalActions.initializeField());
     } catch (error) {
@@ -85,9 +83,9 @@ const initialStartupModal = {
       }
 
       electronStore.set('userID', myUserID);
-      yield put(appActions.setMyUserId(myUserID));
-      yield closeModal();
       yield call(callUserListAPI.getUserList, myUserID);
+      yield closeModal();
+      yield put(appActions.setMyUserId(myUserID));
       yield call(callAppAPI.sendHealthCheck);
       yield put(initialStartupModalActions.initializeField());
     } catch (error) {
