@@ -6,6 +6,7 @@ import $ from 'jquery';
 import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { appActions } from '../../../actions/appActions';
 import { userEditModalActions } from '../../../actions/userInfo/userEditModalActions';
+import { userListActions } from '../../../actions/userInfo/userListActions';
 
 const userEditModal = {
   updateUserInfo: function* () {
@@ -13,7 +14,7 @@ const userEditModal = {
       yield put(appActions.isShowLoadingPopup(true));
       const state: RootState = yield select();
       const userInfo = state.userEditModalState.userInfo;
-      const userID = state.userEditModalState.userID;
+      const userID = userInfo.id;
 
       const updatedUserInfo: UserInfoForUpdate = {};
       updatedUserInfo.name = userInfo.name;
@@ -27,11 +28,11 @@ const userEditModal = {
         return;
       }
 
+      // ローカルのstate（userList）を更新する
+      yield put(userListActions.updateUserInfoState(userID, userInfo));
       yield put(userEditModalActions.closeUserEditModal());
 
       const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
-      const myUserID = state.appState.myUserID;
-      yield call(callUserListAPI.getUserListWithMyUserIDExists, myUserID);
       $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
     } catch (error) {
       console.error(error);

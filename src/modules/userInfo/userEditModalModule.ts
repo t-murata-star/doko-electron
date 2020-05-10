@@ -17,11 +17,10 @@ export const userEditModalSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(userEditModalActions.showUserEditModal, (state, action) => {
+      .addCase(userEditModalActions.showUserEditModal, (state) => {
         return {
           ...state,
           onHide: true,
-          userID: action.payload.userID,
         };
       })
       .addCase(userEditModalActions.closeUserEditModal, (state) => {

@@ -108,7 +108,7 @@ class UserList extends React.Component<Props, any> {
 
     dispatch(userEditModalActions.setUserInfo(userInfo));
     dispatch(userEditModalActions.disableSubmitButton());
-    dispatch(userEditModalActions.showUserEditModal(selectedUserId));
+    dispatch(userEditModalActions.showUserEditModal());
   };
 
   _rowFormatter = (row: Tabulator.RowComponent) => {

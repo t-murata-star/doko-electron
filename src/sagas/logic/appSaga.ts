@@ -87,11 +87,13 @@ const app = {
 
       /**
        * お知らせチェック
-       * appVersion が latestAppVersion と異なる場合、アップデート後の初回起動と判断し、
+       * appVersion が latestAppVersion と異なり、かつユーザ登録済み場合、アップデート後の初回起動と判断し、
        * 一度だけお知らせを表示する。
        */
       if (electronStore.get('appVersion') !== APP_VERSION) {
-        showMessageBoxSync(getAppInfoResponse.getPayload().content);
+        if (userID !== -1) {
+          showMessageBoxSync(getAppInfoResponse.getPayload().content);
+        }
         electronStore.set('appVersion', APP_VERSION);
       }
 

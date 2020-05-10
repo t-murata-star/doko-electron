@@ -2,13 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { UserInfo } from '../../define/model';
 
 export const userEditModalActions = {
-  showUserEditModal: createAction(`userEditModal/showUserEditModal`, (userID: number) => {
-    return {
-      payload: {
-        userID,
-      },
-    };
-  }),
+  showUserEditModal: createAction(`userEditModal/showUserEditModal`),
   closeUserEditModal: createAction(`userEditModal/closeUserEditModal`),
   disableSubmitButton: createAction(`userEditModal/disableSubmitButton`),
   enableSubmitButton: createAction(`userEditModal/enableSubmitButton`),
