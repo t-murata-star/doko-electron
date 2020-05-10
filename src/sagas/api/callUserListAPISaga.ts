@@ -107,7 +107,7 @@ export const callUserListAPI = {
      */
     const userInfo = getUserInfo(response.getPayload(), myUserID);
     if (userInfo === null) {
-      showMessageBoxSync('ユーザ情報がサーバ上に存在しないため、ユーザ登録を行います。');
+      showMessageBoxSync('ユーザ情報がサーバに存在しないため、ユーザ登録を行います。');
       yield put(appActions.setMyUserId(-1));
       yield put(initialStartupModalActions.initializeState());
       yield put(initialStartupModalActions.showModal(true));
