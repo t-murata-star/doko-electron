@@ -15,7 +15,7 @@ import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHO
 import { appActions } from '../../actions/appActions';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
 import { userListActions } from '../../actions/userInfo/userListActions';
-import { callAPI } from '../common/utils';
+import { callAPI } from '../common/utilsSaga';
 
 /**
  * 全ユーザの退社チェック

@@ -3,7 +3,7 @@ import { getUserInfo, showSnackBar } from '../../components/common/utils';
 import { put, select } from 'redux-saga/effects';
 import { appAPI } from '../../api/appAPI';
 import { appActions } from '../../actions/appActions';
-import { callAPI } from '../common/utils';
+import { callAPI } from '../common/utilsSaga';
 
 export const callAppAPI = {
   login: function* () {

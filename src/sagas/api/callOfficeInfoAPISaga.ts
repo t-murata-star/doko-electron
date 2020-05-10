@@ -4,7 +4,7 @@ import { put, delay } from 'redux-saga/effects';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS } from '../../define';
 import { officeInfoAPI } from '../../api/officeInfoAPI';
 import { menuButtonGroupForOfficeInfoActions } from '../../actions/officeInfo/menuButtonGroupForOfficeInfoActions';
-import { callAPI } from '../common/utils';
+import { callAPI } from '../common/utilsSaga';
 
 export const callOfficeInfoAPI = {
   getRestroomUsage: function* () {
