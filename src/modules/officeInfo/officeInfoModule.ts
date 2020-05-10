@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Restroom, Info } from '../../define/model';
+import { Restroom, OfficeInfo } from '../../define/model';
 import { menuButtonGroupForOfficeInfoActions } from '../../actions/officeInfo/menuButtonGroupForOfficeInfoActions';
 
 class _initialState {
@@ -10,7 +10,7 @@ class _initialState {
     vacancyForMen: -1,
     vacancyForWomen: -1,
   };
-  info = new Info();
+  officeInfo = new OfficeInfo();
 }
 
 // createSlice() で actions と reducers を一気に生成
@@ -37,7 +37,7 @@ export const officeInfoSlice = createSlice({
       .addCase(menuButtonGroupForOfficeInfoActions.getOfficeInfoSuccess, (state, action) => {
         return {
           ...state,
-          info: action.payload.info,
+          officeInfo: action.payload.officeInfo,
         };
       });
   },

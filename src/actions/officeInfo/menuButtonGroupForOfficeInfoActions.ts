@@ -1,18 +1,18 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Restroom, Info } from '../../define/model';
+import { GetRestroomUsage, GetOfficeInfo } from '../../define/model';
 
 export const menuButtonGroupForOfficeInfoActions = {
-  getRestroomUsageSuccess: createAction(`menuButtonGroupForOfficeInfo/getRestroomUsageSuccess`, (rooms: Restroom[]) => {
+  getRestroomUsageSuccess: createAction(`menuButtonGroupForOfficeInfo/getRestroomUsageSuccess`, (rooms: GetRestroomUsage[]) => {
     return {
       payload: {
         rooms,
       },
     };
   }),
-  getOfficeInfoSuccess: createAction(`menuButtonGroupForOfficeInfo/getOfficeInfoSuccess`, (info: Info) => {
+  getOfficeInfoSuccess: createAction(`menuButtonGroupForOfficeInfo/getOfficeInfoSuccess`, (officeInfo: GetOfficeInfo) => {
     return {
       payload: {
-        info,
+        officeInfo,
       },
     };
   }),

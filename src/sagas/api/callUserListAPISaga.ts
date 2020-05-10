@@ -1,4 +1,13 @@
-import { ApiResponse, UserInfo, UserInfoForUpdate } from '../../define/model';
+import {
+  ApiResponse,
+  UserInfo,
+  UserInfoForUpdate,
+  DeleteUser,
+  AddUser,
+  GetUserList,
+  GetUserListWithMyUserIDExists,
+  UpdateUserInfo,
+} from '../../define/model';
 import { getUserInfo, showMessageBoxSync, showSnackBar } from '../../components/common/utils';
 import { put, delay } from 'redux-saga/effects';
 import { UserListAPI } from '../../api/userListAPI';
@@ -35,7 +44,7 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
 
 export const callUserListAPI = {
   deleteUser: function* (userID: number) {
-    const response: ApiResponse = yield callAPI(UserListAPI.deleteUser, userID);
+    const response: ApiResponse<DeleteUser> = yield callAPI(UserListAPI.deleteUser, userID);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
@@ -48,7 +57,7 @@ export const callUserListAPI = {
     const _userInfo = { ...userInfo };
     delete _userInfo.id;
 
-    const response: ApiResponse = yield callAPI(UserListAPI.addUser, _userInfo);
+    const response: ApiResponse<AddUser> = yield callAPI(UserListAPI.addUser, _userInfo);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
@@ -59,7 +68,7 @@ export const callUserListAPI = {
 
   getUserList: function* (myUserID: number) {
     const startTime = Date.now();
-    const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
+    const response: ApiResponse<GetUserList[]> = yield callAPI(UserListAPI.getUserList);
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
     if (Math.sign(lowestWaitTime) === 1) {
@@ -69,7 +78,7 @@ export const callUserListAPI = {
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      const updatedUserList = updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
+      const updatedUserList = updateLeavingTimeForUserList(response.getPayload(), myUserID);
       yield put(userListActions.getUserListSuccess(updatedUserList));
     }
 
@@ -78,7 +87,7 @@ export const callUserListAPI = {
 
   getUserListWithMyUserIDExists: function* (myUserID: number) {
     const startTime = Date.now();
-    const response: ApiResponse = yield callAPI(UserListAPI.getUserList);
+    const response: ApiResponse<GetUserListWithMyUserIDExists[]> = yield callAPI(UserListAPI.getUserList);
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
     if (Math.sign(lowestWaitTime) === 1) {
@@ -88,7 +97,7 @@ export const callUserListAPI = {
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      const updatedUserList = updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
+      const updatedUserList = updateLeavingTimeForUserList(response.getPayload(), myUserID);
       yield put(userListActions.getUserListSuccess(updatedUserList));
     }
 
@@ -107,7 +116,7 @@ export const callUserListAPI = {
   },
 
   updateUserInfo: function* (userInfo: UserInfoForUpdate, userID: number) {
-    const response: ApiResponse = yield callAPI(UserListAPI.updateUserInfo, userInfo, userID);
+    const response: ApiResponse<UpdateUserInfo> = yield callAPI(UserListAPI.updateUserInfo, userInfo, userID);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {

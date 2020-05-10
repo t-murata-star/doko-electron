@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { AppInfo } from '../define/model';
+import { AppInfo, Login } from '../define/model';
 import { Color } from '@material-ui/lab/Alert';
 
 export const appActions = {
@@ -7,10 +7,10 @@ export const appActions = {
   endFetching: createAction(`app/endFetching`),
   fetchingSuccess: createAction(`app/fetchingSuccess`),
   failRequest: createAction(`app/failRequest`),
-  loginSuccess: createAction(`app/loginSuccess`, (token: string) => {
+  loginSuccess: createAction(`app/loginSuccess`, (response: Login) => {
     return {
       payload: {
-        token,
+        token: response.token,
       },
     };
   }),

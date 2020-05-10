@@ -4,7 +4,7 @@ import { callAppAPI } from '../api/callAppAPISaga';
 import { callUserListAPI } from '../api/callUserListAPISaga';
 import { showMessageBoxSync, showMessageBoxSyncWithReturnValue, getUserInfo } from '../../components/common/utils';
 import { AUTH_REQUEST_HEADERS, APP_NAME, APP_VERSION, APP_DOWNLOAD_URL, USER_STATUS_INFO } from '../../define';
-import { ApiResponse, UserInfoForUpdate, UserInfo } from '../../define/model';
+import { ApiResponse, UserInfoForUpdate, UserInfo, Login, GetAppInfo, GetUserListWithMyUserIDExists } from '../../define/model';
 import { RootState } from '../../modules';
 import { callOfficeInfoAPI } from '../api/callOfficeInfoAPISaga';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
@@ -25,7 +25,7 @@ const app = {
       ipcRenderer.send('connected', true);
 
       // ログイン処理（認証トークン取得）
-      const loginResponse: ApiResponse = yield call(callAppAPI.login);
+      const loginResponse: ApiResponse<Login> = yield call(callAppAPI.login);
       if (loginResponse.getIsError()) {
         ipcRenderer.send('connected', false);
         remote.getCurrentWindow().loadFile(remote.getGlobal('errorPageFilepath'));
@@ -36,7 +36,7 @@ const app = {
       AUTH_REQUEST_HEADERS.Authorization = 'Bearer ' + loginResponse.getPayload().token;
 
       // お知らせチェック
-      const getAppInfoResponse: ApiResponse = yield call(callAppAPI.getAppInfo);
+      const getAppInfoResponse: ApiResponse<GetAppInfo> = yield call(callAppAPI.getAppInfo);
       const updateAppInfoMessage = `新しい${APP_NAME}が公開されました。\nVersion ${
         getAppInfoResponse.getPayload().latestAppVersion
       }\nお手数ですがアップデートをお願いします。`;
@@ -106,12 +106,15 @@ const app = {
         return;
       }
 
-      const getUserListResponse: ApiResponse = yield call(callUserListAPI.getUserListWithMyUserIDExists, userID);
+      const getUserListResponse: ApiResponse<GetUserListWithMyUserIDExists[]> = yield call(
+        callUserListAPI.getUserListWithMyUserIDExists,
+        userID
+      );
       if (getUserListResponse.getIsError()) {
         return;
       }
 
-      const userList: UserInfo[] = getUserListResponse.getPayload();
+      const userList = getUserListResponse.getPayload();
       const userInfo = getUserInfo(userList, userID);
 
       /**

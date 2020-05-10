@@ -1,7 +1,7 @@
 import { RootState } from '../modules';
 
 /**
- * 型定義として用いる
+ * プロジェクト内独自の型定義
  */
 
 export type Props = {
@@ -9,8 +9,8 @@ export type Props = {
   dispatch: any;
 };
 
-export class ApiResponse {
-  constructor(public payload: any, public isError: boolean) {}
+export class ApiResponse<T> {
+  constructor(public payload: T, public isError: boolean) {}
 
   getPayload() {
     return this.payload;
@@ -18,34 +18,6 @@ export class ApiResponse {
   getIsError() {
     return this.isError;
   }
-}
-
-export interface UserInfoForUpdate {
-  id?: number;
-  order?: number;
-  name?: string;
-  status?: string;
-  destination?: string;
-  return?: string;
-  updatedAt?: string;
-  message?: string;
-  version?: string;
-  email?: string;
-  healthCheckAt?: string;
-}
-
-export class UserInfo {
-  id: number = -1;
-  order: number = -1;
-  name: string = '';
-  status: string = '';
-  destination: string = '';
-  return: string = '';
-  updatedAt: string = '';
-  message: string = '';
-  version: string = '';
-  email: string = '';
-  healthCheckAt: string = '';
 }
 
 export class UserStatusInfo {
@@ -64,6 +36,24 @@ export class UserStatusInfo {
   s13 = { status: '在席 (離席中)', color: '#333333' };
 }
 
+export interface UserInfoForUpdate {
+  id?: number;
+  order?: number;
+  name?: string;
+  status?: string;
+  destination?: string;
+  return?: string;
+  updatedAt?: string;
+  message?: string;
+  version?: string;
+  email?: string;
+  healthCheckAt?: string;
+}
+
+/**
+ * DBの型定義
+ */
+
 export class AppInfo {
   content: string = '';
   latestAppVersion: string = '';
@@ -76,7 +66,44 @@ export class Restroom {
   isUsing: boolean = false;
 }
 
-export class Info {
+export class OfficeInfo {
   tempreture: number = -1;
   humidity: number = -1;
 }
+
+export class UserInfo {
+  id: number = -1;
+  order: number = -1;
+  name: string = '';
+  status: string = '';
+  destination: string = '';
+  return: string = '';
+  updatedAt: string = '';
+  message: string = '';
+  version: string = '';
+  email: string = '';
+  healthCheckAt: string = '';
+}
+
+// APIレスポンスの型定義
+export interface Login {
+  token: string;
+}
+
+export interface GetAppInfo extends AppInfo {}
+
+export interface SendHealthCheck extends UserInfo {}
+
+export interface GetRestroomUsage extends Restroom {}
+
+export interface GetOfficeInfo extends OfficeInfo {}
+
+export interface DeleteUser {}
+
+export interface AddUser extends UserInfo {}
+
+export interface GetUserList extends UserInfo {}
+
+export interface GetUserListWithMyUserIDExists extends UserInfo {}
+
+export interface UpdateUserInfo extends UserInfo {}

@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../define/model';
+import { ApiResponse, GetRestroomUsage, GetOfficeInfo } from '../../define/model';
 import { showSnackBar } from '../../components/common/utils';
 import { put, delay } from 'redux-saga/effects';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS } from '../../define';
@@ -9,7 +9,7 @@ import { callAPI } from '../common/utils';
 export const callOfficeInfoAPI = {
   getRestroomUsage: function* () {
     const startTime = Date.now();
-    const response: ApiResponse = yield callAPI(officeInfoAPI.getRestroomUsage);
+    const response: ApiResponse<GetRestroomUsage[]> = yield callAPI(officeInfoAPI.getRestroomUsage);
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
     if (Math.sign(lowestWaitTime) === 1) {
@@ -26,7 +26,7 @@ export const callOfficeInfoAPI = {
 
   getOfficeInfo: function* () {
     const startTime = Date.now();
-    const response: ApiResponse = yield callAPI(officeInfoAPI.getOfficeInfo);
+    const response: ApiResponse<GetOfficeInfo> = yield callAPI(officeInfoAPI.getOfficeInfo);
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
     if (Math.sign(lowestWaitTime) === 1) {

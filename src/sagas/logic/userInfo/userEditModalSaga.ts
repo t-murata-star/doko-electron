@@ -1,7 +1,7 @@
 import { takeEvery, select, put, call } from 'redux-saga/effects';
 import { RootState } from '../../../modules';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
-import { ApiResponse, UserInfoForUpdate } from '../../../define/model';
+import { ApiResponse, UserInfoForUpdate, UpdateUserInfo, DeleteUser } from '../../../define/model';
 import $ from 'jquery';
 import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { appActions } from '../../../actions/appActions';
@@ -22,7 +22,11 @@ const userEditModal = {
       updatedUserInfo.destination = userInfo.destination;
       updatedUserInfo.return = userInfo.return;
       updatedUserInfo.message = userInfo.message;
-      const updateUserInfoResponse: ApiResponse = yield call(callUserListAPI.updateUserInfo, updatedUserInfo, userID);
+      const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
+        callUserListAPI.updateUserInfo,
+        updatedUserInfo,
+        userID
+      );
       if (updateUserInfoResponse.getIsError()) {
         yield put(userEditModalActions.enableSubmitButton());
         return;
@@ -53,7 +57,7 @@ const userEditModal = {
       }
 
       const selectedUserId = state.userEditModalState.userInfo.id;
-      const deleteUserResponse: ApiResponse = yield call(callUserListAPI.deleteUser, selectedUserId);
+      const deleteUserResponse: ApiResponse<DeleteUser> = yield call(callUserListAPI.deleteUser, selectedUserId);
       if (deleteUserResponse.getIsError()) {
         return;
       }

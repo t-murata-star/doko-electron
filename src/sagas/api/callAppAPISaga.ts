@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../define/model';
+import { ApiResponse, Login, GetAppInfo, SendHealthCheck } from '../../define/model';
 import { getUserInfo, showSnackBar } from '../../components/common/utils';
 import { put, select } from 'redux-saga/effects';
 import { appAPI } from '../../api/appAPI';
@@ -7,7 +7,7 @@ import { callAPI } from '../common/utils';
 
 export const callAppAPI = {
   login: function* () {
-    const response: ApiResponse = yield callAPI(appAPI.login);
+    const response: ApiResponse<Login> = yield callAPI(appAPI.login);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
@@ -17,7 +17,7 @@ export const callAppAPI = {
   },
 
   getAppInfo: function* () {
-    const response: ApiResponse = yield callAPI(appAPI.getAppInfo);
+    const response: ApiResponse<GetAppInfo> = yield callAPI(appAPI.getAppInfo);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
@@ -38,7 +38,7 @@ export const callAppAPI = {
     const updatedUserInfo: any = {};
     updatedUserInfo.healthCheckAt = '';
 
-    const response: ApiResponse = yield callAPI(appAPI.sendHealthCheck, updatedUserInfo, myUserID);
+    const response: ApiResponse<SendHealthCheck> = yield callAPI(appAPI.sendHealthCheck, updatedUserInfo, myUserID);
     if (!response.getIsError()) {
       console.log('Send healthCheck.');
     }

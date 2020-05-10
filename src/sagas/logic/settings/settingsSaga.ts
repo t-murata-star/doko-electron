@@ -1,6 +1,6 @@
 import { takeEvery, select, put, call } from 'redux-saga/effects';
 import { RootState } from '../../../modules';
-import { ApiResponse, UserInfoForUpdate } from '../../../define/model';
+import { ApiResponse, UserInfoForUpdate, UpdateUserInfo } from '../../../define/model';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
 import { showSnackBar } from '../../../components/common/utils';
 import { appActions } from '../../../actions/appActions';
@@ -16,7 +16,11 @@ const settings = {
       const updatedUserInfo: UserInfoForUpdate = {};
 
       updatedUserInfo['email'] = settingState.user.email;
-      const updateUserInfoResponse: ApiResponse = yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserID);
+      const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
+        callUserListAPI.updateUserInfo,
+        updatedUserInfo,
+        myUserID
+      );
       if (updateUserInfoResponse.getIsError() === false) {
         showSnackBar('success', '設定を保存しました。');
         yield put(settingActions.changeDisabledSubmitButtonEmail(true));

@@ -3,7 +3,7 @@ import { userListActionsAsyncLogic, userListActions } from '../../../actions/use
 import { RootState } from '../../../modules';
 import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
-import { ApiResponse } from '../../../define/model';
+import { ApiResponse, UpdateUserInfo } from '../../../define/model';
 import { appActions } from '../../../actions/appActions';
 
 const userList = {
@@ -28,7 +28,11 @@ const userList = {
 
       for (const row of rows) {
         const patchInfoUser = { order: row.getPosition(true) + 1 };
-        const updateUserInfoResponse: ApiResponse = yield call(callUserListAPI.updateUserInfo, patchInfoUser, row.getData().id);
+        const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
+          callUserListAPI.updateUserInfo,
+          patchInfoUser,
+          row.getData().id
+        );
         if (updateUserInfoResponse.getIsError()) {
           yield put(userListActions.reRenderUserList());
           yield put(appActions.setFetchingStatus(false));
