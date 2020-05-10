@@ -37,16 +37,15 @@ const app = {
 
       // お知らせチェック
       const getAppInfoResponse: ApiResponse<GetAppInfo> = yield call(callAppAPI.getAppInfo);
-      const updateAppInfoMessage = `新しい${APP_NAME}が公開されました。\nVersion ${
-        getAppInfoResponse.getPayload().latestAppVersion
-      }\nお手数ですがアップデートをお願いします。`;
+      const appInfo = getAppInfoResponse.getPayload();
+      const updateAppInfoMessage = `新しい${APP_NAME}が公開されました。\nVersion ${appInfo.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
 
       /**
        * バージョンチェック
        * 実行しているアプリケーションのバージョンが最新ではない場合、
        * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
        */
-      if (getAppInfoResponse.getPayload().latestAppVersion !== APP_VERSION) {
+      if (appInfo.latestAppVersion !== APP_VERSION) {
         showMessageBoxSync(updateAppInfoMessage);
         remote.shell.openExternal(APP_DOWNLOAD_URL);
         closeApp();
@@ -86,15 +85,21 @@ const app = {
       }
 
       /**
-       * お知らせチェック
        * appVersion が latestAppVersion と異なり、かつユーザ登録済み場合、アップデート後の初回起動と判断し、
-       * 一度だけお知らせを表示する。
+       * 一度だけアップデート情報を表示する。
        */
-      if (electronStore.get('appVersion') !== APP_VERSION) {
-        if (userID !== -1) {
-          showMessageBoxSync(getAppInfoResponse.getPayload().content);
-        }
+      if (userID !== -1 && electronStore.get('appVersion') !== APP_VERSION) {
+        showMessageBoxSync(appInfo.updateInfo);
         electronStore.set('appVersion', APP_VERSION);
+      }
+
+      /**
+       * 登録済みユーザのみが対象
+       * メッセージ表示が有効の場合、一度だけサーバで設定したメッセージを表示する。
+       */
+      if (userID !== -1 && appInfo.message.enabled && appInfo.message.version !== electronStore.get('messageVersion')) {
+        showMessageBoxSync(appInfo.message.text);
+        electronStore.set('messageVersion', appInfo.message.version);
       }
 
       /**
