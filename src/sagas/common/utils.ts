@@ -21,7 +21,7 @@ export function* callAPI(calledAPI: any, ...args: any) {
 
     const payload = yield call(response.json.bind(response));
     yield put(appActions.fetchingSuccess());
-    return new ApiResponse(payload);
+    return new ApiResponse(payload, false);
   } catch (error) {
     console.error(error);
     yield put(appActions.failRequest());

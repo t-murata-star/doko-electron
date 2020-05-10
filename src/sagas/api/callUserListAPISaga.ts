@@ -15,7 +15,7 @@ import { callAPI } from '../common/utils';
  */
 const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) => {
   if (!userList) return [];
-  const _userList = JSON.parse(JSON.stringify(userList));
+  const _userList: UserInfo[] = JSON.parse(JSON.stringify(userList));
   const nowDate: Date = new Date();
   for (const userInfo of _userList) {
     if (userInfo.id === myUserID) {
@@ -69,10 +69,9 @@ export const callUserListAPI = {
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(userListActions.getUserListSuccess(response.getPayload()));
+      const updatedUserList = updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
+      yield put(userListActions.getUserListSuccess(updatedUserList));
     }
-
-    updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
 
     return response;
   },
@@ -89,10 +88,9 @@ export const callUserListAPI = {
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
     } else {
-      yield put(userListActions.getUserListSuccess(response.getPayload()));
+      const updatedUserList = updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
+      yield put(userListActions.getUserListSuccess(updatedUserList));
     }
-
-    updateLeavingTimeForUserList(response.getPayload() as UserInfo[], myUserID);
 
     /**
      * サーバ上に自分の情報が存在するかどうかチェック

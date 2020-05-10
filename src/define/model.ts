@@ -10,13 +10,7 @@ export type Props = {
 };
 
 export class ApiResponse {
-  private payload: any = null;
-  private isError: boolean = false;
-
-  constructor(payload: any = null, isError: boolean = false) {
-    this.payload = payload;
-    this.isError = isError;
-  }
+  constructor(public payload: any, public isError: boolean) {}
 
   getPayload() {
     return this.payload;
