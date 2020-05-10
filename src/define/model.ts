@@ -10,7 +10,7 @@ export type Props = {
 };
 
 export class ApiResponse<T> {
-  constructor(public payload: T, public isError: boolean) {}
+  constructor(private payload: T, private isError: boolean) {}
 
   getPayload() {
     return this.payload;
@@ -55,8 +55,13 @@ export interface UserInfoForUpdate {
  */
 
 export class AppInfo {
-  content: string = '';
-  latestAppVersion: string = '';
+  latestAppVersion = '';
+  updateInfo = '';
+  message = {
+    enabled: false,
+    version: '',
+    text: '',
+  };
 }
 
 export class Restroom {
