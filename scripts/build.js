@@ -94,7 +94,7 @@ checkBrowsers(paths.appPath, isInteractive)
       console.log();
 
       const appPackage = require(paths.appPackageJson);
-      const publicUrl = paths.publicUrlOrPath;
+      const publicUrl = paths.publicUrl;
       const publicPath = config.output.publicPath;
       const buildFolder = path.relative(process.cwd(), paths.appBuild);
       printHostingInstructions(
@@ -108,11 +108,9 @@ checkBrowsers(paths.appPath, isInteractive)
     err => {
       const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === 'true';
       if (tscCompileOnError) {
-        console.log(
-          chalk.yellow(
-            'Compiled with the following type errors (you may want to check these before deploying your app):\n'
-          )
-        );
+        console.log(chalk.yellow(
+          'Compiled with the following type errors (you may want to check these before deploying your app):\n'
+        ));
         printBuildError(err);
       } else {
         console.log(chalk.red('Failed to compile.\n'));
@@ -152,18 +150,8 @@ function build(previousFileSizes) {
         if (!err.message) {
           return reject(err);
         }
-
-        let errMessage = err.message;
-
-        // Add additional information for postcss errors
-        if (Object.prototype.hasOwnProperty.call(err, 'postcssNode')) {
-          errMessage +=
-            '\nCompileError: Begins at CSS selector ' +
-            err['postcssNode'].selector;
-        }
-
         messages = formatWebpackMessages({
-          errors: [errMessage],
+          errors: [err.message],
           warnings: [],
         });
       } else {
