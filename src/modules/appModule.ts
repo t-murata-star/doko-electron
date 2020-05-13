@@ -91,12 +91,6 @@ export const appSlice = createSlice({
           myUserID: action.payload.myUserID,
         };
       })
-      .addCase(appActions.setFetchingStatus, (state, action) => {
-        return {
-          ...state,
-          isFetching: action.payload.isFetching,
-        };
-      })
       .addCase(appActions.setActiveIndex, (state, action) => {
         return {
           ...state,

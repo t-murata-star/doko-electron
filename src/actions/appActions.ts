@@ -29,13 +29,6 @@ export const appActions = {
       },
     };
   }),
-  setFetchingStatus: createAction(`app/setFetchingStatus`, (isFetching: boolean) => {
-    return {
-      payload: {
-        isFetching,
-      },
-    };
-  }),
   setActiveIndex: createAction(`app/setActiveIndex`, (activeIndex: number) => {
     return {
       payload: {

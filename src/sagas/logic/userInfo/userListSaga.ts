@@ -1,6 +1,5 @@
-import { takeEvery, select, put, call, delay } from 'redux-saga/effects';
+import { takeEvery, put, call, delay } from 'redux-saga/effects';
 import { userListActionsAsyncLogic, userListActions } from '../../../actions/userInfo/userListActions';
-import { RootState } from '../../../modules';
 import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
 import { ApiResponse, UpdateUserInfo } from '../../../define/model';
@@ -10,7 +9,6 @@ const userList = {
   updateUserInfoOrder: function* (action: ReturnType<typeof userListActionsAsyncLogic.updateUserInfoOrder>) {
     try {
       yield put(appActions.isShowLoadingPopup(true));
-      const state: RootState = yield select();
       const rowComponent = action.payload.rowComponent;
       const rows = rowComponent.getTable().getRows();
       const index = showMessageBoxSyncWithReturnValue(
@@ -24,26 +22,19 @@ const userList = {
         return;
       }
 
-      yield put(appActions.setFetchingStatus(true));
-
       for (const row of rows) {
-        const patchInfoUser = { order: row.getPosition(true) + 1 };
+        const updatedUserInfo = { order: row.getPosition(true) + 1 };
         const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
           callUserListAPI.updateUserInfo,
-          patchInfoUser,
+          updatedUserInfo,
           row.getData().id
         );
         if (updateUserInfoResponse.getIsError()) {
           yield put(userListActions.reRenderUserList());
-          yield put(appActions.setFetchingStatus(false));
           return;
         }
         yield delay(50);
       }
-      yield put(appActions.setFetchingStatus(false));
-
-      const myUserID = state.appState.myUserID;
-      yield call(callUserListAPI.getUserList, myUserID);
     } catch (error) {
       console.error(error);
     } finally {
