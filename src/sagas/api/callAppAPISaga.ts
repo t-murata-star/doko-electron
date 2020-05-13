@@ -10,6 +10,7 @@ export const callAppAPI = {
     const response: ApiResponse<Login> = yield callAPI(appAPI.login);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
+      return response;
     } else {
       yield put(appActions.loginSuccess(response.getPayload()));
     }
@@ -20,6 +21,7 @@ export const callAppAPI = {
     const response: ApiResponse<GetAppInfo> = yield callAPI(appAPI.getAppInfo);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
+      return response;
     } else {
       yield put(appActions.getAppInfoSuccess(response.getPayload()));
     }

@@ -47,6 +47,7 @@ export const callUserListAPI = {
     const response: ApiResponse<DeleteUser> = yield callAPI(UserListAPI.deleteUser, userID);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
+      return response;
     } else {
       yield put(userListActions.deleteUserSuccess());
     }
@@ -60,6 +61,7 @@ export const callUserListAPI = {
     const response: ApiResponse<AddUser> = yield callAPI(UserListAPI.addUser, _userInfo);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
+      return response;
     } else {
       yield put(userListActions.addUserSuccess());
     }
@@ -77,6 +79,7 @@ export const callUserListAPI = {
 
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
+      return response;
     } else {
       const updatedUserList = updateLeavingTimeForUserList(response.getPayload(), myUserID);
       yield put(userListActions.getUserListSuccess(updatedUserList));
@@ -96,6 +99,7 @@ export const callUserListAPI = {
 
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
+      return response;
     } else {
       const updatedUserList = updateLeavingTimeForUserList(response.getPayload(), myUserID);
       yield put(userListActions.getUserListSuccess(updatedUserList));
@@ -119,6 +123,7 @@ export const callUserListAPI = {
     const response: ApiResponse<UpdateUserInfo> = yield callAPI(UserListAPI.updateUserInfo, userInfo, userID);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
+      return response;
     } else {
       yield put(userListActions.updateUserInfoSuccess());
     }
