@@ -3,7 +3,7 @@ import { userListActions } from '../../actions/userInfo/userListActions';
 import { getUserListIndexBasedOnUserID } from '../../components/common/utils';
 import { UserInfo } from '../../define/model';
 
-class _initialState {
+class InitialState {
   userList: UserInfo[] = [];
   selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
   inoperable: boolean = false;
@@ -12,7 +12,7 @@ class _initialState {
 // createSlice() で actions と reducers を一気に生成
 export const userListSlice = createSlice({
   name: 'userList',
-  initialState: new _initialState(),
+  initialState: new InitialState(),
   reducers: {},
   extraReducers: (builder) => {
     builder

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { UserInfo } from '../define/model';
 import { initialStartupModalActions } from '../actions/initialStartupModalActions';
 
-class _initialState {
+class InitialState {
   onHide: boolean = false;
   isChangeUser: boolean = false;
   disabled: boolean = true;
@@ -13,7 +13,7 @@ class _initialState {
 // createSlice() で actions と reducers を一気に生成
 export const initialStartupModalSlice = createSlice({
   name: 'initialStartupModal',
-  initialState: new _initialState(),
+  initialState: new InitialState(),
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -36,7 +36,7 @@ export const initialStartupModalSlice = createSlice({
         };
       })
       .addCase(initialStartupModalActions.initializeState, () => {
-        return new _initialState();
+        return new InitialState();
       })
       .addCase(initialStartupModalActions.changeUserInfo, (state, action) => {
         const targetName = action.payload.targetName;

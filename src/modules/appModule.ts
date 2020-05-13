@@ -11,7 +11,7 @@ interface Snackbar {
   queueMessages: Array<string>;
 }
 
-class _initialState {
+class InitialState {
   token: string = ''; // 認証トークン。このトークンを用いてAPIサーバにリクエストを行う
   isAuthenticated: boolean = false;
   isFetching: boolean = false;
@@ -32,7 +32,7 @@ class _initialState {
 // createSlice() で actions と reducers を一気に生成
 export const appSlice = createSlice({
   name: 'app',
-  initialState: new _initialState(),
+  initialState: new InitialState(),
   reducers: {},
   extraReducers: (builder) => {
     builder

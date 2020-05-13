@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Restroom, OfficeInfo } from '../../define/model';
 import { menuButtonGroupForOfficeInfoActions } from '../../actions/officeInfo/menuButtonGroupForOfficeInfoActions';
 
-class _initialState {
+class InitialState {
   restrooms = {
     rooms: [new Restroom()],
     isNoVacancyForMen: false,
@@ -16,7 +16,7 @@ class _initialState {
 // createSlice() で actions と reducers を一気に生成
 export const officeInfoSlice = createSlice({
   name: 'officeInfo',
-  initialState: new _initialState(),
+  initialState: new InitialState(),
   reducers: {},
   extraReducers: (builder) => {
     builder

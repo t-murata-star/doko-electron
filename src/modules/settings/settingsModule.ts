@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { settingActions } from '../../actions/settings/settingsActions';
 
-class _initialState {
+class InitialState {
   submitButtonsDisable = {
     user: {
       userChange: true,
@@ -20,12 +20,12 @@ class _initialState {
 // createSlice() で actions と reducers を一気に生成
 export const settingsSlice = createSlice({
   name: 'settings',
-  initialState: new _initialState(),
+  initialState: new InitialState(),
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(settingActions.initializeState, () => {
-        return new _initialState();
+        return new InitialState();
       })
       .addCase(settingActions.setUserId, (state, action) => {
         return {
