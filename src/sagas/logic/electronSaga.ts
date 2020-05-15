@@ -69,11 +69,11 @@ const electron = {
       updatedUserInfo.status = USER_STATUS_INFO.s02.status;
       updatedUserInfo.name = userInfo.name;
       yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserID);
-      closeApp();
     } catch (error) {
       console.error(error);
     } finally {
       yield put(appActions.isShowLoadingPopup(false));
+      closeApp();
     }
   },
 };
