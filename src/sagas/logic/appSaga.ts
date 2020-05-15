@@ -88,8 +88,10 @@ const app = {
        * appVersion が latestAppVersion と異なり、かつユーザ登録済み場合、アップデート後の初回起動と判断し、
        * 一度だけアップデート情報を表示する。
        */
-      if (userID !== -1 && electronStore.get('appVersion') !== APP_VERSION) {
-        showMessageBoxSync(appInfo.updateInfo);
+      if (electronStore.get('appVersion') !== APP_VERSION) {
+        if (userID !== -1) {
+          showMessageBoxSync(appInfo.updateInfo);
+        }
         electronStore.set('appVersion', APP_VERSION);
       }
 
@@ -97,8 +99,10 @@ const app = {
        * 登録済みユーザのみが対象
        * メッセージ表示が有効の場合、一度だけサーバで設定したメッセージを表示する。
        */
-      if (userID !== -1 && appInfo.message.enabled && appInfo.message.version !== electronStore.get('messageVersion')) {
-        showMessageBoxSync(appInfo.message.text);
+      if (appInfo.message.enabled && appInfo.message.version !== electronStore.get('messageVersion')) {
+        if (userID !== -1) {
+          showMessageBoxSync(appInfo.message.text);
+        }
         electronStore.set('messageVersion', appInfo.message.version);
       }
 
