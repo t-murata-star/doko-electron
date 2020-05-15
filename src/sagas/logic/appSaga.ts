@@ -163,8 +163,6 @@ const app = {
         yield put(userListActions.updateUserInfoState(userID, updatedUserInfoState));
       }
 
-      // TODO ユーザIDとkey,valueを引数に、stateのuserInfoを更新する reducerを追加する
-
       yield put(appActions.setMyUserId(userID));
 
       yield call(callAppAPI.sendHealthCheck);
