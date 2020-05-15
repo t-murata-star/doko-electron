@@ -4,7 +4,15 @@ import { callAppAPI } from '../api/callAppAPISaga';
 import { callUserListAPI } from '../api/callUserListAPISaga';
 import { showMessageBoxSync, showMessageBoxSyncWithReturnValue, getUserInfo } from '../../components/common/utils';
 import { AUTH_REQUEST_HEADERS, APP_NAME, APP_VERSION, APP_DOWNLOAD_URL, USER_STATUS_INFO } from '../../define';
-import { ApiResponse, UserInfoForUpdate, UserInfo, Login, GetAppInfo, GetUserListWithMyUserIDExists } from '../../define/model';
+import {
+  ApiResponse,
+  UserInfoForUpdate,
+  UserInfo,
+  Login,
+  GetAppInfo,
+  GetUserListWithMyUserIDExists,
+  UpdateUserInfo,
+} from '../../define/model';
 import { RootState } from '../../modules';
 import { callOfficeInfoAPI } from '../api/callOfficeInfoAPISaga';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
@@ -156,10 +164,15 @@ const app = {
       ) {
         updatedUserInfo.status = USER_STATUS_INFO.s01.status;
         updatedUserInfo.name = userInfo.name;
-        yield call(callUserListAPI.updateUserInfo, updatedUserInfo, userID);
+        const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
+          callUserListAPI.updateUserInfo,
+          updatedUserInfo,
+          userID
+        );
 
         // ローカルのstate（userList）を更新する
         updatedUserInfoState.status = updatedUserInfo.status;
+        updatedUserInfoState.updatedAt = updateUserInfoResponse.getPayload().updatedAt;
         yield put(userListActions.updateUserInfoState(userID, updatedUserInfoState));
       }
 

@@ -1,7 +1,7 @@
 import { takeEvery, select, put, call } from 'redux-saga/effects';
 import { RootState } from '../../../modules';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
-import { ApiResponse, UserInfoForUpdate, UpdateUserInfo, DeleteUser } from '../../../define/model';
+import { ApiResponse, UserInfoForUpdate, UpdateUserInfo, DeleteUser, UserInfo } from '../../../define/model';
 import $ from 'jquery';
 import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { appActions } from '../../../actions/appActions';
@@ -33,7 +33,9 @@ const userEditModal = {
       }
 
       // ローカルのstate（userList）を更新する
-      yield put(userListActions.updateUserInfoState(userID, userInfo));
+      const updatedUserInfoState: UserInfo = { ...state.userEditModalState.userInfo };
+      updatedUserInfoState.updatedAt = updateUserInfoResponse.getPayload().updatedAt;
+      yield put(userListActions.updateUserInfoState(userID, updatedUserInfoState));
       yield put(userEditModalActions.closeUserEditModal());
 
       const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
