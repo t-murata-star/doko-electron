@@ -212,7 +212,7 @@ class Settings extends React.Component<Props, any> {
                   disabled={settingState.submitButtonsDisable.user.email}
                   style={{ boxShadow: 'none' }}
                   className='settings-save-button'>
-                  保存
+                  登録
                 </Button>
               </ListGroup.Item>
             </ListGroup>
