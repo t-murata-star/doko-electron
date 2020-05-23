@@ -162,9 +162,10 @@ class InitialStartupModal extends React.Component<Props, any> {
               <MaterialUiButton
                 type='submit'
                 variant='contained'
+                color='primary'
                 disabled={this.props.state.initialStartupModalState.disabled}
                 style={{ float: 'right', boxShadow: 'none' }}
-                className='base-btn-contained initial-startup-modal-base-button'>
+                className='initial-startup-modal-base-button'>
                 登録
               </MaterialUiButton>
             </Form>
