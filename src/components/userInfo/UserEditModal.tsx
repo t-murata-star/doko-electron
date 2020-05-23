@@ -91,7 +91,7 @@ class UserEditModal extends React.Component<Props, any> {
                         size={'small'}
                         onClick={this.inputClear}
                         style={{ maxHeight: '28px', boxShadow: 'none' }}
-                        className='user-edit-modal-presence-button'
+                        className='base-btn-outline user-edit-modal-presence-button'
                         tabIndex={-1}>
                         在席
                       </Button>
@@ -160,19 +160,19 @@ class UserEditModal extends React.Component<Props, any> {
               <hr />
               <Button
                 variant='outlined'
-                color='default'
+                color='primary'
                 onClick={this.deleteUser}
                 style={{ float: 'left', boxShadow: 'none' }}
-                className='user-edit-modal-delete-button'
+                className='base-btn-outline user-edit-modal-delete-button'
                 tabIndex={-1}>
                 削除
               </Button>
               <div className='submit-button-group'>
                 <Button
                   variant='outlined'
-                  color='default'
+                  color='primary'
                   onClick={this.closeModal}
-                  className='user-edit-modal-base-button'
+                  className='base-btn-outline user-edit-modal-base-button'
                   style={{ boxShadow: 'none' }}>
                   キャンセル
                 </Button>

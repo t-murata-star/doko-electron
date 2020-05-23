@@ -8,11 +8,3 @@ export const baseTheme = createMuiTheme({
     },
   },
 });
-export const tabTheme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#228bfc',
-      dark: '#48a0ff',
-    },
-  },
-});

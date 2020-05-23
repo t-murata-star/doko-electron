@@ -2,7 +2,6 @@ import { Fade, Snackbar } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { ThemeProvider as MaterialThemeProvider } from '@material-ui/styles';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Props } from '../define/model';
@@ -11,7 +10,6 @@ import './App.scss';
 import { onSnackBarClose, onSnackBarExited } from './common/utils';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
-import { tabTheme } from './materialui/theme';
 import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
 import UserList from './userInfo/UserList';
@@ -82,20 +80,18 @@ class App extends React.Component<Props, any> {
         {myUserID !== -1 && (
           <Fade in={true}>
             <div>
-              <MaterialThemeProvider theme={tabTheme}>
-                <Tabs
-                  value={this.props.state.appState.activeIndex}
-                  variant='fullWidth'
-                  onChange={this.handleActiveIndexUpdate}
-                  style={{ minHeight: '35px' }}
-                  indicatorColor='primary'
-                  textColor='primary'
-                  className='app-tabs'>
-                  <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab' />
-                  <Tab label='社内情報' style={{ minHeight: '35px' }} className='app-tab' />
-                  <Tab label='設定' style={{ minHeight: '35px' }} className='app-tab' />
-                </Tabs>
-              </MaterialThemeProvider>
+              <Tabs
+                value={this.props.state.appState.activeIndex}
+                variant='fullWidth'
+                onChange={this.handleActiveIndexUpdate}
+                style={{ minHeight: '35px' }}
+                indicatorColor='primary'
+                textColor='primary'
+                className='app-tabs'>
+                <Tab label='社員情報' style={{ minHeight: '35px' }} className='app-tab' />
+                <Tab label='社内情報' style={{ minHeight: '35px' }} className='app-tab' />
+                <Tab label='設定' style={{ minHeight: '35px' }} className='app-tab' />
+              </Tabs>
             </div>
           </Fade>
         )}

@@ -53,3 +53,11 @@ body {
   padding: 10px 15px;
   margin: 5px;
 }
+.base-btn-outline {
+  color: rgba(0, 0, 0, 0.87);
+  border-color: rgba(0, 0, 0, 0.23);
+  &:hover {
+    border-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}

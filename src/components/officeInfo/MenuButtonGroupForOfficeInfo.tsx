@@ -27,7 +27,8 @@ class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
           onClick={this.reload}
           disabled={isShowLoadingPopup === true}
           fullWidth
-          style={{ boxShadow: 'none' }}>
+          style={{ boxShadow: 'none' }}
+          className='base-btn-outline'>
           <FontAwesomeIcon icon='sync' />
           &nbsp;再読込
         </Button>
