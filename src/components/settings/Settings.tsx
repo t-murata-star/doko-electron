@@ -6,9 +6,9 @@ import { Col, Form, ListGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { APP_NAME, EMAIL_DOMAIN } from '../../define';
 import { Props, UserInfo } from '../../define/model';
-import { appActionsAsyncLogic, appActions } from '../../actions/appActions';
+import { appActions } from '../../actions/appActions';
 import { settingActionsAsyncLogic, settingActions } from '../../actions/settings/settingsActions';
-import { getUserInfo, showSnackBar } from '../common/utils';
+import { getUserInfo, showSnackBar, regularExecution } from '../common/utils';
 import './Settings.css';
 
 const { remote } = window.require('electron');
@@ -88,7 +88,7 @@ class Settings extends React.Component<Props, any> {
     showSnackBar('success', '設定を保存しました。');
     dispatch(settingActions.changeDisabledSubmitButtonUserChange(true));
 
-    dispatch(appActionsAsyncLogic.sendHealthCheck());
+    regularExecution();
   };
 
   // メールアドレスの変更

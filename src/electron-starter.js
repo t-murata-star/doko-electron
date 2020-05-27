@@ -135,7 +135,7 @@ const createWindow = () => {
 
   // ウインドウがクローズされると発生するイベント
   mainWindow.on('closed', () => {
-    mainWindow = null;
+    mainWindow.destroy();
   });
 
   /**

@@ -7,14 +7,13 @@ import { connect } from 'react-redux';
 import { Props } from '../define/model';
 import { appActionsAsyncLogic } from '../actions/appActions';
 import './App.scss';
-import { onSnackBarClose, onSnackBarExited } from './common/utils';
+import { onSnackBarClose, onSnackBarExited, regularExecution } from './common/utils';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
 import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
 import UserList from './userInfo/UserList';
 import { electronActionsAsyncLogic } from '../actions/electronActions';
-import { HEALTH_CHECK_INTERVAL_MS } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
 
@@ -26,13 +25,7 @@ class App extends React.Component<Props, any> {
   async componentDidMount() {
     const { dispatch } = this.props;
     dispatch(appActionsAsyncLogic.login());
-
-    /**
-     * アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
-     */
-    setInterval(() => {
-      dispatch(appActionsAsyncLogic.sendHealthCheck());
-    }, HEALTH_CHECK_INTERVAL_MS);
+    regularExecution();
   }
 
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {

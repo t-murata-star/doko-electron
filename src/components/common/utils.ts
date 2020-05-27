@@ -1,8 +1,14 @@
 import { Color } from '@material-ui/lab/Alert';
 import store from '../../configureStore';
-import { APP_NAME } from '../../define';
+import {
+  APP_NAME,
+  MAIN_APP_VERSION,
+  HEALTH_CHECK_INTERVAL_MS,
+  VERSION_CHECK_INTERVAL_MS,
+  RENDERER_APP_VERSION,
+} from '../../define';
 import { UserInfo } from '../../define/model';
-import { appActions } from '../../actions/appActions';
+import { appActions, appActionsAsyncLogic } from '../../actions/appActions';
 const { remote } = window.require('electron');
 
 // ※戻り値の userInfo は userList の参照である事に注意
@@ -97,4 +103,30 @@ export const isAuthenticated = (statusCode: number): boolean => {
     default:
       return true;
   }
+};
+
+export const isLatestMainVersion = (latestVersion: string): boolean => {
+  return latestVersion === MAIN_APP_VERSION;
+};
+
+export const isLatestRendererVersion = (latestVersion: string): boolean => {
+  return latestVersion === RENDERER_APP_VERSION;
+};
+
+export const regularExecution = () => {
+  const dispatch: any = store.dispatch;
+
+  setInterval(() => {
+    const regularExecutionEnabled = store.getState().appState.regularExecutionEnabled;
+    if (regularExecutionEnabled.sendHealthCheck) {
+      dispatch(appActionsAsyncLogic.sendHealthCheck());
+    }
+  }, HEALTH_CHECK_INTERVAL_MS);
+
+  setInterval(() => {
+    const regularExecutionEnabled = store.getState().appState.regularExecutionEnabled;
+    if (regularExecutionEnabled.checkVersion) {
+      dispatch(appActionsAsyncLogic.checkVersion());
+    }
+  }, VERSION_CHECK_INTERVAL_MS);
 };

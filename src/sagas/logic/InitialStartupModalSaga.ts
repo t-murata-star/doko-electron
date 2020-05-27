@@ -2,7 +2,7 @@ import { takeEvery, call, put, select } from 'redux-saga/effects';
 import { callUserListAPI } from '../api/callUserListAPISaga';
 import { ApiResponse, UserInfoForUpdate, UserInfo, AddUser, UpdateUserInfo } from '../../define/model';
 import { getUserInfo } from '../../components/common/utils';
-import { APP_VERSION, USER_STATUS_INFO } from '../../define';
+import { MAIN_APP_VERSION, USER_STATUS_INFO } from '../../define';
 import { RootState } from '../../modules';
 import { callAppAPI } from '../api/callAppAPISaga';
 import { appActions } from '../../actions/appActions';
@@ -18,7 +18,7 @@ const initialStartupModal = {
       const state: RootState = yield select();
 
       const updatedUserInfo: UserInfo = { ...state.initialStartupModalState.userInfo };
-      updatedUserInfo.version = APP_VERSION;
+      updatedUserInfo.version = MAIN_APP_VERSION;
       updatedUserInfo.status = USER_STATUS_INFO.s01.status;
       const addUserResponse: ApiResponse<AddUser> = yield call(callUserListAPI.addUser, updatedUserInfo);
       if (addUserResponse.getIsError()) {
@@ -60,8 +60,8 @@ const initialStartupModal = {
       }
 
       const updatedUserInfo: UserInfoForUpdate = {};
-      if (userInfo.version !== APP_VERSION) {
-        updatedUserInfo.version = APP_VERSION;
+      if (userInfo.version !== MAIN_APP_VERSION) {
+        updatedUserInfo.version = MAIN_APP_VERSION;
         const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
           callUserListAPI.updateUserInfo,
           updatedUserInfo,

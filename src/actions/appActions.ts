@@ -64,11 +64,26 @@ export const appActions = {
       },
     };
   }),
+  regularSendHealthCheckEnabled: createAction(`app/regularSendHealthCheckEnabled`, (enabled: boolean) => {
+    return {
+      payload: {
+        enabled,
+      },
+    };
+  }),
+  regularCheckVersionEnabled: createAction(`app/regularCheckVersionEnabled`, (enabled: boolean) => {
+    return {
+      payload: {
+        enabled,
+      },
+    };
+  }),
 };
 
 export const appActionsAsyncLogic = {
   login: createAction(`app/logic/login`),
   sendHealthCheck: createAction(`app/logic/sendHealthCheck`),
+  checkVersion: createAction(`app/logic/checkVersion`),
   clickTabbar: createAction(`app/logic/clickTabbar`, (activeIndex: number) => {
     return {
       payload: {

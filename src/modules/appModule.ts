@@ -27,6 +27,10 @@ class InitialState {
     queueMessages: new Array<string>(),
   };
   isShowLoadingPopup: boolean = false;
+  regularExecutionEnabled = {
+    sendHealthCheck: true,
+    checkVersion: true,
+  };
 }
 
 // createSlice() で actions と reducers を一気に生成
@@ -135,6 +139,24 @@ export const appSlice = createSlice({
         return {
           ...state,
           isShowLoadingPopup: action.payload.isShowLoadingPopup,
+        };
+      })
+      .addCase(appActions.regularSendHealthCheckEnabled, (state, action) => {
+        return {
+          ...state,
+          regularExecutionEnabled: {
+            ...state.regularExecutionEnabled,
+            sendHealthCheck: action.payload.enabled,
+          },
+        };
+      })
+      .addCase(appActions.regularCheckVersionEnabled, (state, action) => {
+        return {
+          ...state,
+          regularExecutionEnabled: {
+            ...state.regularExecutionEnabled,
+            checkVersion: action.payload.enabled,
+          },
         };
       });
   },

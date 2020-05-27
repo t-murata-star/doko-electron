@@ -2,8 +2,14 @@ import { takeEvery, put, call, select } from 'redux-saga/effects';
 import { appActionsAsyncLogic, appActions } from '../../actions/appActions';
 import { callAppAPI } from '../api/callAppAPISaga';
 import { callUserListAPI } from '../api/callUserListAPISaga';
-import { showMessageBoxSync, showMessageBoxSyncWithReturnValue, getUserInfo } from '../../components/common/utils';
-import { AUTH_REQUEST_HEADERS, APP_NAME, APP_VERSION, APP_DOWNLOAD_URL, USER_STATUS_INFO } from '../../define';
+import {
+  showMessageBoxSync,
+  showMessageBoxSyncWithReturnValue,
+  getUserInfo,
+  isLatestMainVersion,
+  isLatestRendererVersion,
+} from '../../components/common/utils';
+import { AUTH_REQUEST_HEADERS, APP_NAME, MAIN_APP_VERSION, APP_DOWNLOAD_URL, USER_STATUS_INFO } from '../../define';
 import {
   ApiResponse,
   UserInfoForUpdate,
@@ -32,6 +38,17 @@ const app = {
       // メインプロセスに、レンダラープロセスに接続できたことを伝える
       ipcRenderer.send('connected', true);
 
+      const mainVersion = electronStore.get('appVersion');
+      if (mainVersion !== void 0) {
+        electronStore.set('version.main', mainVersion);
+        electronStore.delete('appVersion');
+      }
+      const rendererVersion = electronStore.get('messageVersion');
+      if (rendererVersion !== void 0) {
+        electronStore.set('version.renderer', rendererVersion);
+        electronStore.delete('messageVersion');
+      }
+
       // ログイン処理（認証トークン取得）
       const loginResponse: ApiResponse<Login> = yield call(callAppAPI.login);
       if (loginResponse.getIsError()) {
@@ -46,14 +63,14 @@ const app = {
       // お知らせチェック
       const getAppInfoResponse: ApiResponse<GetAppInfo> = yield call(callAppAPI.getAppInfo);
       const appInfo = getAppInfoResponse.getPayload();
-      const updateAppInfoMessage = `新しい${APP_NAME}が公開されました。\nVersion ${appInfo.latestAppVersion}\nお手数ですがアップデートをお願いします。`;
+      const updateAppInfoMessage = `新しい${APP_NAME}が公開されました。\nVersion ${appInfo.main.latestVersion}\nお手数ですがアップデートをお願いします。`;
 
       /**
        * バージョンチェック
        * 実行しているアプリケーションのバージョンが最新ではない場合、
        * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
        */
-      if (appInfo.latestAppVersion !== APP_VERSION) {
+      if (isLatestMainVersion(appInfo.main.latestVersion) === false) {
         showMessageBoxSync(updateAppInfoMessage);
         remote.shell.openExternal(APP_DOWNLOAD_URL);
         closeApp();
@@ -93,25 +110,27 @@ const app = {
       }
 
       /**
-       * appVersion が latestAppVersion と異なり、かつユーザ登録済み場合、アップデート後の初回起動と判断し、
-       * 一度だけアップデート情報を表示する。
+       * 設定ファイル内のバージョン(main)とmainのバージョンが異なる場合、
+       * アップデート後の初回起動と判断し、一度だけアップデート情報を表示する
        */
-      if (electronStore.get('appVersion') !== APP_VERSION) {
+      if (electronStore.get('version.main') !== MAIN_APP_VERSION) {
+        // ユーザ登録済み場合
         if (userID !== -1) {
-          showMessageBoxSync(appInfo.updateInfo);
+          showMessageBoxSync(appInfo.main.updatedContents);
         }
-        electronStore.set('appVersion', APP_VERSION);
+        electronStore.set('version.main', MAIN_APP_VERSION);
       }
 
       /**
-       * 登録済みユーザのみが対象
-       * メッセージ表示が有効の場合、一度だけサーバで設定したメッセージを表示する。
+       * 設定ファイル内のバージョン(renderer)とサーバで定義された最新バージョンが異なる場合、
+       * 一度だけアップデート情報を表示する。
        */
-      if (appInfo.message.enabled && appInfo.message.version !== electronStore.get('messageVersion')) {
+      if (electronStore.get('version.renderer') !== appInfo.renderer.latestVersion) {
+        // ユーザ登録済み場合
         if (userID !== -1) {
-          showMessageBoxSync(appInfo.message.text);
+          showMessageBoxSync(appInfo.renderer.updatedContents);
         }
-        electronStore.set('messageVersion', appInfo.message.version);
+        electronStore.set('version.renderer', appInfo.renderer.latestVersion);
       }
 
       /**
@@ -146,8 +165,8 @@ const app = {
       const updatedUserInfo: UserInfoForUpdate = {};
       // ローカルのstate（userList）を更新するために用いる
       let updatedUserInfoState: UserInfo = { ...userInfo };
-      if (userInfo.version !== APP_VERSION) {
-        updatedUserInfo.version = APP_VERSION;
+      if (userInfo.version !== MAIN_APP_VERSION) {
+        updatedUserInfo.version = MAIN_APP_VERSION;
         // アプリバージョンのみ更新（更新日時も更新されない）
         yield call(callUserListAPI.updateUserInfo, updatedUserInfo, userID);
 
@@ -187,9 +206,53 @@ const app = {
     }
   },
 
+  // アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
   sendHealthCheck: function* () {
     try {
       yield call(callAppAPI.sendHealthCheck);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  checkVersion: function* () {
+    try {
+      /**
+       * ダイアログ表示中もsetIntervalが動いており、並列実行されると
+       * ダイアログが連続で表示される等の問題が生じるため、
+       * saga実行中の多重実行を防止する
+       */
+      yield put(appActions.regularCheckVersionEnabled(false));
+
+      // お知らせチェック
+      const getAppInfoResponse: ApiResponse<GetAppInfo> = yield call(callAppAPI.getAppInfo);
+      const appInfo = getAppInfoResponse.getPayload();
+
+      /**
+       * バージョンチェック(main)
+       * 実行しているアプリケーションのバージョンが最新ではない場合、
+       * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
+       */
+      if (isLatestMainVersion(appInfo.main.latestVersion) === false) {
+        const updatedContents = `新しい${APP_NAME}が公開されました。\nVersion ${appInfo.main.latestVersion}\nお手数ですがアップデートをお願いします。`;
+        showMessageBoxSync(updatedContents);
+        remote.shell.openExternal(APP_DOWNLOAD_URL);
+        closeApp();
+        return;
+      }
+
+      /**
+       * バージョンチェック(renderer)
+       * 画面を更新する(WEBアプリのアップデート)
+       */
+      if (isLatestRendererVersion(appInfo.renderer.latestVersion) === false) {
+        const updatedContents = `アプリケーションがアップデートされました。\n${APP_NAME}を再起動します。`;
+        showMessageBoxSync(updatedContents);
+        ipcRenderer.send('reload');
+        return;
+      }
+
+      yield put(appActions.regularCheckVersionEnabled(true));
     } catch (error) {
       console.error(error);
     }

@@ -55,12 +55,13 @@ export interface UserInfoForUpdate {
  */
 
 export class AppInfo {
-  latestAppVersion = '';
-  updateInfo = '';
-  message = {
-    enabled: false,
-    version: '',
-    text: '',
+  main = {
+    latestVersion: '',
+    updatedContents: '',
+  };
+  renderer = {
+    latestVersion: '',
+    updatedContents: '',
   };
 }
 
