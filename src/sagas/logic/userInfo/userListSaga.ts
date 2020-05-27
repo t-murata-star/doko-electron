@@ -1,13 +1,15 @@
-import { takeEvery, put, call, delay } from 'redux-saga/effects';
+import { takeEvery, put, call, delay, select } from 'redux-saga/effects';
 import { userListActionsAsyncLogic, userListActions } from '../../../actions/userInfo/userListActions';
 import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
 import { ApiResponse, UpdateUserInfo } from '../../../define/model';
 import { appActions } from '../../../actions/appActions';
+import { RootState } from '../../../modules';
 
 const userList = {
   updateUserInfoOrder: function* (action: ReturnType<typeof userListActionsAsyncLogic.updateUserInfoOrder>) {
     try {
+      const state: RootState = yield select();
       yield put(appActions.isShowLoadingPopup(true));
       const rowComponent = action.payload.rowComponent;
       const rows = rowComponent.getTable().getRows();
@@ -33,8 +35,11 @@ const userList = {
           yield put(userListActions.reRenderUserList());
           return;
         }
-        yield delay(50);
+        yield delay(30);
       }
+
+      const myUserID = state.appState.myUserID;
+      yield call(callUserListAPI.getUserListWithMyUserIDExists, myUserID);
     } catch (error) {
       console.error(error);
     } finally {
