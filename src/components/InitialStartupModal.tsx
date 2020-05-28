@@ -69,7 +69,7 @@ class InitialStartupModal extends React.Component<Props, any> {
   render() {
     const onHide = this.props.state.initialStartupModalState.onHide;
     const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
-    const myUserID = this.props.state.initialStartupModalState.selectedUserId;
+    const myUserId = this.props.state.initialStartupModalState.selectedUserId;
 
     return (
       <Modal
@@ -96,7 +96,7 @@ class InitialStartupModal extends React.Component<Props, any> {
                       <div>
                         <TextField
                           select
-                          value={myUserID}
+                          value={myUserId}
                           onChange={this.onUserChange}
                           fullWidth
                           size={'small'}

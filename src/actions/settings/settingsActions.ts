@@ -2,10 +2,10 @@ import { createAction } from '@reduxjs/toolkit';
 
 export const settingActions = {
   initializeState: createAction(`settings/initializeState`),
-  setUserId: createAction(`settings/setUserId`, (userID: number) => {
+  setUserId: createAction(`settings/setUserId`, (userId: number) => {
     return {
       payload: {
-        userID,
+        userId,
       },
     };
   }),

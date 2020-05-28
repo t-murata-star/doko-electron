@@ -16,7 +16,7 @@ class InitialState {
   isAuthenticated: boolean = false;
   isFetching: boolean = false;
   isError: boolean = false;
-  myUserID: number = -1;
+  myUserId: number = -1;
   appInfo: AppInfo = new AppInfo();
   activeIndex: number = 0;
   snackbar: Snackbar = {
@@ -92,7 +92,7 @@ export const appSlice = createSlice({
       .addCase(appActions.setMyUserId, (state, action) => {
         return {
           ...state,
-          myUserID: action.payload.myUserID,
+          myUserId: action.payload.myUserId,
         };
       })
       .addCase(appActions.setActiveIndex, (state, action) => {

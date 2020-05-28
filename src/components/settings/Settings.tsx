@@ -22,14 +22,14 @@ class Settings extends React.Component<Props, any> {
     // state を初期化
     dispatch(settingActions.initializeState());
 
-    const myUserID = this.props.state.appState.myUserID;
+    const myUserId = this.props.state.appState.myUserId;
 
     // ユーザ変更(プルダウンの初期選択で自分を選択する)
-    dispatch(settingActions.setUserId(myUserID));
+    dispatch(settingActions.setUserId(myUserId));
 
     // メールアドレス
     const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserId);
     if (userInfo !== null) {
       dispatch(settingActions.setEmail(userInfo.email));
     }
@@ -46,18 +46,18 @@ class Settings extends React.Component<Props, any> {
   // ユーザ変更
   onUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
-    const myUserID = this.props.state.appState.myUserID;
-    const changedUserID = parseInt(event.target.value);
+    const myUserId = this.props.state.appState.myUserId;
+    const changedUserId = parseInt(event.target.value);
     const userList = this.props.state.userListState.userList;
 
-    const userInfo = getUserInfo(userList, changedUserID);
+    const userInfo = getUserInfo(userList, changedUserId);
     if (userInfo === null) {
       return;
     }
 
-    dispatch(settingActions.setUserId(changedUserID));
+    dispatch(settingActions.setUserId(changedUserId));
 
-    if (changedUserID !== -1 && changedUserID !== myUserID) {
+    if (changedUserId !== -1 && changedUserId !== myUserId) {
       dispatch(settingActions.changeDisabledSubmitButtonUserChange(false));
     }
   };
@@ -66,25 +66,25 @@ class Settings extends React.Component<Props, any> {
   onSaveSettingsForUserChange = async () => {
     const { dispatch } = this.props;
     const settingState = this.props.state.settingsState;
-    const oldMyUserID = this.props.state.appState.myUserID;
-    let changedUserID = settingState.user.userID;
+    const oldMyUserId = this.props.state.appState.myUserId;
+    let changedUserId = settingState.user.userId;
 
-    if (changedUserID === -1 || changedUserID === oldMyUserID) {
+    if (changedUserId === -1 || changedUserId === oldMyUserId) {
       return;
     }
 
     // メールアドレス
-    const myUserID = changedUserID;
+    const myUserId = changedUserId;
     const userList = this.props.state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserId);
     if (userInfo === null) {
       showSnackBar('error', '通信に失敗しました。', null);
       return;
     }
 
-    electronStore.set('userID', changedUserID);
+    electronStore.set('userId', changedUserId);
     dispatch(settingActions.setEmail(userInfo.email));
-    dispatch(appActions.setMyUserId(myUserID));
+    dispatch(appActions.setMyUserId(myUserId));
     showSnackBar('success', '設定を保存しました。');
     dispatch(settingActions.changeDisabledSubmitButtonUserChange(true));
 
@@ -131,9 +131,9 @@ class Settings extends React.Component<Props, any> {
   };
 
   render() {
-    const myUserID = this.props.state.appState.myUserID;
+    const myUserId = this.props.state.appState.myUserId;
     const userList = JSON.parse(JSON.stringify(this.props.state.userListState.userList));
-    const userInfo = getUserInfo(userList, myUserID) || new UserInfo();
+    const userInfo = getUserInfo(userList, myUserId) || new UserInfo();
     const settingState = this.props.state.settingsState;
 
     return (
@@ -152,7 +152,7 @@ class Settings extends React.Component<Props, any> {
                     <TextField
                       select
                       name='user-change'
-                      value={settingState.user.userID}
+                      value={settingState.user.userId}
                       onChange={this.onUserChange}
                       style={{ width: 250 }}
                       size={'small'}
@@ -165,7 +165,7 @@ class Settings extends React.Component<Props, any> {
                           return a.order - b.order;
                         })
                         .map((userInfo: UserInfo, index: number) => (
-                          <option key={index} value={userInfo.id} disabled={myUserID === userInfo.id}>
+                          <option key={index} value={userInfo.id} disabled={myUserId === userInfo.id}>
                             {userInfo.name}
                           </option>
                         ))}

@@ -110,6 +110,6 @@ export interface AddUser extends UserInfo {}
 
 export interface GetUserList extends UserInfo {}
 
-export interface GetUserListWithMyUserIDExists extends UserInfo {}
+export interface GetUserListWithMyUserIdExists extends UserInfo {}
 
 export interface UpdateUserInfo extends UserInfo {}

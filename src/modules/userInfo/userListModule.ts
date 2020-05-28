@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { userListActions } from '../../actions/userInfo/userListActions';
-import { getUserListIndexBasedOnUserID } from '../../components/common/utils';
+import { getUserListIndexByUserId } from '../../components/common/utils';
 import { UserInfo } from '../../define/model';
 
 class InitialState {
   userList: UserInfo[] = [];
-  selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIDを格納する
+  selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIdを格納する
   inoperable: boolean = false;
 }
 
@@ -57,7 +57,7 @@ export const userListSlice = createSlice({
       })
       .addCase(userListActions.updateUserInfoState, (state, action) => {
         const userList: UserInfo[] = [...state.userList];
-        const index = getUserListIndexBasedOnUserID(userList, action.payload.userID);
+        const index = getUserListIndexByUserId(userList, action.payload.userId);
         userList[index] = action.payload.userInfo;
         return {
           ...state,

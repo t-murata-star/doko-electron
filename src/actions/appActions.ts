@@ -22,10 +22,10 @@ export const appActions = {
       },
     };
   }),
-  setMyUserId: createAction(`app/setMyUserId`, (myUserID: number) => {
+  setMyUserId: createAction(`app/setMyUserId`, (myUserId: number) => {
     return {
       payload: {
-        myUserID,
+        myUserId,
       },
     };
   }),

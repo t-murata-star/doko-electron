@@ -30,9 +30,9 @@ export const callAppAPI = {
 
   sendHealthCheck: function* () {
     const state = yield select();
-    const myUserID = state.appState.myUserID;
+    const myUserId = state.appState.myUserId;
     const userList = state.userListState.userList;
-    const userInfo = getUserInfo(userList, myUserID);
+    const userInfo = getUserInfo(userList, myUserId);
     if (userInfo === null) {
       return;
     }
@@ -40,7 +40,7 @@ export const callAppAPI = {
     const updatedUserInfo: any = {};
     updatedUserInfo.healthCheckAt = '';
 
-    const response: ApiResponse<SendHealthCheck> = yield callAPI(appAPI.sendHealthCheck, updatedUserInfo, myUserID);
+    const response: ApiResponse<SendHealthCheck> = yield callAPI(appAPI.sendHealthCheck, updatedUserInfo, myUserId);
     if (!response.getIsError()) {
       console.log('Send healthCheck.');
     }

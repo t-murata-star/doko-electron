@@ -25,19 +25,19 @@ const initialStartupModal = {
         yield put(initialStartupModalActions.disableSubmitButton(false));
         return;
       }
-      const myUserID = addUserResponse.getPayload().id;
+      const myUserId = addUserResponse.getPayload().id;
 
-      // userIDを設定ファイルに登録（既に存在する場合は上書き）
-      electronStore.set('userID', myUserID);
+      // userIdを設定ファイルに登録（既に存在する場合は上書き）
+      electronStore.set('userId', myUserId);
 
       // orderパラメータをidと同じ値に更新する
       const addedUserInfo: UserInfoForUpdate = {};
-      addedUserInfo.order = myUserID;
+      addedUserInfo.order = myUserId;
 
-      yield call(callUserListAPI.updateUserInfo, addedUserInfo, myUserID);
-      yield call(callUserListAPI.getUserList, myUserID);
+      yield call(callUserListAPI.updateUserInfo, addedUserInfo, myUserId);
+      yield call(callUserListAPI.getUserList, myUserId);
       yield closeModal();
-      yield put(appActions.setMyUserId(myUserID));
+      yield put(appActions.setMyUserId(myUserId));
       yield call(callAppAPI.sendHealthCheck);
       yield put(initialStartupModalActions.initializeField());
     } catch (error) {
@@ -51,9 +51,9 @@ const initialStartupModal = {
     try {
       yield put(appActions.isShowLoadingPopup(true));
       const state: RootState = yield select();
-      const myUserID = state.initialStartupModalState.selectedUserId;
+      const myUserId = state.initialStartupModalState.selectedUserId;
       const userList = state.userListState.userList;
-      const userInfo = getUserInfo(userList, myUserID);
+      const userInfo = getUserInfo(userList, myUserId);
 
       if (userInfo === null) {
         return;
@@ -65,7 +65,7 @@ const initialStartupModal = {
         const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
           callUserListAPI.updateUserInfo,
           updatedUserInfo,
-          myUserID
+          myUserId
         );
         if (updateUserInfoResponse.getIsError()) {
           return;
@@ -83,17 +83,17 @@ const initialStartupModal = {
         const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
           callUserListAPI.updateUserInfo,
           updatedUserInfo,
-          myUserID
+          myUserId
         );
         if (updateUserInfoResponse.getIsError()) {
           return;
         }
       }
 
-      electronStore.set('userID', myUserID);
-      yield call(callUserListAPI.getUserList, myUserID);
+      electronStore.set('userId', myUserId);
+      yield call(callUserListAPI.getUserList, myUserId);
       yield closeModal();
-      yield put(appActions.setMyUserId(myUserID));
+      yield put(appActions.setMyUserId(myUserId));
       yield call(callAppAPI.sendHealthCheck);
       yield put(initialStartupModalActions.initializeField());
     } catch (error) {

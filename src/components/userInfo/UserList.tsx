@@ -128,7 +128,7 @@ class UserList extends React.Component<Props, any> {
     }
 
     // 自分の名前を太字にする
-    if (rowData.id === this.props.state.appState.myUserID) {
+    if (rowData.id === this.props.state.appState.myUserId) {
       row.getCell('name').getElement().style.fontWeight = 'bold';
     }
   };

@@ -23,8 +23,8 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
   showUserEditModal = () => {
     const { dispatch } = this.props;
     const userList = this.props.state.userListState.userList;
-    const myUserID = this.props.state.appState.myUserID;
-    const userInfo = getUserInfo(userList, myUserID);
+    const myUserId = this.props.state.appState.myUserId;
+    const userInfo = getUserInfo(userList, myUserId);
 
     if (userInfo === null) {
       return;
@@ -40,8 +40,8 @@ class MenuButtonGroupForUserList extends React.Component<Props, any> {
   render() {
     const userList = this.props.state.userListState.userList;
     const appState = this.props.state.appState;
-    const myUserID = appState.myUserID;
-    const userInfo = getUserInfo(userList, myUserID);
+    const myUserId = appState.myUserId;
+    const userInfo = getUserInfo(userList, myUserId);
     const isShowLoadingPopup = this.props.state.appState.isShowLoadingPopup;
 
     return (

@@ -38,8 +38,8 @@ const userList = {
         yield delay(30);
       }
 
-      const myUserID = state.appState.myUserID;
-      yield call(callUserListAPI.getUserListWithMyUserIDExists, myUserID);
+      const myUserId = state.appState.myUserId;
+      yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
     } catch (error) {
       console.error(error);
     } finally {

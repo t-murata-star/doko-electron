@@ -11,8 +11,8 @@ const menuButtonGroupForUserList = {
       const state: RootState = yield select();
       const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
       // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
-      const myUserID = state.appState.myUserID;
-      yield call(callUserListAPI.getUserListWithMyUserIDExists, myUserID);
+      const myUserId = state.appState.myUserId;
+      yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
       $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
     } catch (error) {
       console.error(error);

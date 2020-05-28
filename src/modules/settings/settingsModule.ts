@@ -9,7 +9,7 @@ class InitialState {
     },
   };
   user = {
-    userID: -1,
+    userId: -1,
     email: '',
   };
   system = {
@@ -32,7 +32,7 @@ export const settingsSlice = createSlice({
           ...state,
           user: {
             ...state.user,
-            userID: action.payload.userID,
+            userId: action.payload.userId,
           },
         };
       })

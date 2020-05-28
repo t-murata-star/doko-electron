@@ -55,7 +55,7 @@ class App extends React.Component<Props, any> {
   };
 
   render() {
-    const myUserID = this.props.state.appState.myUserID;
+    const myUserId = this.props.state.appState.myUserId;
     const appState = this.props.state.appState;
     return (
       <div>
@@ -70,7 +70,7 @@ class App extends React.Component<Props, any> {
           <Alert severity={appState.snackbar.severity}>{appState.snackbar.message}</Alert>
         </Snackbar>
         <InitialStartupModal />
-        {myUserID !== -1 && (
+        {myUserId !== -1 && (
           <Fade in={true}>
             <div>
               <Tabs
@@ -89,21 +89,21 @@ class App extends React.Component<Props, any> {
           </Fade>
         )}
         <div className='contents'>
-          {myUserID !== -1 && this.props.state.appState.activeIndex === 0 && (
+          {myUserId !== -1 && this.props.state.appState.activeIndex === 0 && (
             <Fade in={true}>
               <div>
                 <UserList />
               </div>
             </Fade>
           )}
-          {myUserID !== -1 && this.props.state.appState.activeIndex === 1 && (
+          {myUserId !== -1 && this.props.state.appState.activeIndex === 1 && (
             <Fade in={true}>
               <div>
                 <OfficeInfo />
               </div>
             </Fade>
           )}
-          {myUserID !== -1 && this.props.state.appState.activeIndex === 2 && (
+          {myUserId !== -1 && this.props.state.appState.activeIndex === 2 && (
             <Fade in={true}>
               <div>
                 <Settings />

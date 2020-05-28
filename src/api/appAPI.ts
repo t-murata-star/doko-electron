@@ -17,8 +17,8 @@ export const appAPI = {
     });
   },
 
-  sendHealthCheck: async (userInfo: UserInfo, userID: number) => {
-    return await fetch(`${API_URL}/userList/${userID}`, {
+  sendHealthCheck: async (userInfo: UserInfo, userId: number) => {
+    return await fetch(`${API_URL}/userList/${userId}`, {
       method: 'PATCH',
       headers: AUTH_REQUEST_HEADERS,
       body: JSON.stringify(userInfo),

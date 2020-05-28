@@ -6,7 +6,7 @@ import { userEditModalActions } from '../../actions/userInfo/userEditModalAction
 class InitialState {
   onHide: boolean = false;
   disabled: boolean = true;
-  userID: number = -1;
+  userId: number = -1;
   userInfo: UserInfo = new UserInfo();
 }
 

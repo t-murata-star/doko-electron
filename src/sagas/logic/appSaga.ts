@@ -8,6 +8,7 @@ import {
   getUserInfo,
   isLatestMainVersion,
   isLatestRendererVersion,
+  migration,
 } from '../../components/common/utils';
 import { AUTH_REQUEST_HEADERS, APP_NAME, MAIN_APP_VERSION, APP_DOWNLOAD_URL, USER_STATUS_INFO } from '../../define';
 import {
@@ -16,7 +17,7 @@ import {
   UserInfo,
   Login,
   GetAppInfo,
-  GetUserListWithMyUserIDExists,
+  GetUserListWithMyUserIdExists,
   UpdateUserInfo,
 } from '../../define/model';
 import { RootState } from '../../modules';
@@ -33,21 +34,12 @@ const app = {
     try {
       yield put(appActions.isShowLoadingPopup(true));
 
-      const userID: number = (electronStore.get('userID') as number | undefined) || -1;
+      migration();
+
+      const userId: number = (electronStore.get('userId') as number | undefined) || -1;
 
       // メインプロセスに、レンダラープロセスに接続できたことを伝える
       ipcRenderer.send('connected', true);
-
-      const mainVersion = electronStore.get('appVersion');
-      if (mainVersion !== void 0) {
-        electronStore.set('version.main', mainVersion);
-        electronStore.delete('appVersion');
-      }
-      const rendererVersion = electronStore.get('messageVersion');
-      if (rendererVersion !== void 0) {
-        electronStore.set('version.renderer', rendererVersion);
-        electronStore.delete('messageVersion');
-      }
 
       // ログイン処理（認証トークン取得）
       const loginResponse: ApiResponse<Login> = yield call(callAppAPI.login);
@@ -115,7 +107,7 @@ const app = {
        */
       if (electronStore.get('version.main') !== MAIN_APP_VERSION) {
         // ユーザ登録済み場合
-        if (userID !== -1) {
+        if (userId !== -1) {
           showMessageBoxSync(appInfo.main.updatedContents);
         }
         electronStore.set('version.main', MAIN_APP_VERSION);
@@ -127,7 +119,7 @@ const app = {
        */
       if (electronStore.get('version.renderer') !== appInfo.renderer.latestVersion) {
         // ユーザ登録済み場合
-        if (userID !== -1) {
+        if (userId !== -1) {
           showMessageBoxSync(appInfo.renderer.updatedContents);
         }
         electronStore.set('version.renderer', appInfo.renderer.latestVersion);
@@ -135,23 +127,23 @@ const app = {
 
       /**
        * 初回起動チェック
-       * 設定ファイルが存在しない、もしくはuserIDが設定されていない場合は登録画面を表示する
+       * 設定ファイルが存在しない、もしくはuserIdが設定されていない場合は登録画面を表示する
        */
-      if (userID === -1) {
+      if (userId === -1) {
         yield put(initialStartupModalActions.showModal(true));
         return;
       }
 
-      const getUserListResponse: ApiResponse<GetUserListWithMyUserIDExists[]> = yield call(
-        callUserListAPI.getUserListWithMyUserIDExists,
-        userID
+      const getUserListResponse: ApiResponse<GetUserListWithMyUserIdExists[]> = yield call(
+        callUserListAPI.getUserListWithMyUserIdExists,
+        userId
       );
       if (getUserListResponse.getIsError()) {
         return;
       }
 
       const userList = getUserListResponse.getPayload();
-      const userInfo = getUserInfo(userList, userID);
+      const userInfo = getUserInfo(userList, userId);
 
       /**
        * サーバ上に自分の情報が存在するかどうかチェック
@@ -168,11 +160,11 @@ const app = {
       if (userInfo.version !== MAIN_APP_VERSION) {
         updatedUserInfo.version = MAIN_APP_VERSION;
         // アプリバージョンのみ更新（更新日時も更新されない）
-        yield call(callUserListAPI.updateUserInfo, updatedUserInfo, userID);
+        yield call(callUserListAPI.updateUserInfo, updatedUserInfo, userId);
 
         // ローカルのstate（userList）を更新する
         updatedUserInfoState.version = updatedUserInfo.version;
-        yield put(userListActions.updateUserInfoState(userID, updatedUserInfoState));
+        yield put(userListActions.updateUserInfoState(userId, updatedUserInfoState));
       }
 
       // 状態を「在席」に更新する（更新日時も更新される）
@@ -186,16 +178,16 @@ const app = {
         const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
           callUserListAPI.updateUserInfo,
           updatedUserInfo,
-          userID
+          userId
         );
 
         // ローカルのstate（userList）を更新する
         updatedUserInfoState.status = updatedUserInfo.status;
         updatedUserInfoState.updatedAt = updateUserInfoResponse.getPayload().updatedAt;
-        yield put(userListActions.updateUserInfoState(userID, updatedUserInfoState));
+        yield put(userListActions.updateUserInfoState(userId, updatedUserInfoState));
       }
 
-      yield put(appActions.setMyUserId(userID));
+      yield put(appActions.setMyUserId(userId));
 
       yield call(callAppAPI.sendHealthCheck);
       yield put(appActions.isShowLoadingPopup(true));
@@ -263,7 +255,7 @@ const app = {
       yield put(appActions.isShowLoadingPopup(true));
 
       const state: RootState = yield select();
-      const myUserID = state.appState.myUserID;
+      const myUserId = state.appState.myUserId;
       const activeIndex = action.payload.activeIndex;
       yield put(appActions.setActiveIndex(activeIndex));
 
@@ -275,7 +267,7 @@ const app = {
       switch (activeIndex) {
         // 社内情報タブを選択
         case 0:
-          yield call(callUserListAPI.getUserListWithMyUserIDExists, myUserID);
+          yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
           break;
 
         // 社員情報タブを選択

@@ -14,7 +14,7 @@ const userEditModal = {
       yield put(appActions.isShowLoadingPopup(true));
       const state: RootState = yield select();
       const userInfo = state.userEditModalState.userInfo;
-      const userID = userInfo.id;
+      const userId = userInfo.id;
 
       const updatedUserInfo: UserInfoForUpdate = {};
       updatedUserInfo.name = userInfo.name;
@@ -25,7 +25,7 @@ const userEditModal = {
       const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
         callUserListAPI.updateUserInfo,
         updatedUserInfo,
-        userID
+        userId
       );
       if (updateUserInfoResponse.getIsError()) {
         yield put(userEditModalActions.enableSubmitButton());
@@ -35,7 +35,7 @@ const userEditModal = {
       // ローカルのstate（userList）を更新する
       const updatedUserInfoState: UserInfo = { ...state.userEditModalState.userInfo };
       updatedUserInfoState.updatedAt = updateUserInfoResponse.getPayload().updatedAt;
-      yield put(userListActions.updateUserInfoState(userID, updatedUserInfoState));
+      yield put(userListActions.updateUserInfoState(userId, updatedUserInfoState));
       yield put(userEditModalActions.closeUserEditModal());
 
       const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
@@ -67,8 +67,8 @@ const userEditModal = {
       yield put(userEditModalActions.closeUserEditModal());
 
       const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
-      const myUserID = state.appState.myUserID;
-      yield call(callUserListAPI.getUserListWithMyUserIDExists, myUserID);
+      const myUserId = state.appState.myUserId;
+      yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
       $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
     } catch (error) {
       console.error(error);

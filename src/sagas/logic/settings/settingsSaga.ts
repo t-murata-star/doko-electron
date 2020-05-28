@@ -12,14 +12,14 @@ const settings = {
       yield put(appActions.isShowLoadingPopup(true));
       const state: RootState = yield select();
       const settingState = state.settingsState;
-      const myUserID = state.appState.myUserID;
+      const myUserId = state.appState.myUserId;
       const updatedUserInfo: UserInfoForUpdate = {};
 
       updatedUserInfo['email'] = settingState.user.email;
       const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
         callUserListAPI.updateUserInfo,
         updatedUserInfo,
-        myUserID
+        myUserId
       );
       if (updateUserInfoResponse.getIsError() === false) {
         showSnackBar('success', '設定を保存しました。');

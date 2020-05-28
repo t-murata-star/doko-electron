@@ -10,24 +10,26 @@ import {
 import { UserInfo } from '../../define/model';
 import { appActions, appActionsAsyncLogic } from '../../actions/appActions';
 const { remote } = window.require('electron');
+const Store = window.require('electron-store');
+const electronStore = new Store();
 
 // ※戻り値の userInfo は userList の参照である事に注意
-export const getUserInfo = (userList: UserInfo[], userID: number): UserInfo | null => {
+export const getUserInfo = (userList: UserInfo[], userId: number): UserInfo | null => {
   if (!userList) {
     return null;
   }
   const userInfo = userList.filter((userInfo) => {
-    return userInfo.id === userID;
+    return userInfo.id === userId;
   })[0];
   return userInfo || null;
 };
 
-export const getUserListIndexBasedOnUserID = (userList: UserInfo[], userID: number): number => {
+export const getUserListIndexByUserId = (userList: UserInfo[], userId: number): number => {
   if (!userList) {
     return -1;
   }
   const userInfo = userList.filter((userInfo) => {
-    return userInfo.id === userID;
+    return userInfo.id === userId;
   })[0];
 
   return userList.indexOf(userInfo);
@@ -129,4 +131,23 @@ export const regularExecution = () => {
       dispatch(appActionsAsyncLogic.checkVersion());
     }
   }, VERSION_CHECK_INTERVAL_MS);
+};
+
+export const migration = () => {
+  const userId = electronStore.get('userID');
+  if (userId !== void 0) {
+    electronStore.set('userId', userId);
+    electronStore.delete('userID');
+  }
+
+  const mainVersion = electronStore.get('appVersion');
+  if (mainVersion !== void 0) {
+    electronStore.set('version.main', mainVersion);
+    electronStore.delete('appVersion');
+  }
+  const rendererVersion = electronStore.get('messageVersion');
+  if (rendererVersion !== void 0) {
+    electronStore.set('version.renderer', rendererVersion);
+    electronStore.delete('messageVersion');
+  }
 };

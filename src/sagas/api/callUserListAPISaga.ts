@@ -5,7 +5,7 @@ import {
   DeleteUser,
   AddUser,
   GetUserList,
-  GetUserListWithMyUserIDExists,
+  GetUserListWithMyUserIdExists,
   UpdateUserInfo,
 } from '../../define/model';
 import { getUserInfo, showMessageBoxSync, showSnackBar } from '../../components/common/utils';
@@ -22,12 +22,12 @@ import { callAPI } from '../common/utilsSaga';
  * LEAVING_TIME_THRESHOLD_M 以上healthCheckAtが更新されていないユーザの状態を「退社」に変更する。
  * ただし、この変更は画面表示のみであり、サーバ上の情報は更新しない。
  */
-const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) => {
+const updateLeavingTimeForUserList = (userList: UserInfo[], myUserId: number) => {
   if (!userList) return [];
   const _userList: UserInfo[] = JSON.parse(JSON.stringify(userList));
   const nowDate: Date = new Date();
   for (const userInfo of _userList) {
-    if (userInfo.id === myUserID) {
+    if (userInfo.id === myUserId) {
       continue;
     }
     if ([USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === true) {
@@ -43,8 +43,8 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserID: number) =>
 };
 
 export const callUserListAPI = {
-  deleteUser: function* (userID: number) {
-    const response: ApiResponse<DeleteUser> = yield callAPI(UserListAPI.deleteUser, userID);
+  deleteUser: function* (userId: number) {
+    const response: ApiResponse<DeleteUser> = yield callAPI(UserListAPI.deleteUser, userId);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
@@ -68,7 +68,7 @@ export const callUserListAPI = {
     return response;
   },
 
-  getUserList: function* (myUserID: number) {
+  getUserList: function* (myUserId: number) {
     const startTime = Date.now();
     const response: ApiResponse<GetUserList[]> = yield callAPI(UserListAPI.getUserList);
 
@@ -81,16 +81,16 @@ export const callUserListAPI = {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
     } else {
-      const updatedUserList = updateLeavingTimeForUserList(response.getPayload(), myUserID);
+      const updatedUserList = updateLeavingTimeForUserList(response.getPayload(), myUserId);
       yield put(userListActions.getUserListSuccess(updatedUserList));
     }
 
     return response;
   },
 
-  getUserListWithMyUserIDExists: function* (myUserID: number) {
+  getUserListWithMyUserIdExists: function* (myUserId: number) {
     const startTime = Date.now();
-    const response: ApiResponse<GetUserListWithMyUserIDExists[]> = yield callAPI(UserListAPI.getUserList);
+    const response: ApiResponse<GetUserListWithMyUserIdExists[]> = yield callAPI(UserListAPI.getUserList);
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
     if (Math.sign(lowestWaitTime) === 1) {
@@ -101,7 +101,7 @@ export const callUserListAPI = {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
     } else {
-      const updatedUserList = updateLeavingTimeForUserList(response.getPayload(), myUserID);
+      const updatedUserList = updateLeavingTimeForUserList(response.getPayload(), myUserId);
       yield put(userListActions.getUserListSuccess(updatedUserList));
     }
 
@@ -109,7 +109,7 @@ export const callUserListAPI = {
      * サーバ上に自分の情報が存在するかどうかチェック
      * 無ければ新規登録画面へ遷移する
      */
-    const userInfo = getUserInfo(response.getPayload(), myUserID);
+    const userInfo = getUserInfo(response.getPayload(), myUserId);
     if (userInfo === null) {
       showMessageBoxSync('ユーザ情報がサーバに存在しないため、ユーザ登録を行います。');
       yield put(appActions.setMyUserId(-1));
@@ -119,8 +119,8 @@ export const callUserListAPI = {
     return response;
   },
 
-  updateUserInfo: function* (userInfo: UserInfoForUpdate, userID: number) {
-    const response: ApiResponse<UpdateUserInfo> = yield callAPI(UserListAPI.updateUserInfo, userInfo, userID);
+  updateUserInfo: function* (userInfo: UserInfoForUpdate, userId: number) {
+    const response: ApiResponse<UpdateUserInfo> = yield callAPI(UserListAPI.updateUserInfo, userInfo, userId);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;

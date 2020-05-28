@@ -13,9 +13,9 @@ const electron = {
     try {
       yield put(appActions.isShowLoadingPopup(true));
       const state: RootState = yield select();
-      const myUserID = state.appState.myUserID;
+      const myUserId = state.appState.myUserId;
       const userList = state.userListState.userList;
-      const userInfo = getUserInfo(userList, myUserID);
+      const userInfo = getUserInfo(userList, myUserId);
       if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
         return;
       }
@@ -23,7 +23,7 @@ const electron = {
       const updatedUserInfo: UserInfoForUpdate = {};
       updatedUserInfo.name = userInfo.name;
       updatedUserInfo.status = USER_STATUS_INFO.s13.status;
-      yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserID);
+      yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserId);
     } catch (error) {
       console.error(error);
     } finally {
@@ -35,9 +35,9 @@ const electron = {
     try {
       yield put(appActions.isShowLoadingPopup(true));
       const state: RootState = yield select();
-      const myUserID = state.appState.myUserID;
+      const myUserId = state.appState.myUserId;
       const userList = state.userListState.userList;
-      const userInfo = getUserInfo(userList, myUserID);
+      const userInfo = getUserInfo(userList, myUserId);
       if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
         return;
       }
@@ -45,7 +45,7 @@ const electron = {
       const updatedUserInfo: UserInfoForUpdate = {};
       updatedUserInfo.name = userInfo.name;
       updatedUserInfo.status = USER_STATUS_INFO.s01.status;
-      yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserID);
+      yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserId);
     } catch (error) {
       console.error(error);
     } finally {
@@ -57,9 +57,9 @@ const electron = {
     try {
       yield put(appActions.isShowLoadingPopup(true));
       const state: RootState = yield select();
-      const myUserID = state.appState.myUserID;
+      const myUserId = state.appState.myUserId;
       const userList = state.userListState.userList;
-      const userInfo = getUserInfo(userList, myUserID);
+      const userInfo = getUserInfo(userList, myUserId);
       if (userInfo === null || [USER_STATUS_INFO.s01.status, USER_STATUS_INFO.s13.status].includes(userInfo.status) === false) {
         closeApp();
         return;
@@ -68,7 +68,7 @@ const electron = {
       const updatedUserInfo: UserInfoForUpdate = {};
       updatedUserInfo.status = USER_STATUS_INFO.s02.status;
       updatedUserInfo.name = userInfo.name;
-      yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserID);
+      yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserId);
     } catch (error) {
       console.error(error);
     } finally {

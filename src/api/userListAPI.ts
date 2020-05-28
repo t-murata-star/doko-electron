@@ -2,8 +2,8 @@ import { API_URL, AUTH_REQUEST_HEADERS } from '../define';
 import { UserInfo, UserInfoForUpdate } from '../define/model';
 
 export const UserListAPI = {
-  deleteUser: async (userID: number) => {
-    return await fetch(`${API_URL}/userList/${userID}`, {
+  deleteUser: async (userId: number) => {
+    return await fetch(`${API_URL}/userList/${userId}`, {
       method: 'DELETE',
       headers: AUTH_REQUEST_HEADERS,
     });
@@ -24,8 +24,8 @@ export const UserListAPI = {
     });
   },
 
-  updateUserInfo: async (userInfo: UserInfoForUpdate, userID: number) => {
-    return await fetch(`${API_URL}/userList/${userID}`, {
+  updateUserInfo: async (userInfo: UserInfoForUpdate, userId: number) => {
+    return await fetch(`${API_URL}/userList/${userId}`, {
       method: 'PATCH',
       headers: AUTH_REQUEST_HEADERS,
       body: JSON.stringify(userInfo),
