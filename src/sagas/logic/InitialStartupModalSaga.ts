@@ -1,12 +1,13 @@
 import { takeEvery, call, put, select } from 'redux-saga/effects';
 import { callUserListAPI } from '../api/callUserListAPISaga';
-import { ApiResponse, UserInfoForUpdate, UserInfo, AddUser, UpdateUserInfo } from '../../define/model';
+import { ApiResponse, UserInfoForUpdate, UserInfo, AddUser } from '../../define/model';
 import { getUserInfo } from '../../components/common/utils';
-import { MAIN_APP_VERSION, USER_STATUS_INFO } from '../../define';
+import { MAIN_APP_VERSION, USER_STATUS_INFO, RENDERER_APP_VERSION } from '../../define';
 import { RootState } from '../../modules';
 import { callAppAPI } from '../api/callAppAPISaga';
 import { appActions } from '../../actions/appActions';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
+import { updateAppVersionForUserInfo, updateStatusForUserInfo } from '../common/utilsSaga';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
@@ -18,7 +19,8 @@ const initialStartupModal = {
       const state: RootState = yield select();
 
       const updatedUserInfo: UserInfo = { ...state.initialStartupModalState.userInfo };
-      updatedUserInfo.version = MAIN_APP_VERSION;
+      updatedUserInfo.mainAppVersion = MAIN_APP_VERSION;
+      updatedUserInfo.rendererAppVersion = RENDERER_APP_VERSION;
       updatedUserInfo.status = USER_STATUS_INFO.s01.status;
       const addUserResponse: ApiResponse<AddUser> = yield call(callUserListAPI.addUser, updatedUserInfo);
       if (addUserResponse.getIsError()) {
@@ -59,36 +61,8 @@ const initialStartupModal = {
         return;
       }
 
-      const updatedUserInfo: UserInfoForUpdate = {};
-      if (userInfo.version !== MAIN_APP_VERSION) {
-        updatedUserInfo.version = MAIN_APP_VERSION;
-        const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
-          callUserListAPI.updateUserInfo,
-          updatedUserInfo,
-          myUserId
-        );
-        if (updateUserInfoResponse.getIsError()) {
-          return;
-        }
-      }
-
-      // 状態を「在席」に更新する（更新日時も更新される）
-      if (
-        userInfo.status === USER_STATUS_INFO.s02.status ||
-        userInfo.status === USER_STATUS_INFO.s01.status ||
-        userInfo.status === USER_STATUS_INFO.s13.status
-      ) {
-        updatedUserInfo.status = USER_STATUS_INFO.s01.status;
-        updatedUserInfo.name = userInfo.name;
-        const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
-          callUserListAPI.updateUserInfo,
-          updatedUserInfo,
-          myUserId
-        );
-        if (updateUserInfoResponse.getIsError()) {
-          return;
-        }
-      }
+      yield call(updateAppVersionForUserInfo, userInfo, myUserId);
+      yield call(updateStatusForUserInfo, userInfo, myUserId);
 
       electronStore.set('userId', myUserId);
       yield call(callUserListAPI.getUserList, myUserId);

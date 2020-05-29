@@ -58,7 +58,9 @@ export const userListSlice = createSlice({
       .addCase(userListActions.updateUserInfoState, (state, action) => {
         const userList: UserInfo[] = [...state.userList];
         const index = getUserListIndexByUserId(userList, action.payload.userId);
-        userList[index] = action.payload.userInfo;
+        if (index !== null) {
+          userList[index] = action.payload.userInfo;
+        }
         return {
           ...state,
           userList,

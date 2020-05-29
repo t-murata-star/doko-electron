@@ -71,7 +71,7 @@ export const appActions = {
       },
     };
   }),
-  regularCheckVersionEnabled: createAction(`app/regularCheckVersionEnabled`, (enabled: boolean) => {
+  regularCheckUpdatableEnabled: createAction(`app/regularCheckUpdatableEnabled`, (enabled: boolean) => {
     return {
       payload: {
         enabled,
@@ -83,7 +83,7 @@ export const appActions = {
 export const appActionsAsyncLogic = {
   login: createAction(`app/logic/login`),
   sendHealthCheck: createAction(`app/logic/sendHealthCheck`),
-  checkVersion: createAction(`app/logic/checkVersion`),
+  regularCheckUpdatable: createAction(`app/logic/regularCheckUpdatable`),
   clickTabbar: createAction(`app/logic/clickTabbar`, (activeIndex: number) => {
     return {
       payload: {

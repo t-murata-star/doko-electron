@@ -13,29 +13,34 @@ const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
-// ※戻り値の userInfo は userList の参照である事に注意
+// ※戻り値の userInfo はイミュータブル
 export const getUserInfo = (userList: UserInfo[], userId: number): UserInfo | null => {
   if (!userList) {
     return null;
   }
   const userInfo = userList.filter((userInfo) => {
     return userInfo.id === userId;
-  })[0];
-  return userInfo || null;
+  });
+  return userInfo.length === 0 ? null : { ...userInfo[0] };
 };
 
-export const getUserListIndexByUserId = (userList: UserInfo[], userId: number): number => {
+export const getUserListIndexByUserId = (userList: UserInfo[], userId: number): number | null => {
   if (!userList) {
-    return -1;
+    return null;
   }
   const userInfo = userList.filter((userInfo) => {
     return userInfo.id === userId;
-  })[0];
+  });
 
-  return userList.indexOf(userInfo);
+  return userInfo.length === 0 ? null : userList.indexOf(userInfo[0]);
 };
 
 export const showMessageBoxSync = (message: string, type: 'info' | 'warning' = 'info') => {
+  // テキストが設定されていない場合は処理をスキップ
+  if (!message) {
+    return;
+  }
+
   remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
     title: APP_NAME,
     type,
@@ -127,19 +132,19 @@ export const regularExecution = () => {
 
   setInterval(() => {
     const regularExecutionEnabled = store.getState().appState.regularExecutionEnabled;
-    if (regularExecutionEnabled.checkVersion) {
-      dispatch(appActionsAsyncLogic.checkVersion());
+    if (regularExecutionEnabled.regularCheckUpdatable) {
+      dispatch(appActionsAsyncLogic.regularCheckUpdatable());
     }
   }, VERSION_CHECK_INTERVAL_MS);
 };
 
-export const migration = () => {
+// アプリケーションのバージョンアップにより互換性が無くなったデータを修正する
+export const versionMigration = () => {
   const userId = electronStore.get('userID');
   if (userId !== void 0) {
     electronStore.set('userId', userId);
     electronStore.delete('userID');
   }
-
   const mainVersion = electronStore.get('appVersion');
   if (mainVersion !== void 0) {
     electronStore.set('version.main', mainVersion);
@@ -150,4 +155,9 @@ export const migration = () => {
     electronStore.set('version.renderer', rendererVersion);
     electronStore.delete('messageVersion');
   }
+};
+
+export const getAuthorizationHeader = () => {
+  const token = store.getState().appState.token;
+  return { Authorization: `Bearer ${token}` };
 };

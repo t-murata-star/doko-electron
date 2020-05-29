@@ -1,4 +1,4 @@
-import { ApiResponse, Login, GetAppInfo, SendHealthCheck } from '../../define/model';
+import { ApiResponse, Login, GetAppInfo, SendHealthCheck, UserInfoForUpdate } from '../../define/model';
 import { getUserInfo, showSnackBar } from '../../components/common/utils';
 import { put, select } from 'redux-saga/effects';
 import { appAPI } from '../../api/appAPI';
@@ -37,7 +37,7 @@ export const callAppAPI = {
       return;
     }
 
-    const updatedUserInfo: any = {};
+    const updatedUserInfo: UserInfoForUpdate = {};
     updatedUserInfo.healthCheckAt = '';
 
     const response: ApiResponse<SendHealthCheck> = yield callAPI(appAPI.sendHealthCheck, updatedUserInfo, myUserId);

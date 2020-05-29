@@ -45,9 +45,10 @@ export interface UserInfoForUpdate {
   return?: string;
   updatedAt?: string;
   message?: string;
-  version?: string;
   email?: string;
   healthCheckAt?: string;
+  mainAppVersion?: string;
+  rendererAppVersion?: string;
 }
 
 /**
@@ -86,9 +87,10 @@ export class UserInfo {
   return: string = '';
   updatedAt: string = '';
   message: string = '';
-  version: string = '';
   email: string = '';
   healthCheckAt: string = '';
+  mainAppVersion: string = '';
+  rendererAppVersion: string = '';
 }
 
 // APIレスポンスの型定義

@@ -29,7 +29,7 @@ class InitialState {
   isShowLoadingPopup: boolean = false;
   regularExecutionEnabled = {
     sendHealthCheck: true,
-    checkVersion: true,
+    regularCheckUpdatable: true,
   };
 }
 
@@ -150,12 +150,12 @@ export const appSlice = createSlice({
           },
         };
       })
-      .addCase(appActions.regularCheckVersionEnabled, (state, action) => {
+      .addCase(appActions.regularCheckUpdatableEnabled, (state, action) => {
         return {
           ...state,
           regularExecutionEnabled: {
             ...state.regularExecutionEnabled,
-            checkVersion: action.payload.enabled,
+            regularCheckUpdatable: action.payload.enabled,
           },
         };
       });
