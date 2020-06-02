@@ -11,9 +11,9 @@ export const callAppAPI = {
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
-    } else {
-      yield put(appActions.loginSuccess(response.getPayload()));
     }
+
+    yield put(appActions.loginSuccess(response.getPayload()));
     return response;
   },
 
@@ -22,9 +22,9 @@ export const callAppAPI = {
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
-    } else {
-      yield put(appActions.getAppInfoSuccess(response.getPayload()));
     }
+
+    yield put(appActions.getAppInfoSuccess(response.getPayload()));
     return response;
   },
 
@@ -34,7 +34,7 @@ export const callAppAPI = {
     const userList = state.userListState.userList;
     const userInfo = getUserInfo(userList, myUserId);
     if (userInfo === null) {
-      return;
+      return null;
     }
 
     const updatedUserInfo: UserInfoForUpdate = {};

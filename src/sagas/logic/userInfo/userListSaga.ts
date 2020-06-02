@@ -35,7 +35,8 @@ const userList = {
           yield put(userListActions.reRenderUserList());
           return;
         }
-        yield delay(30);
+        const delayMs = 30;
+        yield delay(delayMs);
       }
 
       const myUserId = state.appState.myUserId;

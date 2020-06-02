@@ -1,7 +1,7 @@
 import { ApiResponse, UserInfoForUpdate, UserInfo, UpdateUserInfo } from '../../define/model';
 import { put, call } from 'redux-saga/effects';
 import { appActions } from '../../actions/appActions';
-import { MAIN_APP_VERSION, RENDERER_APP_VERSION, USER_STATUS_INFO } from '../../define';
+import { MAIN_APP_VERSION, RENDERER_APP_VERSION, USER_STATUS_INFO, ResponseStatusCode } from '../../define';
 import { callUserListAPI } from '../api/callUserListAPISaga';
 import { userListActions } from '../../actions/userInfo/userListActions';
 
@@ -91,7 +91,7 @@ export function* callAPI(calledAPI: any, ...args: any) {
 
   function isAuthenticated(statusCode: number): boolean {
     switch (statusCode) {
-      case 401:
+      case ResponseStatusCode.unauthorized:
         return false;
 
       default:

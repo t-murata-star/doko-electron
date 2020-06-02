@@ -15,7 +15,7 @@ const settings = {
       const myUserId = state.appState.myUserId;
       const updatedUserInfo: UserInfoForUpdate = {};
 
-      updatedUserInfo['email'] = settingState.user.email;
+      updatedUserInfo.email = settingState.user.email;
       const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
         callUserListAPI.updateUserInfo,
         updatedUserInfo,

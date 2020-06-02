@@ -6,6 +6,7 @@ import {
   HEALTH_CHECK_INTERVAL_MS,
   VERSION_CHECK_INTERVAL_MS,
   RENDERER_APP_VERSION,
+  SNACKBAR_DISPLAY_DEFAULT_TIME_MS,
 } from '../../define';
 import { UserInfo } from '../../define/model';
 import { appActions, appActionsAsyncLogic } from '../../actions/appActions';
@@ -63,7 +64,11 @@ export const showMessageBoxSyncWithReturnValue = (
   });
 };
 
-export const showSnackBar = (severity: Color, message: string = '', timeoutMs: number | null = 5000) => {
+export const showSnackBar = (
+  severity: Color,
+  message: string = '',
+  timeoutMs: number | null = SNACKBAR_DISPLAY_DEFAULT_TIME_MS
+) => {
   const dispatch: any = store.dispatch;
   const appState = store.getState().appState;
 
@@ -102,16 +107,6 @@ export const onSnackBarExited = () => {
   }
 };
 
-export const isAuthenticated = (statusCode: number): boolean => {
-  switch (statusCode) {
-    case 401:
-      return false;
-
-    default:
-      return true;
-  }
-};
-
 export const isLatestMainVersion = (latestVersion: string): boolean => {
   return latestVersion === MAIN_APP_VERSION;
 };
@@ -141,17 +136,17 @@ export const regularExecution = () => {
 // アプリケーションのバージョンアップにより互換性が無くなったデータを修正する
 export const versionMigration = () => {
   const userId = electronStore.get('userID');
-  if (userId !== void 0) {
+  if (typeof userId !== 'undefined') {
     electronStore.set('userId', userId);
     electronStore.delete('userID');
   }
   const mainVersion = electronStore.get('appVersion');
-  if (mainVersion !== void 0) {
+  if (typeof mainVersion !== 'undefined') {
     electronStore.set('version.main', mainVersion);
     electronStore.delete('appVersion');
   }
   const rendererVersion = electronStore.get('messageVersion');
-  if (rendererVersion !== void 0) {
+  if (typeof rendererVersion !== 'undefined') {
     electronStore.set('version.renderer', rendererVersion);
     electronStore.delete('messageVersion');
   }

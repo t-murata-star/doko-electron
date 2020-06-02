@@ -4,25 +4,28 @@ import { getAuthorizationHeader } from '../components/common/utils';
 
 export const appAPI = {
   login: async () => {
-    return await fetch(`${API_URL}/auth/login`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: new Headers({ ...REQUEST_HEADERS }),
       body: JSON.stringify(LOGIN_USER),
     });
+    return response;
   },
 
   getAppInfo: async () => {
-    return await fetch(`${API_URL}/appInfo`, {
+    const response = await fetch(`${API_URL}/appInfo`, {
       method: 'GET',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
     });
+    return response;
   },
 
   sendHealthCheck: async (userInfo: UserInfoForUpdate, userId: number) => {
-    return await fetch(`${API_URL}/userList/${userId}`, {
+    const response = await fetch(`${API_URL}/userList/${userId}`, {
       method: 'PATCH',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
       body: JSON.stringify(userInfo),
     });
+    return response;
   },
 };

@@ -14,6 +14,7 @@ import OfficeInfo from './officeInfo/OfficeInfo';
 import Settings from './settings/Settings';
 import UserList from './userInfo/UserList';
 import { electronActionsAsyncLogic } from '../actions/electronActions';
+import { NO_USER, AppTabIndex } from '../define';
 
 const { remote, ipcRenderer } = window.require('electron');
 
@@ -22,7 +23,7 @@ const Alert = (props: AlertProps) => {
 };
 
 class App extends React.Component<Props, any> {
-  async componentDidMount() {
+  componentDidMount() {
     const { dispatch } = this.props;
     dispatch(appActionsAsyncLogic.login());
     regularExecution();
@@ -44,12 +45,12 @@ class App extends React.Component<Props, any> {
     dispatch(electronActionsAsyncLogic.electronUnlockScreenEvent());
   });
 
-  closeApp = ipcRenderer.on('closeApp', async () => {
+  closeApp = ipcRenderer.on('closeApp', () => {
     const { dispatch } = this.props;
     dispatch(electronActionsAsyncLogic.closeApp());
   });
 
-  handleActiveIndexUpdate = async (event: React.ChangeEvent<{}>, activeIndex: number) => {
+  handleActiveIndexUpdate = (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     dispatch(appActionsAsyncLogic.clickTabbar(activeIndex));
   };
@@ -70,7 +71,7 @@ class App extends React.Component<Props, any> {
           <Alert severity={appState.snackbar.severity}>{appState.snackbar.message}</Alert>
         </Snackbar>
         <InitialStartupModal />
-        {myUserId !== -1 && (
+        {myUserId !== NO_USER && (
           <Fade in={true}>
             <div>
               <Tabs
@@ -89,21 +90,21 @@ class App extends React.Component<Props, any> {
           </Fade>
         )}
         <div className='contents'>
-          {myUserId !== -1 && this.props.state.appState.activeIndex === 0 && (
+          {myUserId !== NO_USER && this.props.state.appState.activeIndex === AppTabIndex.userInfo && (
             <Fade in={true}>
               <div>
                 <UserList />
               </div>
             </Fade>
           )}
-          {myUserId !== -1 && this.props.state.appState.activeIndex === 1 && (
+          {myUserId !== NO_USER && this.props.state.appState.activeIndex === AppTabIndex.officeInfo && (
             <Fade in={true}>
               <div>
                 <OfficeInfo />
               </div>
             </Fade>
           )}
-          {myUserId !== -1 && this.props.state.appState.activeIndex === 2 && (
+          {myUserId !== NO_USER && this.props.state.appState.activeIndex === AppTabIndex.settings && (
             <Fade in={true}>
               <div>
                 <Settings />

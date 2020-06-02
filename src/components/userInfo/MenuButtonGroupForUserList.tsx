@@ -15,7 +15,7 @@ import { userEditModalActions } from '../../actions/userInfo/userEditModalAction
 library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForUserList extends React.Component<Props, any> {
-  reload = async () => {
+  reload = () => {
     const { dispatch } = this.props;
     dispatch(menuButtonGroupForUserListActionsAsyncLogic.reload());
   };

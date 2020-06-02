@@ -19,9 +19,9 @@ export const callOfficeInfoAPI = {
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
-    } else {
-      yield put(menuButtonGroupForOfficeInfoActions.getRestroomUsageSuccess(response.getPayload()));
     }
+
+    yield put(menuButtonGroupForOfficeInfoActions.getRestroomUsageSuccess(response.getPayload()));
     return response;
   },
 
@@ -37,9 +37,9 @@ export const callOfficeInfoAPI = {
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
-    } else {
-      yield put(menuButtonGroupForOfficeInfoActions.getOfficeInfoSuccess(response.getPayload()));
     }
+
+    yield put(menuButtonGroupForOfficeInfoActions.getOfficeInfoSuccess(response.getPayload()));
     return response;
   },
 };

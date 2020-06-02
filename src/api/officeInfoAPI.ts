@@ -3,16 +3,18 @@ import { getAuthorizationHeader } from '../components/common/utils';
 
 export const officeInfoAPI = {
   getRestroomUsage: async () => {
-    return await fetch(`${API_URL}/restrooms`, {
+    const response = await fetch(`${API_URL}/restrooms`, {
       method: 'GET',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
     });
+    return response;
   },
 
   getOfficeInfo: async () => {
-    return await fetch(`${API_URL}/officeInfo`, {
+    const response = await fetch(`${API_URL}/officeInfo`, {
       method: 'GET',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
     });
+    return response;
   },
 };

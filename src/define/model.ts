@@ -1,4 +1,5 @@
 import { RootState } from '../modules';
+import { NO_USER } from '.';
 
 /**
  * プロジェクト内独自の型定義
@@ -10,7 +11,10 @@ export type Props = {
 };
 
 export class ApiResponse<T> {
-  constructor(private payload: T, private isError: boolean) {}
+  constructor(private payload: T, private isError: boolean) {
+    this.payload = payload;
+    this.isError = isError;
+  }
 
   getPayload() {
     return this.payload;
@@ -18,22 +22,6 @@ export class ApiResponse<T> {
   getIsError() {
     return this.isError;
   }
-}
-
-export class UserStatusInfo {
-  s01 = { status: '在席', color: '#333333' };
-  s02 = { status: '退社', color: '#0000FF' };
-  s03 = { status: '年休', color: '#FF0000' };
-  s04 = { status: 'AM半休', color: '#00A900' };
-  s05 = { status: 'PM半休', color: '#FF0000' };
-  s06 = { status: 'FLEX', color: '#00A900' };
-  s07 = { status: '出張', color: '#0000FF' };
-  s08 = { status: '外出', color: '#0000FF' };
-  s09 = { status: '本社外勤務', color: '#0000FF' };
-  s10 = { status: '遅刻', color: '#00A900' };
-  s11 = { status: '行方不明', color: '#FF0000' };
-  s12 = { status: '接客中', color: '#00A900' };
-  s13 = { status: '在席 (離席中)', color: '#333333' };
 }
 
 export interface UserInfoForUpdate {
@@ -67,20 +55,20 @@ export class AppInfo {
 }
 
 export class Restroom {
-  id: number = -1;
+  id: number = NO_USER;
   gender: string = '';
   place: string = '';
   isUsing: boolean = false;
 }
 
 export class OfficeInfo {
-  tempreture: number = -1;
-  humidity: number = -1;
+  tempreture: number | null = null;
+  humidity: number | null = null;
 }
 
 export class UserInfo {
-  id: number = -1;
-  order: number = -1;
+  id: number = NO_USER;
+  order: number = NO_USER;
   name: string = '';
   status: string = '';
   destination: string = '';

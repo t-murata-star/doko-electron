@@ -2,10 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { userListActions } from '../../actions/userInfo/userListActions';
 import { getUserListIndexByUserId } from '../../components/common/utils';
 import { UserInfo } from '../../define/model';
+import { NO_USER } from '../../define';
 
 class InitialState {
   userList: UserInfo[] = [];
-  selectedUserId: number = -1; // ユーザ一覧画面で編集中のユーザのIdを格納する
+  selectedUserId: number = NO_USER; // ユーザ一覧画面で編集中のユーザのIdを格納する
   inoperable: boolean = false;
 }
 

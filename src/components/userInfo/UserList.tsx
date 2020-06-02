@@ -26,9 +26,8 @@ class UserList extends React.Component<Props, any> {
     const email = cell.getValue();
     if (email !== '') {
       return '<input type="button" value="　  表示 　" class="btn btn-link link_display_calendar" />';
-    } else {
-      return '-';
     }
+    return '-';
   };
 
   openCalendar = (e: any, cell: Tabulator.CellComponent) => {
@@ -44,7 +43,7 @@ class UserList extends React.Component<Props, any> {
 
     const encodedEmail = encodeURI(email);
     // カレンダー表示のための子ウインドウを表示
-    let calendarWindow: Electron.BrowserWindow = new remote.BrowserWindow({
+    const calendarWindow: Electron.BrowserWindow = new remote.BrowserWindow({
       width: 1120,
       height: 700,
       resizable: false,

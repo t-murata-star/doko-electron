@@ -8,9 +8,8 @@ type ContentProps = {
 const MemoComponent = (props: ContentProps) => {
   if (props.enabled) {
     return <div className='inoperable' />;
-  } else {
-    return null;
   }
+  return null;
 };
 
 const Inoperable = React.memo(MemoComponent);

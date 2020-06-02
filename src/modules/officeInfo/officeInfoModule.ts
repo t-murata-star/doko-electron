@@ -45,8 +45,9 @@ export const officeInfoSlice = createSlice({
 
 // トイレの満席チェック
 function checkNoVacantForRestroom(rooms: Restroom[], gender: string) {
-  if (!rooms) return true;
-
+  if (!rooms) {
+    return true;
+  }
   const filteredByGender = rooms.filter((room) => room.gender === gender);
   const filteredByUsing = filteredByGender.filter((room) => room.isUsing === true);
   return filteredByGender.length === filteredByUsing.length;
@@ -54,8 +55,9 @@ function checkNoVacantForRestroom(rooms: Restroom[], gender: string) {
 
 // トイレの空席数を計算
 function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
-  if (!rooms) return 0;
-
+  if (!rooms) {
+    return 0;
+  }
   const filteredByGender = rooms.filter((room) => room.gender === gender);
   const filteredByUsing = filteredByGender.filter((room) => room.isUsing === false);
   return filteredByUsing.length;

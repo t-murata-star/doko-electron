@@ -2,7 +2,7 @@ import { takeEvery, call, put, select } from 'redux-saga/effects';
 import { callUserListAPI } from '../api/callUserListAPISaga';
 import { ApiResponse, UserInfoForUpdate, UserInfo, AddUser } from '../../define/model';
 import { getUserInfo } from '../../components/common/utils';
-import { MAIN_APP_VERSION, USER_STATUS_INFO, RENDERER_APP_VERSION } from '../../define';
+import { MAIN_APP_VERSION, USER_STATUS_INFO, RENDERER_APP_VERSION, NO_USER } from '../../define';
 import { RootState } from '../../modules';
 import { callAppAPI } from '../api/callAppAPISaga';
 import { appActions } from '../../actions/appActions';
@@ -83,7 +83,7 @@ const initialStartupModal = {
       yield put(initialStartupModalActions.initializeField());
       yield put(initialStartupModalActions.disableSubmitButton(true));
       yield put(initialStartupModalActions.changeSubmitMode(true));
-      yield call(callUserListAPI.getUserList, -1);
+      yield call(callUserListAPI.getUserList, NO_USER);
     } catch (error) {
       console.error(error);
     } finally {

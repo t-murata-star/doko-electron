@@ -2,6 +2,7 @@ import { Color } from '@material-ui/lab/Alert';
 import { createSlice } from '@reduxjs/toolkit';
 import { AppInfo } from '../define/model';
 import { appActions } from '../actions/appActions';
+import { NO_USER } from '../define';
 
 interface Snackbar {
   enabled: boolean;
@@ -16,7 +17,7 @@ class InitialState {
   isAuthenticated: boolean = false;
   isFetching: boolean = false;
   isError: boolean = false;
-  myUserId: number = -1;
+  myUserId: number = NO_USER;
   appInfo: AppInfo = new AppInfo();
   activeIndex: number = 0;
   snackbar: Snackbar = {

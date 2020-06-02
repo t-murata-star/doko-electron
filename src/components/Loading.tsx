@@ -20,9 +20,8 @@ const MemoComponent = (props: ContentProps) => {
         </div>
       </div>
     );
-  } else {
-    return null;
   }
+  return null;
 };
 
 const Loading = React.memo(MemoComponent);

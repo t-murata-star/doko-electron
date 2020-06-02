@@ -10,7 +10,7 @@ import {
   isLatestRendererVersion,
   versionMigration,
 } from '../../components/common/utils';
-import { APP_NAME, MAIN_APP_VERSION, APP_DOWNLOAD_URL, RENDERER_APP_VERSION } from '../../define';
+import { APP_NAME, MAIN_APP_VERSION, APP_DOWNLOAD_URL, RENDERER_APP_VERSION, NO_USER } from '../../define';
 import { ApiResponse, Login, GetAppInfo, GetUserListWithMyUserIdExists } from '../../define/model';
 import { RootState } from '../../modules';
 import { callOfficeInfoAPI } from '../api/callOfficeInfoAPISaga';
@@ -28,7 +28,7 @@ const app = {
 
       versionMigration();
 
-      const myUserId: number = (electronStore.get('userId') as number | undefined) || -1;
+      const myUserId: number = (electronStore.get('userId') as number | undefined) || NO_USER;
 
       // メインプロセスに、レンダラープロセス正常に読み込めたことを伝える
       ipcRenderer.send('connected', true);
@@ -62,7 +62,7 @@ const app = {
        * 初回起動チェック
        * 設定ファイルが存在しない、もしくはuserIdが設定されていない場合は登録画面を表示する
        */
-      if (myUserId === -1) {
+      if (myUserId === NO_USER) {
         yield put(initialStartupModalActions.showModal(true));
         return;
       }
@@ -92,7 +92,7 @@ const app = {
       yield call(callAppAPI.sendHealthCheck);
       yield put(appActions.isShowLoadingPopup(true));
     } catch (error) {
-      console.error(error);
+      loadConnectionErrorPage();
     } finally {
       yield put(appActions.isShowLoadingPopup(false));
     }
@@ -194,7 +194,6 @@ const getToken = function* () {
   if (loginResponse.getIsError()) {
     loadConnectionErrorPage();
     yield cancel();
-    return;
   }
 };
 
@@ -208,7 +207,6 @@ const checkUpdatable = function* (latestVersion: string) {
   if (isLatestMainVersion(latestVersion) === false) {
     showMessageBoxSync(updateAppInfoMessage);
     yield cancel();
-    return;
   }
 };
 
@@ -253,7 +251,7 @@ const startupRegistration = () => {
 const compareLocalVerAndExecutingVer = (localVer: string, executingVer: string, updatedContents: string, myUserId: number) => {
   if (electronStore.get(localVer) !== executingVer) {
     // ユーザ登録済み場合
-    if (myUserId !== -1) {
+    if (myUserId !== NO_USER) {
       showMessageBoxSync(updatedContents);
     }
     electronStore.set(localVer, executingVer);

@@ -1,13 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { UserInfo } from '../define/model';
 import { initialStartupModalActions } from '../actions/initialStartupModalActions';
+import { NO_USER } from '../define';
 
 class InitialState {
   onHide: boolean = false;
   isChangeUser: boolean = false;
   disabled: boolean = true;
   userInfo: UserInfo = new UserInfo();
-  selectedUserId: number = -1;
+  selectedUserId: number = NO_USER;
 }
 
 // createSlice() で actions と reducers を一気に生成

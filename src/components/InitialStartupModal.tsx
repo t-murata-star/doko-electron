@@ -18,7 +18,7 @@ class InitialStartupModal extends React.Component<Props, any> {
     dispatch(initialStartupModalActionsAsyncLogic.addUser());
   };
 
-  changeUser = async () => {
+  changeUser = () => {
     const { dispatch } = this.props;
     dispatch(initialStartupModalActionsAsyncLogic.changeUser());
   };
@@ -32,13 +32,12 @@ class InitialStartupModal extends React.Component<Props, any> {
     }
     if (event.target.value.length === 0 && this.props.state.initialStartupModalState.disabled === false) {
       dispatch(initialStartupModalActions.disableSubmitButton(true));
-      return;
     }
   };
 
   onUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
-    dispatch(initialStartupModalActions.changeUserId(parseInt(event.target.value)));
+    dispatch(initialStartupModalActions.changeUserId(parseInt(event.target.value, 10)));
     dispatch(initialStartupModalActions.disableSubmitButton(false));
   };
 

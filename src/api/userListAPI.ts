@@ -4,32 +4,36 @@ import { getAuthorizationHeader } from '../components/common/utils';
 
 export const UserListAPI = {
   deleteUser: async (userId: number) => {
-    return await fetch(`${API_URL}/userList/${userId}`, {
+    const response = await fetch(`${API_URL}/userList/${userId}`, {
       method: 'DELETE',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
     });
+    return response;
   },
 
   addUser: async (userInfo: UserInfo) => {
-    return await fetch(`${API_URL}/userList`, {
+    const response = await fetch(`${API_URL}/userList`, {
       method: 'POST',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
       body: JSON.stringify(userInfo),
     });
+    return response;
   },
 
   getUserList: async () => {
-    return await fetch(`${API_URL}/userList`, {
+    const response = await fetch(`${API_URL}/userList`, {
       method: 'GET',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
     });
+    return response;
   },
 
   updateUserInfo: async (userInfo: UserInfoForUpdate, userId: number) => {
-    return await fetch(`${API_URL}/userList/${userId}`, {
+    const response = await fetch(`${API_URL}/userList/${userId}`, {
       method: 'PATCH',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
       body: JSON.stringify(userInfo),
     });
+    return response;
   },
 };

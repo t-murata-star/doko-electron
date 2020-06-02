@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { settingActions } from '../../actions/settings/settingsActions';
+import { NO_USER } from '../../define';
 
 class InitialState {
   submitButtonsDisable = {
@@ -9,7 +10,7 @@ class InitialState {
     },
   };
   user = {
-    userId: -1,
+    userId: NO_USER,
     email: '',
   };
   system = {

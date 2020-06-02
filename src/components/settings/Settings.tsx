@@ -4,7 +4,7 @@ import Switch from '@material-ui/core/Switch';
 import React from 'react';
 import { Col, Form, ListGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { APP_NAME, EMAIL_DOMAIN } from '../../define';
+import { APP_NAME, EMAIL_DOMAIN, NO_USER } from '../../define';
 import { Props, UserInfo } from '../../define/model';
 import { appActions } from '../../actions/appActions';
 import { settingActionsAsyncLogic, settingActions } from '../../actions/settings/settingsActions';
@@ -16,7 +16,7 @@ const Store = window.require('electron-store');
 const electronStore = new Store();
 
 class Settings extends React.Component<Props, any> {
-  async componentDidMount() {
+  componentDidMount() {
     const { dispatch } = this.props;
 
     // state を初期化
@@ -47,7 +47,7 @@ class Settings extends React.Component<Props, any> {
   onUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
     const myUserId = this.props.state.appState.myUserId;
-    const changedUserId = parseInt(event.target.value);
+    const changedUserId = parseInt(event.target.value, 10);
     const userList = this.props.state.userListState.userList;
 
     const userInfo = getUserInfo(userList, changedUserId);
@@ -57,19 +57,19 @@ class Settings extends React.Component<Props, any> {
 
     dispatch(settingActions.setUserId(changedUserId));
 
-    if (changedUserId !== -1 && changedUserId !== myUserId) {
+    if (changedUserId !== NO_USER && changedUserId !== myUserId) {
       dispatch(settingActions.changeDisabledSubmitButtonUserChange(false));
     }
   };
 
   // ユーザ変更の保存
-  onSaveSettingsForUserChange = async () => {
+  onSaveSettingsForUserChange = () => {
     const { dispatch } = this.props;
     const settingState = this.props.state.settingsState;
     const oldMyUserId = this.props.state.appState.myUserId;
-    let changedUserId = settingState.user.userId;
+    const changedUserId = settingState.user.userId;
 
-    if (changedUserId === -1 || changedUserId === oldMyUserId) {
+    if (changedUserId === NO_USER || changedUserId === oldMyUserId) {
       return;
     }
 
@@ -127,7 +127,11 @@ class Settings extends React.Component<Props, any> {
   };
 
   resizeWindow = () => {
-    remote.getCurrentWindow().setSize(1200, 750);
+    const resizeWindowSize = {
+      width: 1200,
+      height: 750,
+    };
+    remote.getCurrentWindow().setSize(resizeWindowSize.width, resizeWindowSize.height);
   };
 
   render() {
@@ -199,7 +203,7 @@ class Settings extends React.Component<Props, any> {
                         inputProps={{
                           maxLength: 100,
                         }}
-                        disabled={userInfo.id === -1}
+                        disabled={userInfo.id === NO_USER}
                       />
                       {EMAIL_DOMAIN}
                     </div>

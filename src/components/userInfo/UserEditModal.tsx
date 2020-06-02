@@ -30,7 +30,7 @@ class UserEditModal extends React.Component<Props, any> {
     dispatch(userEditModalActionsAsyncLogic.updateUserInfo());
   };
 
-  deleteUser = async () => {
+  deleteUser = () => {
     const { dispatch } = this.props;
     dispatch(userEditModalActionsAsyncLogic.deleteUser());
   };

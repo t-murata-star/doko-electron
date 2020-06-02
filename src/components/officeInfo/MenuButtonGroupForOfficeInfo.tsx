@@ -11,7 +11,7 @@ import { menuButtonGroupForOfficeInfoActionsAsyncLogic } from '../../actions/off
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
 
 class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
-  reload = async () => {
+  reload = () => {
     const { dispatch } = this.props;
     dispatch(menuButtonGroupForOfficeInfoActionsAsyncLogic.getAllOfficeInfo());
   };

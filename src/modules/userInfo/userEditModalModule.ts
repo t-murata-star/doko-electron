@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { UserInfo } from '../../define/model';
-import { USER_STATUS_INFO } from '../../define';
+import { USER_STATUS_INFO, NO_USER } from '../../define';
 import { userEditModalActions } from '../../actions/userInfo/userEditModalActions';
 
 class InitialState {
   onHide: boolean = false;
   disabled: boolean = true;
-  userId: number = -1;
+  userId: number = NO_USER;
   userInfo: UserInfo = new UserInfo();
 }
 
