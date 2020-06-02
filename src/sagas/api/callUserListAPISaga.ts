@@ -75,9 +75,10 @@ export const callUserListAPI = {
   getUserList: function* (myUserId: number) {
     const startTime = Date.now();
     const response: ApiResponse<GetUserList[]> = yield callAPI(UserListAPI.getUserList);
+    const MS = 0;
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
-    if (Math.sign(lowestWaitTime) === 1) {
+    if (lowestWaitTime > MS) {
       yield delay(lowestWaitTime);
     }
 
@@ -94,9 +95,10 @@ export const callUserListAPI = {
   getUserListWithMyUserIdExists: function* (myUserId: number) {
     const startTime = Date.now();
     const response: ApiResponse<GetUserListWithMyUserIdExists[]> = yield callAPI(UserListAPI.getUserList);
+    const MS = 0;
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
-    if (Math.sign(lowestWaitTime) === 1) {
+    if (lowestWaitTime > MS) {
       yield delay(lowestWaitTime);
     }
 

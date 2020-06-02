@@ -3,11 +3,7 @@
     "browser": true,
     "es6": true
   },
-  "extends": ["react-app", "eslint:recommended", "plugin:react/recommended", "plugin:@typescript-eslint/eslint-recommended"],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
+  "extends": ["react-app", "eslint:all"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -16,8 +12,47 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint"],
   "rules": {
-    "no-var": "warn"
+    "max-len": "off",
+    "object-curly-spacing": "off",
+    "sort-imports": "off",
+    "no-continue": "off",
+    "quotes": "off",
+    "linebreak-style": "off",
+    "indent": "off",
+    "one-var": "off",
+    "func-names": "off",
+    "quote-props": "off",
+    "object-shorthand": "off",
+    "max-lines-per-function": "off",
+    "max-statements": "off",
+    "generator-star-spacing": "off",
+    "padded-blocks": "off",
+    "function-call-argument-newline": "off",
+    "comma-dangle": "off",
+    "no-extra-parens": "off",
+    "no-console": "off",
+    "lines-around-comment": "off",
+    "sort-keys": "off",
+    "prefer-destructuring": "off",
+    "max-params": "off",
+    "no-magic-numbers": ["error", { "ignoreArrayIndexes": true }],
+    "arrow-body-style": "off",
+    "space-before-function-paren": "off",
+    "object-property-newline": "off",
+    "lines-between-class-members": "off",
+    "no-process-env": "off",
+    "function-paren-newline": "off",
+    "array-element-newline": "off",
+    "capitalized-comments": "off",
+    "no-underscore-dangle": "off",
+    "no-ternary": "off",
+    "multiline-ternary": "off",
+    "max-classes-per-file": "off",
+    "jsx-quotes": "off",
+    "no-invalid-this": "off",
+    "id-length": "off",
+    "no-sync": "off",
+    "global-require": "off"
   }
 }

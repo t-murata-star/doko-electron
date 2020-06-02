@@ -14,6 +14,7 @@ builder
         target: {
           target: 'pkg',
         },
+        icon: './public/logo512.png',
       },
     },
   })

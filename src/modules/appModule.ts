@@ -2,7 +2,7 @@ import { Color } from '@material-ui/lab/Alert';
 import { createSlice } from '@reduxjs/toolkit';
 import { AppInfo } from '../define/model';
 import { appActions } from '../actions/appActions';
-import { NO_USER } from '../define';
+import { NO_USER, AppTabIndex } from '../define';
 
 interface Snackbar {
   enabled: boolean;
@@ -13,19 +13,20 @@ interface Snackbar {
 }
 
 class InitialState {
-  token: string = ''; // 認証トークン。このトークンを用いてAPIサーバにリクエストを行う
+  // 認証トークン。このトークンを用いてAPIサーバにリクエストを行う
+  token: string = '';
   isAuthenticated: boolean = false;
   isFetching: boolean = false;
   isError: boolean = false;
   myUserId: number = NO_USER;
   appInfo: AppInfo = new AppInfo();
-  activeIndex: number = 0;
+  activeIndex: number = AppTabIndex.userInfo;
   snackbar: Snackbar = {
     enabled: false,
     severity: 'info',
     message: '',
     timeoutMs: 5000,
-    queueMessages: new Array<string>(),
+    queueMessages: [''],
   };
   isShowLoadingPopup: boolean = false;
   regularExecutionEnabled = {
@@ -110,7 +111,7 @@ export const appSlice = createSlice({
             enabled: action.payload.enabled,
             severity: action.payload.severity ? action.payload.severity : state.snackbar.severity,
             message: action.payload.message ? action.payload.message : state.snackbar.message,
-            timeoutMs: action.payload.timeoutMs !== null ? action.payload.timeoutMs : null,
+            timeoutMs: action.payload.timeoutMs === null ? null : action.payload.timeoutMs,
           },
         };
       })

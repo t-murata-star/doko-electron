@@ -8,11 +8,13 @@ import { Props } from '../../define/model';
 import { Grid, Paper } from '@material-ui/core';
 import MenuButtonGroupForOfficeInfo from './MenuButtonGroupForOfficeInfo';
 
-library.add(faDoorOpen, faDoorClosed, faMale, faFemale); //あらかじめ使用するアイコンを追加しておく
+// あらかじめ使用するアイコンを追加しておく
+library.add(faDoorOpen, faDoorClosed, faMale, faFemale);
 
 class OfficeInfo extends React.Component<Props, any> {
   render() {
     const officeInfo = this.props.state.officeInfoState;
+    const DECIMAL_POINT = 1;
 
     return (
       <div className='office_info'>
@@ -22,7 +24,7 @@ class OfficeInfo extends React.Component<Props, any> {
             <Paper className='paper' elevation={2}>
               気温
               <div className='info_content'>
-                {officeInfo.officeInfo.tempreture === null ? '-' : officeInfo.officeInfo.tempreture.toFixed(1)}
+                {officeInfo.officeInfo.tempreture === null ? '-' : officeInfo.officeInfo.tempreture.toFixed(DECIMAL_POINT)}
                 <span className='info_content_unit'>℃</span>
               </div>
             </Paper>
@@ -31,7 +33,7 @@ class OfficeInfo extends React.Component<Props, any> {
             <Paper className='paper' elevation={2}>
               湿度
               <div className='info_content'>
-                {officeInfo.officeInfo.humidity === null ? '-' : officeInfo.officeInfo.humidity.toFixed(1)}
+                {officeInfo.officeInfo.humidity === null ? '-' : officeInfo.officeInfo.humidity.toFixed(DECIMAL_POINT)}
                 <span className='info_content_unit'>%</span>
               </div>
             </Paper>

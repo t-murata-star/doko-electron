@@ -4,7 +4,7 @@ import Switch from '@material-ui/core/Switch';
 import React from 'react';
 import { Col, Form, ListGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { APP_NAME, EMAIL_DOMAIN, NO_USER } from '../../define';
+import { APP_NAME, EMAIL_DOMAIN, NO_USER, NO_USER_IN_USERLIST } from '../../define';
 import { Props, UserInfo } from '../../define/model';
 import { appActions } from '../../actions/appActions';
 import { settingActionsAsyncLogic, settingActions } from '../../actions/settings/settingsActions';
@@ -113,7 +113,7 @@ class Settings extends React.Component<Props, any> {
 
     await dispatch(settingActions.changeEnabledStartup(event.target.checked));
     const settingState = this.props.state.settingsState;
-    let openAtLogin: boolean;
+    let openAtLogin = false;
     if (settingState.system.startupEnabled) {
       openAtLogin = true;
     } else {
@@ -163,14 +163,14 @@ class Settings extends React.Component<Props, any> {
                       SelectProps={{
                         native: true,
                       }}
-                      disabled={userList.length === 0}>
+                      disabled={userList.length === NO_USER_IN_USERLIST}>
                       {userList
                         .sort((a: UserInfo, b: UserInfo) => {
                           return a.order - b.order;
                         })
-                        .map((userInfo: UserInfo, index: number) => (
-                          <option key={index} value={userInfo.id} disabled={myUserId === userInfo.id}>
-                            {userInfo.name}
+                        .map((_userInfo: UserInfo, index: number) => (
+                          <option key={index} value={_userInfo.id} disabled={myUserId === _userInfo.id}>
+                            {_userInfo.name}
                           </option>
                         ))}
                     </TextField>

@@ -44,21 +44,22 @@ export const officeInfoSlice = createSlice({
 });
 
 // トイレの満席チェック
-function checkNoVacantForRestroom(rooms: Restroom[], gender: string) {
+const checkNoVacantForRestroom = (rooms: Restroom[], gender: string) => {
   if (!rooms) {
     return true;
   }
   const filteredByGender = rooms.filter((room) => room.gender === gender);
   const filteredByUsing = filteredByGender.filter((room) => room.isUsing === true);
   return filteredByGender.length === filteredByUsing.length;
-}
+};
 
 // トイレの空席数を計算
-function getVacantCountForRestroom(rooms: Restroom[], gender: string) {
+const getVacantCountForRestroom = (rooms: Restroom[], gender: string) => {
+  const NO_VACANT = 0;
   if (!rooms) {
-    return 0;
+    return NO_VACANT;
   }
   const filteredByGender = rooms.filter((room) => room.gender === gender);
   const filteredByUsing = filteredByGender.filter((room) => room.isUsing === false);
   return filteredByUsing.length;
-}
+};

@@ -7,11 +7,13 @@ import { showMessageBoxSyncWithReturnValue } from '../../../components/common/ut
 import { appActions } from '../../../actions/appActions';
 import { userEditModalActions } from '../../../actions/userInfo/userEditModalActions';
 import { userListActions } from '../../../actions/userInfo/userListActions';
+import { BUTTON_CLICK_OK } from '../../../define';
 
 const userEditModal = {
   updateUserInfo: function* () {
     try {
       yield put(appActions.isShowLoadingPopup(true));
+      const SCROLL_TOP = 0;
       const state: RootState = yield select();
       const userInfo = state.userEditModalState.userInfo;
       const userId = userInfo.id;
@@ -39,7 +41,7 @@ const userEditModal = {
       yield put(userEditModalActions.closeUserEditModal());
 
       const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
-      $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
+      $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || SCROLL_TOP);
     } catch (error) {
       console.error(error);
     } finally {
@@ -50,11 +52,12 @@ const userEditModal = {
   deleteUser: function* () {
     try {
       yield put(appActions.isShowLoadingPopup(true));
+      const SCROLL_TOP = 0;
       const state: RootState = yield select();
       const userInfo = state.userEditModalState.userInfo;
 
-      const index = showMessageBoxSyncWithReturnValue('OK', 'Cancel', '以下のユーザを一覧から削除しますか？\n\n' + userInfo.name);
-      if (index !== 0) {
+      const index = showMessageBoxSyncWithReturnValue('OK', 'Cancel', `以下のユーザを一覧から削除しますか？\n\n${userInfo.name}`);
+      if (index !== BUTTON_CLICK_OK) {
         return;
       }
 
@@ -69,7 +72,7 @@ const userEditModal = {
       const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
       const myUserId = state.appState.myUserId;
       yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
-      $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || 0);
+      $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || SCROLL_TOP);
     } catch (error) {
       console.error(error);
     } finally {

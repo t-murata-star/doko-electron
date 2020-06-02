@@ -1,7 +1,7 @@
 const { BrowserWindow, dialog, powerMonitor, Tray, Menu, ipcMain, app } = require('electron');
 const packageJson = require('../package.json');
 
-let mainWindow;
+let mainWindow = null;
 
 // アプリケーション名
 const APP_NAME = packageJson.description || '';
@@ -10,8 +10,10 @@ const VERSION = packageJson.version || '';
 // 本番接続先URL
 const DEFAULT_LOAD_URL = packageJson.config.defaultLoadURL || '';
 
-// 【メイン・レンダラープロセス共通で使用するグローバル変数】
-// 通信エラーによりレンダラープロセスの読み込みに失敗した場合に表示されるエラー画面のファイルパス
+/*
+ * 【メイン・レンダラープロセス共通で使用するグローバル変数】
+ * 通信エラーによりレンダラープロセスの読み込みに失敗した場合に表示されるエラー画面のファイルパス
+ */
 global.errorPageFilepath = './public/error.html';
 // レンダラープロセスに接続できたかどうか
 global.isConnectedForRendererProcess = false;
@@ -29,7 +31,7 @@ app.allowRendererProcessReuse = true;
  * 環境変数が設定されていればその設定値を接続先を使用する
  * 設定されていなければ、当プログラムにて定義した接続先を使用する
  */
-let webAppURL;
+let webAppURL = '';
 
 if (process.env.LOAD_URL) {
   webAppURL = process.env.LOAD_URL;
@@ -41,7 +43,7 @@ if (process.env.LOAD_URL) {
 const createTray = () => {
   // 通知領域に表示するアイコンを指定
   const path = require('path');
-  const iconPath = path.join(__dirname, '../public/favicon.png');
+  const iconPath = path.join(__dirname, '../public/favicon.ico');
   const tray = new Tray(iconPath);
   // 通知領域をクリックした際のメニュー
   const contextMenu = Menu.buildFromTemplate([
@@ -105,6 +107,7 @@ const createWindow = () => {
 
   // ウインドウがクローズされようとするときに発生するイベント
   mainWindow.on('close', (closeEvent) => {
+    const BUTTON_CLICK_OK = 0;
     closeEvent.preventDefault();
     const index = dialog.showMessageBoxSync(mainWindow, {
       title: APP_NAME,
@@ -115,7 +118,7 @@ const createWindow = () => {
 
     switch (index) {
       // ダイアログで「OK」を選択した場合
-      case 0:
+      case BUTTON_CLICK_OK:
         /**
          * Electronがレンダラープロセスを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
          * 処理はレンダラープロセスで行う
@@ -186,7 +189,8 @@ const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
   app.quit();
-} else {
+}
+if (gotTheLock) {
   app.on('second-instance', (event, commandLine, workingDirectory) => {
     // 2つ目のアプリケーションが起動された場合、1つ目のアプリケーションのウィンドウにフォーカスする
     if (mainWindow) {

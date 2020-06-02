@@ -1,6 +1,5 @@
-import { Fade, Tooltip, Button, TextField } from '@material-ui/core';
+import { Fade, Tooltip, Button, TextField, Modal, Backdrop } from '@material-ui/core';
 import React from 'react';
-import { Modal, Backdrop } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Props } from '../../define/model';
 import { userEditModalActionsAsyncLogic, userEditModalActions } from '../../actions/userInfo/userEditModalActions';

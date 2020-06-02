@@ -16,6 +16,7 @@ builder.build({
         target: 'nsis',
         arch: ['x64', 'ia32'],
       },
+      icon: './public/logo256.png',
     },
   },
 });

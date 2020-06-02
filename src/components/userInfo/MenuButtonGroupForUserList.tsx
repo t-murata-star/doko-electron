@@ -12,7 +12,9 @@ import UserEditModal from './UserEditModal';
 import { Props } from '../../define/model';
 import { Grid } from '@material-ui/core';
 import { userEditModalActions } from '../../actions/userInfo/userEditModalActions';
-library.add(faSync, faEdit); //あらかじめ使用するアイコンを追加しておく
+
+// あらかじめ使用するアイコンを追加しておく
+library.add(faSync, faEdit);
 
 class MenuButtonGroupForUserList extends React.Component<Props, any> {
   reload = () => {

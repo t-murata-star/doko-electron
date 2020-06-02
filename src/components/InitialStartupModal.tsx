@@ -6,6 +6,7 @@ import { UserInfo, Props } from '../define/model';
 import { initialStartupModalActionsAsyncLogic, initialStartupModalActions } from '../actions/initialStartupModalActions';
 import './InitialStartupModal.css';
 import { Backdrop, Fade, Modal, TextField } from '@material-ui/core';
+import { NO_USER_IN_USERLIST } from '../define';
 
 class InitialStartupModal extends React.Component<Props, any> {
   closeModal = () => {
@@ -25,12 +26,13 @@ class InitialStartupModal extends React.Component<Props, any> {
 
   onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { dispatch } = this.props;
+    const EMPTY_STRING = 0;
     dispatch(initialStartupModalActions.changeUserInfo(event.target.name, event.target.value));
-    if (event.target.value.length > 0 && this.props.state.initialStartupModalState.disabled === true) {
+    if (event.target.value.length > EMPTY_STRING && this.props.state.initialStartupModalState.disabled === true) {
       dispatch(initialStartupModalActions.disableSubmitButton(false));
       return;
     }
-    if (event.target.value.length === 0 && this.props.state.initialStartupModalState.disabled === false) {
+    if (event.target.value.length === EMPTY_STRING && this.props.state.initialStartupModalState.disabled === false) {
       dispatch(initialStartupModalActions.disableSubmitButton(true));
     }
   };
@@ -102,13 +104,13 @@ class InitialStartupModal extends React.Component<Props, any> {
                           SelectProps={{
                             native: true,
                           }}
-                          disabled={userList.length === 0}>
-                          {userList.length > 0 && (
+                          disabled={userList.length === NO_USER_IN_USERLIST}>
+                          {userList.length > NO_USER_IN_USERLIST && (
                             <option hidden value='-1'>
                               選択してください
                             </option>
                           )}
-                          {userList.length === 0 && (
+                          {userList.length === NO_USER_IN_USERLIST && (
                             <option hidden value='-1'>
                               ユーザが存在しません
                             </option>

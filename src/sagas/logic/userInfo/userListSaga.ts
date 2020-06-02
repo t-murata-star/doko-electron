@@ -5,10 +5,13 @@ import { callUserListAPI } from '../../api/callUserListAPISaga';
 import { ApiResponse, UpdateUserInfo } from '../../../define/model';
 import { appActions } from '../../../actions/appActions';
 import { RootState } from '../../../modules';
+import { BUTTON_CLICK_OK } from '../../../define';
 
 const userList = {
   updateUserInfoOrder: function* (action: ReturnType<typeof userListActionsAsyncLogic.updateUserInfoOrder>) {
     try {
+      const NETX_ORDER = 1;
+      const DELAY_TIME_MS = 30;
       const state: RootState = yield select();
       yield put(appActions.isShowLoadingPopup(true));
       const rowComponent = action.payload.rowComponent;
@@ -19,13 +22,13 @@ const userList = {
         `並べ替えてよろしいですか？\n※表示順序は全てのユーザで共通です。`
       );
 
-      if (index !== 0) {
+      if (index !== BUTTON_CLICK_OK) {
         yield put(userListActions.reRenderUserList());
         return;
       }
 
       for (const row of rows) {
-        const updatedUserInfo = { order: row.getPosition(true) + 1 };
+        const updatedUserInfo = { order: row.getPosition(true) + NETX_ORDER };
         const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
           callUserListAPI.updateUserInfo,
           updatedUserInfo,
@@ -35,8 +38,7 @@ const userList = {
           yield put(userListActions.reRenderUserList());
           return;
         }
-        const delayMs = 30;
-        yield delay(delayMs);
+        yield delay(DELAY_TIME_MS);
       }
 
       const myUserId = state.appState.myUserId;

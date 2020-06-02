@@ -10,9 +10,10 @@ export const callOfficeInfoAPI = {
   getRestroomUsage: function* () {
     const startTime = Date.now();
     const response: ApiResponse<GetRestroomUsage[]> = yield callAPI(officeInfoAPI.getRestroomUsage);
+    const MS = 0;
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
-    if (Math.sign(lowestWaitTime) === 1) {
+    if (lowestWaitTime > MS) {
       yield delay(lowestWaitTime);
     }
 
@@ -28,9 +29,10 @@ export const callOfficeInfoAPI = {
   getOfficeInfo: function* () {
     const startTime = Date.now();
     const response: ApiResponse<GetOfficeInfo> = yield callAPI(officeInfoAPI.getOfficeInfo);
+    const MS = 0;
 
     const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
-    if (Math.sign(lowestWaitTime) === 1) {
+    if (lowestWaitTime > MS) {
       yield delay(lowestWaitTime);
     }
 

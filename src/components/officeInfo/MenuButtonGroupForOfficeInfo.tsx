@@ -8,7 +8,8 @@ import './MenuButtonGroupForOfficeInfo.css';
 import { Props } from '../../define/model';
 import { menuButtonGroupForOfficeInfoActionsAsyncLogic } from '../../actions/officeInfo/menuButtonGroupForOfficeInfoActions';
 
-library.add(faPowerOff, faSync, faEdit, faWindowMinimize); //あらかじめ使用するアイコンを追加しておく
+// あらかじめ使用するアイコンを追加しておく
+library.add(faPowerOff, faSync, faEdit, faWindowMinimize);
 
 class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
   reload = () => {

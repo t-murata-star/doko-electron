@@ -30,7 +30,7 @@ class UserList extends React.Component<Props, any> {
     return '-';
   };
 
-  openCalendar = (e: any, cell: Tabulator.CellComponent) => {
+  openCalendar = (event: any, cell: Tabulator.CellComponent) => {
     const email = cell.getValue();
     const { dispatch } = this.props;
 
@@ -95,7 +95,7 @@ class UserList extends React.Component<Props, any> {
     { title: 'メッセージ', field: 'message', headerSort: false, minWidth: 80 },
   ];
 
-  showUserEditModal = (e: any, row: Tabulator.RowComponent) => {
+  showUserEditModal = (event: any, row: Tabulator.RowComponent) => {
     const { dispatch } = this.props;
     const userList = this.props.state.userListState.userList;
     const selectedUserId = row.getData().id;
@@ -112,6 +112,7 @@ class UserList extends React.Component<Props, any> {
 
   _rowFormatter = (row: Tabulator.RowComponent) => {
     const rowData = row.getData();
+    const NO_STATUS = 0;
 
     // 状態によってテキストの色を変える
     const statusInfo: any = Object.entries(USER_STATUS_INFO)
@@ -122,7 +123,7 @@ class UserList extends React.Component<Props, any> {
         return value[1];
       });
 
-    if (statusInfo.length > 0) {
+    if (statusInfo.length > NO_STATUS) {
       row.getElement().style.color = statusInfo[0].color;
     }
 

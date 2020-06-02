@@ -8,7 +8,7 @@ import { userListActions } from '../../actions/userInfo/userListActions';
 /**
  * ユーザ情報のアプリケーションバージョンを更新
  */
-export function* updateAppVersionForUserInfo(userInfo: UserInfo, myUserId: number) {
+export const updateAppVersionForUserInfo = function* (userInfo: UserInfo, myUserId: number) {
   const updatedUserInfo: UserInfoForUpdate = {};
   const updatedUserInfoState: UserInfo = { ...userInfo };
   let needsUpdate = false;
@@ -31,12 +31,12 @@ export function* updateAppVersionForUserInfo(userInfo: UserInfo, myUserId: numbe
     // ローカルのstate（userList）を更新する
     yield put(userListActions.updateUserInfoState(myUserId, updatedUserInfoState));
   }
-}
+};
 
 /**
  * 状態を「在席」に更新する
  */
-export function* updateStatusForUserInfo(userInfo: UserInfo, myUserId: number) {
+export const updateStatusForUserInfo = function* (userInfo: UserInfo, myUserId: number) {
   if (
     userInfo.status === USER_STATUS_INFO.s02.status ||
     userInfo.status === USER_STATUS_INFO.s01.status ||
@@ -59,9 +59,19 @@ export function* updateStatusForUserInfo(userInfo: UserInfo, myUserId: number) {
     updatedUserInfoState.updatedAt = updateUserInfoResponse.getPayload().updatedAt;
     yield put(userListActions.updateUserInfoState(myUserId, updatedUserInfoState));
   }
-}
+};
 
-export function* callAPI(calledAPI: any, ...args: any) {
+export const callAPI = function* (calledAPI: any, ...args: any) {
+  const isAuthenticated = (statusCode: number): boolean => {
+    switch (statusCode) {
+      case ResponseStatusCode.unauthorized:
+        return false;
+
+      default:
+        return true;
+    }
+  };
+
   yield put(appActions.startFetching());
   try {
     const response: Response = yield call(calledAPI, ...args);
@@ -88,14 +98,4 @@ export function* callAPI(calledAPI: any, ...args: any) {
   } finally {
     yield put(appActions.endFetching());
   }
-
-  function isAuthenticated(statusCode: number): boolean {
-    switch (statusCode) {
-      case ResponseStatusCode.unauthorized:
-        return false;
-
-      default:
-        return true;
-    }
-  }
-}
+};

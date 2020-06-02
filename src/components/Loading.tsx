@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import './Loading.css';
 
-library.add(faSpinner); //あらかじめ使用するアイコンを追加しておく
+// あらかじめ使用するアイコンを追加しておく
+library.add(faSpinner);
 
 type ContentProps = {
   isShowLoadingPopup: boolean;

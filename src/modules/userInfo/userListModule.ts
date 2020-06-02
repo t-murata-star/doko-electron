@@ -6,7 +6,8 @@ import { NO_USER } from '../../define';
 
 class InitialState {
   userList: UserInfo[] = [];
-  selectedUserId: number = NO_USER; // ユーザ一覧画面で編集中のユーザのIdを格納する
+  // ユーザ一覧画面で編集中のユーザのIdを格納する
+  selectedUserId: number = NO_USER;
   inoperable: boolean = false;
 }
 

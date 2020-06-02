@@ -92,9 +92,9 @@ const initialStartupModal = {
   },
 };
 
-function* closeModal() {
+const closeModal = function* () {
   yield put(initialStartupModalActions.showModal(false));
-}
+};
 
 export const initialStartupModalSaga = Object.entries(initialStartupModal).map((value: [string, any]) => {
   return takeEvery(`initialStartupModal/logic/${value[0]}`, value[1]);

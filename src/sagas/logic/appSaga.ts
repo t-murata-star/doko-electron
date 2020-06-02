@@ -10,7 +10,15 @@ import {
   isLatestRendererVersion,
   versionMigration,
 } from '../../components/common/utils';
-import { APP_NAME, MAIN_APP_VERSION, APP_DOWNLOAD_URL, RENDERER_APP_VERSION, NO_USER } from '../../define';
+import {
+  APP_NAME,
+  MAIN_APP_VERSION,
+  APP_DOWNLOAD_URL,
+  RENDERER_APP_VERSION,
+  NO_USER,
+  AppTabIndex,
+  BUTTON_CLICK_OK,
+} from '../../define';
 import { ApiResponse, Login, GetAppInfo, GetUserListWithMyUserIdExists } from '../../define/model';
 import { RootState } from '../../modules';
 import { callOfficeInfoAPI } from '../api/callOfficeInfoAPISaga';
@@ -165,13 +173,13 @@ const app = {
       yield put(appActions.isShowLoadingPopup(true));
 
       switch (activeIndex) {
-        // 社内情報タブを選択
-        case 0:
+        // 社員情報タブを選択
+        case AppTabIndex.userInfo:
           yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
           break;
 
-        // 社員情報タブを選択
-        case 1:
+        // 社内情報タブを選択
+        case AppTabIndex.officeInfo:
           yield call(callOfficeInfoAPI.getOfficeInfo);
           break;
 
@@ -221,11 +229,11 @@ const startupRegistration = () => {
       'NO',
       `スタートアップを有効にしますか？\n※PCを起動した際に自動的に${APP_NAME}が起動します。`
     );
-    let openAtLogin;
+    let openAtLogin = false;
 
     switch (index) {
       // ダイアログで「OK」を選択した場合
-      case 0:
+      case BUTTON_CLICK_OK:
         openAtLogin = true;
         break;
 
@@ -235,7 +243,8 @@ const startupRegistration = () => {
         break;
     }
 
-    electronStore.set('startup.notified', 1);
+    const STARTUP_NOTIFIED = 1;
+    electronStore.set('startup.notified', STARTUP_NOTIFIED);
 
     remote.app.setLoginItemSettings({
       openAtLogin,

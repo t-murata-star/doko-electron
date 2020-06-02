@@ -30,6 +30,7 @@ export const REQUEST_HEADERS = {
   'Content-type': 'application/json; charset=UTF-8',
 };
 export const NO_USER = -1;
+export const NO_USER_IN_USERLIST = 0;
 export const USER_STATUS_INFO: UserStatusInfo = new UserStatusInfo();
 export const STATUS_LIST: string[] = Object.entries(USER_STATUS_INFO).map(
   ([, value]: [string, { status: string; color: string }]) => {
@@ -43,6 +44,7 @@ export const CALENDAR_URL: string = process.env.REACT_APP_CALENDAR_URL || '';
 export const EMAIL_DOMAIN: string = process.env.REACT_APP_EMAIL_DOMAIN || '';
 export const API_REQUEST_LOWEST_WAIT_TIME_MS = 350;
 export const SNACKBAR_DISPLAY_DEFAULT_TIME_MS = 5000;
+export const BUTTON_CLICK_OK = 0;
 export enum AppTabIndex {
   userInfo,
   officeInfo,

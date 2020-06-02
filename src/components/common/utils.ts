@@ -7,20 +7,22 @@ import {
   VERSION_CHECK_INTERVAL_MS,
   RENDERER_APP_VERSION,
   SNACKBAR_DISPLAY_DEFAULT_TIME_MS,
+  NO_USER_IN_USERLIST,
 } from '../../define';
 import { UserInfo } from '../../define/model';
 import { appActions, appActionsAsyncLogic } from '../../actions/appActions';
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();
+const NO_QUEUE_MESSAGES = 0;
 
 // ※戻り値の userInfo はイミュータブル
 export const getUserInfo = (userList: UserInfo[], userId: number): UserInfo | null => {
   if (!userList) {
     return null;
   }
-  const userInfo = userList.filter((userInfo) => {
-    return userInfo.id === userId;
+  const userInfo = userList.filter((_userInfo) => {
+    return _userInfo.id === userId;
   });
   return userInfo.length === 0 ? null : { ...userInfo[0] };
 };
@@ -29,11 +31,11 @@ export const getUserListIndexByUserId = (userList: UserInfo[], userId: number): 
   if (!userList) {
     return null;
   }
-  const userInfo = userList.filter((userInfo) => {
-    return userInfo.id === userId;
+  const userInfo = userList.filter((_userInfo) => {
+    return _userInfo.id === userId;
   });
 
-  return userInfo.length === 0 ? null : userList.indexOf(userInfo[0]);
+  return userInfo.length === NO_USER_IN_USERLIST ? null : userList.indexOf(userInfo[0]);
 };
 
 export const showMessageBoxSync = (message: string, type: 'info' | 'warning' = 'info') => {
@@ -72,7 +74,7 @@ export const showSnackBar = (
   const dispatch: any = store.dispatch;
   const appState = store.getState().appState;
 
-  if (appState.snackbar.queueMessages.length > 0) {
+  if (appState.snackbar.queueMessages.length > NO_QUEUE_MESSAGES) {
     return;
   }
 
@@ -87,11 +89,13 @@ export const showSnackBar = (
 
 export const onSnackBarClose = () => {
   const dispatch: any = store.dispatch;
-  // ※いつか使うかもしれない & 分からなくなりそうなのであえて残しておく
-  // 画面クリックでsnackbarを閉じない
-  // if (reason === 'clickaway') {
-  //   return;
-  // }
+  /*
+   * ※いつか使うかもしれない & 分からなくなりそうなのであえて残しておく
+   * 画面クリックでsnackbarを閉じない
+   * if (reason === 'clickaway') {
+   *   return;
+   * }
+   */
   dispatch(appActions.changeEnabledSnackbar(false, null, null, null));
 };
 
@@ -100,7 +104,7 @@ export const onSnackBarExited = () => {
   const appState = store.getState().appState;
   const queueMessages = [...appState.snackbar.queueMessages];
 
-  if (queueMessages.length > 0) {
+  if (queueMessages.length > NO_QUEUE_MESSAGES) {
     const message = queueMessages.shift() as string;
     dispatch(appActions.dequeueSnackbarMessages());
     dispatch(appActions.changeEnabledSnackbar(true, appState.snackbar.severity, message, null));
