@@ -97,7 +97,7 @@ const app = {
       yield call(updateAppVersionForUserInfo, userInfo, myUserId);
       yield call(updateStatusForUserInfo, userInfo, myUserId);
       yield put(appActions.setMyUserId(myUserId));
-      yield call(callAppAPI.sendHealthCheck);
+      yield call(callUserListAPI.sendHealthCheck);
       yield put(appActions.isShowLoadingPopup(true));
     } catch (error) {
       loadConnectionErrorPage();
@@ -109,7 +109,7 @@ const app = {
   // アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
   sendHealthCheck: function* () {
     try {
-      yield call(callAppAPI.sendHealthCheck);
+      yield call(callUserListAPI.sendHealthCheck);
     } catch (error) {
       console.error(error);
     }

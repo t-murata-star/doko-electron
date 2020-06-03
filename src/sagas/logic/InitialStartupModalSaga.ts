@@ -4,7 +4,6 @@ import { ApiResponse, UserInfoForUpdate, UserInfo, AddUser } from '../../define/
 import { getUserInfo } from '../../components/common/utils';
 import { MAIN_APP_VERSION, USER_STATUS_INFO, RENDERER_APP_VERSION, NO_USER } from '../../define';
 import { RootState } from '../../modules';
-import { callAppAPI } from '../api/callAppAPISaga';
 import { appActions } from '../../actions/appActions';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
 import { updateAppVersionForUserInfo, updateStatusForUserInfo } from '../common/utilsSaga';
@@ -40,7 +39,7 @@ const initialStartupModal = {
       yield call(callUserListAPI.getUserList, myUserId);
       yield closeModal();
       yield put(appActions.setMyUserId(myUserId));
-      yield call(callAppAPI.sendHealthCheck);
+      yield call(callUserListAPI.sendHealthCheck);
       yield put(initialStartupModalActions.initializeField());
     } catch (error) {
       console.error(error);
@@ -68,7 +67,7 @@ const initialStartupModal = {
       yield call(callUserListAPI.getUserList, myUserId);
       yield closeModal();
       yield put(appActions.setMyUserId(myUserId));
-      yield call(callAppAPI.sendHealthCheck);
+      yield call(callUserListAPI.sendHealthCheck);
       yield put(initialStartupModalActions.initializeField());
     } catch (error) {
       console.error(error);

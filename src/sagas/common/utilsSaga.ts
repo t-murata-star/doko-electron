@@ -25,8 +25,7 @@ export const updateAppVersionForUserInfo = function* (userInfo: UserInfo, myUser
   }
 
   if (needsUpdate) {
-    // バージョン更新（更新日時は更新されない）
-    yield call(callUserListAPI.updateUserInfo, updatedUserInfo, myUserId);
+    yield call(callUserListAPI.updateAppVersion, updatedUserInfo, myUserId);
 
     // ローカルのstate（userList）を更新する
     yield put(userListActions.updateUserInfoState(myUserId, updatedUserInfoState));

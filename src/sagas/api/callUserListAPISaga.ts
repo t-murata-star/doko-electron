@@ -7,9 +7,10 @@ import {
   GetUserList,
   GetUserListWithMyUserIdExists,
   UpdateUserInfo,
+  SendHealthCheck,
 } from '../../define/model';
 import { getUserInfo, showMessageBoxSync, showSnackBar } from '../../components/common/utils';
-import { put, delay } from 'redux-saga/effects';
+import { put, delay, select } from 'redux-saga/effects';
 import { UserListAPI } from '../../api/userListAPI';
 import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M, NO_USER } from '../../define';
 import { appActions } from '../../actions/appActions';
@@ -133,6 +134,47 @@ export const callUserListAPI = {
     }
 
     yield put(userListActions.updateUserInfoSuccess());
+    return response;
+  },
+
+  sendHealthCheck: function* () {
+    const state = yield select();
+    const myUserId = state.appState.myUserId;
+    const userList = state.userListState.userList;
+    const userInfo = getUserInfo(userList, myUserId);
+    if (userInfo === null) {
+      return null;
+    }
+
+    const updatedUserInfo: UserInfoForUpdate = {};
+    updatedUserInfo.healthCheckAt = '';
+
+    const response: ApiResponse<SendHealthCheck> = yield callAPI(UserListAPI.updateHealthCheck, updatedUserInfo, myUserId);
+    if (!response.getIsError()) {
+      console.log('Send healthCheck.');
+    }
+    return response;
+  },
+
+  updateAppVersion: function* (userInfo: UserInfoForUpdate, userId: number) {
+    const response: ApiResponse<UpdateUserInfo> = yield callAPI(UserListAPI.updateAppVersion, userInfo, userId);
+    if (response.getIsError()) {
+      showSnackBar('error', '通信に失敗しました。', null);
+      return response;
+    }
+
+    yield put(userListActions.updateAppVersionSuccess());
+    return response;
+  },
+
+  changeOrder: function* (userInfo: UserInfoForUpdate, userId: number) {
+    const response: ApiResponse<UpdateUserInfo> = yield callAPI(UserListAPI.changeOrder, userInfo, userId);
+    if (response.getIsError()) {
+      showSnackBar('error', '通信に失敗しました。', null);
+      return response;
+    }
+
+    yield put(userListActions.changeOrderSuccess());
     return response;
   },
 };

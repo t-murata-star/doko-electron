@@ -36,4 +36,31 @@ export const UserListAPI = {
     });
     return response;
   },
+
+  updateHealthCheck: async (userInfo: UserInfoForUpdate, userId: number) => {
+    const response = await fetch(`${API_URL}/healthCheck/${userId}`, {
+      method: 'PATCH',
+      headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
+      body: JSON.stringify(userInfo),
+    });
+    return response;
+  },
+
+  updateAppVersion: async (userInfo: UserInfoForUpdate, userId: number) => {
+    const response = await fetch(`${API_URL}/updateAppVersion/${userId}`, {
+      method: 'PATCH',
+      headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
+      body: JSON.stringify(userInfo),
+    });
+    return response;
+  },
+
+  changeOrder: async (userInfo: UserInfoForUpdate, userId: number) => {
+    const response = await fetch(`${API_URL}/changeOrder/${userId}`, {
+      method: 'PATCH',
+      headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
+      body: JSON.stringify(userInfo),
+    });
+    return response;
+  },
 };

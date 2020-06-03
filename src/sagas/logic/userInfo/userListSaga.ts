@@ -30,7 +30,7 @@ const userList = {
       for (const row of rows) {
         const updatedUserInfo = { order: row.getPosition(true) + NETX_ORDER };
         const updateUserInfoResponse: ApiResponse<UpdateUserInfo> = yield call(
-          callUserListAPI.updateUserInfo,
+          callUserListAPI.changeOrder,
           updatedUserInfo,
           row.getData().id
         );

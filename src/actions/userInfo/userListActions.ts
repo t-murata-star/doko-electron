@@ -10,6 +10,9 @@ export const userListActions = {
     };
   }),
   updateUserInfoSuccess: createAction(`userList/updateUserInfoSuccess`),
+  updateHealthCheckSuccess: createAction(`userList/updateHealthCheckSuccess`),
+  updateAppVersionSuccess: createAction(`userList/updateAppVersionSuccess`),
+  changeOrderSuccess: createAction(`userList/changeOrderSuccess`),
   addUserSuccess: createAction(`userList/addUserSuccess`),
   deleteUserSuccess: createAction(`userList/deleteUserSuccess`),
   selectUser: createAction(`userList/selectUser`, (selectedUserId: number) => {

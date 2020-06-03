@@ -1,5 +1,4 @@
 import { API_URL, REQUEST_HEADERS, LOGIN_USER } from '../define';
-import { UserInfoForUpdate } from '../define/model';
 import { getAuthorizationHeader } from '../components/common/utils';
 
 export const appAPI = {
@@ -16,15 +15,6 @@ export const appAPI = {
     const response = await fetch(`${API_URL}/appInfo`, {
       method: 'GET',
       headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
-    });
-    return response;
-  },
-
-  sendHealthCheck: async (userInfo: UserInfoForUpdate, userId: number) => {
-    const response = await fetch(`${API_URL}/userList/${userId}`, {
-      method: 'PATCH',
-      headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
-      body: JSON.stringify(userInfo),
     });
     return response;
   },

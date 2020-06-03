@@ -29,6 +29,21 @@ export const userListSlice = createSlice({
           ...state,
         };
       })
+      .addCase(userListActions.updateHealthCheckSuccess, (state) => {
+        return {
+          ...state,
+        };
+      })
+      .addCase(userListActions.updateAppVersionSuccess, (state) => {
+        return {
+          ...state,
+        };
+      })
+      .addCase(userListActions.changeOrderSuccess, (state) => {
+        return {
+          ...state,
+        };
+      })
       .addCase(userListActions.addUserSuccess, (state) => {
         return {
           ...state,
