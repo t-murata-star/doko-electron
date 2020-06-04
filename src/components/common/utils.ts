@@ -24,7 +24,7 @@ export const getUserInfo = (userList: UserInfo[], userId: number): UserInfo | nu
   const userInfo = userList.filter((_userInfo) => {
     return _userInfo.id === userId;
   });
-  return userInfo.length === 0 ? null : { ...userInfo[0] };
+  return userInfo.length === NO_USER_IN_USERLIST ? null : { ...userInfo[0] };
 };
 
 export const getUserListIndexByUserId = (userList: UserInfo[], userId: number): number | null => {
