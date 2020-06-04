@@ -26,7 +26,7 @@ class InitialState {
     severity: 'info',
     message: '',
     timeoutMs: 5000,
-    queueMessages: [''],
+    queueMessages: [],
   };
   isShowLoadingPopup: boolean = false;
   regularExecutionEnabled = {
