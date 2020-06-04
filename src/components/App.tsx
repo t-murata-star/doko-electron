@@ -29,6 +29,12 @@ class App extends React.Component<Props, any> {
     regularExecution();
   }
 
+  // 状態を「離席中」に更新する
+  electronCloseEvent = ipcRenderer.on('electronCloseEvent', () => {
+    const { dispatch } = this.props;
+    dispatch(electronActionsAsyncLogic.closeApp());
+  });
+
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
     remote.getCurrentWindow().hide();
   });

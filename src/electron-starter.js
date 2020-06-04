@@ -1,4 +1,4 @@
-const { BrowserWindow, dialog, powerMonitor, Tray, Menu, ipcMain, app } = require('electron');
+const { BrowserWindow, powerMonitor, Tray, Menu, ipcMain, app } = require('electron');
 const packageJson = require('../package.json');
 
 let mainWindow = null;
@@ -16,7 +16,6 @@ const DEFAULT_LOAD_URL = packageJson.config.defaultLoadURL || '';
  */
 global.errorPageFilepath = './public/error.html';
 // レンダラープロセスに接続できたかどうか
-global.isConnectedForRendererProcess = false;
 global.description = APP_NAME;
 global.appVersion = VERSION;
 
@@ -107,33 +106,8 @@ const createWindow = () => {
 
   // ウインドウがクローズされようとするときに発生するイベント
   mainWindow.on('close', (closeEvent) => {
-    const BUTTON_CLICK_OK = 0;
     closeEvent.preventDefault();
-    const index = dialog.showMessageBoxSync(mainWindow, {
-      title: APP_NAME,
-      type: 'info',
-      buttons: ['OK', 'Cancel'],
-      message: `${APP_NAME}を終了しますか？`,
-    });
-
-    switch (index) {
-      // ダイアログで「OK」を選択した場合
-      case BUTTON_CLICK_OK:
-        /**
-         * Electronがレンダラープロセスを正常に取得した場合のみ、Electron終了時に状態を「退社」に更新する
-         * 処理はレンダラープロセスで行う
-         */
-        if (global.isConnectedForRendererProcess === true) {
-          mainWindow.webContents.send('closeApp');
-        } else {
-          mainWindow.destroy();
-        }
-        break;
-
-      // ダイアログで「OK」以外を選択した場合
-      default:
-        break;
-    }
+    mainWindow.webContents.send('electronCloseEvent');
   });
 
   // ウインドウがクローズされると発生するイベント
@@ -229,8 +203,4 @@ ipcMain.on('reload', (event) => {
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     mainWindow.loadFile(global.errorPageFilepath);
   });
-});
-
-ipcMain.on('connected', (event, isConnected) => {
-  global.isConnectedForRendererProcess = isConnected;
 });

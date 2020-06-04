@@ -38,9 +38,6 @@ const app = {
 
       const myUserId: number = (electronStore.get('userId') as number | undefined) || NO_USER;
 
-      // メインプロセスに、レンダラープロセス正常に読み込めたことを伝える
-      ipcRenderer.send('connected', true);
-
       yield call(getToken);
       if (yield cancelled()) {
         loadConnectionErrorPage();
@@ -271,7 +268,6 @@ const compareLocalVerAndExecutingVer = (localVer: string, executingVer: string, 
 };
 
 const loadConnectionErrorPage = () => {
-  ipcRenderer.send('connected', false);
   remote.getCurrentWindow().loadFile(remote.getGlobal('errorPageFilepath'));
 };
 
