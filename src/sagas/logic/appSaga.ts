@@ -126,6 +126,9 @@ const app = {
 
       // お知らせチェック
       const getAppInfoResponse: ApiResponse<GetAppInfo> = yield call(callAppAPI.getAppInfo);
+      if (getAppInfoResponse.getIsError()) {
+        return;
+      }
       const appInfo = getAppInfoResponse.getPayload();
 
       /**
