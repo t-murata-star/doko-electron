@@ -76,11 +76,6 @@ export const appSlice = createSlice({
         };
       })
       .addCase(appActions.unauthorized, (state) => {
-        /**
-         * APIサーバリクエストの認証に失敗（認証トークンの有効期限が切れた等）した場合、
-         * 画面をリロードして認証トークンを再取得する
-         */
-        window.location.reload();
         return {
           ...state,
         };
