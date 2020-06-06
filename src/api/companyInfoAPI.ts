@@ -1,7 +1,7 @@
 import { API_URL, REQUEST_HEADERS } from '../define';
 import { getAuthorizationHeader } from '../components/common/utils';
 
-export const officeInfoAPI = {
+export const companyInfoAPI = {
   getRestroomUsage: async () => {
     const response = await fetch(`${API_URL}/restrooms`, {
       method: 'GET',

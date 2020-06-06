@@ -4,9 +4,8 @@ import { electronSaga } from './logic/electronSaga';
 import { initialStartupModalSaga } from './logic/initialStartupModalSaga';
 import { userListSaga } from './logic/userInfo/userListSaga';
 import { userEditModalSaga } from './logic/userInfo/userEditModalSaga';
-import { menuButtonGroupForUserListSaga } from './logic/userInfo/menuButtonGroupForUserListSaga';
 import { settingsSaga } from './logic/settings/settingsSaga';
-import { menuButtonGroupForOfficeInfoSaga } from './logic/officeInfo/menuButtonGroupForOfficeInfoSaga';
+import { companyInfoSaga } from './logic/companyInfo/companyInfoSaga';
 
 export default function* rootSaga() {
   yield all([
@@ -16,7 +15,6 @@ export default function* rootSaga() {
     ...userListSaga,
     ...settingsSaga,
     ...userEditModalSaga,
-    ...menuButtonGroupForOfficeInfoSaga,
-    ...menuButtonGroupForUserListSaga,
+    ...companyInfoSaga,
   ]);
 }

@@ -1,5 +1,5 @@
 import { RootState } from '../modules';
-import { NO_USER } from '.';
+import { NO_USER, NO_VACANT } from '.';
 
 /**
  * プロジェクト内独自の型定義
@@ -52,6 +52,10 @@ export class AppInfo {
     latestVersion: '',
     updatedContents: '',
   };
+  displayTimeOfCompanyInfo = {
+    start: '',
+    end: '',
+  };
 }
 
 export class Restroom {
@@ -59,6 +63,14 @@ export class Restroom {
   gender: string = '';
   place: string = '';
   isUsing: boolean = false;
+}
+
+export class RestroomInfo {
+  rooms: Restroom[] = [new Restroom()];
+  isNoVacancyForMen: boolean | null = null;
+  isNoVacancyForWomen: boolean | null = null;
+  vacancyForMen: number = NO_VACANT;
+  vacancyForWomen: number = NO_VACANT;
 }
 
 export class OfficeInfo {
@@ -87,6 +99,10 @@ export interface Login {
 }
 
 export interface GetAppInfo extends AppInfo {}
+
+export interface GetCurrentTime {
+  currentTime: string;
+}
 
 export interface SendHealthCheck extends UserInfo {}
 

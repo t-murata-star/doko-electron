@@ -15,6 +15,7 @@ export const appActions = {
     };
   }),
   unauthorized: createAction(`app/unauthorized`),
+  getCurrentTimeSuccess: createAction(`app/getCurrentTimeSuccess`),
   getAppInfoSuccess: createAction(`app/getAppInfoSuccess`, (appInfo: AppInfo) => {
     return {
       payload: {

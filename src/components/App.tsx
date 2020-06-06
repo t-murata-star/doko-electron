@@ -10,7 +10,7 @@ import './App.scss';
 import { onSnackBarClose, onSnackBarExited, regularExecution } from './common/utils';
 import InitialStartupModal from './InitialStartupModal';
 import Loading from './Loading';
-import OfficeInfo from './officeInfo/OfficeInfo';
+import CompanyInfo from './companyInfo/CompanyInfo';
 import Settings from './settings/Settings';
 import UserList from './userInfo/UserList';
 import { electronActionsAsyncLogic } from '../actions/electronActions';
@@ -103,10 +103,10 @@ class App extends React.Component<Props, any> {
               </div>
             </Fade>
           )}
-          {myUserId !== NO_USER && this.props.state.appState.activeIndex === AppTabIndex.officeInfo && (
+          {myUserId !== NO_USER && this.props.state.appState.activeIndex === AppTabIndex.companyInfo && (
             <Fade in={true}>
               <div>
-                <OfficeInfo />
+                <CompanyInfo />
               </div>
             </Fade>
           )}

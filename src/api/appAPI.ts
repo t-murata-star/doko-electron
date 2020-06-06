@@ -18,4 +18,12 @@ export const appAPI = {
     });
     return response;
   },
+
+  getCurrentTime: async () => {
+    const response = await fetch(`${API_URL}/getCurrentTime`, {
+      method: 'GET',
+      headers: new Headers({ ...REQUEST_HEADERS, ...getAuthorizationHeader() }),
+    });
+    return response;
+  },
 };

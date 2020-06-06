@@ -4,17 +4,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import React from 'react';
 import { connect } from 'react-redux';
-import './MenuButtonGroupForOfficeInfo.css';
+import './MenuButtonGroupForCompanyInfo.css';
 import { Props } from '../../define/model';
-import { menuButtonGroupForOfficeInfoActionsAsyncLogic } from '../../actions/officeInfo/menuButtonGroupForOfficeInfoActions';
+import { companyInfoActionsAsyncLogic } from '../../actions/companyInfo/companyInfoActions';
 
 // あらかじめ使用するアイコンを追加しておく
 library.add(faPowerOff, faSync, faEdit, faWindowMinimize);
 
-class MenuButtonGroupForOfficeInfo extends React.Component<Props, any> {
+class MenuButtonGroupForCompanyInfo extends React.Component<Props, any> {
   reload = () => {
     const { dispatch } = this.props;
-    dispatch(menuButtonGroupForOfficeInfoActionsAsyncLogic.getAllOfficeInfo());
+    dispatch(companyInfoActionsAsyncLogic.getAllCompanyInfo());
   };
 
   render() {
@@ -44,4 +44,4 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-export default connect(mapStateToProps)(MenuButtonGroupForOfficeInfo);
+export default connect(mapStateToProps)(MenuButtonGroupForCompanyInfo);

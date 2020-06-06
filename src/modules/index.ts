@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { appSlice } from './appModule';
 import { initialStartupModalSlice } from './initialStartupModalModule';
-import { officeInfoSlice } from './officeInfo/officeInfoModule';
+import { companyInfoSlice } from './companyInfo/companyInfoModule';
 import { settingsSlice } from './settings/settingsModule';
 import { userEditModalSlice } from './userInfo/userEditModalModule';
 import { userListSlice } from './userInfo/userListModule';
@@ -9,7 +9,7 @@ import { userListSlice } from './userInfo/userListModule';
 const rootReducer = combineReducers({
   appState: appSlice.reducer,
   userListState: userListSlice.reducer,
-  officeInfoState: officeInfoSlice.reducer,
+  companyInfoState: companyInfoSlice.reducer,
   userEditModalState: userEditModalSlice.reducer,
   initialStartupModalState: initialStartupModalSlice.reducer,
   settingsState: settingsSlice.reducer,

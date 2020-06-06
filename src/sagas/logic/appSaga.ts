@@ -21,9 +21,13 @@ import {
 } from '../../define';
 import { ApiResponse, Login, GetAppInfo, GetUserListWithMyUserIdExists } from '../../define/model';
 import { RootState } from '../../modules';
-import { callOfficeInfoAPI } from '../api/callOfficeInfoAPISaga';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
-import { updateAppVersionForUserInfo, updateStatusForUserInfo } from '../common/utilsSaga';
+import {
+  updateAppVersionForUserInfo,
+  updateStatusForUserInfo,
+  getAllCompanyInfo,
+  sleepLowestWaitTime,
+} from '../common/utilsSaga';
 
 const { remote, ipcRenderer } = window.require('electron');
 const Store = window.require('electron-store');
@@ -172,15 +176,17 @@ const app = {
 
       yield put(appActions.isShowLoadingPopup(true));
 
+      const processStartTime = Date.now();
       switch (activeIndex) {
         // 社員情報タブを選択
         case AppTabIndex.userInfo:
           yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
+          yield call(sleepLowestWaitTime, processStartTime);
           break;
 
         // 社内情報タブを選択
-        case AppTabIndex.officeInfo:
-          yield call(callOfficeInfoAPI.getOfficeInfo);
+        case AppTabIndex.companyInfo:
+          yield call(getAllCompanyInfo);
           break;
 
         default:

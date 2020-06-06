@@ -37,6 +37,7 @@ export const STATUS_LIST: string[] = Object.entries(USER_STATUS_INFO).map(
     return value.status;
   }
 );
+export const NO_VACANT = 0;
 export const LEAVING_TIME_THRESHOLD_M: number = 10;
 export const HEALTH_CHECK_INTERVAL_MS: number = 60000 * 4 + 1000 * 30;
 export const VERSION_CHECK_INTERVAL_MS: number = 60000 * 30 + 1000 * 0;
@@ -47,7 +48,7 @@ export const SNACKBAR_DISPLAY_DEFAULT_TIME_MS = 5000;
 export const BUTTON_CLICK_OK = 0;
 export enum AppTabIndex {
   userInfo,
-  officeInfo,
+  companyInfo,
   settings,
 }
 export enum ResponseStatusCode {

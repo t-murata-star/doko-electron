@@ -48,4 +48,5 @@ export const userListActionsAsyncLogic = {
       },
     };
   }),
+  reload: createAction(`userList/logic/reload`),
 };

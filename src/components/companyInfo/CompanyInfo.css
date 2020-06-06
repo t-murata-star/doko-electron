@@ -13,6 +13,11 @@
   font-size: large;
   margin-left: 10px;
 }
+.restrooms_content_no_operating {
+  text-align: center;
+  font-size: larger;
+  margin: 5px;
+}
 .restrooms_content_no_vacancy {
   color: red;
   text-align: center;
@@ -25,10 +30,6 @@
   font-size: larger;
   margin: 5px;
 }
-.restrooms_content_women {
-  font-size: larger;
-  margin: 5px;
-}
-.restroom-women {
+.restroom_no_operating {
   background-color: lightgray;
 }

@@ -1,4 +1,5 @@
 import { takeEvery, put, call, delay, select } from 'redux-saga/effects';
+import $ from 'jquery';
 import { userListActionsAsyncLogic, userListActions } from '../../../actions/userInfo/userListActions';
 import { showMessageBoxSyncWithReturnValue } from '../../../components/common/utils';
 import { callUserListAPI } from '../../api/callUserListAPISaga';
@@ -6,6 +7,7 @@ import { ApiResponse, UpdateUserInfo } from '../../../define/model';
 import { appActions } from '../../../actions/appActions';
 import { RootState } from '../../../modules';
 import { BUTTON_CLICK_OK } from '../../../define';
+import { sleepLowestWaitTime } from '../../common/utilsSaga';
 
 const userList = {
   updateUserInfoOrder: function* (action: ReturnType<typeof userListActionsAsyncLogic.updateUserInfoOrder>) {
@@ -46,6 +48,25 @@ const userList = {
     } catch (error) {
       console.error(error);
     } finally {
+      yield put(appActions.isShowLoadingPopup(false));
+    }
+  },
+
+  reload: function* () {
+    const processStartTime = Date.now();
+    try {
+      yield put(appActions.isShowLoadingPopup(true));
+      const SCROLL_TOP = 0;
+      const state: RootState = yield select();
+      const tabulatorScrollTop = $('.tabulator-tableHolder').scrollTop();
+      // ユーザ一覧取得前のスクロール位置を保持し、取得後にスクロール位置を復元する
+      const myUserId = state.appState.myUserId;
+      yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
+      $('.tabulator-tableHolder').scrollTop(tabulatorScrollTop || SCROLL_TOP);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      yield call(sleepLowestWaitTime, processStartTime);
       yield put(appActions.isShowLoadingPopup(false));
     }
   },

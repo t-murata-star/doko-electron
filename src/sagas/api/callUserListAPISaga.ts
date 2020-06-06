@@ -10,9 +10,9 @@ import {
   SendHealthCheck,
 } from '../../define/model';
 import { getUserInfo, showMessageBoxSync, showSnackBar } from '../../components/common/utils';
-import { put, delay, select } from 'redux-saga/effects';
+import { put, select } from 'redux-saga/effects';
 import { UserListAPI } from '../../api/userListAPI';
-import { API_REQUEST_LOWEST_WAIT_TIME_MS, USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M, NO_USER } from '../../define';
+import { USER_STATUS_INFO, LEAVING_TIME_THRESHOLD_M, NO_USER } from '../../define';
 import { appActions } from '../../actions/appActions';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
 import { userListActions } from '../../actions/userInfo/userListActions';
@@ -74,15 +74,7 @@ export const callUserListAPI = {
   },
 
   getUserList: function* (myUserId: number) {
-    const startTime = Date.now();
     const response: ApiResponse<GetUserList[]> = yield callAPI(UserListAPI.getUserList);
-    const MS = 0;
-
-    const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
-    if (lowestWaitTime > MS) {
-      yield delay(lowestWaitTime);
-    }
-
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
@@ -94,15 +86,7 @@ export const callUserListAPI = {
   },
 
   getUserListWithMyUserIdExists: function* (myUserId: number) {
-    const startTime = Date.now();
     const response: ApiResponse<GetUserListWithMyUserIdExists[]> = yield callAPI(UserListAPI.getUserList);
-    const MS = 0;
-
-    const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
-    if (lowestWaitTime > MS) {
-      yield delay(lowestWaitTime);
-    }
-
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;

@@ -1,9 +1,29 @@
-import { ApiResponse, UserInfoForUpdate, UserInfo, UpdateUserInfo } from '../../define/model';
-import { put, call } from 'redux-saga/effects';
+import moment from 'moment';
+import { ApiResponse, UserInfoForUpdate, UserInfo, UpdateUserInfo, GetCurrentTime } from '../../define/model';
+import { put, call, all, select, delay } from 'redux-saga/effects';
 import { appActions } from '../../actions/appActions';
-import { MAIN_APP_VERSION, RENDERER_APP_VERSION, USER_STATUS_INFO, ResponseStatusCode } from '../../define';
+import {
+  MAIN_APP_VERSION,
+  RENDERER_APP_VERSION,
+  USER_STATUS_INFO,
+  ResponseStatusCode,
+  API_REQUEST_LOWEST_WAIT_TIME_MS,
+} from '../../define';
 import { callUserListAPI } from '../api/callUserListAPISaga';
 import { userListActions } from '../../actions/userInfo/userListActions';
+import { callCompanyInfoAPI } from '../api/callCompanyInfoAPISaga';
+import { callAppAPI } from '../api/callAppAPISaga';
+import { RootState } from '../../modules';
+import { companyInfoActions } from '../../actions/companyInfo/companyInfoActions';
+
+// startTime: Date.now() 実行結果
+export const sleepLowestWaitTime = function* (startTime: number) {
+  const MS = 0;
+  const lowestWaitTime = API_REQUEST_LOWEST_WAIT_TIME_MS - (Date.now() - startTime);
+  if (lowestWaitTime > MS) {
+    yield delay(lowestWaitTime);
+  }
+};
 
 /**
  * ユーザ情報のアプリケーションバージョンを更新
@@ -29,6 +49,50 @@ export const updateAppVersionForUserInfo = function* (userInfo: UserInfo, myUser
 
     // ローカルのstate（userList）を更新する
     yield put(userListActions.updateUserInfoState(myUserId, updatedUserInfoState));
+  }
+};
+
+/**
+ * 全ての社内情報を取得する
+ */
+export const getAllCompanyInfo = function* () {
+  // operatingTime: HH:MM 形式
+  const getMomentOperatingTime = (momentServerCurrentTime: moment.Moment, operatingTime: string): moment.Moment => {
+    const splitArr = operatingTime.split(':');
+    const hour = Number(splitArr[0]);
+    const minute = Number(splitArr[1]);
+    const momentOperatingTime = momentServerCurrentTime.clone();
+    const initTime = 0;
+    return momentOperatingTime.hour(hour).minute(minute).second(initTime).millisecond(initTime);
+  };
+
+  const processStartTime = Date.now();
+  try {
+    yield put(appActions.isShowLoadingPopup(true));
+    const state: RootState = yield select();
+
+    const getCurrentTimeResponse: ApiResponse<GetCurrentTime> = yield call(callAppAPI.getCurrentTime);
+    if (getCurrentTimeResponse.getIsError()) {
+      return;
+    }
+
+    const startTime = state.appState.appInfo.displayTimeOfCompanyInfo.start;
+    const endTime = state.appState.appInfo.displayTimeOfCompanyInfo.end;
+    const momentServerCurrentTime = moment(getCurrentTimeResponse.getPayload().currentTime);
+    const momentOperatingStartTime = getMomentOperatingTime(momentServerCurrentTime, startTime);
+    const momentOperatingEndTime = getMomentOperatingTime(momentServerCurrentTime, endTime);
+
+    if (momentServerCurrentTime.isBefore(momentOperatingStartTime) || momentServerCurrentTime.isAfter(momentOperatingEndTime)) {
+      yield put(companyInfoActions.noOperatingTime());
+      return;
+    }
+
+    yield all([call(callCompanyInfoAPI.getRestroomUsage), call(callCompanyInfoAPI.getOfficeInfo)]);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    yield call(sleepLowestWaitTime, processStartTime);
+    yield put(appActions.isShowLoadingPopup(false));
   }
 };
 

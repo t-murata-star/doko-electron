@@ -3,17 +3,17 @@ import { faDoorClosed, faDoorOpen, faFemale, faMale } from '@fortawesome/free-so
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { connect } from 'react-redux';
-import './OfficeInfo.css';
+import './CompanyInfo.css';
 import { Props } from '../../define/model';
 import { Grid, Paper } from '@material-ui/core';
-import MenuButtonGroupForOfficeInfo from './MenuButtonGroupForOfficeInfo';
+import MenuButtonGroupForCompanyInfo from './MenuButtonGroupForCompanyInfo';
 
 // あらかじめ使用するアイコンを追加しておく
 library.add(faDoorOpen, faDoorClosed, faMale, faFemale);
 
-class OfficeInfo extends React.Component<Props, any> {
+class CompanyInfo extends React.Component<Props, any> {
   render() {
-    const officeInfo = this.props.state.officeInfoState;
+    const companyInfo = this.props.state.companyInfoState;
     const DECIMAL_POINT = 1;
 
     return (
@@ -24,7 +24,7 @@ class OfficeInfo extends React.Component<Props, any> {
             <Paper className='paper' elevation={2}>
               気温
               <div className='info_content'>
-                {officeInfo.officeInfo.tempreture === null ? '-' : officeInfo.officeInfo.tempreture.toFixed(DECIMAL_POINT)}
+                {companyInfo.officeInfo.tempreture === null ? '-' : companyInfo.officeInfo.tempreture.toFixed(DECIMAL_POINT)}
                 <span className='info_content_unit'>℃</span>
               </div>
             </Paper>
@@ -33,7 +33,7 @@ class OfficeInfo extends React.Component<Props, any> {
             <Paper className='paper' elevation={2}>
               湿度
               <div className='info_content'>
-                {officeInfo.officeInfo.humidity === null ? '-' : officeInfo.officeInfo.humidity.toFixed(DECIMAL_POINT)}
+                {companyInfo.officeInfo.humidity === null ? '-' : companyInfo.officeInfo.humidity.toFixed(DECIMAL_POINT)}
                 <span className='info_content_unit'>%</span>
               </div>
             </Paper>
@@ -42,20 +42,21 @@ class OfficeInfo extends React.Component<Props, any> {
         <h4 style={{ textAlign: 'center' }}>トイレ使用状況</h4>
         <Grid container justify='center' alignItems='center' spacing={3}>
           <Grid item xs={4}>
-            <Paper className='paper restroom-women' elevation={2}>
+            <Paper className='paper restroom_no_operating' elevation={2}>
               <FontAwesomeIcon icon='female' style={{ color: 'red' }} /> 女性
-              <div className='restrooms_content_women'>&nbsp;</div>
+              <div className='restrooms_content_no_operating'>&nbsp;</div>
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper className='paper' elevation={2}>
               <FontAwesomeIcon icon='male' style={{ color: 'blue' }} /> 男性(個室)
-              {officeInfo.restrooms.isNoVacancyForMen === true && (
+              {companyInfo.restrooms.isNoVacancyForMen === null && <div className='restrooms_content_no_operating'>-</div>}
+              {companyInfo.restrooms.isNoVacancyForMen === true && (
                 <div className='restrooms_content_no_vacancy'>
                   <FontAwesomeIcon icon='door-closed' /> 満室
                 </div>
               )}
-              {officeInfo.restrooms.isNoVacancyForMen === false && (
+              {companyInfo.restrooms.isNoVacancyForMen === false && (
                 <div className='restrooms_content_vacancy'>
                   <FontAwesomeIcon icon='door-open' /> 空室
                 </div>
@@ -63,7 +64,7 @@ class OfficeInfo extends React.Component<Props, any> {
             </Paper>
           </Grid>
         </Grid>
-        <MenuButtonGroupForOfficeInfo />
+        <MenuButtonGroupForCompanyInfo />
       </div>
     );
   }
@@ -75,4 +76,4 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-export default connect(mapStateToProps)(OfficeInfo);
+export default connect(mapStateToProps)(CompanyInfo);

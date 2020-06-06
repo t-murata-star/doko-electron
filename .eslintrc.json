@@ -54,6 +54,7 @@
     "no-invalid-this": "off",
     "id-length": "off",
     "no-sync": "off",
-    "global-require": "off"
+    "global-require": "off",
+    "newline-per-chained-call": "off"
   }
 }

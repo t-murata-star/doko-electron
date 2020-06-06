@@ -91,6 +91,11 @@ export const appSlice = createSlice({
           appInfo: action.payload.appInfo,
         };
       })
+      .addCase(appActions.getCurrentTimeSuccess, (state) => {
+        return {
+          ...state,
+        };
+      })
       .addCase(appActions.setMyUserId, (state, action) => {
         return {
           ...state,

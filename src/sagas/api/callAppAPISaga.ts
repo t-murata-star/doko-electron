@@ -1,4 +1,4 @@
-import { ApiResponse, Login, GetAppInfo } from '../../define/model';
+import { ApiResponse, Login, GetAppInfo, GetCurrentTime } from '../../define/model';
 import { showSnackBar } from '../../components/common/utils';
 import { put } from 'redux-saga/effects';
 import { appAPI } from '../../api/appAPI';
@@ -25,6 +25,17 @@ export const callAppAPI = {
     }
 
     yield put(appActions.getAppInfoSuccess(response.getPayload()));
+    return response;
+  },
+
+  getCurrentTime: function* () {
+    const response: ApiResponse<GetCurrentTime> = yield callAPI(appAPI.getCurrentTime);
+    if (response.getIsError()) {
+      showSnackBar('error', '通信に失敗しました。', null);
+      return response;
+    }
+
+    yield put(appActions.getCurrentTimeSuccess());
     return response;
   },
 };

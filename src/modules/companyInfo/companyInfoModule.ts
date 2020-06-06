@@ -1,21 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Restroom, OfficeInfo } from '../../define/model';
+import { Restroom, OfficeInfo, RestroomInfo } from '../../define/model';
 import { companyInfoActions } from '../../actions/companyInfo/companyInfoActions';
 
 class InitialState {
-  restrooms = {
-    rooms: [new Restroom()],
-    isNoVacancyForMen: false,
-    isNoVacancyForWomen: false,
-    vacancyForMen: -1,
-    vacancyForWomen: -1,
-  };
+  restrooms = new RestroomInfo();
   officeInfo = new OfficeInfo();
 }
 
 // createSlice() で actions と reducers を一気に生成
-export const officeInfoSlice = createSlice({
-  name: 'officeInfo',
+export const companyInfoSlice = createSlice({
+  name: 'companyInfo',
   initialState: new InitialState(),
   reducers: {},
   extraReducers: (builder) => {
@@ -26,7 +20,7 @@ export const officeInfoSlice = createSlice({
           ...state,
           restrooms: {
             ...state.restrooms,
-            rooms: rooms,
+            rooms,
             isNoVacancyForMen: checkNoVacantForRestroom(rooms, 'men'),
             isNoVacancyForWomen: checkNoVacantForRestroom(rooms, 'women'),
             vacancyForMen: getVacantCountForRestroom(rooms, 'men'),
@@ -38,6 +32,13 @@ export const officeInfoSlice = createSlice({
         return {
           ...state,
           officeInfo: action.payload.officeInfo,
+        };
+      })
+      .addCase(companyInfoActions.noOperatingTime, (state) => {
+        return {
+          ...state,
+          restrooms: new RestroomInfo(),
+          officeInfo: new OfficeInfo(),
         };
       });
   },

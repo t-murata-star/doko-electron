@@ -5,13 +5,13 @@ import Button from '@material-ui/core/Button';
 import $ from 'jquery';
 import React from 'react';
 import { connect } from 'react-redux';
-import { menuButtonGroupForUserListActionsAsyncLogic } from '../../actions/userInfo/menuButtonGroupForUserListActions';
 import { getUserInfo } from '../common/utils';
 import './MenuButtonGroupForUserList.css';
 import UserEditModal from './UserEditModal';
 import { Props } from '../../define/model';
 import { Grid } from '@material-ui/core';
 import { userEditModalActions } from '../../actions/userInfo/userEditModalActions';
+import { userListActionsAsyncLogic } from '../../actions/userInfo/userListActions';
 
 // あらかじめ使用するアイコンを追加しておく
 library.add(faSync, faEdit);
@@ -19,7 +19,7 @@ library.add(faSync, faEdit);
 class MenuButtonGroupForUserList extends React.Component<Props, any> {
   reload = () => {
     const { dispatch } = this.props;
-    dispatch(menuButtonGroupForUserListActionsAsyncLogic.reload());
+    dispatch(userListActionsAsyncLogic.reload());
   };
 
   showUserEditModal = () => {
