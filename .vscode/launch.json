@@ -10,25 +10,21 @@
         "LOAD_URL": "http://localhost:3000"
       },
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-      "runtimeArgs": [
-        "--remote-debugging-port=9222"
-      ],
+      "runtimeArgs": ["--remote-debugging-port=9222"],
       "cwd": "${workspaceRoot}"
     },
     {
       "name": "Renderer",
       "type": "chrome",
       "request": "attach",
+      "url": "http://localhost:3000",
       "port": 9222
     }
   ],
   "compounds": [
     {
       "name": "Main & Renderer",
-      "configurations": [
-        "Main",
-        "Renderer"
-      ]
+      "configurations": ["Main", "Renderer"]
     }
   ]
 }
