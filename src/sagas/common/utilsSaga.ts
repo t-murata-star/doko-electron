@@ -138,9 +138,6 @@ export const callAPI = function* (calledAPI: any, ...args: any) {
   yield put(appActions.startFetching());
   try {
     const response: Response = yield call(calledAPI, ...args);
-    if (response.ok === false) {
-      throw new Error(response.statusText);
-    }
 
     if (isAuthenticated(response.status) === false) {
       yield put(appActions.unauthorized());
@@ -149,6 +146,10 @@ export const callAPI = function* (calledAPI: any, ...args: any) {
        * 画面をリロードして認証トークンを再取得する
        */
       window.location.reload();
+    }
+
+    if (response.ok === false) {
+      throw new Error(response.statusText);
     }
 
     const payload = yield call(response.json.bind(response));
