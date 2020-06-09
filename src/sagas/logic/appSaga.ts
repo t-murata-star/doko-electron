@@ -38,6 +38,7 @@ const app = {
     try {
       yield put(appActions.isShowLoadingPopup(true));
 
+      ipcRenderer.send('loadRendererProcess', true);
       versionMigration();
 
       const myUserId: number = (electronStore.get('userId') as number | undefined) || NO_USER;
@@ -99,7 +100,6 @@ const app = {
       yield call(updateStatusForUserInfo, userInfo, myUserId);
       yield put(appActions.setMyUserId(myUserId));
       yield call(callUserListAPI.sendHealthCheck);
-      yield put(appActions.isShowLoadingPopup(true));
     } catch (error) {
       loadConnectionErrorPage();
     } finally {

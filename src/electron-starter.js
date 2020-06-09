@@ -16,6 +16,7 @@ const DEFAULT_LOAD_URL = packageJson.config.defaultLoadURL || '';
  */
 global.errorPageFilepath = './public/error.html';
 // レンダラープロセスに接続できたかどうか
+global.isLoadedRendererProcess = false;
 global.description = APP_NAME;
 global.appVersion = VERSION;
 
@@ -107,7 +108,17 @@ const createWindow = () => {
   // ウインドウがクローズされようとするときに発生するイベント
   mainWindow.on('close', (closeEvent) => {
     closeEvent.preventDefault();
-    mainWindow.webContents.send('electronCloseEvent');
+    console.log(global.isLoadedRendererProcess);
+
+    /**
+     * Electronがレンダラープロセスを正常に読み込んだ場合のみ、Electron終了時に状態を「退社」に更新する
+     * 処理はレンダラープロセスで行う
+     */
+    if (global.isLoadedRendererProcess === true) {
+      mainWindow.webContents.send('electronCloseEvent');
+    } else {
+      mainWindow.destroy();
+    }
   });
 
   // ウインドウがクローズされると発生するイベント
@@ -203,4 +214,8 @@ ipcMain.on('reload', (event) => {
   mainWindow.loadURL(webAppURL, { extraHeaders: 'pragma: no-cache\n' }).catch(() => {
     mainWindow.loadFile(global.errorPageFilepath);
   });
+});
+
+ipcMain.on('loadRendererProcess', (event, isLoaded) => {
+  global.isLoadedRendererProcess = isLoaded;
 });
