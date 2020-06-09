@@ -6,6 +6,7 @@ import { UserInfoForUpdate } from '../../define/model';
 import { RootState } from '../../modules';
 import { appActions } from '../../actions/appActions';
 
+// TypeError: fs.existsSync is not a function が発生する問題の対処
 const { remote } = window.require('electron');
 
 const electron = {

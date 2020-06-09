@@ -11,6 +11,8 @@ import {
 } from '../../define';
 import { UserInfo } from '../../define/model';
 import { appActions, appActionsAsyncLogic } from '../../actions/appActions';
+
+// TypeError: fs.existsSync is not a function が発生する問題の対処
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();

@@ -1,4 +1,6 @@
 /* eslint-disable no-magic-numbers */
+
+// TypeError: fs.existsSync is not a function が発生する問題の対処
 const { remote } = window.require('electron');
 
 class UserStatusInfo {

@@ -24,8 +24,3 @@ export const userEditModalActions = {
     };
   }),
 };
-
-export const userEditModalActionsAsyncLogic = {
-  updateUserInfo: createAction(`userEditModal/logic/updateUserInfo`),
-  deleteUser: createAction(`userEditModal/logic/deleteUser`),
-};

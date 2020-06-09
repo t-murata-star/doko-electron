@@ -2,10 +2,11 @@ import { Fade, Tooltip, Button, TextField, Modal, Backdrop } from '@material-ui/
 import React from 'react';
 import { connect } from 'react-redux';
 import { Props } from '../../define/model';
-import { userEditModalActionsAsyncLogic, userEditModalActions } from '../../actions/userInfo/userEditModalActions';
+import { userEditModalActions } from '../../actions/userInfo/userEditModalActions';
 import './UserEditModal.css';
 import { Container, Form, Col } from 'react-bootstrap';
 import { STATUS_LIST } from '../../define';
+import { userListActionsAsyncLogic } from '../../actions/userInfo/userListActions';
 
 class UserEditModal extends React.Component<Props, any> {
   closeModal = () => {
@@ -26,12 +27,12 @@ class UserEditModal extends React.Component<Props, any> {
     event.preventDefault();
     const { dispatch } = this.props;
     dispatch(userEditModalActions.disableSubmitButton());
-    dispatch(userEditModalActionsAsyncLogic.updateUserInfo());
+    dispatch(userListActionsAsyncLogic.updateUserInfo());
   };
 
   deleteUser = () => {
     const { dispatch } = this.props;
-    dispatch(userEditModalActionsAsyncLogic.deleteUser());
+    dispatch(userListActionsAsyncLogic.deleteUser());
   };
 
   inputClear = () => {

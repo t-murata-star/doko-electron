@@ -11,6 +11,7 @@ import { settingActionsAsyncLogic, settingActions } from '../../actions/settings
 import { getUserInfo, showSnackBar, regularExecution } from '../common/utils';
 import './Settings.css';
 
+// TypeError: fs.existsSync is not a function が発生する問題の対処
 const { remote } = window.require('electron');
 const Store = window.require('electron-store');
 const electronStore = new Store();

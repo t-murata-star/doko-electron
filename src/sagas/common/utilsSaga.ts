@@ -1,4 +1,4 @@
-import moment from 'moment';
+import momentTz from 'moment-timezone';
 import { ApiResponse, UserInfoForUpdate, UserInfo, UpdateUserInfo, GetCurrentTime } from '../../define/model';
 import { put, call, all, select, delay } from 'redux-saga/effects';
 import { appActions } from '../../actions/appActions';
@@ -57,7 +57,7 @@ export const updateAppVersionForUserInfo = function* (userInfo: UserInfo, myUser
  */
 export const getAllCompanyInfo = function* () {
   // operatingTime: HH:MM 形式
-  const getMomentOperatingTime = (momentServerCurrentTime: moment.Moment, operatingTime: string): moment.Moment => {
+  const getMomentOperatingTime = (momentServerCurrentTime: momentTz.Moment, operatingTime: string): momentTz.Moment => {
     const splitArr = operatingTime.split(':');
     const hour = Number(splitArr[0]);
     const minute = Number(splitArr[1]);
@@ -78,7 +78,7 @@ export const getAllCompanyInfo = function* () {
 
     const startTime = state.appState.appInfo.displayTimeOfCompanyInfo.start;
     const endTime = state.appState.appInfo.displayTimeOfCompanyInfo.end;
-    const momentServerCurrentTime = moment(getCurrentTimeResponse.getPayload().currentTime);
+    const momentServerCurrentTime = momentTz(getCurrentTimeResponse.getPayload().currentTime);
     const momentOperatingStartTime = getMomentOperatingTime(momentServerCurrentTime, startTime);
     const momentOperatingEndTime = getMomentOperatingTime(momentServerCurrentTime, endTime);
 

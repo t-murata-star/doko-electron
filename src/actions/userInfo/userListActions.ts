@@ -41,6 +41,8 @@ export const userListActions = {
 };
 
 export const userListActionsAsyncLogic = {
+  updateUserInfo: createAction(`userList/logic/updateUserInfo`),
+  deleteUser: createAction(`userList/logic/deleteUser`),
   updateUserInfoOrder: createAction(`userList/logic/updateUserInfoOrder`, (rowComponent: Tabulator.RowComponent) => {
     return {
       payload: {

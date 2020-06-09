@@ -12,6 +12,7 @@ import { Props } from '../../define/model';
 import MenuButtonGroupForUserList from './MenuButtonGroupForUserList';
 import { userEditModalActions } from '../../actions/userInfo/userEditModalActions';
 
+// TypeError: fs.existsSync is not a function が発生する問題の対処
 const { remote } = window.require('electron');
 
 class UserList extends React.Component<Props, any> {
@@ -75,7 +76,7 @@ class UserList extends React.Component<Props, any> {
       width: 85,
       headerSort: false,
       sorter: 'datetime',
-      sorterParams: { format: 'YYYY-MM-DD hh:mm:ss.SSS' },
+      sorterParams: { format: 'YYYY-MM-DDThh:mm:ss+09:00' },
       formatter: 'datetime',
       formatterParams: {
         outputFormat: 'YYYY/MM/DD',
