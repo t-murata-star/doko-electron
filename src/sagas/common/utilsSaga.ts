@@ -83,7 +83,7 @@ export const getAllCompanyInfo = function* () {
     const momentOperatingEndTime = getMomentOperatingTime(momentServerCurrentTime, endTime);
 
     if (momentServerCurrentTime.isBefore(momentOperatingStartTime) || momentServerCurrentTime.isAfter(momentOperatingEndTime)) {
-      yield put(companyInfoActions.noOperatingTime());
+      yield put(companyInfoActions.noDisplayTime());
       return;
     }
 

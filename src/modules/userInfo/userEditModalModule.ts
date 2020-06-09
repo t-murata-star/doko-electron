@@ -41,12 +41,6 @@ export const userEditModalSlice = createSlice({
           disabled: false,
         };
       })
-      .addCase(userEditModalActions.handleChangeUser, (state) => {
-        return {
-          ...state,
-          disabled: true,
-        };
-      })
       .addCase(userEditModalActions.inputClear, (state) => {
         return {
           ...state,

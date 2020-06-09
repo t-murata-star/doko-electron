@@ -29,7 +29,7 @@ export const userListSlice = createSlice({
           ...state,
         };
       })
-      .addCase(userListActions.updateHealthCheckSuccess, (state) => {
+      .addCase(userListActions.sendHealthCheckSuccess, (state) => {
         return {
           ...state,
         };

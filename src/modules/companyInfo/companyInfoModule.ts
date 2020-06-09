@@ -34,7 +34,7 @@ export const companyInfoSlice = createSlice({
           officeInfo: action.payload.officeInfo,
         };
       })
-      .addCase(companyInfoActions.noOperatingTime, (state) => {
+      .addCase(companyInfoActions.noDisplayTime, (state) => {
         return {
           ...state,
           restrooms: new RestroomInfo(),

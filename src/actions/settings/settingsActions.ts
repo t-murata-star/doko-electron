@@ -1,7 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
 
 export const settingActions = {
+  // state を初期化
   initializeState: createAction(`settings/initializeState`),
+  // ユーザIDを設定
   setUserId: createAction(`settings/setUserId`, (userId: number) => {
     return {
       payload: {
@@ -9,6 +11,7 @@ export const settingActions = {
       },
     };
   }),
+  // メールアドレスを設定
   setEmail: createAction(`settings/setEmail`, (email: string) => {
     return {
       payload: {
@@ -16,6 +19,7 @@ export const settingActions = {
       },
     };
   }),
+  // ユーザ変更ボタンの状態変更
   changeDisabledSubmitButtonUserChange: createAction(`settings/changeDisabledSubmitButtonUserChange`, (disable: boolean) => {
     return {
       payload: {
@@ -23,6 +27,7 @@ export const settingActions = {
       },
     };
   }),
+  // メールアドレス変更ボタンの状態変更
   changeDisabledSubmitButtonEmail: createAction(`settings/changeDisabledSubmitButtonEmail`, (disable: boolean) => {
     return {
       payload: {
@@ -30,6 +35,7 @@ export const settingActions = {
       },
     };
   }),
+  // スタートアップ有効/無効切り替えスイッチ状態変更
   changeEnabledStartup: createAction(`settings/changeEnabledStartup`, (startupEnabled: boolean) => {
     return {
       payload: {
@@ -40,5 +46,6 @@ export const settingActions = {
 };
 
 export const settingActionsAsyncLogic = {
+  // メールアドレス保存処理
   saveSettingsForEmail: createAction(`settings/logic/saveSettingsForEmail`),
 };
