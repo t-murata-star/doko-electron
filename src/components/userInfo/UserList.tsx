@@ -44,7 +44,7 @@ class UserList extends React.Component<Props, any> {
 
     const encodedEmail = encodeURI(email);
     // カレンダー表示のための子ウインドウを表示
-    const calendarWindow: Electron.BrowserWindow = new remote.BrowserWindow({
+    const calendarWindow = new remote.BrowserWindow({
       width: 1120,
       height: 700,
       resizable: false,
