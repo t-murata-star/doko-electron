@@ -108,7 +108,6 @@ const createWindow = () => {
   // ウインドウがクローズされようとするときに発生するイベント
   mainWindow.on('close', (closeEvent) => {
     closeEvent.preventDefault();
-    console.log(global.isLoadedRendererProcess);
 
     /**
      * Electronがレンダラープロセスを正常に読み込んだ場合のみ、Electron終了時に状態を「退社」に更新する
