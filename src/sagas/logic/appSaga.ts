@@ -1,4 +1,4 @@
-import { takeEvery, put, call, select, cancelled, cancel } from 'redux-saga/effects';
+import { takeEvery, put, call, select } from 'redux-saga/effects';
 import { appActionsAsyncLogic, appActions } from '../../actions/appActions';
 import { callAppAPI } from '../api/callAppAPISaga';
 import { callUserListAPI } from '../api/callUserListAPISaga';
@@ -43,8 +43,8 @@ const app = {
 
       const myUserId: number = (electronStore.get('userId') as number | undefined) || NO_USER;
 
-      yield call(getToken);
-      if (yield cancelled()) {
+      const getTokenResult = yield call(getToken);
+      if (getTokenResult === false) {
         loadConnectionErrorPage();
         return;
       }
@@ -57,8 +57,8 @@ const app = {
 
       const appInfo = getAppInfoResponse.getPayload();
 
-      yield call(checkUpdatable, appInfo.main.latestVersion);
-      if (yield cancelled()) {
+      const checkUpdatableResult = yield call(checkUpdatable, appInfo.main.latestVersion);
+      if (checkUpdatableResult === false) {
         remote.shell.openExternal(APP_DOWNLOAD_URL);
         closeApp();
         return;
@@ -207,8 +207,9 @@ const getToken = function* () {
   const loginResponse: ApiResponse<Login> = yield call(callAppAPI.login);
   if (loginResponse.getIsError()) {
     loadConnectionErrorPage();
-    yield cancel();
+    return false;
   }
+  return true;
 };
 
 /**
@@ -216,12 +217,13 @@ const getToken = function* () {
  * 実行しているアプリケーションのバージョンが最新ではない場合、
  * 自動的に規定のブラウザでダウンロード先URLを開き、アプリケーションを終了する
  */
-const checkUpdatable = function* (latestVersion: string) {
+const checkUpdatable = function (latestVersion: string) {
   const updateAppInfoMessage = `新しい${APP_NAME}が公開されました。\nVersion ${latestVersion}\nお手数ですがアップデートをお願いします。`;
   if (isLatestMainVersion(latestVersion) === false) {
     showMessageBoxSync(updateAppInfoMessage);
-    yield cancel();
+    return false;
   }
+  return true;
 };
 
 /**
