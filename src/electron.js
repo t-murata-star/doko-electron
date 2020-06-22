@@ -43,7 +43,7 @@ if (process.env.LOAD_URL) {
 const createTray = () => {
   // 通知領域に表示するアイコンを指定
   const path = require('path');
-  const iconPath = path.join(__dirname, './favicon.png');
+  const iconPath = path.join(__dirname, '../public/assets/images/trayIcon.png');
   const tray = new Tray(iconPath);
   // 通知領域をクリックした際のメニュー
   const contextMenu = Menu.buildFromTemplate([

@@ -1,7 +1,6 @@
-'use strict';
-
 const builder = require('electron-builder');
 const Platform = builder.Platform;
+const fs = require('fs');
 const packagejson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
 // Promise is returned
@@ -16,6 +15,7 @@ builder
           target: 'pkg',
         },
       },
+      extends: null,
     },
   })
   .then(() => {
