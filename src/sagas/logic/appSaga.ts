@@ -19,7 +19,7 @@ import {
   AppTabIndex,
   BUTTON_CLICK_OK,
 } from '../../define';
-import { ApiResponse, Login, GetAppInfo, GetUserListWithMyUserIdExists } from '../../define/model';
+import { ApiResponse, Login, GetAppInfo, GetUserListAndCheckMyUserIdExists } from '../../define/model';
 import { RootState } from '../../modules';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
 import {
@@ -34,6 +34,7 @@ const Store = window.require('electron-store');
 const electronStore = new Store();
 
 const app = {
+  // アプリ起動時のログイン処理
   login: function* () {
     try {
       yield put(appActions.isShowLoadingPopup(true));
@@ -77,8 +78,8 @@ const app = {
         return;
       }
 
-      const getUserListResponse: ApiResponse<GetUserListWithMyUserIdExists[]> = yield call(
-        callUserListAPI.getUserListWithMyUserIdExists,
+      const getUserListResponse: ApiResponse<GetUserListAndCheckMyUserIdExists[]> = yield call(
+        callUserListAPI.getUserListAndCheckMyUserIdExists,
         myUserId
       );
       if (getUserListResponse.getIsError()) {
@@ -107,7 +108,7 @@ const app = {
     }
   },
 
-  // アプリケーションの死活監視のため、定期的にサーバにリクエストを送信する
+  // アプリケーションの死活監視のため、サーバにヘルスチェックを送信する
   sendHealthCheck: function* () {
     try {
       yield call(callUserListAPI.sendHealthCheck);
@@ -116,6 +117,7 @@ const app = {
     }
   },
 
+  // 最新アップデートをチェックする
   regularCheckUpdatable: function* () {
     try {
       /**
@@ -162,6 +164,7 @@ const app = {
     }
   },
 
+  // タブがクリックされた際の処理
   clickTabbar: function* (action: ReturnType<typeof appActionsAsyncLogic.clickTabbar>) {
     try {
       const state: RootState = yield select();
@@ -180,7 +183,7 @@ const app = {
       switch (activeIndex) {
         // 社員情報タブを選択
         case AppTabIndex.userInfo:
-          yield call(callUserListAPI.getUserListWithMyUserIdExists, myUserId);
+          yield call(callUserListAPI.getUserListAndCheckMyUserIdExists, myUserId);
           yield call(sleepLowestWaitTime, processStartTime);
           break;
 

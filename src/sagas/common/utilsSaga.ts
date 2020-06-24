@@ -124,6 +124,7 @@ export const updateStatusForUserInfo = function* (userInfo: UserInfo, myUserId: 
   }
 };
 
+// 全てのAPIリクエストで用いる共通メソッド
 export const callAPI = function* (calledAPI: any, ...args: any) {
   const isAuthenticated = (statusCode: number): boolean => {
     switch (statusCode) {

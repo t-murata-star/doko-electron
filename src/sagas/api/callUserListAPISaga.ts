@@ -5,9 +5,11 @@ import {
   DeleteUser,
   AddUser,
   GetUserList,
-  GetUserListWithMyUserIdExists,
+  GetUserListAndCheckMyUserIdExists,
   UpdateUserInfo,
   SendHealthCheck,
+  ChangeOrder,
+  UpdateAppVersion,
 } from '../../define/model';
 import { getUserInfo, showMessageBoxSync, showSnackBar } from '../../components/common/utils';
 import { put, select } from 'redux-saga/effects';
@@ -48,6 +50,7 @@ const updateLeavingTimeForUserList = (userList: UserInfo[], myUserId: number) =>
 };
 
 export const callUserListAPI = {
+  // ユーザ削除
   deleteUser: function* (userId: number) {
     const response: ApiResponse<DeleteUser> = yield callAPI(UserListAPI.deleteUser, userId);
     if (response.getIsError()) {
@@ -59,6 +62,7 @@ export const callUserListAPI = {
     return response;
   },
 
+  // ユーザ追加
   addUser: function* (userInfo: UserInfo) {
     const _userInfo = { ...userInfo };
     delete _userInfo.id;
@@ -73,6 +77,7 @@ export const callUserListAPI = {
     return response;
   },
 
+  // ユーザ一覧取得
   getUserList: function* (myUserId: number) {
     const response: ApiResponse<GetUserList[]> = yield callAPI(UserListAPI.getUserList);
     if (response.getIsError()) {
@@ -85,8 +90,9 @@ export const callUserListAPI = {
     return response;
   },
 
-  getUserListWithMyUserIdExists: function* (myUserId: number) {
-    const response: ApiResponse<GetUserListWithMyUserIdExists[]> = yield callAPI(UserListAPI.getUserList);
+  // ユーザ一覧取得 & 取得した一覧に自分の情報が含まれているかチェックする
+  getUserListAndCheckMyUserIdExists: function* (myUserId: number) {
+    const response: ApiResponse<GetUserListAndCheckMyUserIdExists[]> = yield callAPI(UserListAPI.getUserList);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
@@ -141,7 +147,7 @@ export const callUserListAPI = {
   },
 
   updateAppVersion: function* (userInfo: UserInfoForUpdate, userId: number) {
-    const response: ApiResponse<UpdateUserInfo> = yield callAPI(UserListAPI.updateAppVersion, userInfo, userId);
+    const response: ApiResponse<UpdateAppVersion> = yield callAPI(UserListAPI.updateAppVersion, userInfo, userId);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;
@@ -152,7 +158,7 @@ export const callUserListAPI = {
   },
 
   changeOrder: function* (userInfo: UserInfoForUpdate, userId: number) {
-    const response: ApiResponse<UpdateUserInfo> = yield callAPI(UserListAPI.changeOrder, userInfo, userId);
+    const response: ApiResponse<ChangeOrder> = yield callAPI(UserListAPI.changeOrder, userInfo, userId);
     if (response.getIsError()) {
       showSnackBar('error', '通信に失敗しました。', null);
       return response;

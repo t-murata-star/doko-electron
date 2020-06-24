@@ -7,6 +7,7 @@ import { appActions } from '../../../actions/appActions';
 import { settingActions } from '../../../actions/settings/settingsActions';
 
 const settings = {
+  // メールアドレスの保存
   saveSettingsForEmail: function* () {
     try {
       yield put(appActions.isShowLoadingPopup(true));

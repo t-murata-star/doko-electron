@@ -6,6 +6,7 @@ import { appActions } from '../../actions/appActions';
 import { callAPI } from '../common/utilsSaga';
 
 export const callAppAPI = {
+  // ログイン(認証トークンを取得)
   login: function* () {
     const response: ApiResponse<Login> = yield callAPI(appAPI.login);
     if (response.getIsError()) {
@@ -17,6 +18,7 @@ export const callAppAPI = {
     return response;
   },
 
+  // アプリ情報を取得
   getAppInfo: function* () {
     const response: ApiResponse<GetAppInfo> = yield callAPI(appAPI.getAppInfo);
     if (response.getIsError()) {
@@ -28,6 +30,7 @@ export const callAppAPI = {
     return response;
   },
 
+  // 現在日時をサーバから取得
   getCurrentTime: function* () {
     const response: ApiResponse<GetCurrentTime> = yield callAPI(appAPI.getCurrentTime);
     if (response.getIsError()) {

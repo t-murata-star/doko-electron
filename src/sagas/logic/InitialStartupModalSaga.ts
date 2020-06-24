@@ -6,12 +6,13 @@ import { MAIN_APP_VERSION, USER_STATUS_INFO, RENDERER_APP_VERSION, NO_USER } fro
 import { RootState } from '../../modules';
 import { appActions } from '../../actions/appActions';
 import { initialStartupModalActions } from '../../actions/initialStartupModalActions';
-import { updateAppVersionForUserInfo, updateStatusForUserInfo } from '../common/utilsSaga';
+import { updateAppVersionForUserInfo, updateStatusForUserInfo, sleepLowestWaitTime } from '../common/utilsSaga';
 
 const Store = window.require('electron-store');
 const electronStore = new Store();
 
 const initialStartupModal = {
+  // ユーザ登録
   addUser: function* () {
     try {
       yield put(appActions.isShowLoadingPopup(true));
@@ -48,6 +49,7 @@ const initialStartupModal = {
     }
   },
 
+  // ユーザ登録（既存ユーザから選択）
   changeUser: function* () {
     try {
       yield put(appActions.isShowLoadingPopup(true));
@@ -76,7 +78,9 @@ const initialStartupModal = {
     }
   },
 
+  // 「登録済みの場合はこちら」を選択した際の処理
   selectFromExistingUsers: function* () {
+    const processStartTime = Date.now();
     try {
       yield put(appActions.isShowLoadingPopup(true));
       yield put(initialStartupModalActions.initializeField());
@@ -86,6 +90,7 @@ const initialStartupModal = {
     } catch (error) {
       console.error(error);
     } finally {
+      yield call(sleepLowestWaitTime, processStartTime);
       yield put(appActions.isShowLoadingPopup(false));
     }
   },

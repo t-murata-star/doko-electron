@@ -6,6 +6,7 @@ import { companyInfoActions } from '../../actions/companyInfo/companyInfoActions
 import { callAPI } from '../common/utilsSaga';
 
 export const callCompanyInfoAPI = {
+  // トイレ使用状況を取得
   getRestroomUsage: function* () {
     const response: ApiResponse<GetRestroomUsage[]> = yield callAPI(companyInfoAPI.getRestroomUsage);
     if (response.getIsError()) {
@@ -17,6 +18,7 @@ export const callCompanyInfoAPI = {
     return response;
   },
 
+  // 社内情報を取得
   getOfficeInfo: function* () {
     const response: ApiResponse<GetOfficeInfo> = yield callAPI(companyInfoAPI.getOfficeInfo);
     if (response.getIsError()) {

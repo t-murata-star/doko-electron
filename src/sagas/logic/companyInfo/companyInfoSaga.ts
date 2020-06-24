@@ -2,6 +2,7 @@ import { takeEvery, call } from 'redux-saga/effects';
 import { getAllCompanyInfo } from '../../common/utilsSaga';
 
 const companyInfo = {
+  // 全ての社内情報を取得
   getAllCompanyInfo: function* () {
     try {
       yield call(getAllCompanyInfo);

@@ -116,6 +116,10 @@ export interface AddUser extends UserInfo {}
 
 export interface GetUserList extends UserInfo {}
 
-export interface GetUserListWithMyUserIdExists extends UserInfo {}
+export interface GetUserListAndCheckMyUserIdExists extends UserInfo {}
 
 export interface UpdateUserInfo extends UserInfo {}
+
+export interface UpdateAppVersion extends UserInfo {}
+
+export interface ChangeOrder extends UserInfo {}

@@ -29,34 +29,30 @@ class App extends React.Component<Props, any> {
     regularExecution();
   }
 
-  // 状態を「離席中」に更新する
+  // アプリが終了される時、状態を「退席」に更新してから終了する
   electronCloseEvent = ipcRenderer.on('electronCloseEvent', () => {
     const { dispatch } = this.props;
     dispatch(electronActionsAsyncLogic.closeApp());
   });
 
+  // アプリが最小化される時、タスクトレイに格納する
   electronMinimizeEvent = ipcRenderer.on('electronMinimizeEvent', () => {
     remote.getCurrentWindow().hide();
   });
 
-  // 状態を「離席中」に更新する
+  // PCがロックされる時、状態を「離席中」に更新する
   electronLockScreenEvent = ipcRenderer.on('electronLockScreenEvent', () => {
     const { dispatch } = this.props;
     dispatch(electronActionsAsyncLogic.electronLockScreenEvent());
   });
 
-  // 状態を「在席」に更新する
+  // PCがアンロックされる時、状態を「在席」に更新する
   electronUnlockScreenEvent = ipcRenderer.on('electronUnlockScreenEvent', () => {
     const { dispatch } = this.props;
     dispatch(electronActionsAsyncLogic.electronUnlockScreenEvent());
   });
 
-  closeApp = ipcRenderer.on('closeApp', () => {
-    const { dispatch } = this.props;
-    dispatch(electronActionsAsyncLogic.closeApp());
-  });
-
-  handleActiveIndexUpdate = (event: React.ChangeEvent<{}>, activeIndex: number) => {
+  onClickTabbar = (event: React.ChangeEvent<{}>, activeIndex: number) => {
     const { dispatch } = this.props;
     dispatch(appActionsAsyncLogic.clickTabbar(activeIndex));
   };
@@ -83,7 +79,7 @@ class App extends React.Component<Props, any> {
               <Tabs
                 value={this.props.state.appState.activeIndex}
                 variant='fullWidth'
-                onChange={this.handleActiveIndexUpdate}
+                onChange={this.onClickTabbar}
                 style={{ minHeight: '35px' }}
                 indicatorColor='primary'
                 textColor='primary'
