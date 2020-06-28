@@ -1,7 +1,5 @@
 const builder = require('electron-builder');
 const Platform = builder.Platform;
-const fs = require('fs');
-const packagejson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
 // Promise is returned
 builder
@@ -9,7 +7,7 @@ builder
     targets: Platform.MAC.createTarget(),
     config: {
       productName: '行き先掲示板',
-      appId: `com.electron.${packagejson.name}`,
+      appId: `com.electron.s`,
       mac: {
         target: {
           target: 'pkg',
